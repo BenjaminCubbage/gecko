@@ -29,3 +29,40 @@ ctest --test-dir build -C Release
 ```
 
 If you've configured your project for Visual Studio, the tests can alternatively be discovered and run via the Test Explorer.
+
+
+## Usage
+
+For now, Gecko's compression library currently only supports encoding from / to 3-channel bitmaps. More specifically, it only supports encoding to uncompressed, positive-height, 24bpp `.bmp` files that follow the BITMAPINFOHEADER header format. Indexed-color bitmaps (with color palettes) are not supported.
+
+Although these limitations may seem overly strict, Gecko is only really designed to be used by, well, Gecko.
+
+### Samples
+
+##### Bitonal compression of a BMP:
+```cpp
+#include <optional>
+#include <cstddef>
+#include <vector>
+#include "CompressedBitonal.h"
+#include "UncompressedBitonal.h"
+
+...
+
+std::vector<std::byte> bmpBytes{}; // Load uncompressed bytes
+
+std::optional<UncompressedBitonal> uncompressed;
+std::optional<CompressedBitonal> compressed;
+std::optional<std::vector<std::byte>> compressedBytes;
+
+uncompressed = UncompressedBitonal::TryReadFromBuffer(bmpBytes, UncompressedBitonal::StorageFormat::BMPStrict24);
+
+if (uncompressed)
+  compressed = Encoder::TryCompressBitonal(*uncompressed);
+
+if (compressed)
+  compressedBytes = CompressedBitonal::TryWriteToBuffer(*compressed, CompressedBitonal::StorageFormat::BDC);
+
+if (compressedBytes)
+  ; // Save compressed bytes
+```
