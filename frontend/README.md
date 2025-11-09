@@ -1,5 +1,7 @@
 # Gecko Frontend
 
+![Image of Running Website](README_Image.jpg)
+
 Canvas editor web app intended to integrate with The Gecko Project.
 
 ## Dev Environment Setup
