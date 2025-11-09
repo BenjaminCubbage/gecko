@@ -162,9 +162,9 @@ namespace Gecko::Compression
 
 		const size_t idx = (static_cast<size_t>(vPixelY) * compressed.GetWidth() + vPixelX) * 3;
 
-		const uint8_t b = static_cast<uint8_t>(compressed, bgr[idx + 0]);
-		const uint8_t g = static_cast<uint8_t>(compressed, bgr[idx + 1]);
-		const uint8_t r = static_cast<uint8_t>(compressed, bgr[idx + 2]);
+		const uint8_t b = static_cast<uint8_t>(bgr[idx + 0]);
+		const uint8_t g = static_cast<uint8_t>(bgr[idx + 1]);
+		const uint8_t r = static_cast<uint8_t>(bgr[idx + 2]);
 
 		return b == 255 && g == 255 && r == 255;
 	}
@@ -185,9 +185,9 @@ namespace Gecko::Compression
 				continue;
 
 			const size_t idx = (static_cast<size_t>(pixelY) * compressed.GetWidth() + static_cast<size_t>(i)) * 3;
-			compressed, bgr[idx + 0] = value;
-			compressed, bgr[idx + 1] = value;
-			compressed, bgr[idx + 2] = value;
+			bgr[idx + 0] = value;
+			bgr[idx + 1] = value;
+			bgr[idx + 2] = value;
 		}
 	}
 }
