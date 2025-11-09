@@ -46,6 +46,7 @@ Although these limitations may seem overly strict, Gecko is only really designed
 #include <vector>
 #include "CompressedBitonal.h"
 #include "UncompressedBitonal.h"
+using namespace Gecko::Compression;
 
 ...
 
