@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
 #include "BitStream.h"
 
-namespace BDCompressTest
+namespace Gecko::Compression::Test
 {
 
 	TEST(BitStream, ProgressAndReadAtByteBoundaries)

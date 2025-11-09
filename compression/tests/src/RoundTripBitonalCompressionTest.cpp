@@ -19,7 +19,7 @@ namespace
     }
 }
 
-namespace BDCompressTest 
+namespace Gecko::Compression::Test
 {
     TEST(RoundTripBitonalCompression, FullImage)
     {

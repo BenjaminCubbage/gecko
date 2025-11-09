@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
 #include "BitOperations.h"
 
-namespace BDCompressTest
+namespace Gecko::Compression::Test
 {
 	TEST(BitOperations, BitOperationsSwapEndianness32)
 	{

@@ -6,8 +6,8 @@
 #include <stdexcept>
 #include <cstring>
 
-namespace BDCompressTest {
-
+namespace Gecko::Compression::Test 
+{
     TEST(CompressedBitonal, TryWriteToBuffer_InvalidFormat)
     {
         BitStream bs({ std::byte{0xAB}, std::byte{0xCD} });

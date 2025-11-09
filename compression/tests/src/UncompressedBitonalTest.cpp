@@ -42,7 +42,7 @@ namespace
     }
 }
 
-namespace BDCompressTest 
+namespace Gecko::Compression::Test
 {
     TEST(UncompressedBitonal, Construct_Success)
     {
