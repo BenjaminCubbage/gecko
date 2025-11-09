@@ -331,11 +331,6 @@ namespace Gecko::Compression
 			lookup[shiftedPrefix + i].integral		   = integral;
 			lookup[shiftedPrefix + i].type			   = type;
 
-			if (integral == 27 && shiftedPrefix + i == 0b1100100000000)
-			{
-				std::cout << "prefix: " << shiftedPrefix + i << std::endl;
-			}
-
 			prefixMap.insert_or_assign(integral, lookup[shiftedPrefix + i]);
 		}
 	}
