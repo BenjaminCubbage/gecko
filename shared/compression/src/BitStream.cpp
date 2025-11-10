@@ -99,13 +99,13 @@ namespace Gecko::Compression
 	}
 
 
-	std::span<const std::byte> BitStream::Bytes() const
+	std::span<const uint8_t> BitStream::Bytes() const
 	{
 		size_t spanSize = writerPos.byte + (writerPos.bit == 0 ? 0 : 1);
 
 		if (spanSize > bytes.size())
 			throw std::out_of_range("Internal `writerPos` (EOF) was beyond the bounds of the byte buffer.");
 
-		return std::span<const std::byte>(bytes.data(), spanSize);
+		return std::span<const uint8_t>(bytes.data(), spanSize);
 	}
 }

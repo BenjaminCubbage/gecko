@@ -18,7 +18,7 @@ namespace Gecko::Compression
 			size_t bit = 0;
 		};
 
-		std::vector<std::byte> bytes;
+		std::vector<uint8_t> bytes;
 
 		/*
 		*		`readerPos` and `writerPos` are used to track the current location of the reader/writer.
@@ -60,13 +60,13 @@ namespace Gecko::Compression
 		}
 
 	public:
-		BitStream(std::vector<std::byte> bytes)
+		BitStream(std::vector<uint8_t> bytes)
 			: bytes(bytes), readerPos(BitPosition{ .byte = 0, .bit = 0 }), writerPos(BitPosition{ .byte = bytes.size(), .bit = 0 })
 		{
 			EnsureAdequateEOFWiggleRoom();
 		}
 
-		BitStream() : BitStream(std::vector<std::byte>{ }) {};
+		BitStream() : BitStream(std::vector<uint8_t>{ }) {};
 
 		BitStream(const BitStream& other)
 			: bytes(other.bytes), readerPos(other.readerPos), writerPos(other.writerPos) {
@@ -84,6 +84,6 @@ namespace Gecko::Compression
 		void StepForward(size_t by);
 		uint32_t Peek(size_t numBits) const;
 		void PushBack(uint32_t value, size_t numBits);
-		std::span<const std::byte> Bytes() const;
+		std::span<const uint8_t> Bytes() const;
 	};
 }

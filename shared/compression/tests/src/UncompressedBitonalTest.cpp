@@ -4,28 +4,28 @@
 namespace
 {
     // Helper: build a minimal valid BMPStrict24 buffer (little-endian)
-    std::vector<std::byte> MakeValidBmpStrict24Buffer(uint32_t w, uint32_t h)
+    std::vector<uint8_t> MakeValidBmpStrict24Buffer(uint32_t w, uint32_t h)
     {
         constexpr int HeaderSize = 54;
         const uint32_t rowBytesLen = (w * 3 + 3) & ~3;
         const uint32_t pixelBytes = rowBytesLen * h;
-        std::vector<std::byte> buf(HeaderSize + pixelBytes, std::byte{ 0 });
+        std::vector<uint8_t> buf(HeaderSize + pixelBytes, uint8_t{ 0 });
 
         auto w32 = [&](size_t off, uint32_t v) {
-            buf[off + 0] = std::byte(v & 0xFF);
-            buf[off + 1] = std::byte((v >> 8) & 0xFF);
-            buf[off + 2] = std::byte((v >> 16) & 0xFF);
-            buf[off + 3] = std::byte((v >> 24) & 0xFF);
+            buf[off + 0] = static_cast<uint8_t>(v & 0xFF);
+            buf[off + 1] = static_cast<uint8_t>((v >> 8) & 0xFF);
+            buf[off + 2] = static_cast<uint8_t>((v >> 16) & 0xFF);
+            buf[off + 3] = static_cast<uint8_t>((v >> 24) & 0xFF);
         };
 
         auto w16 = [&](size_t off, uint16_t v) {
-            buf[off + 0] = std::byte(v & 0xFF);
-            buf[off + 1] = std::byte((v >> 8) & 0xFF);
+            buf[off + 0] = static_cast<uint8_t>(v & 0xFF);
+            buf[off + 1] = static_cast<uint8_t>((v >> 8) & 0xFF);
         };
 
         // BITMAPFILEHEADER
-        buf[0] = std::byte('B');
-        buf[1] = std::byte('M');
+        buf[0] = uint8_t{ 'B' };
+        buf[1] = uint8_t{ 'M' };
         w32(2, static_cast<uint32_t>(buf.size())); // file size
         w32(10, HeaderSize);                       // pixel offset
 
@@ -37,7 +37,7 @@ namespace
         w16(28, 24);
         w32(34, pixelBytes);
 
-        std::fill(buf.begin() + HeaderSize, buf.end(), std::byte{ 0x7F });
+        std::fill(buf.begin() + HeaderSize, buf.end(), uint8_t{ 0x7F });
         return buf;
     }
 }
@@ -46,7 +46,7 @@ namespace Gecko::Compression::Test
 {
     TEST(UncompressedBitonal, Construct_Success)
     {
-        std::vector<std::byte> pixels(3 * 3 * 3, std::byte{ 255 });
+        std::vector<uint8_t> pixels(3 * 3 * 3, uint8_t{ 255 });
         UncompressedBitonal img(pixels, 3, 3);
 
         EXPECT_EQ(img.GetWidth(), 3u);
@@ -58,13 +58,13 @@ namespace Gecko::Compression::Test
     TEST(UncompressedBitonal, Constructor_InvalidBGRSize)
     {
         // 2x2 image requires 2*2*3 = 12 bytes, but we give only 10
-        std::vector<std::byte> malformedBgr(10, std::byte{ 0 });
+        std::vector<uint8_t> malformedBgr(10, uint8_t{ 0 });
         EXPECT_THROW(UncompressedBitonal badImg(malformedBgr, 2, 2), std::invalid_argument);
     }
 
     TEST(UncompressedBitonal, TryWriteToBuffer_InvalidFormat)
     {
-        std::vector<std::byte> pixels(3 * 3 * 3, std::byte{ 0 });
+        std::vector<uint8_t> pixels(3 * 3 * 3, uint8_t{ 0 });
         UncompressedBitonal img(pixels, 3, 3);
 
         EXPECT_THROW(
@@ -74,7 +74,7 @@ namespace Gecko::Compression::Test
 
     TEST(UncompressedBitonal, TryWriteToBuffer_InvalidDimensions)
     {
-        std::vector<std::byte> pixels;
+        std::vector<uint8_t> pixels;
         UncompressedBitonal img(pixels, 0, 0);
 
         auto result = UncompressedBitonal::TryWriteToBuffer(img, UncompressedBitonal::StorageFormat::BMPStrict24);
@@ -85,7 +85,7 @@ namespace Gecko::Compression::Test
     {
         const uint32_t w = 2;
         const uint32_t h = 2;
-        std::vector<std::byte> pixels(w * h * 3, std::byte{ 255 });
+        std::vector<uint8_t> pixels(w * h * 3, uint8_t{ 255 });
 
         UncompressedBitonal img(pixels, w, h);
         auto bufferOpt = UncompressedBitonal::TryWriteToBuffer(img, UncompressedBitonal::StorageFormat::BMPStrict24);
@@ -104,8 +104,8 @@ namespace Gecko::Compression::Test
     TEST(UncompressedBitonal, TryReadFromBuffer_InvalidHeader)
     {
         auto buf = MakeValidBmpStrict24Buffer(2, 2);
-        buf[0] = std::byte{ 'B' };
-        buf[1] = std::byte{ 'N' };
+        buf[0] = uint8_t{ 'B' };
+        buf[1] = uint8_t{ 'N' };
 
         auto result = UncompressedBitonal::TryReadFromBuffer(buf, UncompressedBitonal::StorageFormat::BMPStrict24);
         EXPECT_FALSE(result.has_value());

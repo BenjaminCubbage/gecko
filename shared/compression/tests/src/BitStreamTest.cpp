@@ -6,7 +6,7 @@ namespace Gecko::Compression::Test
 
 	TEST(BitStream, ProgressAndReadAtByteBoundaries)
 	{
-		BitStream stream(std::vector<std::byte>({ std::byte(0x01), std::byte(0x01), std::byte(0x01), std::byte(0x01) }));
+		BitStream stream(std::vector<uint8_t>({ uint8_t(0x01), uint8_t(0x01), uint8_t(0x01), uint8_t(0x01) }));
 
 		EXPECT_EQ(static_cast<uint32_t>(0x01), stream.Peek(8)); stream.StepForward(8);
 		EXPECT_EQ(static_cast<uint32_t>(0x01), stream.Peek(8)); stream.StepForward(8);
@@ -18,7 +18,7 @@ namespace Gecko::Compression::Test
 
 	TEST(BitStream, ProgressAndReadAt4BitOffsets)
 	{
-		BitStream stream(std::vector<std::byte>({ std::byte(0x01), std::byte(0x01), std::byte(0x01), std::byte(0x01) }));
+		BitStream stream(std::vector<uint8_t>({ uint8_t(0x01), uint8_t(0x01), uint8_t(0x01), uint8_t(0x01) }));
 
 		EXPECT_EQ(static_cast<uint32_t>(0x00), stream.Peek(4)); stream.StepForward(4);
 		EXPECT_EQ(static_cast<uint32_t>(0x01), stream.Peek(4)); stream.StepForward(4);
@@ -34,7 +34,7 @@ namespace Gecko::Compression::Test
 
 	TEST(BitStream, ProgressAndReadAt3BitOffsets)
 	{
-		BitStream stream(std::vector<std::byte>({ std::byte(0x11), std::byte(0x11), std::byte(0x11) }));
+		BitStream stream(std::vector<uint8_t>({ uint8_t(0x11), uint8_t(0x11), uint8_t(0x11) }));
 
 		EXPECT_EQ(static_cast<uint32_t>(0x00), stream.Peek(3)); stream.StepForward(3);
 		EXPECT_EQ(static_cast<uint32_t>(0x04), stream.Peek(3)); stream.StepForward(3);
@@ -48,7 +48,7 @@ namespace Gecko::Compression::Test
 
 	TEST(BitStream, ProgressAndRead1BitAtATime)
 	{
-		BitStream stream(std::vector<std::byte>({ std::byte(0b01010101) }));
+		BitStream stream(std::vector<uint8_t>({ uint8_t(0b01010101) }));
 
 		EXPECT_EQ(static_cast<uint32_t>(0x00), stream.Peek(1)); stream.StepForward(1);
 		EXPECT_EQ(static_cast<uint32_t>(0x01), stream.Peek(1)); stream.StepForward(1);
@@ -62,7 +62,7 @@ namespace Gecko::Compression::Test
 
 	TEST(BitStream, ProgressAndReadZeroesFromEmptyStream)
 	{
-		BitStream stream(std::vector<std::byte>{ });
+		BitStream stream(std::vector<uint8_t>{ });
 
 		EXPECT_EQ(static_cast<uint32_t>(0x00), stream.Peek(8));  stream.StepForward(3);
 		EXPECT_EQ(static_cast<uint32_t>(0x00), stream.Peek(16)); stream.StepForward(2);
@@ -76,7 +76,7 @@ namespace Gecko::Compression::Test
 	TEST(BitStream, PassInvalidArgument2ToPeak)
 	{
 		int exceptionsThrown = 0;
-		BitStream stream(std::vector<std::byte>{ });
+		BitStream stream(std::vector<uint8_t>{ });
 
 		try									 { stream.Peek(-1); }
 		catch (const std::invalid_argument&) { ++exceptionsThrown; }
@@ -89,7 +89,7 @@ namespace Gecko::Compression::Test
 
 	TEST(BitStream, Append1ByteAtATime)
 	{
-		BitStream stream(std::vector<std::byte>({ std::byte(0b10101010) }));
+		BitStream stream(std::vector<uint8_t>({ uint8_t(0b10101010) }));
 
 		stream.PushBack(0b01010101, 8);
 		stream.PushBack(0b10101010, 8);

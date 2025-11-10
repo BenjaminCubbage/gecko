@@ -8,12 +8,12 @@
 
 namespace
 {
-    static std::vector<std::byte> ReadFileBytes(const std::filesystem::path& path)
+    static std::vector<uint8_t> ReadFileBytes(const std::filesystem::path& path)
     {
         std::ifstream in(path, std::ios::binary);
         if (!in) throw std::runtime_error("Failed to open: " + path.string());
         std::vector<char> temp((std::istreambuf_iterator<char>(in)), {});
-        std::vector<std::byte> bytes(temp.size());
+        std::vector<uint8_t> bytes(temp.size());
         std::memcpy(bytes.data(), temp.data(), temp.size());
         return bytes;
     }

@@ -31,8 +31,8 @@ namespace Gecko::Compression
 		size_t GetWidth() const { return width; }
 		size_t GetHeight() const { return height; }
 
-		static std::optional<std::vector<std::byte>> TryWriteToBuffer(const CompressedBitonal& compressed, StorageFormat format);
-		static std::optional<CompressedBitonal> TryReadFromBuffer(const std::vector<std::byte>& buffer, StorageFormat format);
+		static std::optional<std::vector<std::uint8_t>> TryWriteToBuffer(const CompressedBitonal& compressed, StorageFormat format);
+		static std::optional<CompressedBitonal> TryReadFromBuffer(const std::vector<std::uint8_t>& buffer, StorageFormat format);
 
 
 	private:

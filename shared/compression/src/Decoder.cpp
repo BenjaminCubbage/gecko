@@ -14,7 +14,7 @@ namespace Gecko::Compression
 		if (!compressed.GetWidth() || !compressed.GetHeight())
 			return std::nullopt;
 
-		std::vector<std::byte> bgr(compressed.GetWidth() * compressed.GetHeight() * 3);
+		std::vector<uint8_t> bgr(compressed.GetWidth() * compressed.GetHeight() * 3);
 
 		for (size_t i = 0; i < compressed.GetHeight(); ++i)
 		{
@@ -26,7 +26,7 @@ namespace Gecko::Compression
 	}
 
 
-	bool Decoder::DecodeRow(CompressedBitonal& compressed, std::vector<std::byte>& bgr, size_t pixelY)
+	bool Decoder::DecodeRow(CompressedBitonal& compressed, std::vector<uint8_t>& bgr, size_t pixelY)
 	{
 		int a0 = -1;
 		int a1 = -1;
@@ -94,7 +94,7 @@ namespace Gecko::Compression
 	}
 
 
-	bool Decoder::DecodeHorizontalIntegrals(CompressedBitonal& compressed, std::vector<std::byte>& bgr, bool a0IsWhite, int* outA1Delta, int* outA2Delta)
+	bool Decoder::DecodeHorizontalIntegrals(CompressedBitonal& compressed, std::vector<uint8_t>& bgr, bool a0IsWhite, int* outA1Delta, int* outA2Delta)
 	{
 		auto getPrefix = a0IsWhite ? &CodeWords::LookupWhiteIntegralPrefixFromLow13 : &CodeWords::LookupBlackIntegralPrefixFromLow13;
 		auto getOpposite = a0IsWhite ? &CodeWords::LookupBlackIntegralPrefixFromLow13 : &CodeWords::LookupWhiteIntegralPrefixFromLow13;
@@ -132,7 +132,7 @@ namespace Gecko::Compression
 	}
 
 
-	int Decoder::FindNextChangedInRowOfColor(CompressedBitonal& compressed, std::vector<std::byte>& bgr, int vPixelX, int vPixelY, bool white)
+	int Decoder::FindNextChangedInRowOfColor(CompressedBitonal& compressed, std::vector<uint8_t>& bgr, int vPixelX, int vPixelY, bool white)
 	{
 		int changedX = FindNextChangedInRow(compressed, bgr, vPixelX, vPixelY);
 
@@ -142,7 +142,7 @@ namespace Gecko::Compression
 	}
 
 
-	int Decoder::FindNextChangedInRow(CompressedBitonal& compressed, std::vector<std::byte>& bgr, int vPixelX, int vPixelY)
+	int Decoder::FindNextChangedInRow(CompressedBitonal& compressed, std::vector<uint8_t>& bgr, int vPixelX, int vPixelY)
 	{
 		bool originalIsWhite = IsCoordinateWhite(compressed, bgr, vPixelX, vPixelY);
 
@@ -154,7 +154,7 @@ namespace Gecko::Compression
 	}
 
 
-	bool Decoder::IsCoordinateWhite(CompressedBitonal& compressed, std::vector<std::byte>& bgr, int vPixelX, int vPixelY)
+	bool Decoder::IsCoordinateWhite(CompressedBitonal& compressed, std::vector<uint8_t>& bgr, int vPixelX, int vPixelY)
 	{
 		if (vPixelX < 0 || vPixelX >= static_cast<int>(compressed.GetWidth()) ||
 			vPixelY < 0 || vPixelY >= static_cast<int>(compressed.GetHeight()))
@@ -170,7 +170,7 @@ namespace Gecko::Compression
 	}
 
 
-	void Decoder::WriteRowPixelsRange(CompressedBitonal& compressed, std::vector<std::byte>& bgr, int vPixelXStart, int vPixelXEnd, int pixelY, bool white)
+	void Decoder::WriteRowPixelsRange(CompressedBitonal& compressed, std::vector<uint8_t>& bgr, int vPixelXStart, int vPixelXEnd, int pixelY, bool white)
 	{
 		if (vPixelXStart > vPixelXEnd)
 			throw std::invalid_argument("vPixelXStart should be less than or equal to vPixelXEnd");
@@ -178,7 +178,7 @@ namespace Gecko::Compression
 		if (pixelY < 0 || static_cast<size_t>(pixelY) >= compressed.GetHeight())
 			throw std::invalid_argument("pixelY should be [0, compressed.GetHeight())");
 
-		std::byte value = white ? static_cast<std::byte>(255) : static_cast<std::byte>(0);
+		uint8_t value = white ? static_cast<uint8_t>(255) : static_cast<uint8_t>(0);
 		for (int i = vPixelXStart; i <= vPixelXEnd; ++i)
 		{
 			if (i < 0 || static_cast<size_t>(std::max(i, 0)) >= compressed.GetWidth())

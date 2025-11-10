@@ -11,7 +11,7 @@ namespace Gecko::Compression
 	public:
 		enum class StorageFormat { BMPStrict24 /* Bitmap file */ };
 
-		UncompressedBitonal(std::vector<std::byte> bgr, size_t width, size_t height)
+		UncompressedBitonal(std::vector<uint8_t> bgr, size_t width, size_t height)
 			: bgr(bgr), width(width), height(height)
 		{
 			if (bgr.size() != width * height * 3)
@@ -29,7 +29,7 @@ namespace Gecko::Compression
 		UncompressedBitonal& operator=(const UncompressedBitonal& other) = default;
 		~UncompressedBitonal() = default;
 
-		const std::vector<std::byte>& GetBGR() const { return bgr; }
+		const std::vector<uint8_t>& GetBGR() const { return bgr; }
 		size_t GetWidth() const { return width; }
 		size_t GetHeight() const { return height; }
 		bool GetPixel(size_t x, size_t y) const {
@@ -38,13 +38,13 @@ namespace Gecko::Compression
 				static_cast<uint8_t>(bgr[(y * width + x) * 3 + 2]) == 255;
 		}
 
-		static std::optional<std::vector<std::byte>> TryWriteToBuffer(const UncompressedBitonal& uncompressed, StorageFormat format);
-		static std::optional<UncompressedBitonal> TryReadFromBuffer(const std::vector<std::byte>& buffer, StorageFormat format);
+		static std::optional<std::vector<uint8_t>> TryWriteToBuffer(const UncompressedBitonal& uncompressed, StorageFormat format);
+		static std::optional<UncompressedBitonal> TryReadFromBuffer(const std::vector<uint8_t>& buffer, StorageFormat format);
 
 	private:
 		static constexpr int HeaderSize = 54;
 
-		std::vector<std::byte> bgr;
+		std::vector<uint8_t> bgr;
 		size_t width;
 		size_t height;
 	};
