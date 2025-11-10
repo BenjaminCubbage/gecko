@@ -121,7 +121,7 @@ namespace Gecko::Compression
 	{
 		int changedX = FindNextChangedInRow(uncompressed, vPixelX, vPixelY);
 
-		return Encoder::IsCoordinateWhite(uncompressed, changedX, vPixelY) == white
+		return IsCoordinateWhite(uncompressed, changedX, vPixelY) == white
 			? changedX
 			: FindNextChangedInRow(uncompressed, changedX, vPixelY);
 	}

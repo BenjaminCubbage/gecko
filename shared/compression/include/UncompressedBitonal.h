@@ -19,12 +19,10 @@ namespace Gecko::Compression
 		}
 
 		UncompressedBitonal(const UncompressedBitonal& other)
-			: bgr(other.bgr), width(other.width), height(other.height) {
-		}
+			: bgr(other.bgr), width(other.width), height(other.height) { }
 
 		UncompressedBitonal(UncompressedBitonal&& other) noexcept
-			: bgr(std::move(other.bgr)), width(other.width), height(other.height) {
-		}
+			: bgr(std::move(other.bgr)), width(other.width), height(other.height) { }
 
 		UncompressedBitonal& operator=(const UncompressedBitonal& other) = default;
 		~UncompressedBitonal() = default;

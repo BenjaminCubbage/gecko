@@ -8,6 +8,14 @@ namespace Gecko::Compression
 	std::map<int, CodeWords::IntegralPrefix&> CodeWords::integralPrefixesWhite = std::map<int, CodeWords::IntegralPrefix&>{};
 	std::map<int, CodeWords::IntegralPrefix&> CodeWords::integralPrefixesBlack = std::map<int, CodeWords::IntegralPrefix&>{};
 
+	/*
+	 *		I really don't like how this works at the moment. Basically, this is a hack to build the lookup
+	 *		tables pre-main(). `CodeWords::BuildIntegralsBlack/WhiteLookup()` has the side effect of also
+	 *		modifying `CodeWords::integralPrefixesWhite/Black`, which is not ideal. 
+	 *
+	 *		However, this class is self-contained and not particularly complicated so it's low priority 
+	 * 		for now.
+	 */
 	std::vector<CodeWords::IntegralPrefix> CodeWords::integralsBlack = CodeWords::BuildIntegralsBlackLookup();
 	std::vector<CodeWords::IntegralPrefix> CodeWords::integralsWhite = CodeWords::BuildIntegralsWhiteLookup();
 

@@ -6,7 +6,6 @@
 
 namespace Gecko::Compression
 {
-
 	std::optional<UncompressedBitonal> Decoder::TryDecompressBitonal(CompressedBitonal& compressed)
 	{
 		compressed.GetBitstream().SeekStart();
