@@ -3,10 +3,14 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
-    "dev": "vite --host --port 8080",
-    "build": "vite build",
-    "preview": "vite preview"
+    "copy-wasm": "node copy-wasm.js",
+    "dev":       "\"npm run copy-wasm\" && vite --host --port 8080",
+    "build":     "\"npm run copy-wasm\" && vite build",
+    "preview":   "vite preview"
   },
   "dependencies": {
     "vue": "^3.5.22"
