@@ -44,7 +44,7 @@ namespace Gecko::Compression::Test
         EXPECT_EQ(decoded.GetWidth(), 8u);
         EXPECT_EQ(decoded.GetHeight(), 4u);
 
-        const auto span = decoded.GetBitstream().Bytes();
+        const auto span = decoded.GetBitstream().GetBytes();
 
         ASSERT_EQ(span.size(), fakeBytes.size());
         for (size_t i = 0; i < span.size(); ++i)

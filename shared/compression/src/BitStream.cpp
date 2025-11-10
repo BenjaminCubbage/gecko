@@ -99,7 +99,7 @@ namespace Gecko::Compression
 	}
 
 
-	std::span<const uint8_t> BitStream::Bytes() const
+	std::span<const uint8_t> BitStream::GetBytes() const
 	{
 		size_t spanSize = writerPos.byte + (writerPos.bit == 0 ? 0 : 1);
 

@@ -84,6 +84,6 @@ namespace Gecko::Compression
 		void StepForward(size_t by);
 		uint32_t Peek(size_t numBits) const;
 		void PushBack(uint32_t value, size_t numBits);
-		std::span<const uint8_t> Bytes() const;
+		std::span<const uint8_t> GetBytes() const;
 	};
 }

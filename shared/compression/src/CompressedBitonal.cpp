@@ -12,7 +12,7 @@ namespace Gecko::Compression
 			throw std::invalid_argument("The specified format is not currently supported. `BDC` is the only "
 				"supported export format for `BDC`.");
 
-		auto bytes = compressed.bitstream.Bytes();
+		auto bytes = compressed.bitstream.GetBytes();
 
 		if (bytes.empty())
 			return std::nullopt;
