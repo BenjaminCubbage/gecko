@@ -4,6 +4,7 @@
         
         <div class="buttons">
             <Button @click="save">SAVE</Button>
+            <Button @click="load">LOAD</Button>
             <Button @click="clear">CLEAR</Button>
         </div>
     </div>
@@ -13,20 +14,17 @@
     import { useTemplateRef } from 'vue';
     import Button from '../ui/Button.vue';
     import DrawableCanvas from '../ui/DrawableCanvas.vue';
-    import BMPBuilder from '../../core/BMPBuilder.js';
+    import { CanvasSave } from '../../core/canvas/CanvasSave.js';
+    import { CanvasLoad } from '../../core/canvas/CanvasLoad.js';
 
     const drawableCanvas = useTemplateRef('drawableCanvas');
 
     function save() {
-        const ctx = drawableCanvas.value?.getCTX();
+        CanvasSave.promptSaveCompressed(drawableCanvas.value?.getCanvasElement()).catch(_=>{});
+    }
 
-        if (!ctx)
-        {
-            console.error("Could not get canvas context to save.");
-            return;
-        }
-
-        BMPBuilder.bmpFromCanvasCTX(ctx).save();
+    function load() {
+        CanvasLoad.promptLoadCompressed(drawableCanvas.value?.getCanvasElement()).catch(_=>{});
     }
 
     function clear() {

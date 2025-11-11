@@ -115,7 +115,11 @@
         ctx.value.restore();
     }
 
-    defineExpose({ getCTX: () => ctx.value, clear });
+    defineExpose({ 
+        getCTX: () => ctx.value, 
+        getCanvasElement: () => canvas.value,
+        clear 
+    });
 </script>
 
 <style>
