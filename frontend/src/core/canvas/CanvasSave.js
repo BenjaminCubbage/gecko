@@ -35,8 +35,6 @@ class CanvasSave {
             Module.CompressedBitonal_StorageFormat.BDC
         );
 
-        console.log(Module);
-
         const size = compressedBytes.size();
         const copy = new Uint8Array(size);
         for (let i = 0; i < size; ++i)
