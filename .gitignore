@@ -10,5 +10,6 @@ compile_commands.json
 CTestTestfile.cmake
 CMakeUserPresets.json
 
-_deps/
 build*/
+out*/
+artifacts*/
