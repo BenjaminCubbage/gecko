@@ -31,25 +31,30 @@ class FileSystem
         await writable.write(buffer);
         await writable.close();
     }
-    
+
 
     static promptLoadFileBuffer(extensionHint = '*') {
         return new Promise((resolve, reject) => {
-            const input  = document.createElement('input');
+            const input = document.createElement('input');
             input.type   = 'file';
             input.accept = extensionHint;
             input.click();
 
+            /*
+             *      Modern browsers should clean up event listeners when element's removed
+             *      from DOM.
+             */
+            const cleanup = fn => { input.remove(); fn(); };
+
             input.addEventListener('change', _ => {
                 const reader = new FileReader();
-                reader.onload  = _ => resolve(new Uint8Array(reader.result));
-                reader.onerror = _ => reject();
-
+                reader.onload  = _ => cleanup(() => resolve(new Uint8Array(reader.result)));
+                reader.onerror = _ => cleanup(() => reject());
                 reader.readAsArrayBuffer(input.files[0]);
             });
 
-            input.addEventListener('cancel', _ => reject());
-        })
+            input.addEventListener('cancel', _ => cleanup(() => reject));
+        });
     }
 }
 
