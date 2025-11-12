@@ -1,3 +1,37 @@
+include(FetchContent)
+
+FetchContent_Declare(emsdk
+    GIT_REPOSITORY https://github.com/emscripten-core/emsdk
+    GIT_TAG main
+)
+FetchContent_MakeAvailable(emsdk)
+
+if(WIN32)
+    set(SHELL_COMMAND cmd /c)
+    set(EMSDK_PYTHON_PATH ${emsdk_SOURCE_DIR}/python/3.13.3_64bit/python.exe)
+else()
+    set(SHELL_COMMAND bash -c)
+    set(EMSDK_PYTHON_PATH ${emsdk_SOURCE_DIR}/python/3.13.3_64bit/python3)
+endif()
+
+if(NOT EXISTS "${emsdk_SOURCE_DIR}/upstream")
+    message("Installing EMSDK...")
+
+    execute_process(
+        COMMAND ${SHELL_COMMAND} emsdk install latest
+        WORKING_DIRECTORY "${emsdk_SOURCE_DIR}"
+    )
+endif()
+
+if(NOT EXISTS "${emsdk_SOURCE_DIR}/upstream/emscriptem/.emscripten")
+    message("Activating EMSDK...")
+
+    execute_process(
+        COMMAND ${SHELL_COMMAND} emsdk activate latest
+        WORKING_DIRECTORY "${emsdk_SOURCE_DIR}"
+    )
+endif()
+
 add_library(compression_lib STATIC)
 
 set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
@@ -29,30 +63,18 @@ target_sources(compression_lib PRIVATE ${SRC_FILES} ${INC_FILES})
 
 target_include_directories(compression_lib PUBLIC ${INC_DIR})
 
-find_program(EMCC_EXECUTABLE emcc
-    PATHS ENV PATH
+add_custom_command(TARGET compression_lib POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${GECKO_ARTIFACTS_DIR}/wasm
 )
 
-if (!EMCC_EXECUTABLE)
-    message(WARNING "Could not find emcc at config time, please make sure Emscripten is installed and activated on your machine.")
-endif()
+find_program(GECKO_EMCC_COMMAND emcc HINTS "${emsdk_SOURCE_DIR}/upstream/emscripten")
 
-if(!ENV{EMSDK_PYTHON})
-    message(WARNING "EMSDK_PYTHON was not defined at config time.")
-    message(WARNING "Run emsdk_env.bat before configuring, or set EMSDK_PYTHON manually.")
-else()
-    add_custom_command(TARGET compression_lib POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/wasm
-        COMMAND
-            if not defined EMSDK_PYTHON (
-                echo Environment variable EMSDK_PYTHON was not defined at build time. Skipping Emscripten WASM build.
-            )
-            else (
-                echo Running emcc in build directory... &&
-                emcc --std=c++20 -O3 -I "${CMAKE_CURRENT_SOURCE_DIR}/include" --bind ${WASM_SRC_FILES} -o compression.js
-            )
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/wasm
-    )
-endif()
+add_custom_command(TARGET compression_lib POST_BUILD
+    COMMAND echo Building WASM files...
+    COMMAND ${CMAKE_COMMAND} -E env
+        EMSDK_PYTHON=${EMSDK_PYTHON_PATH}
+        ${SHELL_COMMAND} ${GECKO_EMCC_COMMAND} --std=c++20 -O3 -I "${CMAKE_CURRENT_SOURCE_DIR}/include" --bind ${WASM_SRC_FILES} -o compression.js
+    WORKING_DIRECTORY ${GECKO_ARTIFACTS_DIR}/wasm
+)
 
 add_subdirectory(tests)

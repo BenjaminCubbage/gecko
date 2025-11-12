@@ -1,14 +1,19 @@
 import fs from "fs";
 import path from "path";
 
-const root = path.resolve(import.meta.dirname, "../");
-const src1 = path.join(root, "build/shared/compression/wasm/compression.js");
-const src2 = path.join(root, "build/shared/compression/wasm/compression.wasm");
+const root    = path.resolve(import.meta.dirname, "../");
+const srcDir  = path.join(root, "out/artifacts/wasm/");
+const destDir = path.join(root, "frontend/public/wasm/")
 
-const dest1 = path.join(root, "frontend/public/wasm/compression.js");
-const dest2 = path.join(root, "frontend/public/wasm/compression.wasm");
+const src1  = path.join(srcDir,  "/compression.js");
+const src2  = path.join(srcDir,  "/compression.wasm");
+const dest1 = path.join(destDir, "/compression.js");
+const dest2 = path.join(destDir, "/compression.wasm");
 
+if (!fs.existsSync(destDir))
+    fs.mkdirSync(destDir);
 fs.copyFileSync(src1, dest1);
 fs.copyFileSync(src2, dest2);
+
 console.log(`Copied ${src1} → ${dest1}`);
 console.log(`Copied ${src2} → ${dest2}`);
