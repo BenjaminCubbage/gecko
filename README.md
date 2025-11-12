@@ -52,11 +52,11 @@ using namespace Gecko::Compression;
 
 ...
 
-std::vector<std::byte> bmpBytes{}; // Load uncompressed bytes
+std::vector<uint8_t> bmpBytes{}; // Load uncompressed bytes
 
 std::optional<UncompressedBitonal> uncompressed;
 std::optional<CompressedBitonal> compressed;
-std::optional<std::vector<std::byte>> compressedBytes;
+std::optional<std::vector<uint8_t>> compressedBytes;
 
 uncompressed = UncompressedBitonal::TryReadFromBuffer(bmpBytes, UncompressedBitonal::StorageFormat::BMPStrict24);
 
