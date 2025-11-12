@@ -13,7 +13,7 @@ Gecko requires the following to build:
 First, clone the reposity. Gecko can be built and configured for a variety of different environments and build systems. To configure and build a x64 Release for Visual Studio 2022, run:
 
 ```bash
-cmake -B out/build -S . -G "Visual Studio 17 2022" -A x64 && cmake --build build --config Release
+cmake -B out/build -S . -G "Visual Studio 17 2022" -A x64 && cmake --build out/build --config Release
 ```
 
 Subsequent builds that don't require reconfiguring cmake can be simplified:
