@@ -25,7 +25,6 @@ FetchContent_Declare(pahomqtt
     GIT_REPOSITORY https://github.com/eclipse/paho.mqtt.c.git
     GIT_TAG        v1.3.15
 )
-# There is probably a better way to set these
 set(PAHO_BUILD_SHARED   OFF CACHE BOOL "" FORCE)
 set(PAHO_BUILD_STATIC   ON  CACHE BOOL "" FORCE)
 set(PAHO_ENABLE_TESTING OFF CACHE BOOL "" FORCE)

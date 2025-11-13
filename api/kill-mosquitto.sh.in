@@ -1,6 +1,3 @@
 # Kill whatever Process ID was stored in mosquitto-pid.temp
 touch "@GECKO_MOSQUITTO_PID_PATH@"
-while read -r p || test -n "$p"
-do
-  kill -9 $p || true
-done < "@GECKO_MOSQUITTO_PID_PATH@"
+xargs kill 2>/dev/null < "@GECKO_MOSQUITTO_PID_PATH@" || true
