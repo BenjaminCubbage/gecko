@@ -24,8 +24,6 @@ if(NOT EXISTS "${emsdk_SOURCE_DIR}/upstream")
 endif()
 
 if(NOT EXISTS "${emsdk_SOURCE_DIR}/.emscripten")
-    message("${emsdk_SOURCE_DIR}/.emscripten")
-
     execute_process(
         COMMAND ${SHELL_COMMAND} emsdk activate latest
         WORKING_DIRECTORY "${emsdk_SOURCE_DIR}"
