@@ -8,7 +8,7 @@
   },
   "scripts": {
     "copy-wasm": "node copy-wasm.js",
-    "dev":       "\"npm run copy-wasm\" && vite --host --port 8080",
+    "dev":       "\"npm run copy-wasm\" && vite --host",
     "build":     "\"npm run copy-wasm\" && vite build",
     "preview":   "vite preview"
   },

@@ -1,0 +1,1 @@
+cmake --build out/build --target api_kill_mosquitto

@@ -24,6 +24,11 @@
     }
 
     function load() {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("GET", '/api/hi', false);
+        xmlHttp.send(null);
+        console.log(xmlHttp.responseText);
+
         CanvasLoad.promptLoadCompressed(drawableCanvas.value?.getCanvasElement()).catch(_=>{});
     }
 

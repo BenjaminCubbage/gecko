@@ -1,0 +1,1 @@
+pid_file @GECKO_MOSQUITTO_PID_PATH@
