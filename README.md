@@ -1,5 +1,5 @@
 #### For more info on setting up and running Gecko's frontend Vue application, see the [/frontend README](/frontend)
-#### For more info on the CCITT Group 4-based bitonal compression.lib, see the [/shared README](/shared/compression)
+#### For more info on the CCITT Group 4-based bitonal compression.lib, see the [/shared README](/shared/)
 
 # Gecko
 WIP full-stack program that lets anyone send an image to my E-Ink display
