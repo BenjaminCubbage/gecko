@@ -1,5 +1,3 @@
-#### For info on setting up and running Gecko's frontend Vue application, see the [/frontend README](/frontend)
-
 # Gecko Compression
 
 Lightweight, bitonal image compression static C++ library that was designed with WASM-compatibility in mind. Built for The Gecko Project.
