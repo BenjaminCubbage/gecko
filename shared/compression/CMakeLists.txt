@@ -23,8 +23,8 @@ if(NOT EXISTS "${emsdk_SOURCE_DIR}/upstream")
     )
 endif()
 
-if(NOT EXISTS "${emsdk_SOURCE_DIR}/upstream/emscripten/.emscripten")
-    message("Activating EMSDK...")
+if(NOT EXISTS "${emsdk_SOURCE_DIR}/.emscripten")
+    message("${emsdk_SOURCE_DIR}/.emscripten")
 
     execute_process(
         COMMAND ${SHELL_COMMAND} emsdk activate latest
@@ -69,12 +69,12 @@ add_custom_command(TARGET compression_lib POST_BUILD
 
 find_program(GECKO_EMCC_COMMAND emcc HINTS "${emsdk_SOURCE_DIR}/upstream/emscripten")
 
-#add_custom_command(TARGET compression_lib POST_BUILD
-#    COMMAND echo Building WASM files...
-#    COMMAND ${CMAKE_COMMAND} -E env
-#        EMSDK_PYTHON=${EMSDK_PYTHON_PATH}
-#        ${SHELL_COMMAND} ${GECKO_EMCC_COMMAND} --std=c++20 -O3 -I "${CMAKE_CURRENT_SOURCE_DIR}/include" --bind ${WASM_SRC_FILES} -o compression.js
-#    WORKING_DIRECTORY ${GECKO_ARTIFACTS_DIR}/wasm
-#)
+add_custom_command(TARGET compression_lib POST_BUILD
+    COMMAND echo Building WASM files...
+    COMMAND ${CMAKE_COMMAND} -E env
+        EMSDK_PYTHON=${EMSDK_PYTHON_PATH}
+        ${SHELL_COMMAND} ${GECKO_EMCC_COMMAND} --std=c++20 -O3 -I "${CMAKE_CURRENT_SOURCE_DIR}/include" --bind ${WASM_SRC_FILES} -o compression.js
+    WORKING_DIRECTORY ${GECKO_ARTIFACTS_DIR}/wasm
+)
 
 add_subdirectory(tests)
