@@ -4,17 +4,25 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 enable_testing()
 
-set(GECKO_EXPECTED_BIN_DIR "${CMAKE_SOURCE_DIR}/out/build")
-set(GECKO_ARTIFACTS_DIR     ${CMAKE_SOURCE_DIR}/out/artifacts)
+if(WIN32)
+    set(_shell_command cmd /c)
+    set(_script_ext bat)
+    set(_static_lib_ext lib)
+else()
+    set(_shell_command bash -c)
+    set(_script_ext sh)
+    set(_static_lib_ext a)
+endif()
 
-if(NOT CMAKE_BINARY_DIR STREQUAL GECKO_EXPECTED_BIN_DIR)
-    message("${BIN_DIR}")
-    message("${EXPECTED_BIN_DIR}")
+set(gecko_expected_build_dir "${CMAKE_SOURCE_DIR}/out/build")
+get_filename_component(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/../install" REALPATH)
+
+if(NOT CMAKE_BINARY_DIR STREQUAL gecko_expected_build_dir)
     message(FATAL_ERROR 
-        "This project must be built to ${GECKO_EXPECTED_BIN_DIR}.\n"
+        "This project must be built to ${gecko_expected_build_dir}.\n"
         "Run from source root: `cmake -B out/build -S .`"
     )
 endif()
 
-add_subdirectory(shared)
 add_subdirectory(api)
+add_subdirectory(shared)

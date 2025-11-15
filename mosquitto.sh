@@ -1,1 +1,1 @@
-cmake --build out/build --target api_run_mosquitto
+cmake --build out/build --target api_run_mosquitto --config Release

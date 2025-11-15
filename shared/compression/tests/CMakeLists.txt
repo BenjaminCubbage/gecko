@@ -5,6 +5,8 @@ FetchContent_Declare(googletest
     GIT_REPOSITORY https://github.com/google/googletest.git
     GIT_TAG v1.17.0
 )
+set(INSTALL_GTEST OFF CACHE BOOL "")
+set(BUILD_GMOCK   OFF CACHE BOOL "")
 FetchContent_MakeAvailable(googletest)
 
 set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")

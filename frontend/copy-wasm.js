@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 
 const root    = path.resolve(import.meta.dirname, "../");
-const srcDir  = path.join(root, "out/artifacts/wasm/");
+const srcDir  = path.join(root, "out/install/share/");
 const destDir = path.join(root, "frontend/public/wasm/")
 
 const src1  = path.join(srcDir,  "/compression.js");
