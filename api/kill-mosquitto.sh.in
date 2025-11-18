@@ -1,3 +1,0 @@
-# Kill whatever Process ID was stored in mosquitto-pid.temp
-touch "@mosquitto_pid_path@"
-xargs kill 2>/dev/null < "@mosquitto_pid_path@" || true

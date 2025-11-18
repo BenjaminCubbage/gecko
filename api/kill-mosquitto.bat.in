@@ -1,7 +1,0 @@
-@echo off
-:: Kill whatever process id was stored in "mosquitto-pid.temp"
-"@CMAKE_COMMAND@" -E touch "@mosquitto_pid_path@"
-for /f %%p in ('"@CMAKE_COMMAND@" -E cat @mosquitto_pid_path@') do (
-    taskkill /F /PID %%p 2>nul || exit /b 0
-)
-exit /b 0

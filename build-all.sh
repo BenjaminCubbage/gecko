@@ -1,1 +1,0 @@
-cmake --build out/build --config Release

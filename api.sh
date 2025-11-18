@@ -1,1 +1,0 @@
-cmake --build out/build --target api_run_main --config Release

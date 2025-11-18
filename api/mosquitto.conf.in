@@ -1,1 +1,8 @@
+listener 1883
+per_listener_settings false
+allow_anonymous false
+
 pid_file @mosquitto_pid_path@
+
+plugin @dynamic_security_path@
+plugin_opt_config_file @CMAKE_CURRENT_SOURCE_DIR@/dynsec.json

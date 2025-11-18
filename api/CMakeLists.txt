@@ -3,6 +3,11 @@ include(ExternalProject)
 include(GNUInstallDirs)
 
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY         "${CMAKE_CURRENT_BINARY_DIR}")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_CURRENT_BINARY_DIR}")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG   "${CMAKE_CURRENT_BINARY_DIR}")
+
+
 ExternalProject_Add(cjson
     GIT_REPOSITORY https://github.com/DaveGamble/cJSON.git
     GIT_TAG        v1.7.19
@@ -84,8 +89,6 @@ endif()
 # More recent versions of mosquitto break either WITH_THREADING=OFF
 # or OPENSSL_INCLUDE_DIR (learned the hard way)
 ExternalProject_Add(mosquitto
-    DEPENDS cjson openssl
-
     GIT_REPOSITORY https://github.com/eclipse-mosquitto/mosquitto.git
     GIT_TAG        v2.0.18
 
@@ -98,7 +101,7 @@ ExternalProject_Add(mosquitto
         -DWITH_CJSON=ON
         -DCMAKE_EXE_LINKER_FLAGS=${mosquitto_linker_flags}
 
-        -DCJSON_LIBRARY=${CMAKE_INSTALL_FULL_LIBDIR}/cjson.lib
+        -DCJSON_LIBRARY=${CMAKE_INSTALL_FULL_LIBDIR}/cjson.${_static_lib_ext}
         -DCJSON_INCLUDE_DIR=${CMAKE_INSTALL_FULL_INCLUDEDIR}
 
         -DOPENSSL_ROOT_DIR=${CMAKE_INSTALL_PREFIX}
@@ -128,15 +131,23 @@ set(PAHO_BUILD_STATIC   ON  CACHE BOOL "" FORCE)
 set(PAHO_ENABLE_TESTING OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(pahomqtt)
 
+# Config
+set(mosquitto_conf_path_in   "${CMAKE_CURRENT_SOURCE_DIR}/mosquitto.conf.in")
+set(mosquitto_conf_path      "${CMAKE_CURRENT_SOURCE_DIR}/mosquitto.conf")
+set(mosquitto_pid_path         "${CMAKE_CURRENT_SOURCE_DIR}/mosquitto.pid")
 
-set(mosquitto_config_path_in "${CMAKE_CURRENT_SOURCE_DIR}/mosquitto.conf.in")
-set(mosquitto_config_path    "${CMAKE_CURRENT_BINARY_DIR}/mosquitto.conf")
-set(mosquitto_pid_path       "${CMAKE_CURRENT_BINARY_DIR}/mosquitto.pid")
-set(kill_mosquito_path_in    "${CMAKE_CURRENT_SOURCE_DIR}/kill-mosquitto.${_script_ext}.in")
-set(kill_mosquito_path       "${CMAKE_CURRENT_BINARY_DIR}/kill-mosquitto.${_script_ext}")
+# Programs
+set(mosquitto_path        "${CMAKE_INSTALL_FULL_SBINDIR}/mosquitto${_executable_dot_ext}")
+set(dynamic_security_path "${CMAKE_INSTALL_FULL_BINDIR}/mosquitto_dynamic_security.${_shared_lib_ext}")
+set(mosquitto_ctrl_path   "${CMAKE_INSTALL_FULL_BINDIR}/mosquitto_ctrl${_executable_dot_ext}")
+set(api_path              "${CMAKE_CURRENT_BINARY_DIR}/api")
 
-configure_file("${mosquitto_config_path_in}" "${mosquitto_config_path}")
-configure_file("${kill_mosquito_path_in}"    "${kill_mosquito_path}")
+# Scripts
+set(api_env_in "${CMAKE_CURRENT_SOURCE_DIR}/scripts.env.in")
+set(api_env    "${CMAKE_CURRENT_SOURCE_DIR}/scripts.env")
+
+configure_file("${mosquitto_conf_path_in}" "${mosquitto_conf_path}")
+configure_file("${api_env_in}"             "${api_env}")
 
 
 set(GECKO_API_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
@@ -152,25 +163,13 @@ target_sources(api PRIVATE
     ${GECKO_API_INC_FILES}
 )
 
-target_include_directories(api PRIVATE 
+target_include_directories(api PRIVATE
     ${cpphttplib_SOURCE_DIR}
     ${pahomqtt_SOURCE_DIR}
     ${GECKO_API_INC_FILES}
 )
 
 target_link_libraries(api PRIVATE paho-mqtt3c-static)
-
-
-add_custom_target(api_kill_mosquitto
-    COMMAND ${CMAKE_COMMAND} -E echo Trying to kill old mosquitto.exe instance. This step requires Administrator priviledges.
-    COMMAND ${kill_mosquito_path}
-)
-
-add_custom_target(api_run_mosquitto
-    DEPENDS api_kill_mosquitto mosquitto
-    COMMAND ${CMAKE_COMMAND} -E echo Starting mosquitto.exe...
-    COMMAND cmd /c "${CMAKE_INSTALL_FULL_SBINDIR}/mosquitto -c ${mosquitto_config_path}"
-)
 
 add_custom_target(api_run_main
     DEPENDS api

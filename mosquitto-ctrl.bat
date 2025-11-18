@@ -1,0 +1,1 @@
+call "%~dp0/api/mosquitto-ctrl" %*

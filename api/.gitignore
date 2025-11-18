@@ -1,3 +1,4 @@
+dynsec.json
+scripts.env
 mosquitto.conf
-mosquitto-pid.temp
-kill-mosquitto.bat
+mosquitto.pid
