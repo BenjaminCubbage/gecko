@@ -1,6 +1,6 @@
 # Gecko Frontend
 
-![Image of Running Website](README_Image.jpg)
+![Image of Running Website](README_Hero.jpg)
 
 Canvas editor web app intended to integrate with The Gecko Project.
 

@@ -1,1 +1,1 @@
-cmd /c "cd /d ""%~dp0"" && cmake -B out/build -S . -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DINSTALL_GTEST=OFF"
+cmd /c "cd /d ""%~dp0"" && cmake -B build -S ."
