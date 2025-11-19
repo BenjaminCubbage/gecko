@@ -11,6 +11,8 @@ include(cmake/deps/InstallCJSON.cmake)
 include(cmake/deps/InstallOpenSSL.cmake)
 include(cmake/deps/InstallMosquitto.cmake)
 include(cmake/deps/InstallEMSDK.cmake)
+option(PRODUCTION "Configure environment paths for production. 
+                   This does NOT set the configuration to Release." OFF)
 
 add_custom_target(all_external_dependencies DEPENDS mosquitto emsdk)
 
@@ -22,6 +24,7 @@ ExternalProject_Add(gecko
     CMAKE_ARGS
         -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
         -DGECKO_ROOT=${CMAKE_SOURCE_DIR}
+        -DPRODUCTION=${PRODUCTION}
     INSTALL_COMMAND ""
     BUILD_ALWAYS 1
 )

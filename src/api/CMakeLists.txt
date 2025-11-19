@@ -14,13 +14,17 @@ set(PAHO_ENABLE_TESTING OFF CACHE BOOL "" FORCE)
 # Mosquitto configuration
 set(mosquitto_conf_path        "${GECKO_ROOT}/run/.mosquitto/mosquitto.conf")
 set(mosquitto_pid_path         "${GECKO_ROOT}/run/.mosquitto/mosquitto.pid")
+if(PRODUCTION)
+set(dynamic_security_conf_path "${gecko_user_dir}/.mosquitto/dynsec.json")
+else()
 set(dynamic_security_conf_path "${GECKO_ROOT}/run/.mosquitto/dynsec.json")
+endif()
 
 # Programs / shared libs
 set(gecko_api_exe_path        "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/api${CMAKE_EXECUTABLE_SUFFIX}")
 set(mosquitto_exe_path        "${CMAKE_INSTALL_FULL_SBINDIR}/mosquitto${CMAKE_EXECUTABLE_SUFFIX}")
 set(mosquitto_ctrl_exe_path   "${CMAKE_INSTALL_FULL_BINDIR}/mosquitto_ctrl${CMAKE_EXECUTABLE_SUFFIX}")
-set(dynamic_security_lib_path "${CMAKE_INSTALL_FULL_BINDIR}/mosquitto_dynamic_security${CMAKE_STATIC_LIBRARY_SUFFIX}")
+set(dynamic_security_lib_path "${CMAKE_INSTALL_FULL_BINDIR}/mosquitto_dynamic_security${CMAKE_SHARED_LIBRARY_SUFFIX}")
 
 set(src_dir "${CMAKE_CURRENT_SOURCE_DIR}/src")
 set(inc_dir "${CMAKE_CURRENT_SOURCE_DIR}/include")
