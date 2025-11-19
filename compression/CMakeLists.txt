@@ -1,6 +1,13 @@
+cmake_minimum_required(VERSION 3.14)
+project(gecko_compression)
+
 include(FetchContent)
 include(ExternalProject)
 include(GNUInstallDirs)
+
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY         "${GECKO_ROOT}/run/lib")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG   "${GECKO_ROOT}/run/lib")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE "${GECKO_ROOT}/run/lib")
 
 if(WIN32)
     set(shell_command cmd /c)
