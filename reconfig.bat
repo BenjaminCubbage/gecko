@@ -1,1 +1,0 @@
-cmd /c "cd /d ""%~dp0"" && cmake -B build -S ."
