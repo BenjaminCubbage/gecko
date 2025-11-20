@@ -15,14 +15,28 @@ ExternalProject_Add(emsdk
 
 ExternalProject_Get_Property(emsdk SOURCE_DIR)
 
-ExternalProject_Add_Step(emsdk install_latest
-    DEPENDEES download
-    COMMAND ${shell_command} emsdk install latest
-    WORKING_DIRECTORY ${SOURCE_DIR}
-)
+if (WIN32)
+    ExternalProject_Add_Step(emsdk install_latest
+        DEPENDEES download
+        COMMAND ${shell_command} emsdk install latest
+        WORKING_DIRECTORY ${SOURCE_DIR}
+    )
 
-ExternalProject_Add_Step(emsdk activate_latest
-    DEPENDEES install_latest
-    COMMAND ${shell_command} emsdk activate latest
-    WORKING_DIRECTORY ${SOURCE_DIR}
-)
+    ExternalProject_Add_Step(emsdk activate_latest
+        DEPENDEES install_latest
+        COMMAND ${shell_command} emsdk activate latest
+        WORKING_DIRECTORY ${SOURCE_DIR}
+    )
+else()
+    ExternalProject_Add_Step(emsdk install_latest
+        DEPENDEES download
+        COMMAND ./emsdk install latest
+        WORKING_DIRECTORY ${SOURCE_DIR}
+    )
+
+    ExternalProject_Add_Step(emsdk activate_latest
+        DEPENDEES install_latest
+        COMMAND ./emsdk activate latest
+        WORKING_DIRECTORY ${SOURCE_DIR}
+    )
+endif()

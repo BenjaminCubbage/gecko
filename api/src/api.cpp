@@ -18,7 +18,10 @@
 int main(int argc, char* argv[])
 {
     if (argc == 1)
+    {
         std::cout << "[api]: First command-line argument should be the `server` client password to the local MQTT server." << std::endl;
+        exit(EXIT_FAILURE);
+    }
     
     std::string_view serverPwd{ argv[1] };
 

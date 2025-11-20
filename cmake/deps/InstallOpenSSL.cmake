@@ -34,6 +34,7 @@ ExternalProject_Add(openssl
         -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
         -DBUILD_SHARED_LIBS=OFF
         -DWITH_APPS=OFF
+        -DCMAKE_POSITION_INDEPENDENT_CODE=ON
 
     INSTALL_COMMAND 
         COMMAND ${CMAKE_COMMAND} --install . --config $<CONFIG> --prefix "${CMAKE_INSTALL_PREFIX}"
