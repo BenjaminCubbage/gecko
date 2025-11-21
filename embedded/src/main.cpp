@@ -1,33 +1,38 @@
-#include "pico/stdlib.h"
-#include "hardware/uart.h"
+#include "pch.h"
 
-#define UART_ID uart0
-#define BAUD_RATE 115200
+#define TLS_CLIENT_SERVER        "fw-download-alias1.raspberrypi.com"
+#define TLS_CLIENT_HTTP_REQUEST  "GET /net_install/boot.sig HTTP/1.1\r\n" \
+                                 "Host: " TLS_CLIENT_SERVER "\r\n" \
+                                 "Connection: close\r\n" \
+                                 "\r\n"
+#define TLS_CLIENT_TIMEOUT_SECS  15
 
-// We are using pins 0 and 1, but see the GPIO function select table in the
-// datasheet for information on which other pins can be used.
-#define UART_TX_PIN 0
-#define UART_RX_PIN 1
+extern bool run_tls_client_test(const uint8_t *cert, size_t cert_len, const char *server, const char *request, int timeout);
 
 int main() {
-    // Set up our UART with the required speed.
-    uart_init(UART_ID, BAUD_RATE);
+    stdio_init_all();
 
-    // Set the TX and RX pins by using the function select on the GPIO
-    // Set datasheet for more information on function select
-    gpio_set_function(UART_TX_PIN, UART_FUNCSEL_NUM(UART_ID, UART_TX_PIN));
-    gpio_set_function(UART_RX_PIN, UART_FUNCSEL_NUM(UART_ID, UART_RX_PIN));
+    if (cyw43_arch_init()) {
+        printf("failed to initialise\n");
+        return 1;
+    }
+    cyw43_arch_enable_sta_mode();
 
-    // Use some the various UART functions to send out data
-    // In a default system, printf will also output via the default UART
+    if (cyw43_arch_wifi_connect_timeout_ms(WIFI_SSID, WIFI_PASSWORD, CYW43_AUTH_WPA2_AES_PSK, 30000)) {
+        printf("failed to connect\n");
+        return 1;
+    }
+    bool pass = run_tls_client_test(NULL, 0, TLS_CLIENT_SERVER, TLS_CLIENT_HTTP_REQUEST, TLS_CLIENT_TIMEOUT_SECS);
+    if (pass) {
+        printf("Test passed\n");
+    } else {
+        printf("Test failed\n");
+    }
+    /* sleep a bit to let usb stdio write out any buffer to host */
+    sleep_ms(100);
 
-    // Send out a character without any conversions
-    uart_putc_raw(UART_ID, 'A');
+    cyw43_arch_deinit();
+    printf("All done\n");
 
-    // Send out a character but do CR/LF conversions
-    uart_putc(UART_ID, 'B');
-
-    // Send out a string, with CR/LF conversions
-    uart_puts(UART_ID, " Hello, UART!\n");
-    return 0;
+    return pass ? 0 : 1;
 }

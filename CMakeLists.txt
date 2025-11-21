@@ -47,6 +47,8 @@ ExternalProject_Add(gecko_embedded
         -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
         -DGECKO_ROOT=${GECKO_ROOT}
         -DPRODUCTION=${PRODUCTION}
+        -DWIFI_PASSWORD=${WIFI_PASSWORD}
+        -DWIFI_SSID=${WIFI_SSID}
     INSTALL_COMMAND ""
     BUILD_COMMAND cmake --build . --target embedded
     BUILD_ALWAYS 1
