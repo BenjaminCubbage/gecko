@@ -3,33 +3,46 @@ project(gecko_api)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(CMAKE_FIND_LIBRARY_PREFIXES lib "")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY         "${GECKO_ROOT}/run/bin")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${GECKO_ROOT}/run/bin")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG   "${GECKO_ROOT}/run/bin")
-set(CMAKE_INSTALL_PREFIX                   "${GECKO_ROOT}/external")
 
 include(FetchContent)
-include(ExternalProject)
-include(GNUInstallDirs)
+if(WIN32)
+    set(gecko_user_dir "$ENV{USERPROFILE}/.gecko")
+else()
+    set(gecko_user_dir "/var/lib/gecko")
+endif()
 
-set(PAHO_BUILD_SHARED   OFF CACHE BOOL "" FORCE)
-set(PAHO_BUILD_STATIC   ON  CACHE BOOL "" FORCE)
-set(PAHO_ENABLE_TESTING OFF CACHE BOOL "" FORCE)
 
 # Mosquitto configuration
 set(mosquitto_conf_path        "${GECKO_ROOT}/run/.mosquitto/mosquitto.conf")
 set(mosquitto_pid_path         "${GECKO_ROOT}/run/.mosquitto/mosquitto.pid")
-if(PRODUCTION)
 set(dynamic_security_conf_path "${gecko_user_dir}/.mosquitto/dynsec.json")
+if(PRODUCTION)
+    set(mosquitto_port 1883)
 else()
-set(dynamic_security_conf_path "${GECKO_ROOT}/run/.mosquitto/dynsec.json")
+    set(mosquitto_port 3002)
 endif()
 
-# Programs / shared libs
-set(gecko_api_exe_path        "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/api${CMAKE_EXECUTABLE_SUFFIX}")
-set(mosquitto_exe_path        "${CMAKE_INSTALL_FULL_SBINDIR}/mosquitto${CMAKE_EXECUTABLE_SUFFIX}")
-set(mosquitto_ctrl_exe_path   "${CMAKE_INSTALL_FULL_BINDIR}/mosquitto_ctrl${CMAKE_EXECUTABLE_SUFFIX}")
-set(dynamic_security_lib_path "${CMAKE_INSTALL_FULL_LIBDIR}/mosquitto_dynamic_security${CMAKE_SHARED_LIBRARY_SUFFIX}")
+# MySQL
+set(mysql_conf_path "${GECKO_ROOT}/run/.mysql/mysqld.cnf")
+set(mysql_pid_path "${GECKO_ROOT}/run/.mysql/mysqld.pid")
+set(mysql_datadir "${gecko_user_dir}/.mysql/data")
+if(PRODUCTION)
+    set(mysql_port 3306)
+else()
+    set(mysql_port 3003)
+endif()
+
+# Find programs / shared libs
+set(gecko_api_exe_path "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/api${CMAKE_EXECUTABLE_SUFFIX}")
+find_program(mosquitto_exe_path        NAMES mosquitto)
+find_program(mosquitto_ctrl_exe_path   NAMES mosquitto_ctrl)
+find_program(mysqld_exe_path           NAMES mysqld_safe)
+find_program(mysql_exe_path            NAMES mysql)
+find_library(dynamic_security_lib_path NAMES mosquitto_dynamic_security)
 
 set(src_dir "${CMAKE_CURRENT_SOURCE_DIR}/src")
 set(inc_dir "${CMAKE_CURRENT_SOURCE_DIR}/include")
@@ -39,21 +52,25 @@ set(inc_files "${inc_dir}/api.h")
 
 configure_file("${GECKO_ROOT}/cmake/local.env.in" "${GECKO_ROOT}/run/local.env")
 configure_file("${GECKO_ROOT}/cmake/mosquitto.conf.in" "${mosquitto_conf_path}")
+configure_file("${GECKO_ROOT}/cmake/mysqld.cnf.in" "${mysql_conf_path}" FILE_PERMISSIONS OWNER_READ GROUP_READ WORLD_READ)
 
 
-FetchContent_Declare(cpphttplib
-    GIT_REPOSITORY https://github.com/yhirose/cpp-httplib.git
-    GIT_TAG        v0.27.0
-)
+set(PAHO_BUILD_SHARED   OFF CACHE BOOL "" FORCE)
+set(PAHO_BUILD_STATIC   ON  CACHE BOOL "" FORCE)
+set(PAHO_ENABLE_TESTING OFF CACHE BOOL "" FORCE)
 
 FetchContent_Declare(pahomqtt
     GIT_REPOSITORY https://github.com/eclipse/paho.mqtt.c.git
     GIT_TAG        v1.3.15
 )
 
+FetchContent_Declare(cpphttplib
+    GIT_REPOSITORY https://github.com/yhirose/cpp-httplib.git
+    GIT_TAG        v0.27.0
+)
+
 FetchContent_MakeAvailable(cpphttplib)
 FetchContent_MakeAvailable(pahomqtt)
-
 
 add_executable(api)
 target_sources(api PRIVATE 
@@ -61,10 +78,12 @@ target_sources(api PRIVATE
     ${inc_files}
 )
 
+target_compile_definitions(api PRIVATE -DMOSQUITTO_PORT=${mosquitto_port})
+
 target_include_directories(api PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
     ${cpphttplib_SOURCE_DIR}
     ${pahomqtt_SOURCE_DIR}
-    ${inc_files}
 )
 
 target_link_libraries(api PRIVATE paho-mqtt3c-static)

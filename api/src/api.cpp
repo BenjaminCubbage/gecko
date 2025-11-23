@@ -6,14 +6,21 @@
 #include "httplib.h"
 #include "src/MQTTClient.h"
 
-#define ADDRESS     "localhost:1883"
+#define _STR(string) #string
+#define  STR(string) _STR(string)
+
+#ifndef MOSQUITTO_PORT
+#define MOSQUITTO_PORT 1883
+#endif
+
+#define ADDRESS     "localhost:" STR(MOSQUITTO_PORT)
 #define TOPIC       "users/ben/out"
 #define PAYLOAD     "Hello World!"
 #define QOS         2
 #define TIMEOUT     10000L
 
-#define CLIENTID    "server"
-#define USERNAME    "server"
+#define CLIENTID    "root"
+#define USERNAME    "root"
 
 int main(int argc, char* argv[])
 {
@@ -22,12 +29,9 @@ int main(int argc, char* argv[])
         std::cout << "[api]: First command-line argument should be the `server` client password to the local MQTT server." << std::endl;
         exit(EXIT_FAILURE);
     }
+
+    std::string_view serverPassword{ argv[1] };
     
-    std::string_view serverPwd{ argv[1] };
-
-    std::cout << serverPwd << std::endl;
-
-
     MQTTClient client;
     MQTTClient_connectOptions conn_opts = MQTTClient_connectOptions_initializer;
     MQTTClient_message pubmsg = MQTTClient_message_initializer;
@@ -43,7 +47,7 @@ int main(int argc, char* argv[])
     conn_opts.keepAliveInterval = 20;
     conn_opts.cleansession      = 1;
     conn_opts.username          = USERNAME;
-    conn_opts.password          = serverPwd.data();
+    conn_opts.password          = serverPassword.data();
 
     if ((rc = MQTTClient_connect(client, &conn_opts)) != MQTTCLIENT_SUCCESS)
     {
@@ -66,28 +70,5 @@ int main(int argc, char* argv[])
         (int)(TIMEOUT / 1000), PAYLOAD, TOPIC, CLIENTID);
     rc = MQTTClient_waitForCompletion(client, token, TIMEOUT);
     printf("Message with delivery token %d delivered\n", token);
-
-
-    pubmsg.payload = (void*)(PAYLOAD);
-    pubmsg.payloadlen = (int)strlen(PAYLOAD);
-    pubmsg.qos = QOS;
-    pubmsg.retained = 0;
-    if ((rc = MQTTClient_publishMessage(client, TOPIC, &pubmsg, &token)) != MQTTCLIENT_SUCCESS)
-    {
-        printf("Failed to publish message, return code %d\n", rc);
-        exit(EXIT_FAILURE);
-    }
-
-    printf("Waiting for up to %d seconds for publication of %s\n"
-        "on topic %s for client with ClientID: %s\n",
-        (int)(TIMEOUT / 1000), PAYLOAD, TOPIC, CLIENTID);
-    rc = MQTTClient_waitForCompletion(client, token, TIMEOUT);
-    printf("Message with delivery token %d delivered\n", token);
-
-
-    if ((rc = MQTTClient_disconnect(client, 10000)) != MQTTCLIENT_SUCCESS)
-        printf("Failed to disconnect, return code %d\n", rc);
-
-    MQTTClient_destroy(&client);
     return rc;
 }

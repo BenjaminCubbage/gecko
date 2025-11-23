@@ -9,10 +9,7 @@ include(GNUInstallDirs)
 include(ExternalProject)
 set(GECKO_ROOT ${CMAKE_SOURCE_DIR})
 
-include(cmake/deps/InstallCJSON.cmake)
-include(cmake/deps/InstallOpenSSL.cmake)
-include(cmake/deps/InstallMosquitto.cmake)
-include(cmake/deps/InstallEMSDK.cmake)
+include(cmake/deps/install_emsdk.cmake)
 option(PRODUCTION "Configure environment paths for production. 
                    This option may cause some files to be written to outside of the repository.
                    This does NOT necessarily set the configuration to Release." OFF)
