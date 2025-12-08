@@ -46,12 +46,31 @@ promptnonempty() {
     done
 }
 
+promptnonemptysecret() {
+    local msg="$1"
+    local varname="$2"
+    local res
+
+    while true; do
+        read -s -p "$msg" res || { echo; return 1; }
+        if [[ -z "$res" ]]; then
+            echo "Response cannot be empty."
+            echo
+            continue
+        fi
+
+        printf -v "$varname" '%s' "$res"
+        echo
+        return 0
+    done
+}
+
 promptconfirm() {
     local msg="$1"
     local res
 
     read -p "$msg (Y,n): " res || { echo; return 1; }
 
-    [[ -z $res || confirm == "" || confirm == "Y" || confirm == "y" ]]
+    [[ -z $res || $res == "" || $res == "Y" || $res == "y" ]]
     return $?
 }

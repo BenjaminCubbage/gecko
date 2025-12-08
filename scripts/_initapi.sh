@@ -35,9 +35,25 @@ initapi_init() {
     promptnonempty "Enter your OAuth client ID: "     oauth_clientid
     promptnonempty "Enter your OAuth client Secret: " oauth_clientsecret
 
+    echo
+    echo "You can choose to enter your Mosquitto and MySQL passwords now, or you"
+    echo "can provide a path to a text file containing them on startup instead."
+
+    if promptconfirm "Save your passwords for later?"; then
+        promptnonemptysecret "Enter your Mosquitto root user password: " mosquitto_password
+        promptnonemptysecret "Enter your MySQL root user password: " mysql_password
+        
+        printf %s $mosquitto_password | sudo tee "$GECKO_API_MOSQUITTO_ROOT_PASSWORD_PATH" 1> /dev/null && \
+        printf %s $mysql_password     | sudo tee "$GECKO_API_MYSQL_ROOT_PASSWORD_PATH"     1> /dev/null || \
+        { echo "Failed to save passwords to $GECKO_API_MOSQUITTO_ROOT_PASSWORD_PATH and $GECKO_API_MYSQL_ROOT_PASSWORD_PATH"; return 1; }
+
+        echo "Saved Mosquitto password for later to $GECKO_API_MOSQUITTO_ROOT_PASSWORD_PATH"
+        echo "Saved MySQL password for later to $GECKO_API_MYSQL_ROOT_PASSWORD_PATH"
+    fi
+
     printf %s $oauth_clientid     | sudo tee "$GECKO_API_OAUTH_CLIENTID_PATH"     1> /dev/null && \
-    printf %s $oauth_clientsecret | sudo tee "$GECKO_API_OAUTH_CLIENTSECRET_PATH" 1> /dev/null
-    (( $? )) && return 1
+    printf %s $oauth_clientsecret | sudo tee "$GECKO_API_OAUTH_CLIENTSECRET_PATH" 1> /dev/null || \
+    return 1
 
     echo "Wrote client id to $GECKO_API_OAUTH_CLIENTID_PATH"
     echo "Wrote client secret to $GECKO_API_OAUTH_CLIENTSECRET_PATH"
