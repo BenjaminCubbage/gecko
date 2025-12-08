@@ -21,13 +21,13 @@ import { Dispatch } from '@/core/dispatch/Dispatch.js';
 import { Cookies } from '@/core/storage/Cookies.js';
 import { Session } from '@/core/session/Session.js';
 
-const session = ref(new Session());
+const session   = ref(new Session());
+const xsrfToken = () => Cookies.byName('__Host-xsrf_token');
+session.value.setXSRFCookie(xsrfToken());
 
-if (Cookies.byName('__Host-xsrf_token'))
-    session.value.setXSRFCookie(Cookies.byName('__Host-xsrf_token'))
-else
+if (!session.value.xsrfCookie())
     Dispatch.Get_XSRF()
-        .onSuccess(() => session.value.setXSRFCookie(Cookies.byName('__Host-xsrf_token')))
+        .onSuccess(() => session.value.setXSRFCookie(xsrfToken()))
         .onNetworkError(() => console.warn('Couldn\'t GET XSRF token: server didn\'t respond.'))
         .onHttpError((body, status) => console.warn(`Couldn't GET XSRF Token. code: ${status} body: ${body}`));
 
