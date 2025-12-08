@@ -2,7 +2,7 @@
     <div class="bg">
         <div class="dotted">
             <div class="canvas-container">
-                <CanvasEditor />
+                <PicEditor />
             </div>
 
             <div class="header-strip-container">
@@ -14,8 +14,8 @@
 
 <script setup>
 import { ref, provide } from 'vue';
-import CanvasEditor from './components/canvas/CanvasEditor.vue';
-import AccountWidget from './components/profile/AccountWidget.vue';
+import PicEditor from './components/pic_editor/PicEditor.vue';
+import AccountWidget from './components/account_widget/AccountWidget.vue';
 import { ActiveUser } from '@/core/session/ActiveUser.js';
 import { Dispatch } from '@/core/dispatch/Dispatch.js';
 import { Cookies } from '@/core/storage/Cookies.js';
