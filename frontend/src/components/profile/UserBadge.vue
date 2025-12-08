@@ -72,82 +72,82 @@
 </template>
 
 <script setup>
-    import { toRefs, ref, defineProps, defineEmits, 
-             useTemplateRef, nextTick, watch, computed } from 'vue';
-    import { characterIsAlphaNumeric } from '@/core/string/CharacterIsAlphanumeric.js';
+import { toRefs, ref, defineProps, defineEmits, 
+    useTemplateRef, nextTick, watch, computed } from 'vue';
+import { characterIsAlphaNumeric } from '@/core/string/CharacterIsAlphanumeric.js';
 
-    const minUsernameLength = 3;
-    const maxUsernameLength = 18;
-    const isValidUsernameChar 
+const minUsernameLength = 3;
+const maxUsernameLength = 18;
+const isValidUsernameChar 
         = c => characterIsAlphaNumeric(c) || c == '_';
 
-    const propsObj = defineProps({
-        username: { type: String, required: true },
-        forbiddenUsernames: { type: Array, default: [] },
+const propsObj = defineProps({
+    username: { type: String, required: true },
+    forbiddenUsernames: { type: Array, default: () => [] },
 
-        // 'normal' | 'editing' | 'pending'
-        status: { type: String, required: true }
-    });
+    // 'normal' | 'editing' | 'pending'
+    status: { type: String, required: true }
+});
 
-    const props = toRefs(propsObj);
+const props = toRefs(propsObj);
 
-    const emit = defineEmits([
-        'requestEdit',
-        'submit',
-        'cancel'
-    ]);
+const emit = defineEmits([
+    'requestEdit',
+    'submit',
+    'cancel'
+]);
 
-    const inputEl        = useTemplateRef('inputEl');
-    const submitButtonEl = useTemplateRef('submitButtonEl');
+const inputEl        = useTemplateRef('inputEl');
+const submitButtonEl = useTemplateRef('submitButtonEl');
 
-    const isEditing = computed(() => props.status.value === 'editing');
-    const isPending = computed(() => props.status.value === 'pending');
+const isEditing = computed(() => props.status.value === 'editing');
+const isPending = computed(() => props.status.value === 'pending');
 
-    const pencilPosition = ref({ x: 0, y: 0 });
-    const inputTextValue = ref(props.username.value);
+const pencilPosition = ref({ x: 0, y: 0 });
+const inputTextValue = ref(props.username.value);
 
-    const pencilDimensions = ref({
-        w: 28,
-        h: 40
-    });
+const pencilDimensions = ref({
+    w: 28,
+    h: 40
+});
 
-    function teleportPencilToMouse(e) {
-        pencilPosition.value.x = e.offsetX - pencilDimensions.value.w / 2;
-        pencilPosition.value.y = e.offsetY - pencilDimensions.value.h / 2;
-    }
+function teleportPencilToMouse(e) {
+    pencilPosition.value.x = e.offsetX - pencilDimensions.value.w / 2;
+    pencilPosition.value.y = e.offsetY - pencilDimensions.value.h / 2;
+}
 
-    function editorLostFocus(e) {
-        if (e.relatedTarget != submitButtonEl.value &&
+function editorLostFocus(e) {
+    if (e.relatedTarget != submitButtonEl.value &&
             e.relatedTarget != inputEl.value &&
             isEditing.value) {
-            inputTextValue.value = props.username.value;
-            emit('cancel');
-        }
+        inputTextValue.value = props.username.value;
+        emit('cancel');
     }
+}
 
-    function inputChanged() {
-        inputTextValue.value = inputTextValue.value.split('')
-            .filter(isValidUsernameChar)
-            .join('');
-    }
+function inputChanged() {
+    inputTextValue.value = inputTextValue.value.split('')
+        .filter(isValidUsernameChar)
+        .join('');
+}
 
-    function isValidUsernameInput() {
-        return inputTextValue.value.length >= minUsernameLength &&
+function isValidUsernameInput() {
+    return inputTextValue.value.length >= minUsernameLength &&
                inputTextValue.value.length <= maxUsernameLength &&
                !inputTextValue.value.split('').some(c => !isValidUsernameChar(c)) &&
                inputTextValue.value !== props.username.value &&
                !props.forbiddenUsernames.value.includes(inputTextValue.value);
-    }
+}
 
-    function submit() {
-        if (isValidUsernameInput(inputTextValue.value))
-            emit('submit', inputTextValue.value);
-    }
+function submit() {
+    if (isValidUsernameInput(inputTextValue.value))
+        emit('submit', inputTextValue.value);
+}
 
-    watch (isEditing, () => {
-        if (isEditing.value)
-            nextTick(() => inputEl.value?.focus());
-    });
+watch (isEditing, () => {
+    if (isEditing.value)
+        nextTick(() => inputEl.value?.focus());
+});
 </script>
 
 <style scoped>

@@ -46,14 +46,14 @@ class FileSystem
              */
             const cleanup = fn => { input.remove(); fn(); };
 
-            input.addEventListener('change', _ => {
+            input.addEventListener('change', () => {
                 const reader = new FileReader();
-                reader.onload  = _ => cleanup(() => resolve(new Uint8Array(reader.result)));
-                reader.onerror = _ => cleanup(() => reject());
+                reader.onload  = () => cleanup(() => resolve(new Uint8Array(reader.result)));
+                reader.onerror = () => cleanup(() => reject());
                 reader.readAsArrayBuffer(input.files[0]);
             });
 
-            input.addEventListener('cancel', _ => cleanup(() => reject));
+            input.addEventListener('cancel', () => cleanup(() => reject));
         });
     }
 }

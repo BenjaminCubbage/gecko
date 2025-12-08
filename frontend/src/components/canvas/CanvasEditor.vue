@@ -1,39 +1,39 @@
 <template>
-    <div class="container">
+    <div class="canvas-editor">
         <DrawableCanvas ref="drawableCanvas" />
         
         <div class="buttons">
-            <Button @click="save">SAVE</Button>
-            <Button @click="load">LOAD</Button>
-            <Button @click="clear">CLEAR</Button>
+            <EditorButton @click="save">SAVE</EditorButton>
+            <EditorButton @click="load">LOAD</EditorButton>
+            <EditorButton @click="clear">CLEAR</EditorButton>
         </div>
     </div>
 </template>
 
 <script setup>
-    import { useTemplateRef } from 'vue';
-    import Button from './Button.vue';
-    import DrawableCanvas from './DrawableCanvas.vue';
-    import { CanvasSave } from '@/core/canvas/CanvasSave.js';
-    import { CanvasLoad } from '@/core/canvas/CanvasLoad.js';
+import { useTemplateRef } from 'vue';
+import EditorButton from './EditorButton.vue';
+import DrawableCanvas from './DrawableCanvas.vue';
+import { CanvasSave } from '@/core/canvas/CanvasSave.js';
+import { CanvasLoad } from '@/core/canvas/CanvasLoad.js';
 
-    const drawableCanvas = useTemplateRef('drawableCanvas');
+const drawableCanvas = useTemplateRef('drawableCanvas');
 
-    function save() {
-        CanvasSave.promptSaveCompressed(drawableCanvas.value?.getCanvasElement()).catch(_=>{});
-    }
+function save() {
+    CanvasSave.promptSaveCompressed(drawableCanvas.value?.getCanvasElement()).catch(()=>{});
+}
 
-    function load() {
-        CanvasLoad.promptLoadCompressed(drawableCanvas.value?.getCanvasElement()).catch(_=>{});
-    }
+function load() {
+    CanvasLoad.promptLoadCompressed(drawableCanvas.value?.getCanvasElement()).catch(()=>{});
+}
 
-    function clear() {
-        drawableCanvas.value?.clear();
-    }
+function clear() {
+    drawableCanvas.value?.clear();
+}
 </script>
 
 <style>
-    .container {
+    .canvas-editor {
         display: flex;
         flex-direction: column;
         align-items: center;

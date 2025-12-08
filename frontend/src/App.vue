@@ -13,29 +13,29 @@
 </template>
 
 <script setup>
-    import { readonly, ref, provide } from 'vue';
-    import CanvasEditor from './components/canvas/CanvasEditor.vue';
-    import AccountWidget from './components/profile/AccountWidget.vue';
-    import { ActiveUser } from '@/core/session/ActiveUser.js';
-    import { Dispatch } from '@/core/dispatch/Dispatch.js';
-    import { Cookies } from '@/core/storage/Cookies.js';
-    import { Session } from '@/core/session/Session.js';
+import { ref, provide } from 'vue';
+import CanvasEditor from './components/canvas/CanvasEditor.vue';
+import AccountWidget from './components/profile/AccountWidget.vue';
+import { ActiveUser } from '@/core/session/ActiveUser.js';
+import { Dispatch } from '@/core/dispatch/Dispatch.js';
+import { Cookies } from '@/core/storage/Cookies.js';
+import { Session } from '@/core/session/Session.js';
 
-    let session = ref(new Session());
+const session = ref(new Session());
 
-    if (Cookies.byName('__Host-xsrf_token'))
-        session.value.setXSRFCookie(Cookies.byName('__Host-xsrf_token'))
-    else
-        Dispatch.Get_XSRF()
-            .onSuccess(_ => session.value.setXSRFCookie(Cookies.byName('__Host-xsrf_token')))
-            .onNetworkError(_ => console.warn('Couldn\'t GET XSRF token: server didn\'t respond.'))
-            .onHttpError((body, status) => console.warn(`Couldn\'t GET XSRF Token. code: ${status} body: ${body}`));
+if (Cookies.byName('__Host-xsrf_token'))
+    session.value.setXSRFCookie(Cookies.byName('__Host-xsrf_token'))
+else
+    Dispatch.Get_XSRF()
+        .onSuccess(() => session.value.setXSRFCookie(Cookies.byName('__Host-xsrf_token')))
+        .onNetworkError(() => console.warn('Couldn\'t GET XSRF token: server didn\'t respond.'))
+        .onHttpError((body, status) => console.warn(`Couldn't GET XSRF Token. code: ${status} body: ${body}`));
 
-    Dispatch.Get_UsersMe()
-        .onSuccess(body => session.value.setActiveUser(new ActiveUser(body['user'])))
-        .onNetworkError(_ => console.warn('Couldn\'t GET /users/me: server didn\'t respond'));
+Dispatch.Get_UsersMe()
+    .onSuccess(body => session.value.setActiveUser(new ActiveUser(body['user'])))
+    .onNetworkError(() => console.warn('Couldn\'t GET /users/me: server didn\'t respond'));
     
-    provide('session', session);
+provide('session', session);
 </script>
 
 <style scoped>

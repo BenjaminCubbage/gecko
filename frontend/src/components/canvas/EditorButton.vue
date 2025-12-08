@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-    defineEmits(['click']);
+defineEmits(['click']);
 </script>
 
 <style scoped>

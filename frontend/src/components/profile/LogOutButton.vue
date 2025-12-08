@@ -7,16 +7,16 @@
 </template>
 
 <script setup>
-    import { inject } from 'vue';
-    import { Dispatch } from '@/core/dispatch/Dispatch.js';
+import { inject } from 'vue';
+import { Dispatch } from '@/core/dispatch/Dispatch.js';
 
-    const session = inject('session');
+const session = inject('session');
 
-    function logout() {
-        Dispatch.Post_LogOut(session.value)
-            .onSuccess(() => session.value.setActiveUser(null))
-            .onHttpError((body, status) => `Couldn't POST_LogOut. code: ${status} body: ${body}`);
-    }
+function logout() {
+    Dispatch.Post_LogOut(session.value)
+        .onSuccess(() => session.value.setActiveUser(null))
+        .onHttpError((body, status) => `Couldn't POST_LogOut. code: ${status} body: ${body}`);
+}
 </script>
 
 <style>

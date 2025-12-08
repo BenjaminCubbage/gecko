@@ -23,37 +23,37 @@
 </template>
 
 <script setup>
-    import { inject, ref, useTemplateRef } from 'vue';
-    import LogInButton from './LogInButton.vue';
-    import LogOutButton from './LogOutButton.vue';
-    import UserBadge from './UserBadge.vue';
-    import StatusBubble from './StatusBubble.vue';
-    import { Dispatch } from '@/core/dispatch/Dispatch.js';
-    import { errorResponseToDisplayString } from '@/core/response_bodies/ErrorResponseToDisplayString';
+import { inject, ref, useTemplateRef } from 'vue';
+import LogInButton from './LogInButton.vue';
+import LogOutButton from './LogOutButton.vue';
+import UserBadge from './UserBadge.vue';
+import StatusBubble from './StatusBubble.vue';
+import { Dispatch } from '@/core/dispatch/Dispatch.js';
+import { errorResponseToDisplayString } from '@/core/response_bodies/ErrorResponseToDisplayString';
 
-    const statusBubble = useTemplateRef('statusBubble');
-    const session = inject('session');
+const statusBubble = useTemplateRef('statusBubble');
+const session = inject('session');
 
-    const userBadgeStatus = ref('normal');
-    const forbiddenUsernames = ref([]);
+const userBadgeStatus = ref('normal');
+const forbiddenUsernames = ref([]);
 
-    function changeUsername(newUsername) {
-        userBadgeStatus.value = 'pending';
+function changeUsername(newUsername) {
+    userBadgeStatus.value = 'pending';
 
-        Dispatch.Patch_ChangeUsername(session.value.activeUser().json()['user_id'], newUsername)
-            .onSuccess(() => {
-                session.value.activeUser().json()['username'] = newUsername;
-                userBadgeStatus.value = 'normal';
-            })
-            .onNetworkError(_ => statusBubble.value.showMessage('Couldn\'t connect to the server!'))
-            .onHttpError(body => {
-                statusBubble.value.showMessage(errorResponseToDisplayString(body))
+    Dispatch.Patch_ChangeUsername(session.value.activeUser().json()['user_id'], newUsername)
+        .onSuccess(() => {
+            session.value.activeUser().json()['username'] = newUsername;
+            userBadgeStatus.value = 'normal';
+        })
+        .onNetworkError(() => statusBubble.value.showMessage('Couldn\'t connect to the server!'))
+        .onHttpError(body => {
+            statusBubble.value.showMessage(errorResponseToDisplayString(body))
 
-                if (body?.error?.reason === 'username_taken')
-                    forbiddenUsernames.value.push(newUsername);
-            })
-            .onError(_ => userBadgeStatus.value = 'editing');
-    }
+            if (body?.error?.reason === 'username_taken')
+                forbiddenUsernames.value.push(newUsername);
+        })
+        .onError(() => userBadgeStatus.value = 'editing');
+}
 </script>
 
 <style>

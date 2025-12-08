@@ -28,9 +28,9 @@ class CanvasSave {
             bgr.set(i * 3 + 2, pixelBecomesWhite * 255);
         }
 
-        let uncompressedBitonal = new Module.UncompressedBitonal(bgr, width, height);
-        let compressedBitonal   = Module.Encoder.TryCompressBitonal(uncompressedBitonal);
-        let compressedBytes     = Module.CompressedBitonal.TryWriteToBuffer(
+        const uncompressedBitonal = new Module.UncompressedBitonal(bgr, width, height);
+        const compressedBitonal   = Module.Encoder.TryCompressBitonal(uncompressedBitonal);
+        const compressedBytes     = Module.CompressedBitonal.TryWriteToBuffer(
             compressedBitonal,
             Module.CompressedBitonal_StorageFormat.BDC
         );

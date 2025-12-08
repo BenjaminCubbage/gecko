@@ -14,21 +14,21 @@
 </template>
 
 <script setup>
-    import { ref, defineExpose } from 'vue';
+import { ref, defineExpose } from 'vue';
 
-    const currentMessage = ref(':D');
-    const isShowingMessage = ref(0);
+const currentMessage = ref(':D');
+const isShowingMessage = ref(0);
 
-    function showMessage(message, milliseconds = 3000) {
-        currentMessage.value = message;
-        ++isShowingMessage.value;
+function showMessage(message, milliseconds = 3000) {
+    currentMessage.value = message;
+    ++isShowingMessage.value;
         
-        setTimeout(() => {
-            --isShowingMessage.value;
-        }, milliseconds);
-    }
+    setTimeout(() => {
+        --isShowingMessage.value;
+    }, milliseconds);
+}
 
-    defineExpose({ showMessage });
+defineExpose({ showMessage });
 </script>
 
 <style scoped>
