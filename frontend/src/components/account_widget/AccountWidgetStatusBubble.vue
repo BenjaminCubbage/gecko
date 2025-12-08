@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-import { ref, defineExpose } from 'vue';
+import { ref } from 'vue';
 
 const currentMessage = ref(':D');
 const isShowingMessage = ref(0);

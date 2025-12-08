@@ -72,14 +72,15 @@
 </template>
 
 <script setup>
-import { toRefs, ref, defineProps, defineEmits, 
-    useTemplateRef, nextTick, watch, computed } from 'vue';
+import { 
+    toRefs, ref, useTemplateRef, 
+    nextTick, watch, computed } from 'vue';
 import { characterIsAlphaNumeric } from '@/core/string/CharacterIsAlphanumeric.js';
 
 const minUsernameLength = 3;
 const maxUsernameLength = 18;
 const isValidUsernameChar 
-        = c => characterIsAlphaNumeric(c) || c == '_';
+    = c => characterIsAlphaNumeric(c) || c == '_';
 
 const propsObj = defineProps({
     username: { type: String, required: true },

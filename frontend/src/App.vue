@@ -21,7 +21,7 @@ import { Dispatch } from '@/core/dispatch/Dispatch.js';
 import { Cookies } from '@/core/storage/Cookies.js';
 import { Session } from '@/core/session/Session.js';
 
-const session   = ref(new Session());
+const session = ref(new Session());
 const xsrfToken = () => Cookies.byName('__Host-xsrf_token');
 session.value.setXSRFCookie(xsrfToken());
 
