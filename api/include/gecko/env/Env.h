@@ -3,27 +3,37 @@
 #include <string>
 #include <optional>
 
-
-namespace Gecko::API
+namespace Gecko::API::Env
 {
-    class Env
+    struct Env
     {
-    private:
-        Env(){};
-        std::unordered_map<std::string, std::string> m_env;
+        // TLS / HTTPS configuration
+        std::string geckoAPITLSCertPath;
+        std::string geckoAPITLSPkeyPath;
 
-    public:
-        static std::optional<Env> LoadFromFilepath(const std::string& filepath);
-        static std::optional<Env> LoadFromString(const std::string& str);
+        // JWT (auth keypair)
+        std::string geckoAPIJWTPkeyPath;
+        std::string geckoAPIJWTPubkeyPath;
 
-        bool ContainsKey(const std::string& key) const
-        {
-            return m_env.contains(key);
-        }
+        // OAuth credentials
+        std::string geckoAPIOAuthClientIDPath;
+        std::string geckoAPIOAuthClientSecretPath;
 
-        const std::string& operator[](const std::string& key) const
-        {
-            return m_env.at(key);
-        }
+        // Port configuration
+        int geckoAPIPort;
+        int mosquittoPort;
+        int mysqlXAPIPort;
+
+        // Password paths
+        std::string geckoAPIMosquittoRootPasswordPath;
+        std::string geckoAPIMySQLRootPasswordPath;
+
+        // Resolved secret contents
+        std::string mosquittoPassword;
+        std::string mysqlPassword;
+        std::string oauthClientID;
+        std::string oauthClientSecret;
+        std::string jwtPrivateKey;
+        std::string jwtPublicKey;
     };
 }

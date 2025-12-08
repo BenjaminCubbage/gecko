@@ -1,9 +1,9 @@
-#include "gecko/env/EnvReadFile.h"
+#include "gecko/fs/ReadWholeFile.h"
 #include <fstream>
 
-namespace Gecko::API
+namespace Gecko::API::FS
 {
-    std::optional<std::string> EnvReadFile::ReadFile(const std::string& filepath)
+    std::optional<std::string> ReadWholeFile(const std::string& filepath)
     {
         std::ifstream file{ filepath };
 
