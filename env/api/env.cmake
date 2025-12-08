@@ -1,0 +1,60 @@
+if(NOT DEFINED GECKO_ROOT_DIR)
+    file(REAL_PATH "${CMAKE_CURRENT_LIST_DIR}/../../" GECKO_ROOT_DIR)
+endif()
+
+if(NOT DEFINED GECKO_API_RUNTIME_DIR)
+    message(FATAL_ERROR "Gecko API runtime directory wasn't specified (-DGECKO_API_RUNTIME_DIR)")
+endif()
+
+if(NOT DEFINED GECKO_API_SECRETS_DIR)
+    set(GECKO_API_SECRETS_DIR "${GECKO_API_RUNTIME_DIR}/secrets")
+endif()
+
+set(GECKO_API_TLS_PKEY_PATH           "${GECKO_API_SECRETS_DIR}/tlspkey.pem")
+set(GECKO_API_TLS_CERT_PATH           "${GECKO_API_SECRETS_DIR}/tlscert.pem")
+set(GECKO_API_JWT_PKEY_PATH           "${GECKO_API_SECRETS_DIR}/jwtpkey.pem")
+set(GECKO_API_JWT_PUBKEY_PATH         "${GECKO_API_SECRETS_DIR}/jwtpubkey.pem")
+set(GECKO_API_OAUTH_CLIENTID_PATH     "${GECKO_API_SECRETS_DIR}/clientid.txt")
+set(GECKO_API_OAUTH_CLIENTSECRET_PATH "${GECKO_API_SECRETS_DIR}/clientsecret.txt")
+
+find_program(GECKO_API_EXE_PATH NAMES api PATHS "${GECKO_ROOT_DIR}/bin" NO_DEFAULT_PATH)
+find_program(OPENSSL_EXE_PATH   NAMES openssl)
+
+if(NOT DEFINED GECKO_API_TLS_PKEY_PATH)
+    message(FATAL_ERROR 
+            "Gecko API TLS private key path wasn't specified\n"
+            "   Specify: -DGECKO_API_RUNTIME_DIR\n"
+            "OR Specify: -DGECKO_API_SECRETS_DIR\n"
+            "OR Specify: -DGECKO_API_TLS_PKEY_PATH")
+
+            message(FATAL_ERROR "Gecko API TLS private key path wasn't specified (-DGECKO_API_TLS_PKEY_PATH)")
+elseif(NOT DEFINED MOSQUITTO_PORT)
+    message(FATAL_ERROR "Mosquitto port wasn't specified (-DMOSQUITTO_PORT)")
+elseif(NOT DEFINED MYSQL_XAPI_PORT)
+    message(FATAL_ERROR "MySQL port wasn't specified (-DMYSQL_XAPI_PORT)")
+elseif(NOT DEFINED GECKO_API_PORT)
+    message(FATAL_ERROR "Gecko API port wasn't specified (-DGECKO_API_PORT)")
+elseif(NOT OPENSSL_EXE_PATH)
+    message(FATAL_ERROR "Couldn't find program `openssl` (-DOPENSSL_EXE_PATH)")
+elseif(NOT GECKO_API_EXE_PATH)
+    set(GECKO_API_EXE_PATH "${GECKO_ROOT_DIR}/bin/api")
+    message(WARNING "Couldn't find program `api`. Defaulting to ${GECKO_API_EXE_PATH} (-DGECKO_API_EXE_PATH)")
+endif()
+
+message("GECKO_ROOT_DIR:                    ${GECKO_ROOT_DIR}")
+message("GECKO_API_RUNTIME_DIR:             ${GECKO_API_RUNTIME_DIR}")
+message("GECKO_API_EXE_PATH:                ${GECKO_API_EXE_PATH}")
+message("GECKO_API_PORT:                    ${GECKO_API_PORT}")
+message("MOSQUITTO_PORT:                    ${MOSQUITTO_PORT}")
+message("MYSQL_XAPI_PORT:                   ${MYSQL_XAPI_PORT}")
+message("OPENSSL_EXE_PATH:                  ${OPENSSL_EXE_PATH}")
+message("GECKO_API_TLS_PKEY_PATH:           ${GECKO_API_TLS_PKEY_PATH}")
+message("GECKO_API_TLS_CERT_PATH:           ${GECKO_API_TLS_CERT_PATH}")
+message("GECKO_API_JWT_PKEY_PATH:           ${GECKO_API_JWT_PKEY_PATH}")
+message("GECKO_API_JWT_PUBKEY_PATH:         ${GECKO_API_JWT_PUBKEY_PATH}")
+message("GECKO_API_OAUTH_CLIENTID_PATH:     ${GECKO_API_OAUTH_CLIENTID_PATH}")
+message("GECKO_API_OAUTH_CLIENTSECRET_PATH: ${GECKO_API_OAUTH_CLIENTSECRET_PATH}")
+
+configure_file("${CMAKE_CURRENT_LIST_DIR}/.env.in"
+               "${CMAKE_CURRENT_LIST_DIR}/.env.local" @ONLY)
+message("-----> ${CMAKE_CURRENT_LIST_DIR}/.env.local")

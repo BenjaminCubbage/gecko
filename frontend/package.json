@@ -8,15 +8,17 @@
   },
   "scripts": {
     "copy-wasm": "node copy-wasm.js",
-    "dev":       "\"npm run copy-wasm\" && vite --host",
-    "build":     "\"npm run copy-wasm\" && vite build",
-    "preview":   "vite preview"
+    "dev": "\"npm run copy-wasm\" && vite --host",
+    "build": "\"npm run copy-wasm\" && vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
+    "@hackernoon/pixel-icon-library": "^1.0.6",
     "vue": "^3.5.22"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.1",
-    "vite": "^7.1.7"
+    "vite": "^7.1.7",
+    "vite-plugin-mkcert": "^1.17.9"
   }
 }

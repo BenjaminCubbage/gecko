@@ -1,18 +1,32 @@
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import mkcert from 'vite-plugin-mkcert';
+import path from "path";
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [ mkcert(), vue() ],
   //    Development only:
-  //    Listen on port 3000. API is expected to be running on 3001.
+  //    Listen on port 3000. API / Auth Server is expected to be running on 3001.
+  resolve: {
+    alias: {
+      '@': path.resolve(import.meta.dirname, 'src')
+    }
+  },
   server: {
     port: 3000,
     proxy: {
       '/api': {
-        target: 'http://localhost:3001',
+        target: 'https://localhost:3001',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '')
+        // secure: false tolerates self-signed certificate
+        secure: false
+      },
+      '/auth': {
+        target: 'https://localhost:3001',
+        changeOrigin: true,
+        // secure: false allows self-signed certificate
+        secure: false
       }
     }
   }

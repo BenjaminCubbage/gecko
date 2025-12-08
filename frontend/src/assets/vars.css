@@ -1,15 +1,16 @@
 :root {
-    --font-heading: 'Momo Trust Display', sans-serif;
+    --font-heading: 'Jersey 15', sans-serif;
 
     --bg: white;
     --fg: black;
+    --fg: black;
     --text: black;
-    --subtle: rgb(210, 212, 220);
+    --subtle: #f4e1f7;
 
-    --border-small: 3.5px solid var(--fg);
-    --border-large: 4px solid var(--fg);
-    --border-radius-small: 6px;
-    --border-radius-large: 10px;
-    --border-shadow-small: 4px 4px 0 var(--fg);
-    --border-shadow-large: 6px 6px 0 var(--fg);
+    --border-small: 3px solid var(--fg);
+    --border-large: 3.5px solid var(--fg);
+    --border-radius-small: 0px;
+    --border-radius-large: 0px;
+    --border-shadow-small: 3px 3px 0 var(--fg);
+    --border-shadow-large: 5px 5px 0 var(--fg);
 }

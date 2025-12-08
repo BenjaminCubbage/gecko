@@ -3,7 +3,6 @@
 
 namespace Gecko::Compression::Test
 {
-
 	TEST(BitStream, ProgressAndReadAtByteBoundaries)
 	{
 		BitStream stream(std::vector<uint8_t>({ uint8_t(0x01), uint8_t(0x01), uint8_t(0x01), uint8_t(0x01) }));

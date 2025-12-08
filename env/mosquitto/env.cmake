@@ -1,0 +1,36 @@
+list(APPEND CMAKE_FIND_LIBRARY_PREFIXES "" "lib")
+list(APPEND CMAKE_PREFIX_PATH "/usr/lib/x86_64-linux-gnu")
+
+find_library(MOSQUITTO_DYNSEC_LIB_PATH NAMES mosquitto_dynamic_security)
+find_program(MOSQUITTO_EXE_PATH NAMES mosquitto)
+find_program(MOSQUITTO_CTRL_EXE_PATH NAMES mosquitto_ctrl)
+
+if(NOT DEFINED MOSQUITTO_RUNTIME_DIR)
+    message(FATAL_ERROR "Mosquitto runtime directory wasn't specified (-DMOSQUITTO_RUNTIME_DIR)")
+endif()
+
+set(MOSQUITTO_CONF_PATH "${MOSQUITTO_RUNTIME_DIR}/mosquitto.conf")
+set(MOSQUITTO_PID_PATH "${MOSQUITTO_RUNTIME_DIR}/mosquitto.pid")
+set(MOSQUITTO_DYNSEC_CONF_PATH "${MOSQUITTO_RUNTIME_DIR}/dynsec.json")
+
+if(NOT MOSQUITTO_EXE_PATH)
+    message(FATAL_ERROR "Could not find path to program `mosquitto` (-DMOSQUITTO_EXE_PATH)")
+elseif(NOT MOSQUITTO_CTRL_EXE_PATH)
+    message(FATAL_ERROR "Could not find path to program `mosquitto_ctrl` (-DMOSQUITTO_CTRL_PATH)")
+elseif(NOT MOSQUITTO_DYNSEC_LIB_PATH)
+    message(FATAL_ERROR "Could not find path to shared library `mosquitto_dynamic_security` (-DMOSQUITTO_DYNSEC_LIB_PATH)")
+elseif(NOT DEFINED MOSQUITTO_PORT)
+    message(FATAL_ERROR "Mosquitto port not specified (-DMOSQUITTO_PORT)")
+endif()
+
+message("MOSQUITTO_RUNTIME_DIR:      ${MOSQUITTO_RUNTIME_DIR}")
+message("MOSQUITTO_PORT:             ${MOSQUITTO_PORT}")
+message("MOSQUITTO_CONF_PATH:        ${MOSQUITTO_CONF_PATH}")
+message("MOSQUITTO_DYNSEC_CONF_PATH: ${MOSQUITTO_DYNSEC_CONF_PATH}")
+message("MOSQUITTO_EXE_PATH:         ${MOSQUITTO_EXE_PATH}")
+message("MOSQUITTO_CTRL_EXE_PATH:    ${MOSQUITTO_CTRL_EXE_PATH}")
+message("MOSQUITTO_DYNSEC_LIB_PATH:  ${MOSQUITTO_DYNSEC_LIB_PATH}")
+
+configure_file("${CMAKE_CURRENT_LIST_DIR}/.env.in"
+               "${CMAKE_CURRENT_LIST_DIR}/.env.local" @ONLY)
+message("-----> ${CMAKE_CURRENT_LIST_DIR}/.env.local")

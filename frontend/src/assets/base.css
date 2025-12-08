@@ -22,7 +22,7 @@ html, body {
   box-sizing: inherit;
 }
 
-button {
+button, a {
   font-family: inherit;
   font-size: inherit;
   line-height: inherit;

@@ -1,4 +1,4 @@
-import { FileSystem } from '../fs/FileSystem.js';
+import { FileSystem } from '@/core/storage/FileSystem.js';
 
 class CanvasSave {
     static async promptSaveCompressed(canvas) {

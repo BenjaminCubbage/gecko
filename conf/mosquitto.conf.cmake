@@ -1,0 +1,16 @@
+if(NOT DEFINED MOSQUITTO_PORT)
+    message(FATAL_ERROR "Mosquitto port was not defined (-DMOSQUITTO_PORT)")
+elseif(NOT DEFINED MOSQUITTO_PID_PATH)
+    message(FATAL_ERROR "Mosquitto PID path was not defined (-DMOSQUITTO_PID_PATH)")
+elseif(NOT DEFINED MOSQUITTO_DYNSEC_LIB_PATH)
+    message(FATAL_ERROR "Mosquitto dynamic security shared library path was not defined (-DMOSQUITTO_DYNSEC_LIB_PATH)")
+elseif(NOT DEFINED MOSQUITTO_DYNSEC_CONF_PATH)
+    message(FATAL_ERROR "Mosquitto dynamic security conf path was not defined (-DMOSQUITTO_DYNSEC_CONF_PATH)")
+endif()
+
+if(NOT DEFINED IN_FILE_PATH OR NOT DEFINED OUT_FILE_PATH)
+    message(FATAL_ERROR "Input/output file paths must be specified (-DIN_FILE_PATH) (-DOUT_FILE_PATH)")
+endif()
+
+configure_file("${IN_FILE_PATH}" "${OUT_FILE_PATH}")
+message("${IN_FILE_PATH} -> ${OUT_FILE_PATH}")

@@ -1,8 +1,0 @@
-listener @mosquitto_port@
-per_listener_settings false
-allow_anonymous false
-
-pid_file @mosquitto_pid_path@
-
-plugin @dynamic_security_lib_path@
-plugin_opt_config_file @dynamic_security_conf_path@

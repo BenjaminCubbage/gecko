@@ -1,0 +1,40 @@
+find_program(MYSQLD_EXE_PATH NAMES mysqld_safe)
+find_program(MYSQL_EXE_PATH  NAMES mysql)
+
+if(NOT DEFINED MYSQL_RUNTIME_DIR)
+    message(FATAL_ERROR "MySQL runtime directory wasn't specified (-DMYSQL_RUNTIME_DIR)")
+endif()
+
+if(NOT DEFINED MYSQL_DATA_DIR)
+    set(MYSQL_DATA_DIR "${MYSQL_RUNTIME_DIR}/data")
+endif()
+
+set(MYSQL_CONF_PATH "${MYSQL_RUNTIME_DIR}/mysql.conf")
+set(MYSQL_PID_PATH "${MYSQL_RUNTIME_DIR}/mysqld.pid")
+set(MYSQL_ERRORLOG_PATH "${MYSQL_RUNTIME_DIR}/mysqld.error.log")
+set(MYSQL_SOCKET_PATH "${MYSQL_RUNTIME_DIR}/mysqld.sock")
+
+if(NOT DEFINED MYSQL_PORT)
+    message(FATAL_ERROR "MySQL port was not specified (-DMYSQL_PORT)")
+elseif(NOT DEFINED MYSQL_XAPI_PORT)
+    message(FATAL_ERROR "MySQL XAPI port was not specified (-DMYSQL_XAPI_PORT)")
+elseif(NOT MYSQLD_EXE_PATH)
+    message(FATAL_ERROR "Could not find program `mysqld_safe` (-DMYSQLD_EXE_PATH)")
+elseif(NOT MYSQL_EXE_PATH)
+    message(FATAL_ERROR "Could not find program `mysql` (-DMYSQL_EXE_PATH)")
+endif()
+
+message("MYSQL_RUNTIME_DIR:   ${MYSQL_RUNTIME_DIR}")
+message("MYSQL_PORT:          ${MYSQL_PORT}")
+message("MYSQL_XAPI_PORT:     ${MYSQL_XAPI_PORT}")
+message("MYSQL_CONF_PATH:     ${MYSQL_CONF_PATH}")
+message("MYSQL_DATA_DIR:      ${MYSQL_DATA_DIR}")
+message("MYSQL_PID_PATH:      ${MYSQL_PID_PATH}")
+message("MYSQL_ERRORLOG_PATH: ${MYSQL_ERRORLOG_PATH}")
+message("MYSQL_SOCKET_PATH:   ${MYSQL_SOCKET_PATH}")
+message("MYSQL_EXE_PATH:      ${MYSQL_EXE_PATH}")
+message("MYSQLD_EXE_PATH:     ${MYSQLD_EXE_PATH}")
+
+message("-----> ${CMAKE_CURRENT_LIST_DIR}/.env.local")
+configure_file("${CMAKE_CURRENT_LIST_DIR}/.env.in"
+               "${CMAKE_CURRENT_LIST_DIR}/.env.local" @ONLY)

@@ -5,9 +5,10 @@ include(FetchContent)
 include(ExternalProject)
 include(GNUInstallDirs)
 
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY         "${GECKO_ROOT}/run/lib")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG   "${GECKO_ROOT}/run/lib")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE "${GECKO_ROOT}/run/lib")
+# These aren't technically binaries but, it's fine.
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY         "${GECKO_ROOT}/bin")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG   "${GECKO_ROOT}/bin")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE "${GECKO_ROOT}/bin")
 
 if(WIN32)
     set(shell_command cmd /c)
@@ -68,21 +69,21 @@ add_custom_command(
         ${inc_files}
 
     OUTPUT 
-        ${GECKO_ROOT}/run/wasm/compression.js
-        ${GECKO_ROOT}/run/wasm/compression.wasm
+        ${GECKO_ROOT}/bin/compression.js
+        ${GECKO_ROOT}/bin/compression.wasm
     
     COMMENT "Building WASM files..."
     COMMAND ${CMAKE_COMMAND} -E env
         ${emcc_script_path} --std=c++20 -O3 -I "${CMAKE_CURRENT_SOURCE_DIR}/include" --bind ${wasm_src_files} -o compression.js
     
-    WORKING_DIRECTORY ${GECKO_ROOT}/run/wasm
+    WORKING_DIRECTORY ${GECKO_ROOT}/bin
 )
 
 
 add_custom_target(compression_wasm ALL
     DEPENDS 
-        ${GECKO_ROOT}/run/wasm/compression.js
-        ${GECKO_ROOT}/run/wasm/compression.wasm
+        ${GECKO_ROOT}/bin/compression.js
+        ${GECKO_ROOT}/bin/compression.wasm
 )
 
 

@@ -1,44 +1,79 @@
 <template>
-  <div class="dotted">
-    <div class="canvas-container">
-      <h1 class="title">
-        Gecko!
-      </h1>
-      <CanvasEditor />
+    <div class="bg">
+        <div class="dotted">
+            <div class="canvas-container">
+                <CanvasEditor />
+            </div>
+
+            <div class="header-strip-container">
+                <AccountWidget />
+            </div>
+        </div>
     </div>
-  </div>
 </template>
 
 <script setup>
-  import CanvasEditor from './components/app/CanvasEditor.vue';
+    import { readonly, ref, provide } from 'vue';
+    import CanvasEditor from './components/canvas/CanvasEditor.vue';
+    import AccountWidget from './components/profile/AccountWidget.vue';
+    import { ActiveUser } from '@/core/session/ActiveUser.js';
+    import { Dispatch } from '@/core/dispatch/Dispatch.js';
+    import { Cookies } from '@/core/storage/Cookies.js';
+    import { Session } from '@/core/session/Session.js';
+
+    let session = ref(new Session());
+
+    if (Cookies.byName('__Host-xsrf_token'))
+        session.value.setXSRFCookie(Cookies.byName('__Host-xsrf_token'))
+    else
+        Dispatch.Get_XSRF()
+            .onSuccess(_ => session.value.setXSRFCookie(Cookies.byName('__Host-xsrf_token')))
+            .onNetworkError(_ => console.warn('Couldn\'t GET XSRF token: server didn\'t respond.'))
+            .onHttpError((body, status) => console.warn(`Couldn\'t GET XSRF Token. code: ${status} body: ${body}`));
+
+    Dispatch.Get_UsersMe()
+        .onSuccess(body => session.value.setActiveUser(new ActiveUser(body['user'])))
+        .onNetworkError(_ => console.warn('Couldn\'t GET /users/me: server didn\'t respond'));
+    
+    provide('session', session);
 </script>
 
 <style scoped>
-  .dotted {
-    height: 100%;
+    .bg {
+        min-height: 100%;
+        background: #0a7bff;
+        display: grid;
+        place-items: stretch;
+    }
 
-    display: grid;
-    place-items: center;
+    .dotted {
+        height: 100%;
+        display: grid;
 
-    --dot-color: var(--subtle);
-    background-image: radial-gradient(circle at top,    var(--dot-color) 1.5px, transparent 1.5px),
-                      radial-gradient(circle at bottom, var(--dot-color) 1.5px, transparent 1.5px),
-                      radial-gradient(circle at right,  var(--dot-color) 1.5px, transparent 1.5px),
-                      radial-gradient(circle at left,   var(--dot-color) 1.5px, transparent 1.5px);
+        --dot-color: #0756b2;
+        background-image: radial-gradient(circle at top,    var(--dot-color) 2px, transparent 2px),
+                          radial-gradient(circle at bottom, var(--dot-color) 2px, transparent 2px),
+                          radial-gradient(circle at right,  var(--dot-color) 2px, transparent 2px),
+                          radial-gradient(circle at left,   var(--dot-color) 2px, transparent 2px);
 
-    background-size: 36px 36px;
-    background-repeat: repeat;
-    background-position-x: 50%;
-    background-position-y: 50%;
-  }
+        background-size: 32px 32px;
+        background-repeat: repeat;
+        background-position-x: 50%;
+        background-position-y: 50%;
+    }
 
-  .title {
-    font-family: var(--font-heading);
-    font-size: 3rem;
-    padding-bottom: 4px;
-    margin: 0;
-    letter-spacing: 0.04em;
-    line-height: 1;
-    text-align: center;
-  }
+    .header-strip-container, .canvas-container { grid-area: 1/1; }
+
+    .header-strip-container {
+        place-self: start;
+        pointer-events: none;
+    }
+
+    :where(.header-strip-container > *) {
+        pointer-events: all;
+    }
+
+    .canvas-container {
+        place-self: center;
+    }
 </style>

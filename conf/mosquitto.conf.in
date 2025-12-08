@@ -1,0 +1,8 @@
+listener @MOSQUITTO_PORT@
+per_listener_settings false
+allow_anonymous false
+
+pid_file @MOSQUITTO_PID_PATH@
+
+plugin @MOSQUITTO_DYNSEC_LIB_PATH@
+plugin_opt_config_file @MOSQUITTO_DYNSEC_CONF_PATH@

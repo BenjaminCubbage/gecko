@@ -1,0 +1,19 @@
+[client]
+port   = @MYSQL_PORT@
+socket = @MYSQL_SOCKET_PATH@
+
+[mysqld]
+user		= mysql
+pid-file	= @MYSQL_PID_PATH@
+port		= @MYSQL_PORT@
+mysqlx_port = @MYSQL_XAPI_PORT@
+datadir	    = @MYSQL_DATA_DIR@
+log_error   = @MYSQL_ERRORLOG_PATH@
+socket      = @MYSQL_SOCKET_PATH@
+
+bind-address		    = 127.0.0.1
+mysqlx-bind-address	    = 127.0.0.1
+key_buffer_size		    = 16M
+myisam-recover-options  = BACKUP
+
+max_binlog_size = 100M

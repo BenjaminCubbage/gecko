@@ -10,8 +10,8 @@ compile_commands.json
 CTestTestfile.cmake
 CMakeUserPresets.json
 
-build/
-external/
-run/
-
 .vscode/
+
+build/
+bin/
+*.local
