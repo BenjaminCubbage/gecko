@@ -1,24 +1,33 @@
 cmake_minimum_required(VERSION 3.16)
-
 project(gecko_superbuild LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/external)
 set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
+
 include(GNUInstallDirs)
 include(ExternalProject)
-set(GECKO_ROOT ${CMAKE_SOURCE_DIR})
+set(GECKO_ROOT_DIR ${CMAKE_SOURCE_DIR})
+set(GECKO_ARTIFACTS_DIR ${GECKO_ROOT_DIR}/build/artifacts)
 
 include(cmake/install_emsdk.cmake)
-option(PRODUCTION "Configure environment paths for production. 
-                   This option may cause some files to be written to outside of the repository.
-                   This does NOT necessarily set the configuration to Release." OFF)
 
 if(NOT DEFINED CMAKE_BUILD_TYPE OR CMAKE_BUILD_TYPE MATCHES "")
     set(CMAKE_BUILD_TYPE Debug)
 endif()
 
-ExternalProject_Add(gecko_api
+# note(ben): configure_project / build_project external project steps are
+# used instead of the default configure / build targets due to the fact that
+# CMake does not provide an easy way to specify the file dependencies of
+# the step that runs CONFIGURE_COMMAND. Because of this, and for reasons
+# not entirely known to me, CMake was reconfiguring the whole project each
+# and every time the project was targetted, even if no files had changed.
+
+#
+# API
+#
+
+ExternalProject_Add(api
     PREFIX gecko_api
     SOURCE_DIR ../api
     INSTALL_COMMAND ""
@@ -26,23 +35,23 @@ ExternalProject_Add(gecko_api
     BUILD_COMMAND ""
 )
 
-# If we use the default configure command CMake doesn't reconfigure when
-# the external projects' CMakeLists.txt change.
-ExternalProject_Add_Step(gecko_api real_configure
+ExternalProject_Get_Property(api BINARY_DIR)
+ExternalProject_Get_Property(api SOURCE_DIR)
+
+ExternalProject_Add_Step(api configure_project
     DEPENDEES configure
-    COMMAND ${CMAKE_COMMAND} 
-        -B ${CMAKE_BINARY_DIR}/gecko_api/src/gecko_api-build
-        -S ${CMAKE_SOURCE_DIR}/api
-        -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
+    COMMAND ${CMAKE_COMMAND}
+        -B ${BINARY_DIR}
+        -S ${SOURCE_DIR}
         -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-        -DGECKO_ROOT=${GECKO_ROOT}
-        -DPRODUCTION=${PRODUCTION}
-    DEPENDS 
+        -DGECKO_ROOT_DIR=${GECKO_ROOT_DIR}
+        -DGECKO_ARTIFACTS_DIR=${GECKO_ROOT_DIR}/build/artifacts
+    DEPENDS
         ${CMAKE_SOURCE_DIR}/api/CMakeLists.txt
         ${CMAKE_SOURCE_DIR}/api/tests/CMakeLists.txt
 )
 
-ExternalProject_Add_Step(gecko_api real_build
+ExternalProject_Add_Step(api build_project
     DEPENDEES real_configure
     COMMAND ${CMAKE_COMMAND} 
         --build ${CMAKE_BINARY_DIR}/gecko_api/src/gecko_api-build
@@ -50,28 +59,29 @@ ExternalProject_Add_Step(gecko_api real_build
     ALWAYS 1
 )
 
-ExternalProject_Add(gecko_compression_wasm
+#
+# Compression WASM
+#
+
+ExternalProject_Add(compression_wasm
     DEPENDS emsdk
-    PREFIX gecko_compression_wasm
+    PREFIX compression_wasm
     SOURCE_DIR ../compression
     CMAKE_ARGS
-        -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
         -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-        -DGECKO_ROOT=${GECKO_ROOT}
-        -DPRODUCTION=${PRODUCTION}
+        -DGECKO_ROOT_DIR=${GECKO_ROOT_DIR}
+        -DGECKO_ARTIFACTS_DIR=${GECKO_ROOT_DIR}/build/artifacts
     BUILD_COMMAND cmake --build . --target compression_wasm
     INSTALL_COMMAND ""
     BUILD_ALWAYS 1
 )
 
-ExternalProject_Add(gecko_embedded
-    PREFIX gecko_embedded
+ExternalProject_Add(embedded
+    PREFIX embedded
     SOURCE_DIR ../embedded
     CMAKE_ARGS
-        -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
         -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-        -DGECKO_ROOT=${GECKO_ROOT}
-        -DPRODUCTION=${PRODUCTION}
+        -DGECKO_ROOT_DIR=${GECKO_ROOT_DIR}
         -DWIFI_PASSWORD=${WIFI_PASSWORD}
         -DWIFI_SSID=${WIFI_SSID}
     INSTALL_COMMAND ""

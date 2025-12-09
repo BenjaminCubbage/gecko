@@ -1,7 +1,5 @@
 #include <string>
 #include "httplib.h"
-
-#include "_Main.h"
 #include "gecko/env/Env.h"
 #include "gecko/env/EnvPopulate.h"
 #include "gecko/server/Server.h"

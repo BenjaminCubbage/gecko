@@ -5,10 +5,9 @@ include(FetchContent)
 include(ExternalProject)
 include(GNUInstallDirs)
 
-# These aren't technically binaries but, it's fine.
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY         "${GECKO_ROOT}/bin")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG   "${GECKO_ROOT}/bin")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE "${GECKO_ROOT}/bin")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY         "${GECKO_ARTIFACTS_DIR}/bin")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG   "${GECKO_ARTIFACTS_DIR}/bin")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE "${GECKO_ARTIFACTS_DIR}/bin")
 
 if(WIN32)
     set(shell_command cmd /c)
@@ -48,7 +47,7 @@ target_include_directories(compression_lib PUBLIC ${inc_dir})
 
 
 add_custom_command(TARGET compression_lib POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory ${GECKO_ROOT}/run/wasm
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${GECKO_ROOT_DIR}/run/wasm
 )
 
 
@@ -59,8 +58,9 @@ add_custom_command(TARGET compression_lib POST_BUILD
 # logic is relatively straightfoward so I'm okay with doing it this way. Since
 # this project is a superbuild pattern, we can guarantee that the emsdk dependency
 # has been installed by this project's config time.
-set(emsdk_root "${GECKO_ROOT}/build/emsdk/src/emsdk")
+set(emsdk_root "${GECKO_ROOT_DIR}/build/emsdk/src/emsdk")
 set(emcc_script_path "${emsdk_root}/upstream/emscripten/emcc")
+set(compression_artifacts_dir "${GECKO_ARTIFACTS_DIR}/wasm")
 
 
 add_custom_command(
@@ -69,21 +69,24 @@ add_custom_command(
         ${inc_files}
 
     OUTPUT 
-        ${GECKO_ROOT}/bin/compression.js
-        ${GECKO_ROOT}/bin/compression.wasm
+        ${compression_artifacts_dir}/compression.js
+        ${compression_artifacts_dir}/compression.wasm
     
     COMMENT "Building WASM files..."
-    COMMAND ${CMAKE_COMMAND} -E env
-        ${emcc_script_path} --std=c++20 -O3 -I "${CMAKE_CURRENT_SOURCE_DIR}/include" --bind ${wasm_src_files} -o compression.js
-    
-    WORKING_DIRECTORY ${GECKO_ROOT}/bin
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${compression_artifacts_dir}
+    COMMAND 
+        cd ${compression_artifacts_dir} && 
+        ${emcc_script_path} --std=c++20 -O3 
+            -I "${CMAKE_CURRENT_SOURCE_DIR}/include" 
+            --bind ${wasm_src_files} 
+            -o compression.js
 )
 
 
 add_custom_target(compression_wasm ALL
     DEPENDS 
-        ${GECKO_ROOT}/bin/compression.js
-        ${GECKO_ROOT}/bin/compression.wasm
+        ${compression_artifacts_dir}/compression.js
+        ${compression_artifacts_dir}/compression.wasm
 )
 
 

@@ -4,10 +4,6 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_FIND_LIBRARY_PREFIXES lib "")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY         "${GECKO_ROOT}/bin")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${GECKO_ROOT}/bin")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG   "${GECKO_ROOT}/bin")
-
 include(FetchContent)
 if(WIN32)
     set(gecko_user_dir "$ENV{USERPROFILE}/.gecko")
@@ -15,31 +11,20 @@ else()
     set(gecko_user_dir "/var/lib/gecko")
 endif()
 
-
-# Ports
-if(PRODUCTION)
-    set(api_port        443)
-    set(mosquitto_port  1883)
-    set(mysql_port      3306)
-    set(mysql_xapi_port 33060)
-else()
-    set(api_port        3001)
-    set(mosquitto_port  3002)
-    set(mysql_port      3003)
-    set(mysql_xapi_port 3004)
-endif()
-
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY         "${GECKO_ARTIFACTS_DIR}/bin")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG   "${GECKO_ARTIFACTS_DIR}/bin")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${GECKO_ARTIFACTS_DIR}/bin")
 
 # Mosquitto configuration
-set(mosquitto_conf_path        "${GECKO_ROOT}/run/.mosquitto/mosquitto.conf")
-set(mosquitto_pid_path         "${GECKO_ROOT}/run/.mosquitto/mosquitto.pid")
+set(mosquitto_conf_path        "${GECKO_ROOT_DIR}/run/.mosquitto/mosquitto.conf")
+set(mosquitto_pid_path         "${GECKO_ROOT_DIR}/run/.mosquitto/mosquitto.pid")
 set(dynamic_security_conf_path "${gecko_user_dir}/.mosquitto/dynsec.json")
 
 # MySQL
-set(mysql_conf_path "${GECKO_ROOT}/run/.mysql/mysqld.cnf")
-set(mysql_schema_path "${GECKO_ROOT}/run/.mysql/schema.sql")
+set(mysql_conf_path "${GECKO_ROOT_DIR}/run/.mysql/mysqld.cnf")
+set(mysql_schema_path "${GECKO_ROOT_DIR}/run/.mysql/schema.sql")
 set(mysql_socket_path "${gecko_user_dir}/.mysql/mysql.sock")
-set(mysql_pid_path "${GECKO_ROOT}/run/.mysql/mysqld.pid")
+set(mysql_pid_path "${GECKO_ROOT_DIR}/run/.mysql/mysqld.pid")
 set(mysql_datadir "${gecko_user_dir}/.mysql/data")
 
 # Backend SSL / Certs
@@ -59,66 +44,59 @@ find_library(libssl_lib_path           NAMES libssl)
 find_library(libcrypto_lib_path        NAMES libcrypt)
 
 set(src_dir "${CMAKE_CURRENT_SOURCE_DIR}/src")
-set(inc_dir "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
-set(src_files 
-    "${src_dir}/_Main.cpp"
-    "${src_dir}/controllers/issuing/Cookies.cpp"
-    "${src_dir}/controllers/issuing/Headers.cpp"
-    "${src_dir}/controllers/issuing/Issuer.cpp"
-    "${src_dir}/controllers/respond/RespondWithError.cpp"
-    "${src_dir}/controllers/rules/HasJSONBody.cpp"
-    "${src_dir}/controllers/rules/HasJSONValueMember.cpp"
-    "${src_dir}/controllers/rules/HasValidOAuthXSRFNonce.cpp"
-    "${src_dir}/controllers/rules/HasValidXSRFToken.cpp"
-    "${src_dir}/controllers/rules/IsSuccessfulOAuthCallback.cpp"
-    "${src_dir}/controllers/rules/PathParamEquals.cpp"
-    "${src_dir}/controllers/rules/UserIsLoggedIn.cpp"
-    "${src_dir}/controllers/AuthController.cpp"
-    "${src_dir}/controllers/UsersController.cpp"
-    "${src_dir}/db/ConnectionPool.cpp"
-    "${src_dir}/db/UsersTable.cpp"
-    "${src_dir}/json/MergePatch.cpp"
-    "${src_dir}/server/Server.cpp"
-    "${src_dir}/env/Env.cpp"
-    "${src_dir}/env/EnvParse.cpp"
-    "${src_dir}/env/EnvPopulate.cpp"
-    "${src_dir}/fs/ReadWholeFile.cpp"
-    "${src_dir}/services/UsersService.cpp"
-    "${src_dir}/thread/ThreadPool.cpp"
-    "${src_dir}/util/ParseHeader.cpp"
-    "${src_dir}/util/UUID.cpp"
-)
-
-set(inc_files 
-    "${inc_dir}/gecko/_Main.h"
-    "${inc_dir}/gecko/controllers/issuing/Cookies.h"
-    "${inc_dir}/gecko/controllers/issuing/Headers.h"
-    "${inc_dir}/gecko/controllers/issuing/Issuer.h"
-    "${inc_dir}/gecko/controllers/respond/RespondWithError.h"
-    "${inc_dir}/gecko/controllers/rules/HasJSONBody.h"
-    "${inc_dir}/gecko/controllers/rules/HasJSONValueMember.h"
-    "${inc_dir}/gecko/controllers/rules/HasValidOAuthXSRFNonce.h"
-    "${inc_dir}/gecko/controllers/rules/HasValidXSRFToken.h"
-    "${inc_dir}/gecko/controllers/rules/IsSuccessfulOAuthCallback.h"
-    "${inc_dir}/gecko/controllers/rules/PathParamEquals.h"
-    "${inc_dir}/gecko/controllers/rules/UserIsLoggedIn.h"
-    "${inc_dir}/gecko/controllers/AuthController.h"
-    "${inc_dir}/gecko/controllers/UsersController.h"
-    "${inc_dir}/gecko/db/ConnectionPool.h"
-    "${inc_dir}/gecko/db/UsersTable.h"
-    "${inc_dir}/gecko/env/Env.h"
-    "${inc_dir}/gecko/env/EnvParse.h"
-    "${inc_dir}/gecko/env/EnvPopulate.h"
-    "${inc_dir}/gecko/fs/ReadWholeFile.h"
-    "${inc_dir}/gecko/json/MergePatch.h"
-    "${inc_dir}/gecko/server/Server.h"
-    "${inc_dir}/gecko/models/User.h"
-    "${inc_dir}/gecko/models/UserPatch.h"
-    "${inc_dir}/gecko/services/UsersService.h"
-    "${inc_dir}/gecko/thread/ThreadPool.h"
-    "${inc_dir}/gecko/util/ParseHeader.h"
-    "${inc_dir}/gecko/util/UUID.h"
+set(src_files
+    "${src_dir}/main.cpp"
+    "${src_dir}/gecko/controllers/issuing/Cookies.cpp"
+    "${src_dir}/gecko/controllers/issuing/Cookies.h"
+    "${src_dir}/gecko/controllers/issuing/Headers.cpp"
+    "${src_dir}/gecko/controllers/issuing/Headers.h"
+    "${src_dir}/gecko/controllers/issuing/Issuer.cpp"
+    "${src_dir}/gecko/controllers/issuing/Issuer.h"
+    "${src_dir}/gecko/controllers/respond/RespondWithError.cpp"
+    "${src_dir}/gecko/controllers/respond/RespondWithError.h"
+    "${src_dir}/gecko/controllers/rules/HasJSONBody.cpp"
+    "${src_dir}/gecko/controllers/rules/HasJSONBody.h"
+    "${src_dir}/gecko/controllers/rules/HasJSONValueMember.cpp"
+    "${src_dir}/gecko/controllers/rules/HasJSONValueMember.h"
+    "${src_dir}/gecko/controllers/rules/HasValidOAuthXSRFNonce.cpp"
+    "${src_dir}/gecko/controllers/rules/HasValidOAuthXSRFNonce.h"
+    "${src_dir}/gecko/controllers/rules/HasValidXSRFToken.cpp"
+    "${src_dir}/gecko/controllers/rules/HasValidXSRFToken.h"
+    "${src_dir}/gecko/controllers/rules/IsSuccessfulOAuthCallback.cpp"
+    "${src_dir}/gecko/controllers/rules/IsSuccessfulOAuthCallback.h"
+    "${src_dir}/gecko/controllers/rules/PathParamEquals.cpp"
+    "${src_dir}/gecko/controllers/rules/PathParamEquals.h"
+    "${src_dir}/gecko/controllers/rules/UserIsLoggedIn.cpp"
+    "${src_dir}/gecko/controllers/rules/UserIsLoggedIn.h"
+    "${src_dir}/gecko/controllers/AuthController.cpp"
+    "${src_dir}/gecko/controllers/AuthController.h"
+    "${src_dir}/gecko/controllers/UsersController.cpp"
+    "${src_dir}/gecko/controllers/UsersController.h"
+    "${src_dir}/gecko/db/ConnectionPool.cpp"
+    "${src_dir}/gecko/db/ConnectionPool.h"
+    "${src_dir}/gecko/db/UsersTable.cpp"
+    "${src_dir}/gecko/db/UsersTable.h"
+    "${src_dir}/gecko/json/MergePatch.cpp"
+    "${src_dir}/gecko/json/MergePatch.h"
+    "${src_dir}/gecko/server/Server.cpp"
+    "${src_dir}/gecko/server/Server.h"
+    "${src_dir}/gecko/env/Env.cpp"
+    "${src_dir}/gecko/env/Env.h"
+    "${src_dir}/gecko/env/EnvParse.cpp"
+    "${src_dir}/gecko/env/EnvParse.h"
+    "${src_dir}/gecko/env/EnvPopulate.cpp"
+    "${src_dir}/gecko/env/EnvPopulate.h"
+    "${src_dir}/gecko/fs/ReadWholeFile.cpp"
+    "${src_dir}/gecko/fs/ReadWholeFile.h"
+    "${src_dir}/gecko/services/UsersService.cpp"
+    "${src_dir}/gecko/services/UsersService.h"
+    "${src_dir}/gecko/thread/ThreadPool.cpp"
+    "${src_dir}/gecko/thread/ThreadPool.h"
+    "${src_dir}/gecko/util/ParseHeader.cpp"
+    "${src_dir}/gecko/util/ParseHeader.h"
+    "${src_dir}/gecko/util/UUID.cpp"
+    "${src_dir}/gecko/util/UUID.h"
 )
 
 set(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING "" FORCE)
@@ -181,7 +159,7 @@ target_compile_definitions(api PRIVATE
 )
 
 target_include_directories(api PRIVATE
-    ${CMAKE_SOURCE_DIR}/include
+    ${src_dir}
     ${CMAKE_BINARY_DIR}/include/api
     ${CMAKE_BINARY_DIR}/include/mysqlx
     ${cpphttplib_SOURCE_DIR}

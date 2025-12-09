@@ -19,7 +19,7 @@ set(GECKO_API_OAUTH_CLIENTSECRET_PATH      "${GECKO_API_SECRETS_DIR}/clientsecre
 set(GECKO_API_MOSQUITTO_ROOT_PASSWORD_PATH "${GECKO_API_SECRETS_DIR}/mosquittorootpassword.txt")
 set(GECKO_API_MYSQL_ROOT_PASSWORD_PATH     "${GECKO_API_SECRETS_DIR}/mysqlrootpassword.txt")
 
-find_program(GECKO_API_EXE_PATH NAMES api PATHS "${GECKO_ROOT_DIR}/bin" NO_DEFAULT_PATH)
+find_program(GECKO_API_EXE_PATH NAMES api PATHS "${GECKO_ROOT_DIR}/build/artifacts/bin" NO_DEFAULT_PATH)
 find_program(OPENSSL_EXE_PATH   NAMES openssl)
 
 if(NOT DEFINED MOSQUITTO_PORT)
@@ -31,7 +31,7 @@ elseif(NOT DEFINED GECKO_API_PORT)
 elseif(NOT OPENSSL_EXE_PATH)
     message(FATAL_ERROR "Couldn't find program `openssl` (-DOPENSSL_EXE_PATH)")
 elseif(NOT GECKO_API_EXE_PATH)
-    set(GECKO_API_EXE_PATH "${GECKO_ROOT_DIR}/bin/api")
+    set(GECKO_API_EXE_PATH "${GECKO_ROOT_DIR}/build/artifacts/bin/api")
     message(WARNING "Couldn't find program `api`. Defaulting to ${GECKO_API_EXE_PATH} (-DGECKO_API_EXE_PATH)")
 endif()
 

@@ -1,10 +1,10 @@
 import fs from "fs";
 import path from "path";
 
-const root    = path.resolve(import.meta.dirname, "../../");
+const root    = path.resolve(import.meta.dirname, "../..");
 
-const srcDir  = path.join(root, "/bin/");
-const destDir = path.join(root, "/frontend/public/wasm/");
+const srcDir  = path.join(root, "/build/artifacts/wasm");
+const destDir = path.join(root, "/frontend/public/wasm");
 
 const src1  = path.join(srcDir,  "/compression.js");
 const src2  = path.join(srcDir,  "/compression.wasm");

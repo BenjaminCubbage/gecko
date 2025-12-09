@@ -33,9 +33,9 @@ target_compile_definitions(embedded PRIVATE
 add_custom_command(TARGET embedded POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
         "$<TARGET_FILE:embedded>"
-        "${GECKO_ROOT}/run/bin/$<TARGET_FILE_NAME:embedded>"
+        "${GECKO_ROOT_DIR}/run/bin/$<TARGET_FILE_NAME:embedded>"
         
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
         "$<TARGET_FILE_DIR:embedded>/embedded.uf2"
-        "${GECKO_ROOT}/run/bin/embedded.uf2"
+        "${GECKO_ROOT_DIR}/run/bin/embedded.uf2"
 )

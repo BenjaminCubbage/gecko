@@ -25,15 +25,14 @@ namespace Gecko::API::Server
             return false;
         }
 
-        std::shared_ptr<DB::ConnectionPool> connectionPool
-            = std::make_shared<DB::ConnectionPool>
-            (
-                "127.0.0.1",
-                env.mysqlXAPIPort,
-                "root",
-                env.mysqlPassword,
-                "Gecko"
-            );
+        auto connectionPool = std::make_shared<DB::ConnectionPool>
+        (
+            "127.0.0.1",
+            env.mysqlXAPIPort,
+            "root",
+            env.mysqlPassword,
+            "Gecko"
+        );
 
         Services::UsersService usersService{ DB::UsersTable{ connectionPool } };
 
