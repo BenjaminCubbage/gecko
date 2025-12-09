@@ -260,6 +260,7 @@ watch (isEditing, () => {
         background: hsl(113, 68%, 58%);
         border: var(--border-small);
         border: 2.5px solid black;
+        box-shadow: 1px 1px 0 0 black;
         width: 40px;
         border-radius: 999px;
         display: flex;

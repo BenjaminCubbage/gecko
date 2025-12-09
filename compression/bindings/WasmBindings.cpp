@@ -42,9 +42,9 @@ namespace Gecko::Compression::WasmBindings
         emscripten::class_<CompressedBitonal>("CompressedBitonal")
             .class_function("TryWriteToBuffer", &CompressedBitonal::TryWriteToBuffer)
             .class_function("TryReadFromBuffer", &CompressedBitonal::TryReadFromBuffer);
-            
+
         emscripten::register_optional<CompressedBitonal>();
-        
+
         /*
          *  Decoder
          */

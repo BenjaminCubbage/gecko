@@ -95,7 +95,7 @@ namespace Gecko::Compression
 
 	bool Decoder::DecodeHorizontalIntegrals(CompressedBitonal& compressed, std::vector<uint8_t>& bgr, bool a0IsWhite, int* outA1Delta, int* outA2Delta)
 	{
-		auto getPrefix = a0IsWhite ? &CodeWords::LookupWhiteIntegralPrefixFromLow13 : &CodeWords::LookupBlackIntegralPrefixFromLow13;
+		auto getPrefix   = a0IsWhite ? &CodeWords::LookupWhiteIntegralPrefixFromLow13 : &CodeWords::LookupBlackIntegralPrefixFromLow13;
 		auto getOpposite = a0IsWhite ? &CodeWords::LookupBlackIntegralPrefixFromLow13 : &CodeWords::LookupWhiteIntegralPrefixFromLow13;
 
 		*outA1Delta = 0;

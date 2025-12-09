@@ -50,10 +50,6 @@ namespace Gecko::Compression
 	CodeWords::IntegralPrefix& CodeWords::GetNextIntegralPrefix(std::map<int, IntegralPrefix&>& prefixes, uint16_t integralValue)
 	{
 		auto it = prefixes.upper_bound(integralValue);
-
-		if (it == prefixes.begin())
-			throw std::out_of_range("No prefix <= given integral value.");
-
 		--it;
 		return it->second;
 	}
@@ -319,12 +315,6 @@ namespace Gecko::Compression
 
 	void CodeWords::StoreIntegralEncoding(std::vector<CodeWords::IntegralPrefix>& lookup, std::map<int, IntegralPrefix&>& prefixMap, uint16_t prefix, uint16_t prefixLengthBits, uint16_t integral, IntegralPrefixType type)
 	{
-		if (lookup.size() < (1 << 13))
-			throw std::invalid_argument("`lookup` must be at least (1 << 13) in size.");
-
-		if (prefixLengthBits > 13) throw std::invalid_argument("`prefixLengthBits` was larger than the largest expected code word (13 bits long)");
-		if (prefixLengthBits <= 0) throw std::invalid_argument("`prefixLengthBits` was zero, but should be between 1 and 13 inclusive.");
-
 		uint16_t remainingBits = 13 - prefixLengthBits;
 		uint16_t iterations    = 1 << remainingBits;
 		uint16_t shiftedPrefix = prefix;
@@ -346,12 +336,6 @@ namespace Gecko::Compression
 
 	void CodeWords::StoreModeEncoding(std::vector<ModePrefixType>& lookup, std::map<ModePrefixType, ModePrefix>& prefixMap, uint16_t prefix, uint16_t prefixLengthBits, CodeWords::ModePrefixType type)
 	{
-		if (lookup.size() < (1 << 7))
-			throw std::invalid_argument("`lookup` must be at least (1 << 7) in size.");
-
-		if (prefixLengthBits > 7) throw std::invalid_argument("`prefixLengthBits` was larger than the largest expected code word (7 bits long)");
-		if (prefixLengthBits <= 0) throw std::invalid_argument("`prefixLengthBits` was zero, but should be between 1 and 7 inclusive.");
-
 		uint16_t remainingBits = 7 - prefixLengthBits;
 		uint16_t iterations = 1 << remainingBits;
 		uint16_t shiftedPrefix = prefix;

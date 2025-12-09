@@ -12,11 +12,7 @@ namespace Gecko::Compression
 		enum class StorageFormat { BMPStrict24 /* Bitmap file */ };
 
 		UncompressedBitonal(std::vector<uint8_t> bgr, size_t width, size_t height)
-			: bgr(bgr), width(width), height(height)
-		{
-			if (bgr.size() != width * height * 3)
-				throw std::invalid_argument("Malformed BGR buffer: bgr.size() != width * height * 3");
-		}
+			: bgr(bgr), width(width), height(height) { }
 
 		UncompressedBitonal(const UncompressedBitonal& other)
 			: bgr(other.bgr), width(other.width), height(other.height) { }
