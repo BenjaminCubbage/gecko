@@ -9,7 +9,7 @@
 
 namespace Gecko::API::DB
 {
-    class Users
+    class UsersTable
     {
     public:
         enum class Result
@@ -18,7 +18,7 @@ namespace Gecko::API::DB
             Failure
         };
 
-        Users(std::shared_ptr<ConnectionPool>& connectionPool) : m_connectionPool(connectionPool) {}
+        UsersTable(std::shared_ptr<ConnectionPool>& connectionPool) : m_connectionPool(connectionPool) {}
 
         Result UsernameExists(const std::string& username, bool* outTaken);
 

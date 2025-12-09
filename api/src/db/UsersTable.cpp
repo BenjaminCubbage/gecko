@@ -1,8 +1,8 @@
-#include "gecko/db/Users.h"
+#include "gecko/db/UsersTable.h"
 
 namespace Gecko::API::DB
 {
-    Users::Result Users::UsernameExists(const std::string& username, bool* outTaken)
+    UsersTable::Result UsersTable::UsernameExists(const std::string& username, bool* outTaken)
     {
         try
         {
@@ -22,9 +22,9 @@ namespace Gecko::API::DB
         }
     }
 
-    Users::Result Users::CreateUser(const std::string& username, 
-                                    const std::string& oidcIss, 
-                                    const std::string& oidcSub)
+    UsersTable::Result UsersTable::CreateUser(const std::string& username, 
+                                              const std::string& oidcIss, 
+                                              const std::string& oidcSub)
     {
         try
         {
@@ -44,9 +44,9 @@ namespace Gecko::API::DB
         }
     }
     
-    Users::Result Users::OIDCIdentityExists(const std::string& oidcIss,
-                                            const std::string& oidcSub,
-                                            bool *outExists)
+    UsersTable::Result UsersTable::OIDCIdentityExists(const std::string& oidcIss,
+                                                      const std::string& oidcSub,
+                                                      bool *outExists)
     {
         try
         {
@@ -67,7 +67,7 @@ namespace Gecko::API::DB
         }
     }
 
-    Users::Result Users::UserExists(int userID, bool *outExists)
+    UsersTable::Result UsersTable::UserExists(int userID, bool *outExists)
     {
         try
         {
@@ -88,9 +88,9 @@ namespace Gecko::API::DB
         }
     }
 
-    Users::Result Users::GetUserIDByOIDC(const std::string& oidcIss,
-                                         const std::string& oidcSub,
-                                         int* outUserID)
+    UsersTable::Result UsersTable::GetUserIDByOIDC(const std::string& oidcIss,
+                                                   const std::string& oidcSub,
+                                                   int* outUserID)
     {
         try
         {
@@ -114,7 +114,7 @@ namespace Gecko::API::DB
         }
     }
     
-    Users::Result Users::GetUser(int userID, Models::User* outUser)
+    UsersTable::Result UsersTable::GetUser(int userID, Models::User* outUser)
     {
         try
         {
@@ -147,7 +147,7 @@ namespace Gecko::API::DB
         }
     }
     
-    Users::Result Users::PatchUser(int userID, const Models::UserPatch& patch)
+    UsersTable::Result UsersTable::PatchUser(int userID, const Models::UserPatch& patch)
     {
         try
         {

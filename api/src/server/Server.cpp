@@ -1,6 +1,6 @@
 #include "gecko/server/Server.h"
 #include "gecko/db/ConnectionPool.h"
-#include "gecko/db/Users.h"
+#include "gecko/db/UsersTable.h"
 #include "gecko/services/UsersService.h"
 #include "gecko/controllers/AuthController.h"
 #include "gecko/controllers/UsersController.h"
@@ -35,7 +35,7 @@ namespace Gecko::API::Server
                 "Gecko"
             );
 
-        Services::UsersService usersService{ DB::Users{ connectionPool } };
+        Services::UsersService usersService{ DB::UsersTable{ connectionPool } };
 
         Controllers::AuthController authController
         { 

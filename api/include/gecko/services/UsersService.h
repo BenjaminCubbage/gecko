@@ -3,7 +3,7 @@
 #include <expected>
 #include <string>
 #include "json/json.h"
-#include "gecko/db/Users.h"
+#include "gecko/db/UsersTable.h"
 #include "gecko/models/User.h"
 #include "gecko/models/UserPatch.h"
 
@@ -42,7 +42,7 @@ namespace Gecko::API::Services
             DatabaseError
         };
 
-        UsersService(DB::Users dbUsers) : m_dbUsers(dbUsers) {}
+        UsersService(DB::UsersTable dbUsers) : m_dbUsers(dbUsers) {}
 
         Result CreateUser(const std::string& username, 
                                               const std::string& oidcIss, 
@@ -58,7 +58,7 @@ namespace Gecko::API::Services
 
 
     private:
-        DB::Users m_dbUsers;
+        DB::UsersTable m_dbUsers;
         static thread_local Json::FastWriter s_jsonWriter;
         static thread_local Json::Reader     s_jsonReader;
     };

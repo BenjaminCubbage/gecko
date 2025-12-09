@@ -21,18 +21,18 @@ namespace Gecko::API::Services
         EXPECT(oidcSub.size() >= MinOIDCSubLength, Result::OIDCSubTooShort);
         EXPECT(oidcSub.size() <= MaxOIDCSubLength, Result::OIDCSubTooLong);
 
-        if (m_dbUsers.CreateUser(username, oidcIss, oidcSub) == DB::Users::Result::Success)
+        if (m_dbUsers.CreateUser(username, oidcIss, oidcSub) == DB::UsersTable::Result::Success)
             return Result::Success;
 
         bool exists{};
 
-        EXPECT(m_dbUsers.OIDCIdentityExists(oidcIss, oidcSub, &exists) == DB::Users::Result::Success, 
+        EXPECT(m_dbUsers.OIDCIdentityExists(oidcIss, oidcSub, &exists) == DB::UsersTable::Result::Success, 
                Result::DatabaseError);
         EXPECT(!exists, Result::UserAlreadyExists);
 
         bool usernameTaken{};
         
-        EXPECT(m_dbUsers.UsernameExists(username, &usernameTaken) == DB::Users::Result::Success,
+        EXPECT(m_dbUsers.UsernameExists(username, &usernameTaken) == DB::UsersTable::Result::Success,
                Result::DatabaseError);
         EXPECT(!usernameTaken, Result::UsernameTaken);
 
@@ -44,12 +44,12 @@ namespace Gecko::API::Services
                                   const std::string& oidcSub,
                                   int* outUserID)
     {
-        if (m_dbUsers.GetUserIDByOIDC(oidcIss, oidcSub, outUserID) == DB::Users::Result::Success)
+        if (m_dbUsers.GetUserIDByOIDC(oidcIss, oidcSub, outUserID) == DB::UsersTable::Result::Success)
             return Result::Success;
 
         bool exists{};
 
-        EXPECT(m_dbUsers.OIDCIdentityExists(oidcIss, oidcSub, &exists) == DB::Users::Result::Success,
+        EXPECT(m_dbUsers.OIDCIdentityExists(oidcIss, oidcSub, &exists) == DB::UsersTable::Result::Success,
                Result::DatabaseError);
         EXPECT(exists, Result::UserNotFound);
 
@@ -59,12 +59,12 @@ namespace Gecko::API::Services
     UsersService::Result
     UsersService::GetUser(int userID, Models::User* outUser)
     {
-        if (m_dbUsers.GetUser(userID, outUser) == DB::Users::Result::Success)
+        if (m_dbUsers.GetUser(userID, outUser) == DB::UsersTable::Result::Success)
             return Result::Success;
 
         bool exists{};
 
-        EXPECT(m_dbUsers.UserExists(userID, &exists) == DB::Users::Result::Success, Result::DatabaseError);
+        EXPECT(m_dbUsers.UserExists(userID, &exists) == DB::UsersTable::Result::Success, Result::DatabaseError);
         EXPECT(exists, Result::UserNotFound);
 
         return Result::DatabaseError;
@@ -81,17 +81,17 @@ namespace Gecko::API::Services
 
         // TODO: Make sure usernames contain only accepted alphanumeric characters
         
-        if (m_dbUsers.PatchUser(userID, patch) == DB::Users::Result::Success)
+        if (m_dbUsers.PatchUser(userID, patch) == DB::UsersTable::Result::Success)
             return {};
 
         bool exists{};
 
-        EXPECT(m_dbUsers.UserExists(userID, &exists) == DB::Users::Result::Success, Result::DatabaseError);
+        EXPECT(m_dbUsers.UserExists(userID, &exists) == DB::UsersTable::Result::Success, Result::DatabaseError);
         EXPECT(!exists, Result::UserNotFound);
 
         bool usernameTaken{};
         
-        EXPECT(m_dbUsers.UsernameExists(patch.username, &usernameTaken) == DB::Users::Result::Success,
+        EXPECT(m_dbUsers.UsernameExists(patch.username, &usernameTaken) == DB::UsersTable::Result::Success,
                Result::DatabaseError);
         EXPECT(!usernameTaken, Result::UsernameTaken);
 
