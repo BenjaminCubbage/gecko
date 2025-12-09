@@ -1,4 +1,4 @@
-#include "gecko/db/_ConnectionPool.h"
+#include "gecko/db/ConnectionPool.h"
 
 namespace Gecko::API::DB
 {

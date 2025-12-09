@@ -178,7 +178,7 @@ namespace Gecko::API::Controllers
                 return;
             }
 
-            const std::string username = Util::UUID::GenerateUUID().substr(0, 8);
+            const std::string username = "user_" + Util::UUID::GenerateUUID().substr(0, 8);
 
             switch (m_usersService.CreateUser(username, iss, sub))
             {

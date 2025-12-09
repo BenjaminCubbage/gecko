@@ -1,5 +1,5 @@
 #include "gecko/server/Server.h"
-#include "gecko/db/_ConnectionPool.h"
+#include "gecko/db/ConnectionPool.h"
 #include "gecko/db/Users.h"
 #include "gecko/services/UsersService.h"
 #include "gecko/controllers/AuthController.h"

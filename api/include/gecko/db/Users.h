@@ -5,7 +5,7 @@
 #include <expected>
 #include "gecko/models/User.h"
 #include "gecko/models/UserPatch.h"
-#include "gecko/db/_ConnectionPool.h"
+#include "gecko/db/ConnectionPool.h"
 
 namespace Gecko::API::DB
 {
