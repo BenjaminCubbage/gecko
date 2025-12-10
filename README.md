@@ -1,35 +1,75 @@
-#### For more info on setting up and running Gecko's frontend Vue application, see the [/frontend README](/frontend)
-#### For more info on the CCITT Group 4-based bitonal compression.lib, see the [/shared README](/shared/)
+> [!NOTE]
+> This repository is a work in progress. Documentation may (will) be incomplete.
 
 # Gecko
-WIP full-stack program that lets anyone send an image to my E-Ink display
+Application that allows anyone to send an image to my E-Ink display.
 
-### Quick Start
-Gecko is designed to be both portable and easy to configure. First, make sure `CMake >=3.16` and `npm` are installed on your machine. Then, run:
+**Development Machine:** Linux / WSL
 
-```bash
-cmake -A x64 -B out/build -S . -G "<Your CMake Generator of Choice Here>"
+**Development Dependencies:**
+- cmake
+- npm
+- mysql
+- mosquitto
+- openssl-dev
+- python3
+- gcc-arm-none-eabi
+- libnewlib-arm-none-eabi
+- libstdc++-arm-none-eabi-newlib
+
+
+### Building Gecko
+
+To configure your environment for development, run:
+
+```sh
+cmake -B build -S . -DCMAKE_BUILD_TYPE=Debug -G *YOUR_GENERATOR_HERE*
 ```
 
 > [!NOTE]
-> For subsequent configurations, simply run `reconfig` from the command line.
+> Use Ninja or Make. Visual Studio does not work. I'm not sure why Visual Studio doesn't work, but it might have something to do with the fact that it's Visual Studio.
 
-To build all C/C++ projects, run:
+The root CMakelists.txt is a superbuild of all of the other projects. To build a given project, specify it as a build target:
 
-```bash
-build-all
+```sh
+cmake --build build --target api
 ```
 
-To run the HTTP backend api, run:
-
-```bash
-api
+```sh
+cmake --build build --target compression_wasm
 ```
 
-To run the mosquitto MQTT server, run:
-
-```bash
-mosquitto
+```sh
+cmake --build build --target embedded
 ```
 
-To run the Vite development server, see the [/frontend README](/frontend)
+
+### Running the backend
+
+Gecko's backend expects a .env file to specify server configuration. Set up your environment like so:
+
+```sh
+./scripts/env.sh all 
+./scripts/init.sh all
+```
+
+Make sure mosquitto and mysql are running:
+
+```sh
+./scripts/start.sh mosquitto 
+./scripts/start.sh mysql
+```
+
+And finally start up the api:
+
+```sh
+./scripts/start.sh api
+```
+
+### Running the frontend
+
+Gecko's frontend uses Vue as its framework and Vite as its build tool. Start by making sure the compression_wasm target has been built as shown above. Then enter the /frontend/ directory and run `npm install`. You're now ready to run the application:
+
+```sh
+npm run dev
+```
