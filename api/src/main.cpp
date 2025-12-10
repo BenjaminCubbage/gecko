@@ -4,12 +4,6 @@
 #include "gecko/env/EnvPopulate.h"
 #include "gecko/server/Server.h"
 
-#define _STR(x) #x
-#define STR(x) _STR(x)
-
-#define MAIN_EXPECT(cond, msg) if (!(cond)) { std::cout << msg << std::endl; return 1; }
-#define ENV_EXPECT(env, var) MAIN_EXPECT(env->ContainsKey(var), "[api]: .env file did not contain a " STR(var))
-
 using namespace Gecko::API;
 
 int main(int argc, char* argv[])
