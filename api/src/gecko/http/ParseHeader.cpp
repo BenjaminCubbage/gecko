@@ -1,8 +1,8 @@
-#include "gecko/util/ParseHeader.h"
+#include "gecko/http/ParseHeader.h"
 #include <ranges>
 #include <string_view>
 
-namespace Gecko::API::Util
+namespace Gecko::API::Http
 {
     std::optional<std::string> ParseHeader::GetCookieValue(const std::string& header, const std::string& cookieName)
     {

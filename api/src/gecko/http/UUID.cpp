@@ -1,8 +1,8 @@
-#include "gecko/util/UUID.h"
-#include <random>
+#include "gecko/http/UUID.h"
 #include <array>
+#include <random>
 
-namespace Gecko::API::Util
+namespace Gecko::API::Http
 {
     std::string UUID::GenerateUUID()
     {

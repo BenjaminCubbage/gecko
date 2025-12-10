@@ -1,13 +1,14 @@
 #include "gecko/middleware/HasValidXSRFToken.h"
-#include "gecko/http/RespondWithError.h"
 #include "gecko/http/Constants.h"
-#include "gecko/util/ParseHeader.h"
-#include "gecko/util/UUID.h"
+#include "gecko/http/RespondWithError.h"
+#include "gecko/http/ParseHeader.h"
+#include "gecko/http/UUID.h"
 
 using ::Gecko::API::Http::Constants::Cookies;
 using ::Gecko::API::Http::Constants::Headers;
+namespace Http = ::Gecko::API::Http;
 
-namespace Gecko::API::Controllers::Middleware
+namespace Gecko::API::Middleware
 {
     bool HasValidXSRFToken::operator()(const httplib::Request& req, httplib::Response& res)
     {
@@ -15,11 +16,11 @@ namespace Gecko::API::Controllers::Middleware
 
         if (!cookieHeader.size())
         {
-            Http::RespondWithError::XSRFMissing(res);
+            Gecko::API::Http::RespondWithError::XSRFMissing(res);
             return false;
         }
         
-        const auto cookieToken = Util::ParseHeader::GetCookieValue
+        const auto cookieToken = Gecko::API::Http::ParseHeader::GetCookieValue
         (
             cookieHeader,
             Cookies::HostXSRFToken
@@ -27,7 +28,7 @@ namespace Gecko::API::Controllers::Middleware
 
         if (!cookieToken)
         {
-            Http::RespondWithError::XSRFMissing(res);
+            Gecko::API::Http::RespondWithError::XSRFMissing(res);
             return false;
         }
 
@@ -35,13 +36,13 @@ namespace Gecko::API::Controllers::Middleware
 
         if (!headerToken.size())
         {
-            Http::RespondWithError::XSRFMissing(res);
+            Gecko::API::Http::RespondWithError::XSRFMissing(res);
             return false;
         }
 
-        if (*cookieToken != headerToken || headerToken.size() != Util::UUID::UUIDLength)
+        if (*cookieToken != headerToken || headerToken.size() != Http::UUID::UUIDLength)
         {
-            Http::RespondWithError::XSRFInvalid(res);
+            Gecko::API::Http::RespondWithError::XSRFInvalid(res);
             return false;
         }
 

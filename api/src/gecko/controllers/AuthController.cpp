@@ -9,8 +9,8 @@
 #include "gecko/middleware/IsSuccessfulOAuthCallback.h"
 #include "gecko/middleware/UserIsLoggedIn.h"
 #include "gecko/models/User.h"
-#include "gecko/util/ParseHeader.h"
-#include "gecko/util/UUID.h"
+#include "gecko/http/ParseHeader.h"
+#include "gecko/http/UUID.h"
 
 // macros instead of constexpr for nicer concatenation
 #define ONE_WEEK_IN_SECONDS      604800
@@ -18,6 +18,7 @@
 
 using ::Gecko::API::Http::Constants::Cookies;
 using ::Gecko::API::Http::Constants::Issuer;
+namespace Http = ::Gecko::API::Http;
 
 namespace Gecko::API::Controllers
 {
@@ -52,7 +53,7 @@ namespace Gecko::API::Controllers
     
     void AuthController::Handle_GET_LogIn(const httplib::Request& req, httplib::Response& res)
     {
-        const std::string nonce = Util::UUID::GenerateUUID();
+        const std::string nonce = Http::UUID::GenerateUUID();
         
         const std::string uri = std::format
         (
@@ -180,7 +181,7 @@ namespace Gecko::API::Controllers
                 return;
             }
 
-            const std::string username = "user_" + Util::UUID::GenerateUUID().substr(0, 8);
+            const std::string username = "user_" + Gecko::API::Http::UUID::GenerateUUID().substr(0, 8);
 
             switch (m_usersService.CreateUser(username, iss, sub))
             {
@@ -283,7 +284,7 @@ namespace Gecko::API::Controllers
             "Path=/;"
             ,
             Cookies::HostXSRFToken,
-            Util::UUID::GenerateUUID()
+            Http::UUID::GenerateUUID()
         );
 
         res.set_header("Set-Cookie", cookie);

@@ -3,12 +3,13 @@
 #include "jwt-cpp/traits/open-source-parsers-jsoncpp/traits.h"
 #include "gecko/http/Constants.h"
 #include "gecko/http/RespondWithError.h"
-#include "gecko/util/ParseHeader.h"
+#include "gecko/http/ParseHeader.h"
 
 using ::Gecko::API::Http::Constants::Issuer;
 using ::Gecko::API::Http::Constants::Cookies;
+namespace Http = ::Gecko::API::Http;
 
-namespace Gecko::API::Controllers::Middleware
+namespace Gecko::API::Middleware
 {
     bool UserIsLoggedIn::operator()(const httplib::Request& req, httplib::Response& res, std::string* outUserID)
     {
@@ -21,7 +22,7 @@ namespace Gecko::API::Controllers::Middleware
         }
 
         const auto cookieValue
-            = Util::ParseHeader::GetCookieValue(cookieHeader, Cookies::HostHttpGeckoAuth);
+            = Http::ParseHeader::GetCookieValue(cookieHeader, Cookies::HostHttpGeckoAuth);
 
         if (!cookieValue)
         {

@@ -1,7 +1,9 @@
 #include "gecko/middleware/PathParamEquals.h"
 #include "gecko/http/RespondWithError.h"
 
-namespace Gecko::API::Controllers::Middleware
+namespace Http = ::Gecko::API::Http;
+
+namespace Gecko::API::Middleware
 {
     bool PathParamEquals::operator()(const httplib::Request& req, httplib::Response& res, const std::string& expected)
     {
@@ -10,7 +12,7 @@ namespace Gecko::API::Controllers::Middleware
         if (value == req.path_params.end() ||
             value->second != expected)
         {
-            Http::RespondWithError::Forbidden(res);
+            Gecko::API::Http::RespondWithError::Forbidden(res);
             return false;
         }
 

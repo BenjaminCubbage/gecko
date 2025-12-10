@@ -1,7 +1,9 @@
 #include "gecko/middleware/IsSuccessfulOAuthCallback.h"
 #include "gecko/http/RespondWithError.h"
 
-namespace Gecko::API::Controllers::Middleware
+namespace Http = ::Gecko::API::Http;
+
+namespace Gecko::API::Middleware
 {
     bool IsSuccessfulOAuthCallback::operator()(const httplib::Request& req, 
                                                httplib::Response& res, 

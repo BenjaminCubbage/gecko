@@ -6,7 +6,7 @@
 #include "json/json.h"
 #include "gecko/http/RespondWithError.h"
 
-namespace Gecko::API::Controllers::Middleware
+namespace Gecko::API::Middleware
 {
     template<typename T> requires 
         std::is_same<T, int>::value ||

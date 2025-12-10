@@ -1,8 +1,8 @@
 #pragma once
 #include <memory>
-#include <vector>
-#include <string>
 #include <mutex>
+#include <string>
+#include <vector>
 #include <condition_variable>
 #include "mysqlx/xdevapi.h"
 

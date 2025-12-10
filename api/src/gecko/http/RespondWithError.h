@@ -2,7 +2,7 @@
 #include <string>
 #include "httplib.h"
 
-namespace Gecko::API::Controllers::Http
+namespace Gecko::API::Http
 {
     class RespondWithError
     {

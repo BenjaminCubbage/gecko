@@ -1,7 +1,9 @@
 #include "gecko/middleware/HasJSONBody.h"
 #include "gecko/http/RespondWithError.h"
 
-namespace Gecko::API::Controllers::Middleware
+namespace Http = ::Gecko::API::Http;
+
+namespace Gecko::API::Middleware
 {
     bool HasJSONBody::operator()(const httplib::Request& req, httplib::Response& res, Json::Value* outParsed)
     {

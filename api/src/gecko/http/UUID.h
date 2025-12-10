@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-namespace Gecko::API::Util
+namespace Gecko::API::Http
 {
     class UUID
     {
