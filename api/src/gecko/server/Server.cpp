@@ -1,9 +1,9 @@
 #include "gecko/server/Server.h"
+#include "gecko/controllers/AuthController.h"
+#include "gecko/controllers/UsersController.h"
 #include "gecko/db/ConnectionPool.h"
 #include "gecko/db/UsersTable.h"
 #include "gecko/services/UsersService.h"
-#include "gecko/controllers/AuthController.h"
-#include "gecko/controllers/UsersController.h"
 #include "httplib.h"
 
 namespace Gecko::API::Server

@@ -4,9 +4,9 @@
 #include <utility>
 #include "httplib.h"
 #include "json/json.h"
-#include "gecko/controllers/respond/RespondWithError.h"
+#include "gecko/http/RespondWithError.h"
 
-namespace Gecko::API::Controllers::Rules
+namespace Gecko::API::Controllers::Middleware
 {
     template<typename T> requires 
         std::is_same<T, int>::value ||
@@ -24,7 +24,7 @@ namespace Gecko::API::Controllers::Rules
         {
             if (!body.isMember(m_memberName))
             {
-                Respond::RespondWithError::MissingField(res, m_memberName);
+                Http::RespondWithError::MissingField(res, m_memberName);
                 return false;
             }
 
@@ -37,7 +37,7 @@ namespace Gecko::API::Controllers::Rules
 
             if (body[m_memberName].type() != expectedValueType)
             {
-                Respond::RespondWithError::WrongFieldType(res, m_memberName);
+                Http::RespondWithError::WrongFieldType(res, m_memberName);
                 return false;
             }
             

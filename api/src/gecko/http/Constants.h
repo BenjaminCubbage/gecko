@@ -1,8 +1,18 @@
 #pragma once
 #include <string>
 
-namespace Gecko::API::Controllers::Issuing
+namespace Gecko::API::Http::Constants
 {
+    struct Issuer
+    {
+        static const std::string GeckoIssuerName;
+    };
+
+    struct Headers
+    {
+        static const std::string XXSRFToken;
+    };
+
     struct Cookies
     {
         static const std::string HostHttpOAuthXSRFNonce;

@@ -3,7 +3,7 @@
 #include "httplib.h"
 #include "json/json.h"
 
-namespace Gecko::API::Controllers::Rules
+namespace Gecko::API::Controllers::Middleware
 {
     class HasJSONBody
     {

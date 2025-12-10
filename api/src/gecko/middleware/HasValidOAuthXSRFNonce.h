@@ -1,7 +1,7 @@
 #pragma once
 #include "httplib.h"
 
-namespace Gecko::API::Controllers::Rules
+namespace Gecko::API::Controllers::Middleware
 {
     class HasValidOAuthXSRFNonce
     {

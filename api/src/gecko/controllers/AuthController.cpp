@@ -2,20 +2,22 @@
 #include <format>
 #include "jwt-cpp/jwt.h"
 #include "jwt-cpp/traits/open-source-parsers-jsoncpp/traits.h"
-#include "gecko/controllers/respond/RespondWithError.h"
-#include "gecko/controllers/rules/HasValidXSRFToken.h"
-#include "gecko/controllers/rules/HasValidOAuthXSRFNonce.h"
-#include "gecko/controllers/rules/IsSuccessfulOAuthCallback.h"
-#include "gecko/controllers/rules/UserIsLoggedIn.h"
+#include "gecko/http/Constants.h"
+#include "gecko/http/RespondWithError.h"
+#include "gecko/middleware/HasValidOAuthXSRFNonce.h"
+#include "gecko/middleware/HasValidXSRFToken.h"
+#include "gecko/middleware/IsSuccessfulOAuthCallback.h"
+#include "gecko/middleware/UserIsLoggedIn.h"
 #include "gecko/models/User.h"
-#include "gecko/controllers/issuing/Cookies.h"
-#include "gecko/controllers/issuing/Issuer.h"
 #include "gecko/util/ParseHeader.h"
 #include "gecko/util/UUID.h"
 
 // macros instead of constexpr for nicer concatenation
 #define ONE_WEEK_IN_SECONDS      604800
 #define ONE_WEEK_IN_SECONDS_STR "604800"
+
+using ::Gecko::API::Http::Constants::Cookies;
+using ::Gecko::API::Http::Constants::Issuer;
 
 namespace Gecko::API::Controllers
 {
@@ -74,7 +76,7 @@ namespace Gecko::API::Controllers
             "SameSite=Lax;"
             "Path=/;"
             ,
-            Issuing::Cookies::HostHttpOAuthXSRFNonce,
+            Cookies::HostHttpOAuthXSRFNonce,
             nonce
         );
 
@@ -86,8 +88,8 @@ namespace Gecko::API::Controllers
     void AuthController::Handle_POST_LogOut(const httplib::Request& req, httplib::Response& res)
     {
         int userID{};
-        if (!Rules::UserIsLoggedIn{ m_pubkey }(req, res, &userID) ||
-            !Rules::HasValidXSRFToken{ }(req, res))
+        if (!Middleware::UserIsLoggedIn{ m_pubkey }(req, res, &userID) ||
+            !Middleware::HasValidXSRFToken{ }(req, res))
         {
             return;
         }
@@ -101,7 +103,7 @@ namespace Gecko::API::Controllers
             "Expires=Thu, 01 Jan 1970 00:00:00 GMT;"
             "Path=/;"
             ,
-            Issuing::Cookies::HostHttpGeckoAuth
+            Cookies::HostHttpGeckoAuth
         );
 
         res.set_header("Set-Cookie", expireCookie);
@@ -113,8 +115,8 @@ namespace Gecko::API::Controllers
         std::string code;
         std::string state;
 
-        if (!Rules::IsSuccessfulOAuthCallback{ }(req, res, &code, &state) ||
-            !Rules::HasValidOAuthXSRFNonce{ }(req, res, state))
+        if (!Middleware::IsSuccessfulOAuthCallback{ }(req, res, &code, &state) ||
+            !Middleware::HasValidOAuthXSRFNonce{ }(req, res, state))
         {
             res.set_redirect("/");
             return;
@@ -157,7 +159,7 @@ namespace Gecko::API::Controllers
             !s_jsonReader.parse(codeRequestResponse->body, codeRequestResponseJson) ||
             !codeRequestResponseJson["id_token"].isString())
         {
-            Respond::RespondWithError::OAuthInternalError(res);
+            Http::RespondWithError::OAuthInternalError(res);
             return;
         }
 
@@ -174,7 +176,7 @@ namespace Gecko::API::Controllers
             if (iss != "accounts.google.com" || !sub.size())
             {
                 // Should never happen
-                Respond::RespondWithError::OAuthInternalError(res);
+                Http::RespondWithError::OAuthInternalError(res);
                 return;
             }
 
@@ -187,7 +189,7 @@ namespace Gecko::API::Controllers
                     break;
 
                 default:
-                    Respond::RespondWithError::CouldNotFulfill(res);
+                    Http::RespondWithError::CouldNotFulfill(res);
                     return;
             }
 
@@ -195,7 +197,7 @@ namespace Gecko::API::Controllers
             if (m_usersService.GetUserIDByOIDC(iss, sub, &userID) != Services::UsersService::Result::Success)
             {
                 // User _should_ exist by now.
-                Respond::RespondWithError::CouldNotFulfill(res);
+                Http::RespondWithError::CouldNotFulfill(res);
                 return;
             }
 
@@ -210,10 +212,10 @@ namespace Gecko::API::Controllers
                 "Max-Age=" ONE_WEEK_IN_SECONDS_STR ";"
                 "Path=/;"
                 ,
-                Issuing::Cookies::HostHttpGeckoAuth,
+                Cookies::HostHttpGeckoAuth,
                 jwt::create<jwt::traits::open_source_parsers_jsoncpp>()
                     .set_type("JWT")
-                    .set_issuer(Issuing::Issuer::GeckoIssuerName)
+                    .set_issuer(Issuer::GeckoIssuerName)
                     .set_issued_now()
                     .set_expires_in(std::chrono::seconds{ ONE_WEEK_IN_SECONDS })
                     .set_subject(std::to_string(userID))
@@ -226,7 +228,7 @@ namespace Gecko::API::Controllers
         }
         catch (...)
         {
-            Respond::RespondWithError::OAuthInternalError(res);
+            Http::RespondWithError::OAuthInternalError(res);
             return;
         }
     }
@@ -236,7 +238,7 @@ namespace Gecko::API::Controllers
     {
         std::string userID;
 
-        if (!Rules::UserIsLoggedIn{ m_pubkey }(req, res, &userID))
+        if (!Middleware::UserIsLoggedIn{ m_pubkey }(req, res, &userID))
             return;
 
         try
@@ -250,10 +252,10 @@ namespace Gecko::API::Controllers
                 "Max-Age=" ONE_WEEK_IN_SECONDS_STR ";"
                 "Path=/;"
                 ,
-                Issuing::Cookies::HostHttpGeckoAuth,
+                Cookies::HostHttpGeckoAuth,
                 jwt::create<jwt::traits::open_source_parsers_jsoncpp>()
                     .set_type("JWT")
-                    .set_issuer(Issuing::Issuer::GeckoIssuerName)
+                    .set_issuer(Issuer::GeckoIssuerName)
                     .set_subject(userID)
                     .set_expires_in(std::chrono::seconds{ ONE_WEEK_IN_SECONDS })
                     .set_issued_now()
@@ -280,7 +282,7 @@ namespace Gecko::API::Controllers
             "SameSite=Strict;"
             "Path=/;"
             ,
-            Issuing::Cookies::HostXSRFToken,
+            Cookies::HostXSRFToken,
             Util::UUID::GenerateUUID()
         );
 

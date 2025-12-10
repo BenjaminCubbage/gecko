@@ -1,12 +1,14 @@
-#include "gecko/controllers/rules/UserIsLoggedIn.h"
+#include "gecko/middleware/UserIsLoggedIn.h"
 #include "jwt-cpp/jwt.h"
 #include "jwt-cpp/traits/open-source-parsers-jsoncpp/traits.h"
-#include "gecko/controllers/respond/RespondWithError.h"
-#include "gecko/controllers/issuing/Issuer.h"
-#include "gecko/controllers/issuing/Cookies.h"
+#include "gecko/http/Constants.h"
+#include "gecko/http/RespondWithError.h"
 #include "gecko/util/ParseHeader.h"
 
-namespace Gecko::API::Controllers::Rules
+using ::Gecko::API::Http::Constants::Issuer;
+using ::Gecko::API::Http::Constants::Cookies;
+
+namespace Gecko::API::Controllers::Middleware
 {
     bool UserIsLoggedIn::operator()(const httplib::Request& req, httplib::Response& res, std::string* outUserID)
     {
@@ -14,16 +16,16 @@ namespace Gecko::API::Controllers::Rules
 
         if (!cookieHeader.size())
         {
-            Respond::RespondWithError::AuthMissing(res);
+            Http::RespondWithError::AuthMissing(res);
             return false;
         }
 
         const auto cookieValue
-            = Util::ParseHeader::GetCookieValue(cookieHeader, Issuing::Cookies::HostHttpGeckoAuth);
+            = Util::ParseHeader::GetCookieValue(cookieHeader, Cookies::HostHttpGeckoAuth);
 
         if (!cookieValue)
         {
-            Respond::RespondWithError::AuthMissing(res);
+            Http::RespondWithError::AuthMissing(res);
             return false;
         }
 
@@ -34,7 +36,7 @@ namespace Gecko::API::Controllers::Rules
 
             jwt::verify<jwt::traits::open_source_parsers_jsoncpp>()
                     .allow_algorithm(jwt::algorithm::es256(m_pubkey))
-                    .with_issuer(Issuing::Issuer::GeckoIssuerName)
+                    .with_issuer(Issuer::GeckoIssuerName)
                     .verify(decodedAuthCookie);
 
             *outUserID = decodedAuthCookie.get_subject();
@@ -42,7 +44,7 @@ namespace Gecko::API::Controllers::Rules
         }
         catch (...) { }
 
-        Respond::RespondWithError::AuthInvalid(res);
+        Http::RespondWithError::AuthInvalid(res);
         return false;
     }
 
@@ -60,7 +62,7 @@ namespace Gecko::API::Controllers::Rules
         }
         catch (...) { }
 
-        Respond::RespondWithError::AuthInvalid(res);
+        Http::RespondWithError::AuthInvalid(res);
         return false;
     }
 }

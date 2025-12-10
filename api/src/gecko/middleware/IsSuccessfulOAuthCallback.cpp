@@ -1,7 +1,7 @@
-#include "gecko/controllers/rules/IsSuccessfulOAuthCallback.h"
-#include "gecko/controllers/respond/RespondWithError.h"
+#include "gecko/middleware/IsSuccessfulOAuthCallback.h"
+#include "gecko/http/RespondWithError.h"
 
-namespace Gecko::API::Controllers::Rules
+namespace Gecko::API::Controllers::Middleware
 {
     bool IsSuccessfulOAuthCallback::operator()(const httplib::Request& req, 
                                                httplib::Response& res, 
@@ -12,7 +12,7 @@ namespace Gecko::API::Controllers::Rules
             !req.has_param("code") ||
             !req.has_param("state"))
         {
-            Respond::RespondWithError::OAuthCancelled(res);
+            Http::RespondWithError::OAuthCancelled(res);
             return false;
         }
 

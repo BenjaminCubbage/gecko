@@ -2,14 +2,13 @@
 #include "gecko/controllers/UsersController.h"
 #include "jwt-cpp/jwt.h"
 #include "jwt-cpp/traits/open-source-parsers-jsoncpp/traits.h"
-#include "gecko/controllers/respond/RespondWithError.h"
+#include "gecko/http/RespondWithError.h"
+#include "gecko/middleware/HasJSONBody.h"
+#include "gecko/middleware/HasJSONValueMember.h"
+#include "gecko/middleware/PathParamEquals.h"
+#include "gecko/middleware/UserIsLoggedIn.h"
 #include "gecko/models/User.h"
 #include "gecko/models/UserPatch.h"
-#include "gecko/controllers/rules/HasJSONBody.h"
-#include "gecko/controllers/rules/HasJSONValueMember.h"
-#include "gecko/controllers/rules/UserIsLoggedIn.h"
-#include "gecko/controllers/rules/PathParamEquals.h"
-#include "gecko/controllers/respond/RespondWithError.h"
 
 namespace Gecko::API::Controllers
 {
@@ -33,7 +32,7 @@ namespace Gecko::API::Controllers
         using Services::UsersService;
 
         int userID{};
-        if (!Rules::UserIsLoggedIn{ m_pubkey }(req, res, &userID))
+        if (!Middleware::UserIsLoggedIn{ m_pubkey }(req, res, &userID))
             return;
 
         Models::User user;
@@ -50,11 +49,11 @@ namespace Gecko::API::Controllers
             }
 
             case UsersService::Result::UserNotFound:
-                Respond::RespondWithError::UserNotFound(res);
+                Http::RespondWithError::UserNotFound(res);
                 return;
 
             default:
-                Respond::RespondWithError::CouldNotFulfill(res);
+                Http::RespondWithError::CouldNotFulfill(res);
                 return;
         }
     }
@@ -67,10 +66,10 @@ namespace Gecko::API::Controllers
         Json::Value patch;
         std::string username;
 
-        if (!Rules::UserIsLoggedIn{ m_pubkey }(req, res, &userID) ||
-            !Rules::HasJSONBody{ }(req, res, &patch) ||
-            !Rules::HasJSONValueMember<std::string>{ "username" }(req, res, patch, &username) ||
-            !Rules::PathParamEquals{ "id" }(req, res, std::to_string(userID)))
+        if (!Middleware::UserIsLoggedIn{ m_pubkey }(req, res, &userID) ||
+            !Middleware::HasJSONBody{ }(req, res, &patch) ||
+            !Middleware::HasJSONValueMember<std::string>{ "username" }(req, res, patch, &username) ||
+            !Middleware::PathParamEquals{ "id" }(req, res, std::to_string(userID)))
         {
             return;
         }
@@ -81,23 +80,23 @@ namespace Gecko::API::Controllers
                 return;
 
             case UsersService::Result::UserNotFound:
-                Respond::RespondWithError::UserNotFound(res);
+                Http::RespondWithError::UserNotFound(res);
                 return;
 
             case UsersService::Result::UsernameTooLong:
-                Respond::RespondWithError::UsernameTooLong(res);
+                Http::RespondWithError::UsernameTooLong(res);
                 return;
 
             case UsersService::Result::UsernameTooShort:
-                Respond::RespondWithError::UsernameTooShort(res);
+                Http::RespondWithError::UsernameTooShort(res);
                 return;
 
             case UsersService::Result::UsernameTaken:
-                Respond::RespondWithError::UsernameTaken(res);
+                Http::RespondWithError::UsernameTaken(res);
                 return;
 
             default:
-                Respond::RespondWithError::CouldNotFulfill(res);
+                Http::RespondWithError::CouldNotFulfill(res);
                 return;
         }
     }

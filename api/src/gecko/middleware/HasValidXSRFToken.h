@@ -1,9 +1,8 @@
 #pragma once
 #include <string>
 #include "httplib.h"
-#include "gecko/controllers/issuing/Cookies.h"
 
-namespace Gecko::API::Controllers::Rules
+namespace Gecko::API::Controllers::Middleware
 {
     class HasValidXSRFToken
     {

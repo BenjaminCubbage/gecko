@@ -1,11 +1,11 @@
 #pragma once
+#include <expected>
 #include <memory>
 #include <optional>
 #include <string>
-#include <expected>
+#include "gecko/db/ConnectionPool.h"
 #include "gecko/models/User.h"
 #include "gecko/models/UserPatch.h"
-#include "gecko/db/ConnectionPool.h"
 
 namespace Gecko::API::DB
 {

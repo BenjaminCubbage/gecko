@@ -1,11 +1,13 @@
-#include "gecko/controllers/rules/HasValidXSRFToken.h"
-#include "gecko/controllers/respond/RespondWithError.h"
-#include "gecko/controllers/issuing/Cookies.h"
-#include "gecko/controllers/issuing/Headers.h"
+#include "gecko/middleware/HasValidXSRFToken.h"
+#include "gecko/http/RespondWithError.h"
+#include "gecko/http/Constants.h"
 #include "gecko/util/ParseHeader.h"
 #include "gecko/util/UUID.h"
 
-namespace Gecko::API::Controllers::Rules
+using ::Gecko::API::Http::Constants::Cookies;
+using ::Gecko::API::Http::Constants::Headers;
+
+namespace Gecko::API::Controllers::Middleware
 {
     bool HasValidXSRFToken::operator()(const httplib::Request& req, httplib::Response& res)
     {
@@ -13,33 +15,33 @@ namespace Gecko::API::Controllers::Rules
 
         if (!cookieHeader.size())
         {
-            Respond::RespondWithError::XSRFMissing(res);
+            Http::RespondWithError::XSRFMissing(res);
             return false;
         }
         
         const auto cookieToken = Util::ParseHeader::GetCookieValue
         (
             cookieHeader,
-            Issuing::Cookies::HostXSRFToken
+            Cookies::HostXSRFToken
         );
 
         if (!cookieToken)
         {
-            Respond::RespondWithError::XSRFMissing(res);
+            Http::RespondWithError::XSRFMissing(res);
             return false;
         }
 
-        const auto headerToken = req.get_header_value(Issuing::Headers::XXSRFToken);
+        const auto headerToken = req.get_header_value(Headers::XXSRFToken);
 
         if (!headerToken.size())
         {
-            Respond::RespondWithError::XSRFMissing(res);
+            Http::RespondWithError::XSRFMissing(res);
             return false;
         }
 
         if (*cookieToken != headerToken || headerToken.size() != Util::UUID::UUIDLength)
         {
-            Respond::RespondWithError::XSRFInvalid(res);
+            Http::RespondWithError::XSRFInvalid(res);
             return false;
         }
 
