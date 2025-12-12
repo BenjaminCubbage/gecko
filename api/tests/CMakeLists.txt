@@ -1,7 +1,6 @@
 include(FetchContent)
 include(CTest)
 
-
 set(INSTALL_GTEST OFF CACHE BOOL "")
 set(BUILD_GMOCK   OFF CACHE BOOL "")
 FetchContent_Declare(googletest
@@ -10,19 +9,21 @@ FetchContent_Declare(googletest
 )
 FetchContent_MakeAvailable(googletest)
 
-set(test_src_dir "${CMAKE_CURRENT_SOURCE_DIR}/src")
+set(test_src_dir "${CMAKE_CURRENT_SOURCE_DIR}")
 set(main_src_dir "${CMAKE_CURRENT_SOURCE_DIR}/../src")
 
-set(src_files 
-    # main
-    "${main_src_dir}/gecko/thread/ThreadPool.cpp"
-    "${main_src_dir}/gecko/thread/ThreadPool.h"
-
-    # test
-    "${test_src_dir}/ThreadPoolTest.cpp"
+set(src_files
+    "${test_src_dir}/http/ParseHeaderTest.cpp"
+    "${test_src_dir}/http/RespondWithErrorTest.cpp"
+    "${test_src_dir}/http/UUIDTest.cpp"
+    "${test_src_dir}/middleware/HasJSONBodyTest.cpp"
+    "${test_src_dir}/middleware/HasValidXSRFNonceTest.cpp"
+    "${test_src_dir}/middleware/HasValidXSRFTokenTest.cpp"
+    "${test_src_dir}/middleware/IsSuccessfulOAuthCallbackTest.cpp"
+    "${test_src_dir}/middleware/PathParamEqualsTest.cpp"
+    "${test_src_dir}/middleware/UserIsLoggedInTest.cpp"
+    "${test_src_dir}/thread/ThreadPoolTest.cpp"
 )
 
-add_executable(api_tests)
-target_sources(api_tests PRIVATE ${src_files} ${inc_files})
-target_include_directories(api_tests PUBLIC ${main_src_dir})
-target_link_libraries(api_tests gtest_main)
+add_executable(api_tests ${src_files})
+target_link_libraries(api_tests PRIVATE gtest_main api_core)
