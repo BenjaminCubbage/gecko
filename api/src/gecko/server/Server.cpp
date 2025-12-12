@@ -4,7 +4,6 @@
 #include "gecko/db/ConnectionPool.h"
 #include "gecko/db/UsersTable.h"
 #include "gecko/services/UsersService.h"
-#include "httplib.h"
 
 namespace Gecko::API::Server
 {

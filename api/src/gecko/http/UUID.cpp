@@ -26,7 +26,7 @@ namespace Gecko::API::Http
         // internet, after all.
         blocks[3] = (blocks[3] & 0x0FFF) | 0x4000; // V4, pseudorandom
         blocks[4] = (blocks[4] & 0x3FFF) | 0x8000; // Variant
-        
+
         std::string result;
         result.reserve(UUIDLength);
 

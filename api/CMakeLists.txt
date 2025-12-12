@@ -5,48 +5,18 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_FIND_LIBRARY_PREFIXES lib "")
 include(FetchContent)
-if(WIN32)
-    set(gecko_user_dir "$ENV{USERPROFILE}/.gecko")
-else()
-    set(gecko_user_dir "/var/lib/gecko")
-endif()
 
+set(gecko_user_dir "/var/lib/gecko")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY         "${GECKO_ARTIFACTS_DIR}/bin")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG   "${GECKO_ARTIFACTS_DIR}/bin")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${GECKO_ARTIFACTS_DIR}/bin")
 
-# Mosquitto configuration
-set(mosquitto_conf_path        "${GECKO_ROOT_DIR}/run/.mosquitto/mosquitto.conf")
-set(mosquitto_pid_path         "${GECKO_ROOT_DIR}/run/.mosquitto/mosquitto.pid")
-set(dynamic_security_conf_path "${gecko_user_dir}/.mosquitto/dynsec.json")
-
-# MySQL
-set(mysql_conf_path "${GECKO_ROOT_DIR}/run/.mysql/mysqld.cnf")
-set(mysql_schema_path "${GECKO_ROOT_DIR}/run/.mysql/schema.sql")
-set(mysql_socket_path "${gecko_user_dir}/.mysql/mysql.sock")
-set(mysql_pid_path "${GECKO_ROOT_DIR}/run/.mysql/mysqld.pid")
-set(mysql_datadir "${gecko_user_dir}/.mysql/data")
-
-# Backend SSL / Certs
-set(pkey_path   "${gecko_user_dir}/.api/certs/pkey.pem")
-set(cert_path   "${gecko_user_dir}/.api/certs/cert.pem")
-set(pubkey_path "${gecko_user_dir}/.api/certs/pubkey.pem")
-
-# Find programs / shared libs
-set(gecko_api_exe_path "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/api${CMAKE_EXECUTABLE_SUFFIX}")
-find_program(mosquitto_exe_path        NAMES mosquitto)
-find_program(mosquitto_ctrl_exe_path   NAMES mosquitto_ctrl)
-find_program(mysqld_exe_path           NAMES mysqld_safe)
-find_program(mysql_exe_path            NAMES mysql)
-find_program(openssl_exe_path          NAMES openssl)
-find_library(dynamic_security_lib_path NAMES mosquitto_dynamic_security)
-find_library(libssl_lib_path           NAMES libssl)
-find_library(libcrypto_lib_path        NAMES libcrypt)
+find_library(libssl_lib_path    NAMES libssl)
+find_library(libcrypto_lib_path NAMES libcrypt)
 
 set(src_dir "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
 set(src_files
-    "${src_dir}/main.cpp"
     "${src_dir}/gecko/controllers/AuthController.cpp"
     "${src_dir}/gecko/controllers/AuthController.h"
     "${src_dir}/gecko/controllers/UsersController.cpp"
@@ -134,42 +104,78 @@ FetchContent_Declare(jwtcpp
 
 FetchContent_MakeAvailable(cpphttplib)
 FetchContent_MakeAvailable(pahomqtt)
+
+# mysql doesn't like it if the CMAKE_RUNTIME_OUTPUT_DIRECTORY is set before
+# it's been included
+set(saved_output_dir ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+unset(CMAKE_RUNTIME_OUTPUT_DIRECTORY)
+unset(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG)
+unset(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE)
+
 FetchContent_MakeAvailable(mysqlconnectorcpp)
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY         "${saved_output_dir}")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG   "${saved_output_dir}")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${saved_output_dir}")
+
 FetchContent_MakeAvailable(jsoncpp)
 set(jsoncpp_DIR "${jsoncpp_SOURCE_DIR}" CACHE STRING "" FORCE)
 FetchContent_MakeAvailable(jwtcpp)
 
-add_executable(api)
-target_sources(api PRIVATE 
-    ${src_files} 
-    ${inc_files}
-)
+# Core
 
-if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_BUILD_TYPE STREQUAL "Debug")
-    target_compile_options(api PRIVATE -ggdb -fno-inline-small-functions -fno-inline)
-    target_link_options(api PRIVATE -ggdb)
-endif()
+add_library(api_core STATIC)
+target_sources(api_core PUBLIC ${src_files})
 
-target_compile_definitions(api PRIVATE 
-    -DCPPHTTPLIB_OPENSSL_SUPPORT
-)
-
-target_include_directories(api PRIVATE
+target_include_directories(api_core PUBLIC 
     ${src_dir}
-    ${CMAKE_BINARY_DIR}/include/api
     ${CMAKE_BINARY_DIR}/include/mysqlx
     ${cpphttplib_SOURCE_DIR}
     ${pahomqtt_SOURCE_DIR}
 )
 
-target_link_libraries(api PRIVATE 
-    paho-mqtt3c-static 
+target_compile_definitions(api_core PUBLIC
+    -DCPPHTTPLIB_OPENSSL_SUPPORT
+)
+
+target_precompile_headers(api_core PUBLIC
+    "<atomic>"
+    "<fstream>"
+    "<memory>"
+    "<optional>"
+    "<string>"
+    "<thread>"
+    "<unordered_map>"
+    "<vector>"
+    "<array>"
+    [["httplib.h"]]
+    [["jwt-cpp/jwt.h"]]
+    [["jwt-cpp/traits/open-source-parsers-jsoncpp/traits.h"]]
+    [["json/json.h"]]
+    [["mysqlx/xdevapi.h"]]
+)
+
+target_link_libraries(api_core PUBLIC
+    paho-mqtt3c-static
     connector
     jsoncpp_static
     jwt-cpp
-
     ${libssl_lib_path}
     ${libcrypto_lib_path}
 )
+
+# Main
+
+add_executable(api "${src_dir}/main.cpp")
+target_link_libraries(api PRIVATE api_core)
+
+if("Debug" STREQUAL "Debug")
+    target_compile_options(api PRIVATE -ggdb -fno-inline-small-functions -fno-inline -O0)
+    target_link_options(api PRIVATE -ggdb)
+else()
+    target_compile_options(api PRIVATE -O3)
+endif()
+
+# Tests
 
 add_subdirectory(tests)

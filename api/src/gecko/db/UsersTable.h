@@ -6,6 +6,7 @@
 #include "gecko/db/ConnectionPool.h"
 #include "gecko/models/User.h"
 #include "gecko/models/UserPatch.h"
+#include "mysqlx/xdevapi.h"
 
 namespace Gecko::API::DB
 {

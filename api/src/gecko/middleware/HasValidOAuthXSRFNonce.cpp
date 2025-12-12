@@ -31,7 +31,7 @@ namespace Gecko::API::Middleware
             return false;
         }
 
-        if (*nonce != expected || nonce->size() != Http::UUID::UUIDLength)
+        if (*nonce != expected || nonce->size() !=  Http::UUID::UUIDLength)
         {
             Http::RespondWithError::XSRFInvalid(res);
             return false;

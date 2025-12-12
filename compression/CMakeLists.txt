@@ -46,11 +46,6 @@ target_sources(compression_lib PRIVATE ${src_files} ${inc_files})
 target_include_directories(compression_lib PUBLIC ${inc_dir})
 
 
-add_custom_command(TARGET compression_lib POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory ${GECKO_ROOT_DIR}/run/wasm
-)
-
-
 # EMSDK does not have an installation target, period. Instead, we essentially
 # memorize where its executables and scripts are located and point to them here.
 

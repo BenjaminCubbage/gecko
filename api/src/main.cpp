@@ -11,8 +11,12 @@ int main(int argc, char* argv[])
     std::ostream& log = std::cout;
 
     if (argc != 2 && argc != 4)
-        std::cout << "[api]: Usage: api <path/to/.env.local> " 
-                  << "              api <path/to/.env.local> <path/to/mosquittorootclientpassword.txt> <path/to/mysqlrootclientpassword.txt>";
+    {
+        std::cout << "[api]: Usage: api <path/to/.env.local>\n"
+                  << "              api <path/to/.env.local> <path/to/mosquittorootclientpassword.txt> <path/to/mysqlrootclientpassword.txt>"
+                  << std::endl;
+        return 1;
+    }
 
     const auto env = argc == 2
         ? Env::EnvPopulate::Populate(argv[1], std::cout)

@@ -9,6 +9,5 @@ namespace Gecko::API::Middleware
     {
     public:
         bool operator()(const httplib::Request& req, httplib::Response& res, Json::Value* outParsed);
-        const std::string m_pubkey;
     };
 }

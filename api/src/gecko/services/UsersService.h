@@ -2,7 +2,6 @@
 #include <expected>
 #include <optional>
 #include <string>
-#include "json/json.h"
 #include "gecko/db/UsersTable.h"
 #include "gecko/models/User.h"
 #include "gecko/models/UserPatch.h"

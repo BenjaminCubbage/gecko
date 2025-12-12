@@ -18,7 +18,9 @@ namespace Gecko::API::Http
                 return sv;
             })
           | filter([&cookieName](auto&& sv) {
-                return sv.starts_with(cookieName) && sv.find('=', 1) != std::string::npos;
+                return sv.size() >= cookieName.size() + 1 &&
+                       sv.starts_with(cookieName) &&
+                       sv[cookieName.size()] == '=';
             })
           | transform([](auto&& sv) {
                 auto cp{ sv };

@@ -2,7 +2,6 @@
 #include "gecko/http/RespondWithError.h"
 
 namespace Http = ::Gecko::API::Http;
-
 namespace Gecko::API::Middleware
 {
     bool PathParamEquals::operator()(const httplib::Request& req, httplib::Response& res, const std::string& expected)
