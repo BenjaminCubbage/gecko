@@ -37,7 +37,7 @@ namespace Gecko::Compression::WasmBindings
          *  CompressedBitonal
          */
         emscripten::enum_<CompressedBitonal::StorageFormat>("CompressedBitonal_StorageFormat")
-            .value("BDC", CompressedBitonal::StorageFormat::BDC);
+            .value("GIB", CompressedBitonal::StorageFormat::GIB);
         
         emscripten::class_<CompressedBitonal>("CompressedBitonal")
             .class_function("TryWriteToBuffer", &CompressedBitonal::TryWriteToBuffer)

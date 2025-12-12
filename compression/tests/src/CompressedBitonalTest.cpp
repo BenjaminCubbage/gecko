@@ -23,7 +23,7 @@ namespace Gecko::Compression::Test
         BitStream empty(std::vector<uint8_t>{ });
         CompressedBitonal compressed(empty, 5, 5);
 
-        auto result = CompressedBitonal::TryWriteToBuffer(compressed, CompressedBitonal::StorageFormat::BDC);
+        auto result = CompressedBitonal::TryWriteToBuffer(compressed, CompressedBitonal::StorageFormat::GIB);
         EXPECT_FALSE(result.has_value());
     }
 
@@ -33,11 +33,11 @@ namespace Gecko::Compression::Test
         BitStream bs(fakeBytes);
         CompressedBitonal original(bs, 8, 4);
 
-        auto bufferOpt = CompressedBitonal::TryWriteToBuffer(original, CompressedBitonal::StorageFormat::BDC);
+        auto bufferOpt = CompressedBitonal::TryWriteToBuffer(original, CompressedBitonal::StorageFormat::GIB);
         ASSERT_TRUE(bufferOpt.has_value());
         const auto& buffer = *bufferOpt;
 
-        auto readOpt = CompressedBitonal::TryReadFromBuffer(buffer, CompressedBitonal::StorageFormat::BDC);
+        auto readOpt = CompressedBitonal::TryReadFromBuffer(buffer, CompressedBitonal::StorageFormat::GIB);
         ASSERT_TRUE(readOpt.has_value());
 
         const auto& decoded = *readOpt;
@@ -67,7 +67,7 @@ namespace Gecko::Compression::Test
         buffer[0] = uint8_t{ 'X' };
         buffer[1] = uint8_t{ 'Y' };
 
-        auto result = CompressedBitonal::TryReadFromBuffer(buffer, CompressedBitonal::StorageFormat::BDC);
+        auto result = CompressedBitonal::TryReadFromBuffer(buffer, CompressedBitonal::StorageFormat::GIB);
         EXPECT_FALSE(result.has_value());
     }
 
@@ -80,7 +80,7 @@ namespace Gecko::Compression::Test
         uint32_t wrongHeaderSize = 10;
         std::memcpy(buffer.data() + 2, &wrongHeaderSize, 4);
 
-        auto result = CompressedBitonal::TryReadFromBuffer(buffer, CompressedBitonal::StorageFormat::BDC);
+        auto result = CompressedBitonal::TryReadFromBuffer(buffer, CompressedBitonal::StorageFormat::GIB);
         EXPECT_FALSE(result.has_value());
     }
 
@@ -92,7 +92,7 @@ namespace Gecko::Compression::Test
         uint32_t headerSize = 14;
         std::memcpy(buffer.data() + 2, &headerSize, 4);
         // width and height = 0
-        auto result = CompressedBitonal::TryReadFromBuffer(buffer, CompressedBitonal::StorageFormat::BDC);
+        auto result = CompressedBitonal::TryReadFromBuffer(buffer, CompressedBitonal::StorageFormat::GIB);
         EXPECT_FALSE(result.has_value());
     }
 

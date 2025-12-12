@@ -39,12 +39,12 @@ namespace Gecko::Compression::Test
         ASSERT_TRUE(cOpt.has_value()) << "Compression failed.";
 
         auto cBufOpt = CompressedBitonal::TryWriteToBuffer(
-            *cOpt, CompressedBitonal::StorageFormat::BDC);
+            *cOpt, CompressedBitonal::StorageFormat::GIB);
         ASSERT_TRUE(cBufOpt.has_value()) << "Failed to serialize compressed buffer.";
 
         // --- Reload and Decompress ---
         auto cReadOpt = CompressedBitonal::TryReadFromBuffer(
-            *cBufOpt, CompressedBitonal::StorageFormat::BDC);
+            *cBufOpt, CompressedBitonal::StorageFormat::GIB);
         ASSERT_TRUE(cReadOpt.has_value()) << "Failed to parse compressed data.";
 
         auto uOutOpt = Decoder::TryDecompressBitonal(*cReadOpt);

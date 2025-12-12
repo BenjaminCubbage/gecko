@@ -1,6 +1,8 @@
 import fs from "fs";
 import path from "path";
 
+console.log(import.meta.dirname);
+
 const root    = path.resolve(import.meta.dirname, "../..");
 
 const srcDir  = path.join(root, "/build/artifacts/wasm");

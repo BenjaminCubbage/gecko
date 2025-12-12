@@ -32,7 +32,7 @@ class CanvasSave {
         const compressedBitonal   = Module.Encoder.TryCompressBitonal(uncompressedBitonal);
         const compressedBytes     = Module.CompressedBitonal.TryWriteToBuffer(
             compressedBitonal,
-            Module.CompressedBitonal_StorageFormat.BDC
+            Module.CompressedBitonal_StorageFormat.GIB
         );
 
         const size = compressedBytes.size();
@@ -40,7 +40,7 @@ class CanvasSave {
         for (let i = 0; i < size; ++i)
             copy[i] = compressedBytes.get(i);
 
-        FileSystem.promptSaveFileBuffer(copy, 'Image.bdc', 'application/vnd.gecko.bdc');
+        FileSystem.promptSaveFileBuffer(copy, 'Image.gecko.gib', 'application/vnd.gecko.gib');
 
         compressedBytes.delete();
         compressedBitonal.delete();

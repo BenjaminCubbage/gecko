@@ -75,7 +75,7 @@
 import { 
     toRefs, ref, useTemplateRef, 
     nextTick, watch, computed } from 'vue';
-import { characterIsAlphaNumeric } from '@/core/string/CharacterIsAlphanumeric.js';
+import { characterIsAlphaNumeric } from '@/core/string/CharacterIsAlphaNumeric.js';
 
 const minUsernameLength = 3;
 const maxUsernameLength = 18;

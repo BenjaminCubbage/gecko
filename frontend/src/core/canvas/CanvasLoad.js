@@ -5,7 +5,7 @@ class CanvasLoad {
         const ctx = canvas?.getContext('2d');
         if (!ctx) throw new Error('canvas?.getContext("2d") was null.');
 
-        const buffer = await FileSystem.promptLoadFileBuffer('.bdc');
+        const buffer = await FileSystem.promptLoadFileBuffer('.gib');
 
         const compressedBytes = new Module.VectorUint8();
         compressedBytes.resize(buffer.length);
@@ -15,7 +15,7 @@ class CanvasLoad {
 
         const compressedBitonal = Module.CompressedBitonal.TryReadFromBuffer(
             compressedBytes,
-            Module.CompressedBitonal_StorageFormat.BDC
+            Module.CompressedBitonal_StorageFormat.GIB
         );
 
         const uncompressedBitonal = Module.Decoder.TryDecompressBitonal(compressedBitonal);

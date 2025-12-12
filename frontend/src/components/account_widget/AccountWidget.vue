@@ -33,7 +33,7 @@ import AccountWidgetLogOutButton from './AccountWidgetLogOutButton.vue';
 import AccountWidgetUsernameBadge from './AccountWidgetUsernameBadge.vue';
 import AccountWidgetStatusBubble from './AccountWidgetStatusBubble.vue';
 import { Dispatch } from '@/core/dispatch/Dispatch.js';
-import { errorResponseToDisplayString } from '@/core/response_bodies/ErrorResponseToDisplayString';
+import { errorResponseToDisplayString } from '@/core/http/ErrorResponseToDisplayString';
 
 const statusBubble = useTemplateRef('statusBubble');
 const session = inject('session');

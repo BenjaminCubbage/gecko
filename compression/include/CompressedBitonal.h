@@ -9,7 +9,7 @@ namespace Gecko::Compression
 	class CompressedBitonal
 	{
 	public:
-		enum class StorageFormat { BDC /* Bitonal Data Compressed, in-house format */ };
+		enum class StorageFormat { GIB /* Bitonal Data Compressed, in-house format */ };
 
 		CompressedBitonal(BitStream bitstream, size_t width, size_t height)
 			: bitstream(bitstream), width(width), height(height) {

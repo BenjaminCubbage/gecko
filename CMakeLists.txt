@@ -82,6 +82,7 @@ ExternalProject_Add(compression_wasm
     SOURCE_DIR ../compression
     CMAKE_ARGS
         -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+        -DGECKO_ROOT_DIR=${GECKO_ROOT_DIR}
         -DGECKO_ARTIFACTS_DIR=${GECKO_ROOT_DIR}/build/artifacts
     BUILD_COMMAND cmake --build . --target compression_wasm
     INSTALL_COMMAND ""

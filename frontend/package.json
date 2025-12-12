@@ -8,8 +8,8 @@
   },
   "scripts": {
     "copy-wasm": "node ./scripts/copy-wasm.js",
-    "dev": "\"npm run copy-wasm\" && vite --host",
-    "build": "\"npm run copy-wasm\" && vite build",
+    "dev": "npm run copy-wasm && vite --host",
+    "build": "npm run copy-wasm && vite build",
     "preview": "vite preview",
     "eslint": "eslint"
   },

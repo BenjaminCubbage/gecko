@@ -8,9 +8,9 @@ namespace Gecko::Compression
 	{
 		static constexpr uint32_t HeaderSize = 14;
 
-		if (format != StorageFormat::BDC)
-			throw std::invalid_argument("The specified format is not currently supported. `BDC` is the only "
-				"supported export format for `BDC`.");
+		if (format != StorageFormat::GIB)
+			throw std::invalid_argument("The specified format is not currently supported. `GIB` is the only "
+				"supported export format for `GIB`.");
 
 		auto bytes = compressed.bitstream.GetBytes();
 
@@ -54,7 +54,7 @@ namespace Gecko::Compression
 	{
 		static constexpr uint32_t HeaderSize = 14;
 
-		if (format != StorageFormat::BDC || buffer.size() < HeaderSize + 1)
+		if (format != StorageFormat::GIB || buffer.size() < HeaderSize + 1)
 			return std::nullopt;
 
 		if (static_cast<char>(buffer[0]) != 'B' || static_cast<char>(buffer[1]) != 'C')
