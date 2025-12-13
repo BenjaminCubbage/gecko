@@ -12,16 +12,17 @@ class HttpRequest {
         this.xhr.addEventListener('error', this._onNetworkError.bind(this));
 
         this.xhr.open(method, url);
-        this.xhr.setRequestHeader('Content-Type', 'application/json');
+
+        if (body?.constructor != FormData)
+            this.xhr.setRequestHeader('Content-Type', 'application/json');
 
         for (const header of headers)
             this.xhr.setRequestHeader(header.name, header.value);
 
-        if (body !== null) {
-            this.xhr.send(JSON.stringify(body));
-        } else {
-            this.xhr.send();
-        }
+        if (body?.constructor == FormData) this.xhr.send(body);
+        else if (typeof body === "string") this.xhr.send(body);
+        else if (typeof body === "object") this.xhr.send(JSON.stringify(body));
+        else                               this.xhr.send();
     }
 
     onSuccess(fn)      { this._successCb      = fn; return this; }

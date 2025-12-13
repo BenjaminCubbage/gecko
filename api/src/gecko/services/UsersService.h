@@ -1,6 +1,4 @@
 #pragma once
-#include <expected>
-#include <optional>
 #include <string>
 #include "gecko/db/UsersTable.h"
 #include "gecko/models/User.h"
@@ -21,7 +19,7 @@ namespace Gecko::API::Services
         static constexpr size_t MaxOIDCSubLength = 36;
 
         enum class Result
-        {   
+        {
             Success,
 
             /* Service-space */
@@ -43,8 +41,8 @@ namespace Gecko::API::Services
 
         UsersService(DB::UsersTable dbUsers) : m_dbUsers(dbUsers) {}
 
-        Result CreateUser(const std::string& username, 
-                                              const std::string& oidcIss, 
+        Result CreateUser(const std::string& username,
+                                              const std::string& oidcIss,
                                               const std::string& oidcSub);
 
         Result GetUserIDByOIDC(const std::string& oidcIss,
@@ -54,7 +52,6 @@ namespace Gecko::API::Services
         Result GetUser(int userID, Models::User* outUser);
 
         Result PatchUser(int userID, const Models::UserPatch& patch);
-
 
     private:
         DB::UsersTable m_dbUsers;

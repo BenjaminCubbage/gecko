@@ -1,5 +1,6 @@
 #include "gecko/server/Server.h"
 #include "gecko/controllers/AuthController.h"
+#include "gecko/controllers/SharedImagesController.h"
 #include "gecko/controllers/UsersController.h"
 #include "gecko/db/ConnectionPool.h"
 #include "gecko/db/UsersTable.h"
@@ -33,7 +34,10 @@ namespace Gecko::API::Server
             "Gecko"
         );
 
-        Services::UsersService usersService{ DB::UsersTable{ connectionPool } };
+        DB::UsersTable dbUsers{ connectionPool };
+
+        Services::UsersService usersService{ dbUsers };
+        Services::SharedImagesService sharedImagesService{ dbUsers };
 
         Controllers::AuthController authController
         { 
@@ -44,20 +48,17 @@ namespace Gecko::API::Server
             env.jwtPublicKey
         };
 
-        Controllers::UsersController usersController
-        { 
-            usersService, 
-            env.jwtPublicKey 
-        };
+        Controllers::UsersController usersController{ usersService, env.jwtPublicKey };
+        Controllers::SharedImagesController sharedImagesController{ sharedImagesService, env.jwtPublicKey };
         
         authController.Attach(httpServer);
         usersController.Attach(httpServer);
+        sharedImagesController.Attach(httpServer);
 
         log << "[api]: Listening on 0.0.0.0:" << env.geckoAPIPort << std::endl;
         if (!httpServer.listen("0.0.0.0", env.geckoAPIPort))
         {
-            log << "[api]: Something went wrong while trying to bind to port " 
-                << env.geckoAPIPort;
+            log << "[api]: Error: Couldn't bind to port " << env.geckoAPIPort;
             return false;
         }
 

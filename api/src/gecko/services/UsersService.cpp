@@ -26,12 +26,12 @@ namespace Gecko::API::Services
 
         bool exists{};
 
-        EXPECT(m_dbUsers.OIDCIdentityExists(oidcIss, oidcSub, &exists) == DB::UsersTable::Result::Success, 
+        EXPECT(m_dbUsers.OIDCIdentityExists(oidcIss, oidcSub, &exists) == DB::UsersTable::Result::Success,
                Result::DatabaseError);
         EXPECT(!exists, Result::UserAlreadyExists);
 
         bool usernameTaken{};
-        
+
         EXPECT(m_dbUsers.UsernameExists(username, &usernameTaken) == DB::UsersTable::Result::Success,
                Result::DatabaseError);
         EXPECT(!usernameTaken, Result::UsernameTaken);
@@ -40,7 +40,7 @@ namespace Gecko::API::Services
     }
 
     UsersService::Result
-    UsersService::GetUserIDByOIDC(const std::string& oidcIss, 
+    UsersService::GetUserIDByOIDC(const std::string& oidcIss,
                                   const std::string& oidcSub,
                                   int* outUserID)
     {
@@ -55,7 +55,7 @@ namespace Gecko::API::Services
 
         return Result::DatabaseError;
     }
-    
+
     UsersService::Result
     UsersService::GetUser(int userID, Models::User* outUser)
     {
@@ -80,7 +80,7 @@ namespace Gecko::API::Services
         EXPECT(patch.username.size() <= MaxUsernameLength, Result::UsernameTooLong);
 
         // TODO: Make sure usernames contain only accepted alphanumeric characters
-        
+
         if (m_dbUsers.PatchUser(userID, patch) == DB::UsersTable::Result::Success)
             return {};
 
@@ -90,7 +90,7 @@ namespace Gecko::API::Services
         EXPECT(!exists, Result::UserNotFound);
 
         bool usernameTaken{};
-        
+
         EXPECT(m_dbUsers.UsernameExists(patch.username, &usernameTaken) == DB::UsersTable::Result::Success,
                Result::DatabaseError);
         EXPECT(!usernameTaken, Result::UsernameTaken);

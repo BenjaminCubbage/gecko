@@ -10,11 +10,12 @@
 #include "gecko/models/User.h"
 #include "gecko/models/UserPatch.h"
 
+namespace Http = ::Gecko::API::Http;
+
 namespace Gecko::API::Controllers
 {
     thread_local Json::Reader     UsersController::s_jsonReader{};
     thread_local Json::FastWriter UsersController::s_jsonWriter{};
-
     
     void UsersController::Attach(httplib::Server& server)
     {

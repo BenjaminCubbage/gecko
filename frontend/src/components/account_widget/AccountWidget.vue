@@ -32,6 +32,7 @@ import AccountWidgetLogInButton from './AccountWidgetLogInButton.vue';
 import AccountWidgetLogOutButton from './AccountWidgetLogOutButton.vue';
 import AccountWidgetUsernameBadge from './AccountWidgetUsernameBadge.vue';
 import AccountWidgetStatusBubble from './AccountWidgetStatusBubble.vue';
+
 import { Dispatch } from '@/core/dispatch/Dispatch.js';
 import { errorResponseToDisplayString } from '@/core/http/ErrorResponseToDisplayString';
 
