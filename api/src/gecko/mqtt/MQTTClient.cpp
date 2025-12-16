@@ -145,9 +145,6 @@ namespace Gecko::API::MQTT
         std::span payload{ reinterpret_cast<uint8_t*>(message->payload),
                            static_cast<size_t>(message->payloadlen) };
 
-        std::cout << "topic length "   << topic.size()   << std::endl;
-        std::cout << "payload length " << payload.size() << std::endl;
-
         {
             std::unique_lock lk{ m_messageReceivedHandlersMutex };
             for (const auto& handler : m_messageReceivedHandlers)
