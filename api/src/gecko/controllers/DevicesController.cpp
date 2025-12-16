@@ -1,4 +1,5 @@
 #include "gecko/controllers/DevicesController.h"
+#include "gecko/middleware/HasPathParam.h"
 #include "gecko/http/RespondWithError.h"
 
 namespace Gecko::API::Controllers
@@ -16,9 +17,14 @@ namespace Gecko::API::Controllers
     {
         using Services::DevicesService;
 
-        // todo(ben): validate
+        size_t deviceID;
+        if (!Middleware::HasPathParam<size_t>{ "device_id" }(req, res, &deviceID))
+        {
+            std::cout << "blocked invalid request" << std::endl;
+            return;
+        }
 
-        int deviceID = std::stoi(req.path_params.at("device_id"));
+        std::cout << deviceID << std::endl;
 
         DevicesService::DeviceStatus status{};
         switch (m_devicesService.GetDeviceStatus(deviceID, &status))

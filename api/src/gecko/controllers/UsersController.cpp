@@ -5,6 +5,7 @@
 #include "gecko/http/RespondWithError.h"
 #include "gecko/middleware/HasJSONBody.h"
 #include "gecko/middleware/HasJSONValueMember.h"
+#include "gecko/middleware/HasValidXSRFToken.h"
 #include "gecko/middleware/PathParamEquals.h"
 #include "gecko/middleware/UserIsLoggedIn.h"
 #include "gecko/models/User.h"
@@ -72,6 +73,7 @@ namespace Gecko::API::Controllers
         std::string username;
 
         if (!Middleware::UserIsLoggedIn{ m_pubkey }(req, res, &userID) ||
+            !Middleware::HasValidXSRFToken{ }(req, res) ||
             !Middleware::HasJSONBody{ }(req, res, &patch) ||
             !Middleware::HasJSONValueMember<std::string>{ "username" }(req, res, patch, &username) ||
             !Middleware::PathParamEquals{ "id" }(req, res, std::to_string(userID)))

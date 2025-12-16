@@ -13,6 +13,12 @@ namespace Gecko::API::Http
             response.status = httplib::StatusCode::InternalServerError_500;
         }
 
+        static inline void MalformedPath(httplib::Response& response)
+        {
+            response.body   = BuildResponseBody("bad_request", "malformed_path");
+            response.status = httplib::StatusCode::BadRequest_400;
+        }
+
         static inline void UsernameTaken(httplib::Response& response)
         {
             response.body   = BuildResponseBody("conflict", "username_taken");
@@ -106,7 +112,7 @@ namespace Gecko::API::Http
         static inline void OAuthInternalError(httplib::Response& response)
         {
             response.body   = BuildResponseBody("oauth_failed", "internal_error");
-            response.status = httplib::StatusCode::BadRequest_400;
+            response.status = httplib::StatusCode::InternalServerError_500;
         }
 
         static inline void Forbidden(httplib::Response& response)

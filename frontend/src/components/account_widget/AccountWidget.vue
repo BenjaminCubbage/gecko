@@ -45,14 +45,14 @@ const forbiddenUsernames = ref([]);
 function changeUsername(newUsername) {
     userBadgeStatus.value = 'pending';
 
-    Dispatch.Patch_ChangeUsername(session.value.activeUser().json()['user_id'], newUsername)
+    Dispatch.Patch_ChangeUsername(session.value, newUsername)
         .onSuccess(() => {
             session.value.activeUser().json()['username'] = newUsername;
             userBadgeStatus.value = 'normal';
         })
         .onNetworkError(() => statusBubble.value.showMessage('Couldn\'t connect to the server!'))
         .onHttpError(body => {
-            statusBubble.value.showMessage(errorResponseToDisplayString(body))
+            statusBubble.value.showMessage(errorResponseToDisplayString(body));
 
             if (body?.error?.reason === 'username_taken')
                 forbiddenUsernames.value.push(newUsername);
