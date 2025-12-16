@@ -11,7 +11,7 @@ namespace Gecko::API::Http
             requires std::is_integral_v<T> && std::is_unsigned_v<T>
         static bool TryParseUIntegral(std::string_view str, T* outResult)
         {
-            // note(ben): numeric limit is w/out change. So we must first 
+            // note(ben): numeric limit is w/out change
             constexpr size_t maxDigits   = std::numeric_limits<T>::digits10 + 1;
             constexpr size_t maxVal      = std::numeric_limits<T>::max();
             constexpr size_t maxValDiv10 = maxVal / 10;

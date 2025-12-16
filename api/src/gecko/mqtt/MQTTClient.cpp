@@ -113,7 +113,6 @@ namespace Gecko::API::MQTT
     void MQTTClient::HandleConnect(MQTTAsync_successData* response)
     {
         {
-            // note(ben): Rare instance of shadowing being OK
             std::unique_lock lk{ m_connectedOrFailedMutex };
             m_connected = true;
         }
