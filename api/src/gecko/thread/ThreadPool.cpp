@@ -9,7 +9,7 @@ namespace Gecko::API
             std::function<void()> job;
 
             {
-                std::unique_lock lk(m_jobMutex);
+                std::unique_lock lk{ m_jobMutex };
                 m_jobSignal.wait(lk, [this] {
                     return !m_jobs.empty() || m_joining;
                 });
@@ -29,7 +29,7 @@ namespace Gecko::API
     void ThreadPool::Schedule(const std::function<void()>& job)
     {
         {
-            std::unique_lock lk(m_jobMutex);
+            std::unique_lock lk{ m_jobMutex };
             m_jobs.push_back(job);
         }
         m_jobSignal.notify_one();

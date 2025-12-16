@@ -42,8 +42,8 @@ namespace Gecko::API::Services
         UsersService(DB::UsersTable dbUsers) : m_dbUsers(dbUsers) {}
 
         Result CreateUser(const std::string& username,
-                                              const std::string& oidcIss,
-                                              const std::string& oidcSub);
+                          const std::string& oidcIss,
+                          const std::string& oidcSub);
 
         Result GetUserIDByOIDC(const std::string& oidcIss,
                                const std::string& oidcSub,

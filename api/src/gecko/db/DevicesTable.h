@@ -1,0 +1,27 @@
+#pragma once
+#include <string>
+#include "gecko/db/ConnectionPool.h"
+#include "gecko/models/SharedImage.h"
+#include "mysqlx/xdevapi.h"
+
+namespace Gecko::API::DB
+{
+    class DevicesTable
+    {
+    public:
+        enum class Result { Success, Failure };
+
+        DevicesTable(std::shared_ptr<ConnectionPool>& connectionPool)
+            : m_connectionPool(connectionPool) {}
+
+        Result DeviceExists(int deviceID,
+                            bool *outExists);
+
+        Result DeviceExists(int deviceID,
+                            bool *outExists,
+                            int *outOwnerID);
+
+    private:
+        std::shared_ptr<ConnectionPool> m_connectionPool;
+    };
+}

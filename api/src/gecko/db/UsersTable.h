@@ -1,7 +1,4 @@
 #pragma once
-#include <expected>
-#include <memory>
-#include <optional>
 #include <string>
 #include "gecko/db/ConnectionPool.h"
 #include "gecko/models/User.h"
@@ -13,11 +10,7 @@ namespace Gecko::API::DB
     class UsersTable
     {
     public:
-        enum class Result
-        {
-            Success,
-            Failure
-        };
+        enum class Result { Success, Failure };
 
         UsersTable(std::shared_ptr<ConnectionPool>& connectionPool) : m_connectionPool(connectionPool) {}
 
@@ -30,7 +23,7 @@ namespace Gecko::API::DB
         Result OIDCIdentityExists(const std::string& oidcIss,
                                   const std::string& oidcSub,
                                   bool *outExists);
-                                  
+
         Result UserExists(int userID, bool *outExists);
 
         Result GetUserIDByOIDC(const std::string& oidcIss,
@@ -44,8 +37,5 @@ namespace Gecko::API::DB
 
     private:
         std::shared_ptr<ConnectionPool> m_connectionPool;
-
-        static constexpr int MySQL_ER_DUP_ENTRY     = 1062;
-        static constexpr int MySQL_ER_DATA_TOO_LONG = 1406;
     };
 }

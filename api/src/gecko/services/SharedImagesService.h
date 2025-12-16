@@ -1,8 +1,9 @@
 #pragma once
 #include <string>
+#include <vector>
+#include "gecko/db/SharedImagesTable.h"
 #include "gecko/db/UsersTable.h"
-#include "gecko/models/User.h"
-#include "gecko/models/UserPatch.h"
+#include "gecko/models/SharedImage.h"
 
 namespace Gecko::API::Services
 {
@@ -16,17 +17,23 @@ namespace Gecko::API::Services
             /* Service-space */
             SenderNotFound,
             ReceiverNotFound,
+            BadIdempotencyKey,
+            IdempotencyKeyReplayed,
 
             /* DB fallthrough */
             DatabaseError
         };
 
-        SharedImagesService(DB::UsersTable dbUsers) : m_dbUsers(dbUsers) {}
+        SharedImagesService(DB::SharedImagesTable dbSharedImages, DB::UsersTable dbUsers) 
+            : m_dbSharedImages(dbSharedImages), m_dbUsers(dbUsers) {}
 
         Result CreateSharedImage(int senderID,
-                                 int receiverID);
+                                 int receiverID,
+                                 const std::string& idempotencyKey,
+                                 const std::vector<uint8_t>& bytes);
 
     private:
+        DB::SharedImagesTable m_dbSharedImages;
         DB::UsersTable m_dbUsers;
         static thread_local Json::FastWriter s_jsonWriter;
         static thread_local Json::Reader     s_jsonReader;

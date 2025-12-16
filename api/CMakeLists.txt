@@ -19,12 +19,18 @@ set(src_dir "${CMAKE_CURRENT_SOURCE_DIR}/src")
 set(src_files
     "${src_dir}/gecko/controllers/AuthController.cpp"
     "${src_dir}/gecko/controllers/AuthController.h"
+    "${src_dir}/gecko/controllers/DevicesController.cpp"
+    "${src_dir}/gecko/controllers/DevicesController.h"
     "${src_dir}/gecko/controllers/SharedImagesController.cpp"
     "${src_dir}/gecko/controllers/SharedImagesController.h"
     "${src_dir}/gecko/controllers/UsersController.cpp"
     "${src_dir}/gecko/controllers/UsersController.h"
     "${src_dir}/gecko/db/ConnectionPool.cpp"
     "${src_dir}/gecko/db/ConnectionPool.h"
+    "${src_dir}/gecko/db/DevicesTable.cpp"
+    "${src_dir}/gecko/db/DevicesTable.h"
+    "${src_dir}/gecko/db/SharedImagesTable.cpp"
+    "${src_dir}/gecko/db/SharedImagesTable.h"
     "${src_dir}/gecko/db/UsersTable.cpp"
     "${src_dir}/gecko/db/UsersTable.h"
     "${src_dir}/gecko/env/Env.cpp"
@@ -43,14 +49,14 @@ set(src_files
     "${src_dir}/gecko/http/ParseHeader.h"
     "${src_dir}/gecko/http/RespondWithError.cpp"
     "${src_dir}/gecko/http/RespondWithError.h"
-    "${src_dir}/gecko/http/UUID.cpp"
-    "${src_dir}/gecko/http/UUID.h"
     "${src_dir}/gecko/json/MergePatch.cpp"
     "${src_dir}/gecko/json/MergePatch.h"
     "${src_dir}/gecko/middleware/HasAnyMultipartFormData.cpp"
     "${src_dir}/gecko/middleware/HasAnyMultipartFormData.h"
     "${src_dir}/gecko/middleware/HasContentLength.cpp"
     "${src_dir}/gecko/middleware/HasContentLength.h"
+    "${src_dir}/gecko/middleware/HasHeader.cpp"
+    "${src_dir}/gecko/middleware/HasHeader.h"
     "${src_dir}/gecko/middleware/HasJSONBody.cpp"
     "${src_dir}/gecko/middleware/HasJSONBody.h"
     "${src_dir}/gecko/middleware/HasJSONValueMember.cpp"
@@ -67,14 +73,22 @@ set(src_files
     "${src_dir}/gecko/middleware/PathParamEquals.h"
     "${src_dir}/gecko/middleware/UserIsLoggedIn.cpp"
     "${src_dir}/gecko/middleware/UserIsLoggedIn.h"
+    "${src_dir}/gecko/mqtt/MQTTClient.cpp"
+    "${src_dir}/gecko/mqtt/MQTTClient.h"
+    "${src_dir}/gecko/rand/UUID.cpp"
+    "${src_dir}/gecko/rand/UUID.h"
     "${src_dir}/gecko/server/Server.cpp"
     "${src_dir}/gecko/server/Server.h"
+    "${src_dir}/gecko/services/DevicesService.cpp"
+    "${src_dir}/gecko/services/DevicesService.h"
     "${src_dir}/gecko/services/SharedImagesService.cpp"
     "${src_dir}/gecko/services/SharedImagesService.h"
     "${src_dir}/gecko/services/UsersService.cpp"
     "${src_dir}/gecko/services/UsersService.h"
     "${src_dir}/gecko/thread/ThreadPool.cpp"
     "${src_dir}/gecko/thread/ThreadPool.h"
+    "${src_dir}/gecko/topics/DevicesStatusTopic.cpp"
+    "${src_dir}/gecko/topics/DevicesStatusTopic.h"
 )
 
 set(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING "" FORCE)
@@ -139,7 +153,7 @@ FetchContent_MakeAvailable(jwtcpp)
 add_library(api_core STATIC)
 target_sources(api_core PUBLIC ${src_files})
 
-target_include_directories(api_core PUBLIC 
+target_include_directories(api_core PUBLIC
     ${src_dir}
     ${CMAKE_BINARY_DIR}/include/mysqlx
     ${cpphttplib_SOURCE_DIR}
@@ -168,7 +182,7 @@ target_precompile_headers(api_core PUBLIC
 )
 
 target_link_libraries(api_core PUBLIC
-    paho-mqtt3c-static
+    paho-mqtt3a-static
     connector
     jsoncpp_static
     jwt-cpp

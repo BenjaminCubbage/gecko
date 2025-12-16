@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
 #include "gecko/middleware/HasValidXSRFToken.h"
 #include "gecko/http/Constants.h"
-#include "gecko/http/UUID.h"
+#include "gecko/rand/UUID.h"
 #include "httplib.h"
 #include "json/json.h"
 #include <string>
@@ -66,7 +66,7 @@ namespace Gecko::API::Test
         res.status = httplib::StatusCode::OK_200;
 
         const std::string cookieName{ Cookies::HostXSRFToken };
-        const std::string token(Http::UUID::UUIDLength, 'a');
+        const std::string token(Rand::UUID::UUIDLength, 'a');
 
         const std::string cookieHeader = cookieName + '=' + token;
         req.set_header("Cookie", cookieHeader);
@@ -93,8 +93,8 @@ namespace Gecko::API::Test
         res.status = httplib::StatusCode::OK_200;
 
         const std::string cookieName{ Cookies::HostXSRFToken };
-        const std::string cookieValue(Http::UUID::UUIDLength, 'a');
-        const std::string headerValue(Http::UUID::UUIDLength, 'b');
+        const std::string cookieValue(Rand::UUID::UUIDLength, 'a');
+        const std::string headerValue(Rand::UUID::UUIDLength, 'b');
 
         const std::string cookieHeader = cookieName + '=' + cookieValue;
         req.set_header("Cookie", cookieHeader);
@@ -124,7 +124,7 @@ namespace Gecko::API::Test
         const std::string cookieName{ Cookies::HostXSRFToken };
 
         // Cookie and header values match each other, but length != UUIDLength
-        const std::string token(Http::UUID::UUIDLength + 1, 'a');
+        const std::string token(Rand::UUID::UUIDLength + 1, 'a');
 
         const std::string cookieHeader = cookieName + '=' + token;
         req.set_header("Cookie", cookieHeader);
@@ -153,7 +153,7 @@ namespace Gecko::API::Test
         res.body.clear();
 
         const std::string cookieName{ Cookies::HostXSRFToken };
-        const std::string token(Http::UUID::UUIDLength, 'a');
+        const std::string token(Rand::UUID::UUIDLength, 'a');
 
         const std::string cookieHeader = cookieName + '=' + token;
         req.set_header("Cookie", cookieHeader);
@@ -179,7 +179,7 @@ namespace Gecko::API::Test
 
             res.status = httplib::StatusCode::OK_200;
 
-            const std::string token(Http::UUID::UUIDLength, 'a');
+            const std::string token(Rand::UUID::UUIDLength, 'a');
             const std::string cookieHeader = cookieName + '=' + token;
             req.set_header("Cookie", cookieHeader);
             req.set_header(Headers::XXSRFToken, token);
@@ -196,7 +196,7 @@ namespace Gecko::API::Test
 
             res.status = httplib::StatusCode::OK_200;
 
-            const std::string token(Http::UUID::UUIDLength, 'a');
+            const std::string token(Rand::UUID::UUIDLength, 'a');
             const std::string cookieHeader = cookieName + '=' + token;
             req.set_header("Cookie", cookieHeader);
 
@@ -212,7 +212,7 @@ namespace Gecko::API::Test
 
             res.status = httplib::StatusCode::OK_200;
 
-            const std::string token(Http::UUID::UUIDLength, 'b');
+            const std::string token(Rand::UUID::UUIDLength, 'b');
             const std::string cookieHeader = cookieName + '=' + token;
             req.set_header("Cookie", cookieHeader);
             req.set_header(Headers::XXSRFToken, token);

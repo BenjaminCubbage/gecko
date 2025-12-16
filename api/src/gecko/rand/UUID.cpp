@@ -1,8 +1,8 @@
-#include "gecko/http/UUID.h"
+#include "gecko/rand/UUID.h"
 #include <array>
 #include <random>
 
-namespace Gecko::API::Http
+namespace Gecko::API::Rand
 {
     std::string UUID::GenerateUUID()
     {
@@ -22,8 +22,9 @@ namespace Gecko::API::Http
         blocks[7] = static_cast<uint16_t>(r2 >> 48);
 
         // RFC-9562
-        // Do we _need_ to be RFC-9562 compliant? Not _really_. But why not? This is the
-        // internet, after all.
+        // note(ben): Do we _need_ to be RFC-9562 compliant? Not _really_. But
+        // we might as well.
+
         blocks[3] = (blocks[3] & 0x0FFF) | 0x4000; // V4, pseudorandom
         blocks[4] = (blocks[4] & 0x3FFF) | 0x8000; // Variant
 
@@ -52,5 +53,48 @@ namespace Gecko::API::Http
         appendHex(blocks[7]);
 
         return result;
+    }
+
+    bool UUID::IsValidV4UUID(const std::string& str)
+    {
+        const auto isHexDigit = [] (char c) {
+            // note(ben): It is technically not guaranteed that C++ uses
+            // ascii, but this works in any sane implementation
+            return (c >= '0' && c <= '9') ||
+                   (c >= 'a' && c <= 'f') ||
+                   (c >= 'A' && c <= 'F');
+        };
+
+        if (str.size() != UUIDLength)
+            return false;
+
+        for (size_t i = 0; i < str.size(); ++i)
+        {
+            bool hyphen = i == 8 ||
+                          i == 13 ||
+                          i == 18 ||
+                          i == 23;
+
+            if (hyphen)
+            {
+                if (str[i] != '-')
+                    return false;
+            }
+            else
+            {
+                if (!isHexDigit(str[i]))
+                    return false;
+            }
+        }
+
+        const char variant = str[19];
+
+        if (variant != '8' &&
+            variant != '9' &&
+            variant != 'a' &&
+            variant != 'b') // Variant nibble
+            return false;
+
+        return str[14] == '4'; // V4
     }
 }

@@ -15,8 +15,8 @@ namespace Gecko::API::Http
 
         static inline void UsernameTaken(httplib::Response& response)
         {
-            response.body   = BuildResponseBody("bad_request", "username_taken");
-            response.status = httplib::StatusCode::BadRequest_400;
+            response.body   = BuildResponseBody("conflict", "username_taken");
+            response.status = httplib::StatusCode::Conflict_409;
         }
 
         static inline void UsernameTooLong(httplib::Response& response)
@@ -49,9 +49,27 @@ namespace Gecko::API::Http
             response.status = httplib::StatusCode::BadRequest_400;
         }
 
+        static inline void BadIdempotencyKey(httplib::Response& response)
+        {
+            response.body   = BuildResponseBody("bad_request", "bad_idempotency_key");
+            response.status = httplib::StatusCode::BadRequest_400;
+        }
+
+        static inline void MissingIdempotencyKey(httplib::Response& response)
+        {
+            response.body   = BuildResponseBody("bad_request", "missing_idempotency_key");
+            response.status = httplib::StatusCode::BadRequest_400;
+        }
+
         static inline void UserNotFound(httplib::Response& response)
         {
             response.body   = BuildResponseBody("not_found", "user_not_found");
+            response.status = httplib::StatusCode::NotFound_404;
+        }
+
+        static inline void DeviceNotFound(httplib::Response& response)
+        {
+            response.body   = BuildResponseBody("not_found", "device_not_found");
             response.status = httplib::StatusCode::NotFound_404;
         }
 
@@ -108,11 +126,11 @@ namespace Gecko::API::Http
             response.body   = BuildResponseBody("content_too_large", "content_length");
             response.status = httplib::StatusCode::PayloadTooLarge_413;
         }
-        
+
         static inline std::string BuildResponseBody(const std::string& code, const std::string& reason)
         {
-            return R"({"error":{"code":")" + code 
-                 + R"(","reason":")" + reason 
+            return R"({"error":{"code":")" + code
+                 + R"(","reason":")" + reason
                  + R"("}})";
         }
 

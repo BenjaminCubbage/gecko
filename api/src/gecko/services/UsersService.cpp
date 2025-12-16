@@ -87,7 +87,7 @@ namespace Gecko::API::Services
         bool exists{};
 
         EXPECT(m_dbUsers.UserExists(userID, &exists) == DB::UsersTable::Result::Success, Result::DatabaseError);
-        EXPECT(!exists, Result::UserNotFound);
+        EXPECT(exists, Result::UserNotFound);
 
         bool usernameTaken{};
 

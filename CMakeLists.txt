@@ -50,6 +50,7 @@ ExternalProject_Add_Step(api configure_project
     DEPENDS
         ${CMAKE_SOURCE_DIR}/api/CMakeLists.txt
         ${CMAKE_SOURCE_DIR}/api/tests/CMakeLists.txt
+    # ALWAYS 1
 )
 
 ExternalProject_Add_Step(api build_project

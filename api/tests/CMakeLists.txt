@@ -15,7 +15,7 @@ set(main_src_dir "${CMAKE_CURRENT_SOURCE_DIR}/../src")
 set(src_files
     "${test_src_dir}/http/ParseHeaderTest.cpp"
     "${test_src_dir}/http/RespondWithErrorTest.cpp"
-    "${test_src_dir}/http/UUIDTest.cpp"
+    "${test_src_dir}/rand/UUIDTest.cpp"
     "${test_src_dir}/middleware/HasJSONBodyTest.cpp"
     "${test_src_dir}/middleware/HasValidXSRFNonceTest.cpp"
     "${test_src_dir}/middleware/HasValidXSRFTokenTest.cpp"

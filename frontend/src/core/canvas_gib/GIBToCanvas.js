@@ -1,5 +1,5 @@
 class GIBToCanvas {
-    static writeBlob(buffer) {
+    static writeBlob(canvas, buffer) {
         const ctx = canvas?.getContext('2d');
         if (!ctx) {
             console.warn('`canvas?.getContext("2d")` was null or undefined.');

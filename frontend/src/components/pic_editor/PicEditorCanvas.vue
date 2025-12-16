@@ -7,9 +7,12 @@
 <script setup>
 import { computed, onMounted, useTemplateRef } from 'vue';
 import { CanvasUtils } from '@/core/canvas/CanvasUtils.js';
+import { CanvasToGIB } from '@/core/canvas_gib/CanvasToGIB.js';
 
 const canvas = useTemplateRef('canvas');
 const ctx    = computed(() => canvas.value?.getContext('2d', { willReadFrequently: true }));
+
+const emit = defineEmits([ 'canvasChanged' ]);
 
 const draggingState = {
     isDragging: false,
@@ -17,9 +20,9 @@ const draggingState = {
 }
 
 onMounted(() => {
-    if (!ctx.value) 
+    if (!ctx.value)
     {
-        console.error("Could not get canvas context on mount.");
+        console.error('Could not get canvas context on mount.');
         return;
     }
 
@@ -31,9 +34,7 @@ onMounted(() => {
 });
 
 function dragMouse(e) {
-    /*
-         * Recursively handle coalesced events for smoother drawing 
-         */
+    // Recursively handle coalesced events for smoother drawing
     if (e.getCoalescedEvents)
         for (const extra of e.getCoalescedEvents())
             dragMouse(extra);
@@ -42,7 +43,7 @@ function dragMouse(e) {
         stopDragging();
         return;
     }
-        
+
     const rect = canvas.value.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
@@ -55,7 +56,7 @@ function dragTouch(e) {
         stopDragging();
         return;
     }
-        
+
     const touch = e.touches[0];
     const rect = canvas.value.getBoundingClientRect();
     const x = touch.clientX - rect.left;
@@ -96,16 +97,18 @@ function drag(x, y) {
     draggingState.isDragging = true;
     draggingState.previousDragPosition.x = x;
     draggingState.previousDragPosition.y = y;
+
+    emit('canvasChanged');
 }
 
 function stopDragging() {
-    draggingState.isDragging = false; 
+    draggingState.isDragging = false;
 }
 
 function clear() {
-    if (!ctx.value) 
+    if (!ctx.value)
     {
-        console.warn("Could not clear canvas because ctx is missing.");
+        console.warn('Could not clear canvas because ctx is missing.');
         return;
     }
 
@@ -115,10 +118,12 @@ function clear() {
     ctx.value.restore();
 }
 
-defineExpose({ 
-    getCTX: () => ctx.value, 
+defineExpose({
+    getCTX: () => ctx.value,
     getCanvasElement: () => canvas.value,
-    clear 
+    clear,
+    readGIBBlob:  () => CanvasToGIB.readBlob(canvas.value),
+    writeGIBBlob: blob => GIBToCanvas.writeBlob(canvas, canvas.value)
 });
 </script>
 
@@ -138,7 +143,7 @@ defineExpose({
 
     .canvas {
         background: white;
-        image-rendering: pixelated; 
+        image-rendering: pixelated;
         image-rendering: crisp-edges;
     }
 </style>

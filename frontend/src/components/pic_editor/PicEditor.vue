@@ -1,7 +1,7 @@
 <template>
     <div class="canvas-editor">
-        <PicEditorCanvas ref="picEditorCanvas" />
-        
+        <PicEditorCanvas ref="picEditorCanvas" @canvasChanged="canvasChanged" />
+
         <div class="buttons">
             <PicEditorButton @click="send">SEND</PicEditorButton>
             <PicEditorButton @click="save">SAVE</PicEditorButton>
@@ -12,23 +12,26 @@
 </template>
 
 <script setup>
-import { useTemplateRef, inject } from 'vue';
+import { useTemplateRef, ref, inject } from 'vue';
 import PicEditorButton from './PicEditorButton.vue';
 import PicEditorCanvas from './PicEditorCanvas.vue';
 import { CanvasSave } from '@/core/canvas/CanvasSave.js';
 import { CanvasLoad } from '@/core/canvas/CanvasLoad.js';
-
-import { CanvasToGIB } from '@/core/canvas_gib/CanvasToGIB.js';
 import { Dispatch } from '@/core/dispatch/Dispatch.js';
 
 const picEditorCanvas = useTemplateRef('picEditorCanvas');
 const session = inject('session');
+const idempotencyKey = ref(crypto.randomUUID());
 
 function send() {
-    const blob = CanvasToGIB.readBlob(picEditorCanvas.value?.getCanvasElement());
-    console.log(blob.size);
-
-    Dispatch.Post_SharedImage(session.value, session.value.activeUser().json()["user_id"], blob);
+    if (!picEditorCanvas.value)
+        console.error(`Could not resolve templated ref 'picEditorCanvas'`)
+    else
+        Dispatch.Post_SharedImage(
+            session.value,
+            idempotencyKey.value,
+            session.value.activeUser().json()["user_id"],
+            picEditorCanvas.value.readGIBBlob());
 }
 
 function save() {
@@ -41,6 +44,10 @@ function load() {
 
 function clear() {
     picEditorCanvas.value?.clear();
+}
+
+function canvasChanged() {
+    idempotencyKey.value = crypto.randomUUID();
 }
 </script>
 

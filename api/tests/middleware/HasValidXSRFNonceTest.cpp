@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
 #include "gecko/middleware/HasValidOAuthXSRFNonce.h"
 #include "gecko/http/Constants.h"
-#include "gecko/http/UUID.h"
+#include "gecko/rand/UUID.h"
 #include "httplib.h"
 #include "json/json.h"
 #include <string>
@@ -18,7 +18,7 @@ namespace Gecko::API::Test
         httplib::Response res{};
 
         res.status = httplib::StatusCode::OK_200;
-        const std::string expected(Http::UUID::UUIDLength, 'a');
+        const std::string expected(Rand::UUID::UUIDLength, 'a');
 
         HasValidOAuthXSRFNonce middleware{};
         const bool ok = middleware(req, res, expected);
@@ -41,7 +41,7 @@ namespace Gecko::API::Test
         httplib::Response res{};
 
         res.status = httplib::StatusCode::OK_200;
-        const std::string expected(Http::UUID::UUIDLength, 'a');
+        const std::string expected(Rand::UUID::UUIDLength, 'a');
 
         // Cookie header present but does not contain the OAuth XSRF nonce cookie
         const std::string cookieHeader = "other_cookie=abc123";
@@ -69,8 +69,8 @@ namespace Gecko::API::Test
         res.status = httplib::StatusCode::OK_200;
 
         const std::string cookieName{Cookies::HostHttpOAuthXSRFNonce};
-        const std::string expected(Http::UUID::UUIDLength, 'a'); // what we expect
-        const std::string actual  (Http::UUID::UUIDLength, 'b'); // what is in the cookie
+        const std::string expected(Rand::UUID::UUIDLength, 'a'); // what we expect
+        const std::string actual  (Rand::UUID::UUIDLength, 'b'); // what is in the cookie
 
         const std::string cookieHeader = cookieName + '=' + actual;
         req.set_header("Cookie", cookieHeader);
@@ -99,7 +99,7 @@ namespace Gecko::API::Test
         const std::string cookieName{Cookies::HostHttpOAuthXSRFNonce};
 
         // Value matches expected string but has wrong length vs UUIDLength
-        const std::string invalidLengthValue(Http::UUID::UUIDLength + 1, 'a');
+        const std::string invalidLengthValue(Rand::UUID::UUIDLength + 1, 'a');
         const std::string expected = invalidLengthValue;
 
         const std::string cookieHeader = cookieName + '=' + invalidLengthValue;
@@ -128,7 +128,7 @@ namespace Gecko::API::Test
         res.body.clear();
 
         const std::string cookieName{Cookies::HostHttpOAuthXSRFNonce};
-        const std::string expected(Http::UUID::UUIDLength, 'a');
+        const std::string expected(Rand::UUID::UUIDLength, 'a');
 
         const std::string cookieHeader = cookieName + '=' + expected;
         req.set_header("Cookie", cookieHeader);

@@ -1,21 +1,58 @@
 #include "gecko/server/Server.h"
+#include <chrono>
+#include <memory>
+#include "httplib.h"
 #include "gecko/controllers/AuthController.h"
+#include "gecko/controllers/DevicesController.h"
 #include "gecko/controllers/SharedImagesController.h"
 #include "gecko/controllers/UsersController.h"
 #include "gecko/db/ConnectionPool.h"
+#include "gecko/db/DevicesTable.h"
+#include "gecko/db/SharedImagesTable.h"
 #include "gecko/db/UsersTable.h"
+#include "gecko/mqtt/MQTTClient.h"
+#include "gecko/services/DevicesService.h"
+#include "gecko/services/SharedImagesService.h"
 #include "gecko/services/UsersService.h"
+#include "gecko/topics/DevicesStatusTopic.h"
 
 namespace Gecko::API::Server
 {
     bool Server::Start(const Env::Env& env, std::ostream& log)
     {
-        httplib::SSLServer httpServer
-        (
+        auto mqttClient = std::make_shared<MQTT::MQTTClient>(
+            "tcp://localhost:" + std::to_string(env.mosquittoPort),
+            "root",
+            env.mosquittoPassword);
+
+        if (!mqttClient->ConnectSync())
+        {
+            log << "[api]: Couldn't connect to the MQTT server on port " << env.mosquittoPort << std::endl;
+            return false;
+        }
+
+        log << "[api]: Connected to MQTT server on port " << env.mosquittoPort << std::endl;
+
+        auto devicesStatusTopic = std::make_shared<Topics::DevicesStatusTopic>(mqttClient);
+        auto connectionPool = std::make_shared<DB::ConnectionPool>(
+            "127.0.0.1", env.mysqlXAPIPort, "root", env.mysqlPassword, "Gecko");
+
+        DB::UsersTable        dbUsers       { connectionPool };
+        DB::SharedImagesTable dbSharedImages{ connectionPool };
+        DB::DevicesTable      dbDevices     { connectionPool };
+
+        Services::UsersService        usersService       { dbUsers };
+        Services::SharedImagesService sharedImagesService{ dbSharedImages, dbUsers };
+        Services::DevicesService      devicesService     { devicesStatusTopic, dbDevices };
+
+        httplib::SSLServer httpServer(
             env.geckoAPITLSCertPath.c_str(),
-            env.geckoAPITLSPkeyPath.c_str()
-        );
-        
+            env.geckoAPITLSPkeyPath.c_str());
+
+        httpServer.set_keep_alive_timeout(10);
+        httpServer.set_keep_alive_max_count(50);
+        httpServer.set_tcp_nodelay(true);
+
         if (!httpServer.is_valid())
         {
             log << "[api]: HTTPS Server was DOA. "
@@ -25,37 +62,23 @@ namespace Gecko::API::Server
             return false;
         }
 
-        auto connectionPool = std::make_shared<DB::ConnectionPool>
-        (
-            "127.0.0.1",
-            env.mysqlXAPIPort,
-            "root",
-            env.mysqlPassword,
-            "Gecko"
-        );
-
-        DB::UsersTable dbUsers{ connectionPool };
-
-        Services::UsersService usersService{ dbUsers };
-        Services::SharedImagesService sharedImagesService{ dbUsers };
-
-        Controllers::AuthController authController
-        { 
-            usersService, 
-            env.oauthClientID, 
-            env.oauthClientSecret, 
+        Controllers::AuthController authController{
+            usersService,
+            env.oauthClientID,
+            env.oauthClientSecret,
             env.jwtPrivateKey,
-            env.jwtPublicKey
-        };
+            env.jwtPublicKey };
 
-        Controllers::UsersController usersController{ usersService, env.jwtPublicKey };
+        Controllers::UsersController        usersController       { usersService, env.jwtPublicKey };
         Controllers::SharedImagesController sharedImagesController{ sharedImagesService, env.jwtPublicKey };
-        
-        authController.Attach(httpServer);
-        usersController.Attach(httpServer);
-        sharedImagesController.Attach(httpServer);
+        Controllers::DevicesController      devicesController     { devicesService };
 
-        log << "[api]: Listening on 0.0.0.0:" << env.geckoAPIPort << std::endl;
+        authController        .Attach(httpServer);
+        usersController       .Attach(httpServer);
+        sharedImagesController.Attach(httpServer);
+        devicesController     .Attach(httpServer);
+
+        log << "[api]: HTTP server listening on 0.0.0.0:" << env.geckoAPIPort << std::endl;
         if (!httpServer.listen("0.0.0.0", env.geckoAPIPort))
         {
             log << "[api]: Error: Couldn't bind to port " << env.geckoAPIPort;

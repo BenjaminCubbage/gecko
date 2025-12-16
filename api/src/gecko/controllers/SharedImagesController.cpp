@@ -3,9 +3,12 @@
 #include "jwt-cpp/jwt.h"
 #include "jwt-cpp/traits/open-source-parsers-jsoncpp/traits.h"
 #include "gecko/middleware/HasAnyMultipartFormData.h"
-#include "gecko/middleware/HasMultipartFormDataField.h"
 #include "gecko/middleware/HasContentLength.h"
+#include "gecko/middleware/HasHeader.h"
+#include "gecko/middleware/HasMultipartFormDataField.h"
+#include "gecko/middleware/UserIsLoggedIn.h"
 #include "gecko/http/MultipartFormData.h"
+#include "gecko/http/RespondWithError.h"
 
 namespace Gecko::API::Controllers
 {
@@ -25,6 +28,7 @@ namespace Gecko::API::Controllers
                                                           httplib::Response& res,
                                                           const httplib::ContentReader& contentReader)
     {
+        using Services::SharedImagesService;
         using FieldFinder = Http::MultipartFormData::FieldFinder;
 
         thread_local std::vector<FieldFinder> mfdFinders{
@@ -32,12 +36,18 @@ namespace Gecko::API::Controllers
             { "metadata", FieldFinder::FieldType::String, 32 }
         };
 
+        int userID{};
         size_t contentLength{};
-        if (!Middleware::HasContentLength{}(req, res, &contentLength))
+        std::string idempotencyKey;
+        if (!Middleware::UserIsLoggedIn{ m_pubkey }(req, res, &userID) ||
+            !Middleware::HasContentLength{}(req, res, &contentLength) ||
+            !Middleware::HasHeader{ "Idempotency-Key" }(req, res, &idempotencyKey))
+        {
             return;
+        }
 
-        // Estimate at least 100 bytes for everything that isn't
-        // the blob.
+        // Avoid copies by estimating the blob's size.
+        // Always at least 100 bytes in the payload that aren't the blob.
         mfdFinders[0].guessLength = std::max(contentLength, std::size_t{ 100 }) - 100;
 
         Http::MultipartFormData formData;
@@ -47,10 +57,32 @@ namespace Gecko::API::Controllers
         if (!Middleware::HasAnyMultipartFormData{}(req, res, contentReader, mfdFinders, &formData) ||
             !Middleware::HasMultipartFormDataField<std::string>{ "metadata" }(req, res, formData, &fdMetadata) ||
             !Middleware::HasMultipartFormDataField<std::vector<uint8_t>>{ "content" }(req, res, formData, &fdContent))
+        {
             return;
+        }
 
-        std::cout << *fdMetadata << std::endl;
-        std::cout << "guess:  " << mfdFinders[0].guessLength << "\n";
-        std::cout << "actual: " << fdContent->size() << std::endl;
+        switch (m_sharedImagesService.CreateSharedImage(userID, userID, idempotencyKey, *fdContent))
+        {
+            case SharedImagesService::Result::Success:
+                res.status = httplib::StatusCode::Created_201;
+                return;
+
+            case SharedImagesService::Result::IdempotencyKeyReplayed:
+                res.status = httplib::StatusCode::OK_200;
+                return;
+
+            case SharedImagesService::Result::BadIdempotencyKey:
+                Http::RespondWithError::BadIdempotencyKey(res);
+                return;
+
+            case SharedImagesService::Result::SenderNotFound:
+            case SharedImagesService::Result::ReceiverNotFound:
+                Http::RespondWithError::UserNotFound(res);
+                return;
+
+            default:
+                Http::RespondWithError::CouldNotFulfill(res);
+                return;
+        }
     }
 }

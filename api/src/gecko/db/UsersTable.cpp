@@ -9,7 +9,7 @@ namespace Gecko::API::DB
             auto connection = m_connectionPool->Acquire();
 
             auto result =
-                connection->sql("SELECT user_id FROM Users WHERE username=?")
+                connection->sql("SELECT 1 FROM Users WHERE username=?")
                     .bind(username)
                     .execute();
 
@@ -58,7 +58,7 @@ namespace Gecko::API::DB
                     .bind(oidcIss, oidcSub)
                     .execute();
 
-            *outExists = result.hasData() && result.count() > 0;
+            *outExists = result.count() > 0;
             return Result::Success;
         }
         catch (mysqlx::Error&)
@@ -79,7 +79,7 @@ namespace Gecko::API::DB
                     .bind(userID)
                     .execute();
 
-            *outExists = result.hasData() && result.count() != 1;
+            *outExists = result.count() == 1;
             return Result::Success;
         }
         catch (mysqlx::Error&)

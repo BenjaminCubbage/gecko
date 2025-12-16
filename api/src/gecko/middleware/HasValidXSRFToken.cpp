@@ -2,7 +2,7 @@
 #include "gecko/http/Constants.h"
 #include "gecko/http/RespondWithError.h"
 #include "gecko/http/ParseHeader.h"
-#include "gecko/http/UUID.h"
+#include "gecko/rand/UUID.h"
 
 using ::Gecko::API::Http::Constants::Cookies;
 using ::Gecko::API::Http::Constants::Headers;
@@ -16,11 +16,11 @@ namespace Gecko::API::Middleware
 
         if (!cookieHeader.size())
         {
-            Gecko::API::Http::RespondWithError::XSRFMissing(res);
+            Http::RespondWithError::XSRFMissing(res);
             return false;
         }
-        
-        const auto cookieToken = Gecko::API::Http::ParseHeader::GetCookieValue
+
+        const auto cookieToken = Http::ParseHeader::GetCookieValue
         (
             cookieHeader,
             Cookies::HostXSRFToken
@@ -28,7 +28,7 @@ namespace Gecko::API::Middleware
 
         if (!cookieToken)
         {
-            Gecko::API::Http::RespondWithError::XSRFMissing(res);
+            Http::RespondWithError::XSRFMissing(res);
             return false;
         }
 
@@ -36,13 +36,13 @@ namespace Gecko::API::Middleware
 
         if (!headerToken.size())
         {
-            Gecko::API::Http::RespondWithError::XSRFMissing(res);
+            Http::RespondWithError::XSRFMissing(res);
             return false;
         }
 
-        if (*cookieToken != headerToken || headerToken.size() != Http::UUID::UUIDLength)
+        if (*cookieToken != headerToken || headerToken.size() != Rand::UUID::UUIDLength)
         {
-            Gecko::API::Http::RespondWithError::XSRFInvalid(res);
+            Http::RespondWithError::XSRFInvalid(res);
             return false;
         }
 

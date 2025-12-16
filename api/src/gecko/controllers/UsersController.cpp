@@ -16,16 +16,20 @@ namespace Gecko::API::Controllers
 {
     thread_local Json::Reader     UsersController::s_jsonReader{};
     thread_local Json::FastWriter UsersController::s_jsonWriter{};
-    
+
     void UsersController::Attach(httplib::Server& server)
     {
-        server.Get("/api/users/me", [this] (const httplib::Request& req, httplib::Response& res) {
-            Handle_GET_Me(req, res);
-        });
+        server.Get(
+            "/api/users/me",
+            [this] (const httplib::Request& req, httplib::Response& res) {
+                Handle_GET_Me(req, res);
+            });
 
-        server.Patch("/api/users/:id", [this] (const httplib::Request& req, httplib::Response& res) {
-            Handle_PATCH_User(req, res);
-        });
+        server.Patch(
+            "/api/users/:id",
+            [this] (const httplib::Request& req, httplib::Response& res) {
+                Handle_PATCH_User(req, res);
+            });
     }
 
     void UsersController::Handle_GET_Me(const httplib::Request& req, httplib::Response& res)

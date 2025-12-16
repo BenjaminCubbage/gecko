@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "gecko/http/UUID.h"
+#include "gecko/rand/UUID.h"
 #include <cstddef>
 #include <string>
 

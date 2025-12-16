@@ -10,7 +10,7 @@
 #include "gecko/middleware/UserIsLoggedIn.h"
 #include "gecko/models/User.h"
 #include "gecko/http/ParseHeader.h"
-#include "gecko/http/UUID.h"
+#include "gecko/rand/UUID.h"
 
 // macros instead of constexpr for nicer concatenation
 #define ONE_WEEK_IN_SECONDS      604800
@@ -32,11 +32,11 @@ namespace Gecko::API::Controllers
         server.Get("/auth/login", [this](const httplib::Request& req, httplib::Response& res) {
             Handle_GET_LogIn(req, res);
         });
-        
+
         server.Post("/auth/logout", [this](const httplib::Request& req, httplib::Response& res) {
             Handle_POST_LogOut(req, res);
         });
-        
+
         server.Get("/auth/oauth-callback", [this](const httplib::Request& req, httplib::Response& res) {
             Handle_GET_OAuthCallback(req, res);
         });
@@ -50,11 +50,11 @@ namespace Gecko::API::Controllers
         });
     }
 
-    
+
     void AuthController::Handle_GET_LogIn(const httplib::Request& req, httplib::Response& res)
     {
-        const std::string nonce = Http::UUID::GenerateUUID();
-        
+        const std::string nonce = Rand::UUID::GenerateUUID();
+
         const std::string uri = std::format
         (
             "https://accounts.google.com/o/oauth2/v2/auth"
@@ -67,7 +67,7 @@ namespace Gecko::API::Controllers
             m_oauthClientID,
             nonce
         );
-        
+
         const auto nonceCookie = std::format
         (
             "{}={};"
@@ -94,7 +94,7 @@ namespace Gecko::API::Controllers
         {
             return;
         }
-        
+
         const auto expireCookie = std::format
         (
             "{}=;"
@@ -149,7 +149,7 @@ namespace Gecko::API::Controllers
                 code
             )
         );
-        
+
         // Parse JSON out of response to get id_token.
 
         // We could double-check scope here, but since we only asked for the openid
@@ -181,7 +181,7 @@ namespace Gecko::API::Controllers
                 return;
             }
 
-            const std::string username = "user_" + Gecko::API::Http::UUID::GenerateUUID().substr(0, 8);
+            const std::string username = "user_" + Gecko::API::Rand::UUID::GenerateUUID().substr(0, 8);
 
             switch (m_usersService.CreateUser(username, iss, sub))
             {
@@ -271,7 +271,7 @@ namespace Gecko::API::Controllers
             res.status = httplib::StatusCode::BadRequest_400;
             return;
         }
-    }   
+    }
 
     void AuthController::Handle_GET_XSRF(const httplib::Request& req, httplib::Response& res)
     {
@@ -284,7 +284,7 @@ namespace Gecko::API::Controllers
             "Path=/;"
             ,
             Cookies::HostXSRFToken,
-            Http::UUID::GenerateUUID()
+            Rand::UUID::GenerateUUID()
         );
 
         res.set_header("Set-Cookie", cookie);
