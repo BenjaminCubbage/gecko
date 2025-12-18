@@ -15,6 +15,7 @@ set(main_src_dir "${CMAKE_CURRENT_SOURCE_DIR}/../src")
 set(src_files
     "${test_src_dir}/http/MultipartFormDataTest.cpp"
     "${test_src_dir}/http/ParseHeaderTest.cpp"
+    "${test_src_dir}/http/ParseValueTest.cpp"
     "${test_src_dir}/http/RespondWithErrorTest.cpp"
     "${test_src_dir}/middleware/HasContentLengthTest.cpp"
     "${test_src_dir}/middleware/HasHeaderTest.cpp"
