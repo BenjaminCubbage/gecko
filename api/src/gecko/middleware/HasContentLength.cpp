@@ -9,7 +9,7 @@ namespace Gecko::API::Middleware
     {
         const auto contentLength = req.get_header_value("Content-Length");
 
-        if (contentLength.empty() || (contentLength.size() == 1 && contentLength[0] == '0'))
+        if (contentLength.empty())
         {
             Http::RespondWithError::BadContentLength(res);
             return false;
@@ -40,6 +40,12 @@ namespace Gecko::API::Middleware
             }
 
             result = result * 10 + (c - '0');
+        }
+        
+        if (result == 0)
+        {
+            Http::RespondWithError::BadContentLength(res);
+            return false;
         }
 
         *outContentLength = result;

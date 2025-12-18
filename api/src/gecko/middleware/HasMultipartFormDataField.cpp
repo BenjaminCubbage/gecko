@@ -12,7 +12,7 @@ namespace Gecko::API::Middleware
                                                   Http::MultipartFormData& formData,
                                                   T** outResult)
     {
-        if (!formData.find(m_fieldName, outResult))
+        if (!formData.Find(m_fieldName, outResult))
         {
             Http::RespondWithError::MissingField(res, m_fieldName);
             return false;

@@ -13,15 +13,20 @@ set(test_src_dir "${CMAKE_CURRENT_SOURCE_DIR}")
 set(main_src_dir "${CMAKE_CURRENT_SOURCE_DIR}/../src")
 
 set(src_files
+    "${test_src_dir}/http/MultipartFormDataTest.cpp"
     "${test_src_dir}/http/ParseHeaderTest.cpp"
     "${test_src_dir}/http/RespondWithErrorTest.cpp"
-    "${test_src_dir}/rand/UUIDTest.cpp"
+    "${test_src_dir}/middleware/HasContentLengthTest.cpp"
+    "${test_src_dir}/middleware/HasHeaderTest.cpp"
     "${test_src_dir}/middleware/HasJSONBodyTest.cpp"
-    "${test_src_dir}/middleware/HasValidXSRFNonceTest.cpp"
+    "${test_src_dir}/middleware/HasMultipartFormDataFieldTest.cpp"
+    "${test_src_dir}/middleware/HasPathParamTest.cpp"
+    "${test_src_dir}/middleware/HasValidOAuthXSRFNonceTest.cpp"
     "${test_src_dir}/middleware/HasValidXSRFTokenTest.cpp"
     "${test_src_dir}/middleware/IsSuccessfulOAuthCallbackTest.cpp"
     "${test_src_dir}/middleware/PathParamEqualsTest.cpp"
     "${test_src_dir}/middleware/UserIsLoggedInTest.cpp"
+    "${test_src_dir}/rand/UUIDTest.cpp"
     "${test_src_dir}/thread/ThreadPoolTest.cpp"
 )
 

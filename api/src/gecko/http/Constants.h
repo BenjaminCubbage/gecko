@@ -11,6 +11,7 @@ namespace Gecko::API::Http::Constants
     struct Headers
     {
         static const std::string XXSRFToken;
+        static const std::string IdempotencyKey;
     };
 
     struct Cookies

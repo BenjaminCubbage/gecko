@@ -11,7 +11,7 @@ namespace Gecko::API::Middleware
 
         if (!outHeaderValue->size())
         {
-            Gecko::API::Http::RespondWithError::MissingIdempotencyKey(res);
+            Gecko::API::Http::RespondWithError::MissingHeader(res, m_headerName);
             return false;
         }
 

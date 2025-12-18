@@ -58,7 +58,9 @@ namespace Gecko::API::Http
                                   std::move(vectorFields) };
     }
 
-    bool MultipartFormData::find(const std::string& fieldName, std::string** outField)
+    // note(ben): Last field always wins
+
+    bool MultipartFormData::Find(const std::string& fieldName, std::string** outField)
     {
         *outField = nullptr;
 
@@ -69,7 +71,7 @@ namespace Gecko::API::Http
         return *outField;
     }
 
-    bool MultipartFormData::find(const std::string& fieldName, std::vector<uint8_t>** outField)
+    bool MultipartFormData::Find(const std::string& fieldName, std::vector<uint8_t>** outField)
     {
         *outField = nullptr;
 

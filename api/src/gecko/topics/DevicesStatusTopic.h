@@ -44,15 +44,15 @@ namespace Gecko::API::Topics
             size_t operator()(std::string_view sv)    const { return std::hash<std::string_view>{}(sv);  }
             size_t operator()(const std::string& str) const { return std::hash<std::string_view>{}(str); }
         };
-        
+
         void MessageReceivedHandler(std::string_view topic, std::span<uint8_t> payload);
 
         std::shared_ptr<MQTT::MQTTClient> m_mqttClient;
         std::shared_mutex                 m_trackedDevicesMutex;
         std::unordered_map<
-            std::string, 
-            Status, 
-            SVTransparentHash, 
+            std::string,
+            Status,
+            SVTransparentHash,
             std::equal_to<>> m_trackedDevices;
     };
 }

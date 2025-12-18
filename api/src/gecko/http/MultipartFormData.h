@@ -32,8 +32,8 @@ namespace Gecko::API::Http
 
         MultipartFormData() {}
 
-        bool find(const std::string& fieldName, std::string** outField);
-        bool find(const std::string& fieldName, std::vector<uint8_t>** outField);
+        bool Find(const std::string& fieldName, std::string** outField);
+        bool Find(const std::string& fieldName, std::vector<uint8_t>** outField);
 
     private:
         MultipartFormData(std::vector<Field<std::string>> stringFields,

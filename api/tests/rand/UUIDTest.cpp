@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <string>
 
-using namespace Gecko::API::Http;
+using namespace Gecko::API::Rand;
 
 namespace Gecko::API::Test
 {

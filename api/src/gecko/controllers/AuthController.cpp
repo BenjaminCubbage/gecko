@@ -3,13 +3,13 @@
 #include "jwt-cpp/jwt.h"
 #include "jwt-cpp/traits/open-source-parsers-jsoncpp/traits.h"
 #include "gecko/http/Constants.h"
+#include "gecko/http/ParseHeader.h"
 #include "gecko/http/RespondWithError.h"
 #include "gecko/middleware/HasValidOAuthXSRFNonce.h"
 #include "gecko/middleware/HasValidXSRFToken.h"
 #include "gecko/middleware/IsSuccessfulOAuthCallback.h"
 #include "gecko/middleware/UserIsLoggedIn.h"
 #include "gecko/models/User.h"
-#include "gecko/http/ParseHeader.h"
 #include "gecko/rand/UUID.h"
 
 // macros instead of constexpr for nicer concatenation

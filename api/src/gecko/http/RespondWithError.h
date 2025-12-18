@@ -49,21 +49,21 @@ namespace Gecko::API::Http
             response.status = httplib::StatusCode::BadRequest_400;
         }
 
+        static inline void MissingHeader(httplib::Response& response, const std::string& headerName)
+        {
+            response.body   = BuildResponseBodyWithHeader("bad_request", "missing_header", headerName);
+            response.status = httplib::StatusCode::BadRequest_400;
+        }
+
+        static inline void BadHeader(httplib::Response& response, const std::string& headerName)
+        {
+            response.body   = BuildResponseBodyWithHeader("bad_request", "missing_header", headerName);
+            response.status = httplib::StatusCode::BadRequest_400;
+        }
+
         static inline void BadContentLength(httplib::Response& response)
         {
             response.body   = BuildResponseBody("bad_request", "bad_content_length");
-            response.status = httplib::StatusCode::BadRequest_400;
-        }
-
-        static inline void BadIdempotencyKey(httplib::Response& response)
-        {
-            response.body   = BuildResponseBody("bad_request", "bad_idempotency_key");
-            response.status = httplib::StatusCode::BadRequest_400;
-        }
-
-        static inline void MissingIdempotencyKey(httplib::Response& response)
-        {
-            response.body   = BuildResponseBody("bad_request", "missing_idempotency_key");
             response.status = httplib::StatusCode::BadRequest_400;
         }
 
@@ -145,6 +145,14 @@ namespace Gecko::API::Http
             return R"({"error":{"code":")" + code
                  + R"(","reason":")" + reason
                  + R"(","field":")" + field
+                 + R"("}})";
+        }
+
+        static inline std::string BuildResponseBodyWithHeader(const std::string& code, const std::string& reason, const std::string& field)
+        {
+            return R"({"error":{"code":")" + code
+                 + R"(","reason":")" + reason
+                 + R"(","header":")" + field
                  + R"("}})";
         }
     };

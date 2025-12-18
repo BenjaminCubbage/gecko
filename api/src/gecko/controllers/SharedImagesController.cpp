@@ -2,6 +2,7 @@
 #include "gecko/controllers/SharedImagesController.h"
 #include "jwt-cpp/jwt.h"
 #include "jwt-cpp/traits/open-source-parsers-jsoncpp/traits.h"
+#include "gecko/http/Constants.h"
 #include "gecko/middleware/HasAnyMultipartFormData.h"
 #include "gecko/middleware/HasContentLength.h"
 #include "gecko/middleware/HasHeader.h"
@@ -14,6 +15,8 @@ namespace Gecko::API::Controllers
 {
     thread_local Json::Reader     SharedImagesController::s_jsonReader{};
     thread_local Json::FastWriter SharedImagesController::s_jsonWriter{};
+    
+    using ::Gecko::API::Http::Constants::Headers;
 
     void SharedImagesController::Attach(httplib::Server& server)
     {
@@ -41,7 +44,7 @@ namespace Gecko::API::Controllers
         std::string idempotencyKey;
         if (!Middleware::UserIsLoggedIn{ m_pubkey }(req, res, &userID) ||
             !Middleware::HasContentLength{}(req, res, &contentLength) ||
-            !Middleware::HasHeader{ "Idempotency-Key" }(req, res, &idempotencyKey))
+            !Middleware::HasHeader{ Headers::IdempotencyKey }(req, res, &idempotencyKey))
         {
             return;
         }
@@ -72,7 +75,7 @@ namespace Gecko::API::Controllers
                 return;
 
             case SharedImagesService::Result::BadIdempotencyKey:
-                Http::RespondWithError::BadIdempotencyKey(res);
+                Http::RespondWithError::BadHeader(res, Headers::IdempotencyKey);
                 return;
 
             case SharedImagesService::Result::SenderNotFound:
