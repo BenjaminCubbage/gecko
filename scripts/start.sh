@@ -2,12 +2,13 @@
 
 script_dir="$(cd "$(dirname "$0")" && pwd)"
 env_dir="$(realpath "$script_dir/../env")"
+conf_dir="$(realpath "$script_dir/../conf")"
 
 [[ -d "$env_dir" ]]  || { echo "[init.sh]: Could not find directory $env_dir";  exit 1; }
 
-source "$script_dir/_startmosquitto.sh"
-source "$script_dir/_startmysql.sh"
-source "$script_dir/_startapi.sh"
+source "$script_dir/start/_startmosquitto.sh"
+source "$script_dir/start/_startmysql.sh"
+source "$script_dir/start/_startapi.sh"
 
 usage() {
     echo "Usage: start.sh <mosquitto|mysql|api>"

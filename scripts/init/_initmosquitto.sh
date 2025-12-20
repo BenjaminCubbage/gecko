@@ -1,11 +1,7 @@
 #!/bin/bash
 
-script_dir="$(cd "$(dirname "$0")" && pwd)"
-env_dir="$(realpath "$script_dir/../env")"
-conf_dir="$(realpath "$script_dir/../conf")" 
-
 source "$script_dir/_prompt.sh"
-source "$script_dir/_envmosquitto.sh"
+source "$script_dir/env/_envmosquitto.sh"
 
 initmosquitto_clean() {
     envmosquitto_loadenv

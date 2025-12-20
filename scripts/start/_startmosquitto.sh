@@ -1,9 +1,6 @@
 #!/bin/bash
 
-script_dir="$(cd "$(dirname "$0")" && pwd)"
-env_dir="$(realpath "$script_dir/../env")"
-
-source "$script_dir/_envmosquitto.sh"
+source "$script_dir/env/_envmosquitto.sh"
 
 startmosquitto_kill() {
     envmosquitto_loadenv

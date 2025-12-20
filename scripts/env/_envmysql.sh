@@ -1,8 +1,5 @@
 #!/bin/bash
 
-script_dir="$(cd "$(dirname "$0")" && pwd)"
-env_dir="$(realpath "$script_dir/../env")"
-
 envmysql_loadenv() {
     mysql_env_file=$env_dir/mysql/.env.local
     [[ -f "$mysql_env_file" ]] && export $(grep -v "^[ \t]*#" "$mysql_env_file" | xargs) || {

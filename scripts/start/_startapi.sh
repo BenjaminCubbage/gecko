@@ -1,10 +1,7 @@
 #!/bin/bash
 
-script_dir="$(cd "$(dirname "$0")" && pwd)"
-env_dir="$(realpath "$script_dir/../env")"
-
 source "$script_dir/_prompt.sh"
-source "$script_dir/_envapi.sh"
+source "$script_dir/env/_envapi.sh"
 
 # Eventually we may make the backend produce its own PID file.
 # For now kill()ing the API does nothing, and certificate creation

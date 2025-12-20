@@ -1,8 +1,5 @@
 #!/bin/bash
 
-script_dir="$(cd "$(dirname "$0")" && pwd)"
-env_dir="$(realpath "$script_dir/../env")"
-
 envapi_loadenv() {
     api_env_file=$env_dir/api/.env.local
     [[ -f "$api_env_file" ]] && export $(grep -v "^[ \t]*#" "$api_env_file" | xargs) || {

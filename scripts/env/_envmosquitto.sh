@@ -1,8 +1,5 @@
 #!/bin/bash
 
-script_dir="$(cd "$(dirname "$0")" && pwd)"
-env_dir="$(realpath "$script_dir/../env")"
-
 envmosquitto_loadenv() {
     mosquitto_env_file=$env_dir/mosquitto/.env.local
     [[ -f "$mosquitto_env_file" ]] && export $(grep -v "^[ \t]*#" "$mosquitto_env_file" | xargs) || {

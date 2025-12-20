@@ -1,9 +1,6 @@
 #!/bin/bash
 
-script_dir="$(cd "$(dirname "$0")" && pwd)"
-env_dir="$(realpath "$script_dir/../env")"
-
-source "$script_dir/_envmysql.sh"
+source "$script_dir/env/_envmysql.sh"
 
 startmysql_kill() {
     envmysql_loadenv

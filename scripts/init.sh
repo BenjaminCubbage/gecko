@@ -4,13 +4,13 @@ script_dir="$(cd "$(dirname "$0")" && pwd)"
 env_dir="$(realpath "$script_dir/../env")"
 conf_dir="$(realpath "$script_dir/../conf")" 
 
-source "$script_dir/_initmosquitto.sh"
-source "$script_dir/_initmysql.sh"
-source "$script_dir/_initapi.sh"
+source "$script_dir/init/_initmosquitto.sh"
+source "$script_dir/init/_initmysql.sh"
+source "$script_dir/init/_initapi.sh"
 
-source "$script_dir/_startmosquitto.sh"
-source "$script_dir/_startmysql.sh"
-source "$script_dir/_startapi.sh"
+source "$script_dir/start/_startmosquitto.sh"
+source "$script_dir/start/_startmysql.sh"
+source "$script_dir/start/_startapi.sh"
 
 [[ -d "$env_dir" ]]  || { echo "[init.sh]: Could not find directory $env_dir";  exit 1; }
 [[ -d "$conf_dir" ]] || { echo "[init.sh]: Could not find directory $conf_dir"; exit 1; }

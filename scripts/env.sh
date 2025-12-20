@@ -2,14 +2,16 @@
 
 script_dir="$(cd "$(dirname "$0")" && pwd)"
 env_dir="$(realpath "$script_dir/../env")"
+conf_dir="$(realpath "$script_dir/../conf")"
+
 [[ -d "$env_dir" ]] || { 
     echo "[env.sh]: Couldn't find directory $env_dir"
     exit 1
 }
 
-source "$script_dir/_envmosquitto.sh"
-source "$script_dir/_envmysql.sh"
-source "$script_dir/_envapi.sh"
+source "$script_dir/env/_envmosquitto.sh"
+source "$script_dir/env/_envmysql.sh"
+source "$script_dir/env/_envapi.sh"
 
 usage() {
     echo "Usage: env.sh [options] <mosquitto|mysql|api|all>"
