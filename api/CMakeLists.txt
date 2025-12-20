@@ -184,7 +184,7 @@ target_precompile_headers(api_core PUBLIC
 )
 
 target_link_libraries(api_core PUBLIC
-    paho-mqtt3a-static
+    paho-mqtt3as-static
     connector
     jsoncpp_static
     jwt-cpp

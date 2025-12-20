@@ -28,7 +28,11 @@ namespace Gecko::API::Env
         std::string geckoAPIMosquittoRootPasswordPath;
         std::string geckoAPIMySQLRootPasswordPath;
 
+        // MQTT TLS
+        std::string mosquittoCertPath;
+
         // Resolved secret contents
+        std::string mosquittoCert;
         std::string mosquittoPassword;
         std::string mysqlPassword;
         std::string oauthClientID;

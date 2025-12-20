@@ -28,6 +28,8 @@ elseif(NOT DEFINED MYSQL_XAPI_PORT)
     message(FATAL_ERROR "MySQL port wasn't specified (-DMYSQL_XAPI_PORT)")
 elseif(NOT DEFINED GECKO_API_PORT)
     message(FATAL_ERROR "Gecko API port wasn't specified (-DGECKO_API_PORT)")
+elseif(NOT MOSQUITTO_CERT_PATH)
+    message(FATAL_ERROR "Path to mosquitto certificate wasn't specified (-DMOSQUITTO_CERT_PATH)")
 elseif(NOT OPENSSL_EXE_PATH)
     message(FATAL_ERROR "Couldn't find program `openssl` (-DOPENSSL_EXE_PATH)")
 elseif(NOT GECKO_API_EXE_PATH)
@@ -50,6 +52,7 @@ message("GECKO_API_OAUTH_CLIENTID_PATH:          ${GECKO_API_OAUTH_CLIENTID_PATH
 message("GECKO_API_OAUTH_CLIENTSECRET_PATH:      ${GECKO_API_OAUTH_CLIENTSECRET_PATH}")
 message("GECKO_API_MOSQUITTO_ROOT_PASSWORD_PATH: ${GECKO_API_MOSQUITTO_ROOT_PASSWORD_PATH}")
 message("GECKO_API_MYSQL_ROOT_PASSWORD_PATH:     ${GECKO_API_MYSQL_ROOT_PASSWORD_PATH}")
+message("MOSQUITTO_CERT_PATH:                    ${MOSQUITTO_CERT_PATH}")
 
 configure_file("${CMAKE_CURRENT_LIST_DIR}/.env.in"
                "${CMAKE_CURRENT_LIST_DIR}/.env.local" @ONLY)

@@ -93,11 +93,34 @@ ExternalProject_Add(compression_wasm
 ExternalProject_Add(embedded
     PREFIX embedded
     SOURCE_DIR ../embedded
-    CMAKE_ARGS
-        -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-        -DWIFI_PASSWORD=${WIFI_PASSWORD}
-        -DWIFI_SSID=${WIFI_SSID}
     INSTALL_COMMAND ""
-    BUILD_COMMAND cmake --build . --target embedded
-    BUILD_ALWAYS 1
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ""
+)
+
+ExternalProject_Get_Property(embedded BINARY_DIR)
+ExternalProject_Get_Property(embedded SOURCE_DIR)
+
+ExternalProject_Add_Step(embedded configure_project
+    DEPENDEES configure
+    COMMAND ${CMAKE_COMMAND}
+        -G ${CMAKE_GENERATOR}
+        -B ${BINARY_DIR}
+        -S ${SOURCE_DIR}
+        -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+        -DGECKO_ARTIFACTS_DIR=${GECKO_ROOT_DIR}/build/artifacts
+        -DWIFI_SSID=${WIFI_SSID}
+        -DWIFI_PASSWORD=${WIFI_PASSWORD}
+    DEPENDS
+        ${CMAKE_SOURCE_DIR}/embedded/CMakeLists.txt
+    # ALWAYS 1
+)
+
+ExternalProject_Add_Step(embedded build_project
+    DEPENDEES configure_project
+    COMMAND ${CMAKE_COMMAND} 
+        --build ${BINARY_DIR}
+        --config $<CONFIG>
+        --target embedded
+    ALWAYS 1
 )

@@ -21,13 +21,15 @@ namespace Gecko::API::Server
     bool Server::Start(const Env::Env& env, std::ostream& log)
     {
         auto mqttClient = std::make_shared<MQTT::MQTTClient>(
-            "tcp://localhost:" + std::to_string(env.mosquittoPort),
+            "ssl://localhost:" + std::to_string(env.mosquittoPort),
+            env.mosquittoCertPath,
             "root",
             env.mosquittoPassword);
 
         if (!mqttClient->ConnectSync())
         {
-            log << "[api]: Couldn't connect to the MQTT server on port " << env.mosquittoPort << std::endl;
+
+            log << "[api]: Couldn't connect to the MQTT server on port " << env.mosquittoPort << ": " << mqttClient->m_connectFailedCode << std::endl;
             return false;
         }
 

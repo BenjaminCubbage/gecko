@@ -40,6 +40,11 @@ namespace Gecko::API::MQTT
             NULL
         );
 
+        MQTTAsync_SSLOptions sslOpts = MQTTAsync_SSLOptions_initializer;
+        sslOpts.enableServerCertAuth = 1;
+        sslOpts.trustStore           = m_brokerCertPath.c_str();
+        sslOpts.sslVersion           = MQTT_SSL_VERSION_TLS_1_2;
+
         MQTTAsync_connectOptions connOpts = MQTTAsync_connectOptions_initializer;
 
         connOpts.keepAliveInterval = 240;
@@ -49,6 +54,7 @@ namespace Gecko::API::MQTT
         connOpts.context           = this;
         connOpts.username          = m_username.c_str();
         connOpts.password          = m_password.c_str();
+        connOpts.ssl               = &sslOpts;
 
         if (MQTTAsync_connect(m_client, &connOpts) != MQTTASYNC_SUCCESS)
             HandleConnectFailure(&s_genericFailure);
@@ -124,7 +130,8 @@ namespace Gecko::API::MQTT
     {
         {
             std::unique_lock lk{ m_connectedOrFailedMutex };
-            m_connectFailed = true;
+            m_connectFailed     = true;
+            m_connectFailedCode = response->code;
         }
 
         m_connectedOrFailedSignal.notify_all();

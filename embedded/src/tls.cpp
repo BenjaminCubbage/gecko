@@ -1,6 +1,3 @@
-#include "pch.h"
-
-
 typedef struct TLS_CLIENT_T_ {
     struct altcp_pcb *pcb;
     bool complete;

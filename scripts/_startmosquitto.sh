@@ -33,5 +33,5 @@ startmosquitto_start() {
 
     echo "[start.sh]: Using Mosquitto configuration at $MOSQUITTO_CONF_PATH"
     echo "[start.sh]: Starting Mosquitto as daemon"
-    sudo "$MOSQUITTO_EXE_PATH" -c "$MOSQUITTO_CONF_PATH" -d
+    sudo "$MOSQUITTO_EXE_PATH" -c "$MOSQUITTO_CONF_PATH"
 }

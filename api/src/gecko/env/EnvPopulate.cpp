@@ -36,6 +36,7 @@ namespace Gecko::API::Env
         if (!GetKeyValue(keyValues, "GECKO_API_PORT",                    &env.geckoAPIPort,                  log)) return std::nullopt;
         if (!GetKeyValue(keyValues, "MOSQUITTO_PORT",                    &env.mosquittoPort,                 log)) return std::nullopt;
         if (!GetKeyValue(keyValues, "MYSQL_XAPI_PORT",                   &env.mysqlXAPIPort,                 log)) return std::nullopt;
+        if (!GetKeyValue(keyValues, "MOSQUITTO_CERT_PATH",               &env.mosquittoCertPath,             log)) return std::nullopt;
 
         if (!mosquittoPasswordPathOverride)
         {
@@ -53,6 +54,7 @@ namespace Gecko::API::Env
         else 
             env.geckoAPIMySQLRootPasswordPath = *mysqlPasswordPathOverride;
 
+        if (!GetStringFromFilepath(env.mosquittoCertPath,                 &env.mosquittoCert,     log)) return std::nullopt;
         if (!GetStringFromFilepath(env.geckoAPIMosquittoRootPasswordPath, &env.mosquittoPassword, log)) return std::nullopt;
         if (!GetStringFromFilepath(env.geckoAPIMySQLRootPasswordPath,     &env.mysqlPassword,     log)) return std::nullopt;
         if (!GetStringFromFilepath(env.geckoAPIOAuthClientIDPath,         &env.oauthClientID,     log)) return std::nullopt;

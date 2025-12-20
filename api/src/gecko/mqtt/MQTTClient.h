@@ -14,8 +14,11 @@ namespace Gecko::API::MQTT
     class MQTTClient
     {
     public:
-        MQTTClient(std::string address, std::string username, std::string password)
-            : m_address(std::move(address)), m_username(std::move(username)), m_password(std::move(password)) {}
+        MQTTClient(std::string address, std::string brokerCertPath, std::string username, std::string password)
+            : m_address(std::move(address)),
+              m_brokerCertPath(std::move(brokerCertPath)),
+              m_username(std::move(username)),
+              m_password(std::move(password)) {}
 
         void Connect();
 
@@ -25,6 +28,8 @@ namespace Gecko::API::MQTT
 
         void OnMessageReceived(std::function<void(std::string_view, std::span<uint8_t>)> handler);
 
+        int  m_connectFailedCode{ 0 };
+        
     private:
         struct SubscribeContext
         {
@@ -46,7 +51,6 @@ namespace Gecko::API::MQTT
         std::mutex              m_connectedOrFailedMutex;
         bool m_connected{ false };
         bool m_connectFailed{ false };
-        int  m_connectFailedCode{ 0 };
 
         std::mutex                                                             m_messageReceivedHandlersMutex;
         std::vector<std::function<void(std::string_view, std::span<uint8_t>)>> m_messageReceivedHandlers;
@@ -57,6 +61,7 @@ namespace Gecko::API::MQTT
 
         MQTTAsync m_client;
         std::string m_address;
+        std::string m_brokerCertPath;
         std::string m_username;
         std::string m_password;
 
