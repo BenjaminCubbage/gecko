@@ -4,8 +4,7 @@
 
         <div class="buttons">
             <PicEditorButton @click="send">SEND</PicEditorButton>
-            <PicEditorButton @click="save">SAVE</PicEditorButton>
-            <PicEditorButton @click="load">LOAD</PicEditorButton>
+            <PicEditorButton @click="getLatest">GET LATEST</PicEditorButton>
             <PicEditorButton @click="clear">CLEAR</PicEditorButton>
         </div>
     </div>
@@ -34,13 +33,24 @@ function send() {
             picEditorCanvas.value.readGIBBlob());
 }
 
-function save() {
-    CanvasSave.promptSaveCompressed(picEditorCanvas.value?.getCanvasElement()).catch(()=>{});
+function getLatest() {
+    Dispatch.Get_LatestImage(session.value)
+        .onSuccess(async body => {
+            const arr = new Uint8Array(await body.arrayBuffer());
+            picEditorCanvas.value.writeGIBBlob(arr);
+        })
+        .onHttpError((body, status) => {
+            console.warn(`Get_LatestImage failed: ${status}`, body)
+        });
 }
 
-function load() {
-    CanvasLoad.promptLoadCompressed(picEditorCanvas.value?.getCanvasElement()).catch(()=>{});
-}
+// function save() {
+//     CanvasSave.promptSaveCompressed(picEditorCanvas.value?.getCanvasElement()).catch(()=>{});
+// }
+
+// function load() {
+//     CanvasLoad.promptLoadCompressed(picEditorCanvas.value?.getCanvasElement()).catch(()=>{});
+// }
 
 function clear() {
     picEditorCanvas.value?.clear();

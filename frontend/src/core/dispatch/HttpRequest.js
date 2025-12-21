@@ -1,5 +1,5 @@
 class HttpRequest {
-    constructor(method, url, body = null, headers = []) {
+    constructor(method, url, body = null, headers = null, responseType = null) {
         this.xhr = new XMLHttpRequest();
 
         this._successCb      = null;
@@ -12,11 +12,12 @@ class HttpRequest {
         this.xhr.addEventListener('error', this._onNetworkError.bind(this));
 
         this.xhr.open(method, url);
+        this.xhr.responseType = responseType ?? "text";
 
         if (body?.constructor != FormData)
             this.xhr.setRequestHeader('Content-Type', 'application/json');
 
-        for (const header of headers)
+        for (const header of headers ?? [])
             this.xhr.setRequestHeader(header.name, header.value);
 
         if (body?.constructor == FormData) this.xhr.send(body);
@@ -30,19 +31,21 @@ class HttpRequest {
     onHttpError(fn)    { this._httpErrorCb    = fn; return this; }
     onNetworkError(fn) { this._networkErrorCb = fn; return this; }
 
-    _parseBody() {
-        const text = this.xhr.responseText;
-        if (!text) return null;
-        try { 
-            return JSON.parse(text); 
-        } catch { 
-            return text; 
-        }
-    }
-
     _onLoad() {
         const status = this.xhr.status;
-        const body = this._parseBody();
+
+        let body = null;
+
+        if (this.xhr.responseType === "json" || 
+            this.xhr.responseType === "text" ||
+            this.xhr.responseType === "") {
+            try { body = JSON.parse(this.xhr.responseText); }
+            catch { body = this.xhr.responseText; }
+            console.log("text received");
+        } else if (this.xhr.responseType === "blob") {
+            body = this.xhr.response;
+            console.log("blob received");
+        }
 
         if (status >= 200 && status < 300) {
             this._successCb?.(body, status, this.xhr);

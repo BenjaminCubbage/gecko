@@ -7,6 +7,7 @@
 #include "gecko/middleware/HasContentLength.h"
 #include "gecko/middleware/HasHeader.h"
 #include "gecko/middleware/HasMultipartFormDataField.h"
+#include "gecko/middleware/PathParamEquals.h"
 #include "gecko/middleware/UserIsLoggedIn.h"
 #include "gecko/http/MultipartFormData.h"
 #include "gecko/http/RespondWithError.h"
@@ -24,6 +25,11 @@ namespace Gecko::API::Controllers
                                                             httplib::Response& res,
                                                             const httplib::ContentReader& contentReader) {
             Handle_POST_SharedImages(req, res, contentReader);
+        });
+        
+        server.Get("/api/users/:id/latest-image", [this] (const httplib::Request& req,
+                                                          httplib::Response& res) {
+            Handle_GET_LatestImageBlob(req, res);
         });
     }
 
@@ -44,7 +50,8 @@ namespace Gecko::API::Controllers
         std::string idempotencyKey;
         if (!Middleware::UserIsLoggedIn{ m_pubkey }(req, res, &userID) ||
             !Middleware::HasContentLength{}(req, res, &contentLength) ||
-            !Middleware::HasHeader{ Headers::IdempotencyKey }(req, res, &idempotencyKey))
+            !Middleware::HasHeader{ Headers::IdempotencyKey }(req, res, &idempotencyKey) ||
+            !Middleware::PathParamEquals{ "id" }(req, res, std::to_string(userID)))
         {
             return;
         }
@@ -79,6 +86,37 @@ namespace Gecko::API::Controllers
                 return;
 
             case SharedImagesService::Result::SenderNotFound:
+            case SharedImagesService::Result::ReceiverNotFound:
+                Http::RespondWithError::UserNotFound(res);
+                return;
+
+            default:
+                Http::RespondWithError::CouldNotFulfill(res);
+                return;
+        }
+    }
+    
+    void SharedImagesController::Handle_GET_LatestImageBlob(const httplib::Request& req, 
+                                                            httplib::Response& res)
+    {
+        using Services::SharedImagesService;
+
+        int userID{};
+        if (!Middleware::UserIsLoggedIn{ m_pubkey }(req, res, &userID) ||
+            !Middleware::PathParamEquals{ "id" }(req, res, std::to_string(userID)))
+            return;
+
+        // note(ben): We call std::string template overload to avoid a copy into res.body
+        std::vector<uint8_t> bytes;
+        switch (m_sharedImagesService.GetLatestReceivedImageBlob(userID, &bytes))
+        {
+            case SharedImagesService::Result::Success:
+                res.set_content(
+                    reinterpret_cast<char*>(bytes.data()), 
+                    bytes.size(), 
+                    "application/octet-stream");
+                return;
+
             case SharedImagesService::Result::ReceiverNotFound:
                 Http::RespondWithError::UserNotFound(res);
                 return;

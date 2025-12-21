@@ -6,13 +6,11 @@ class GIBToCanvas {
             return;
         }
 
-        bytes = new Uint8Array([buffer]);
-
         const compressedBytes = new Module.VectorUint8();
-        compressedBytes.resize(bytes.length);
+        compressedBytes.resize(buffer.length);
 
-        for (let i = 0; i < bytes.length; ++i)
-            compressedBytes.set(i, bytes[i]);
+        for (let i = 0; i < buffer.length; ++i)
+            compressedBytes.set(i, buffer[i]);
 
         const compressedBitonal = Module.CompressedBitonal.TryReadFromBuffer(
             compressedBytes,

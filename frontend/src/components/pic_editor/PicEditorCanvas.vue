@@ -8,6 +8,7 @@
 import { computed, onMounted, useTemplateRef } from 'vue';
 import { CanvasUtils } from '@/core/canvas/CanvasUtils.js';
 import { CanvasToGIB } from '@/core/canvas_gib/CanvasToGIB.js';
+import { GIBToCanvas } from '@/core/canvas_gib/GIBToCanvas.js';
 
 const canvas = useTemplateRef('canvas');
 const ctx    = computed(() => canvas.value?.getContext('2d', { willReadFrequently: true }));
@@ -123,7 +124,7 @@ defineExpose({
     getCanvasElement: () => canvas.value,
     clear,
     readGIBBlob:  () => CanvasToGIB.readBlob(canvas.value),
-    writeGIBBlob: blob => GIBToCanvas.writeBlob(canvas, canvas.value)
+    writeGIBBlob: blob => GIBToCanvas.writeBlob(canvas.value, blob)
 });
 </script>
 

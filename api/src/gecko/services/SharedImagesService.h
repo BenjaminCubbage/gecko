@@ -10,6 +10,8 @@ namespace Gecko::API::Services
     class SharedImagesService
     {
     public:
+        static constexpr int MaxImageSize = 10000;
+
         enum class Result
         {
             Success,
@@ -19,6 +21,7 @@ namespace Gecko::API::Services
             ReceiverNotFound,
             BadIdempotencyKey,
             IdempotencyKeyReplayed,
+            ImageTooLarge,
 
             /* DB fallthrough */
             DatabaseError
@@ -31,6 +34,9 @@ namespace Gecko::API::Services
                                  int receiverID,
                                  const std::string& idempotencyKey,
                                  const std::vector<uint8_t>& bytes);
+
+        Result GetLatestReceivedImageBlob(int receiverID,
+                                          std::vector<uint8_t>* outBlob);
 
     private:
         DB::SharedImagesTable m_dbSharedImages;

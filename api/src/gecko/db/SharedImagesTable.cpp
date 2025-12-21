@@ -75,4 +75,38 @@ namespace Gecko::API::DB
             return Result::Failure;
         }
     }
+
+    SharedImagesTable::Result
+    SharedImagesTable::GetLatestReceivedImageBlob(int receiverID,
+                                                  std::vector<uint8_t>* outBlob)
+    {
+        try
+        {
+            auto connection = m_connectionPool->Acquire();
+
+            auto result =
+                connection->sql("SELECT ib.bytes FROM SharedImages si "
+                                    "LEFT JOIN SharedImageBlobs ib "
+                                    "ON si.image_blob_id=ib.image_blob_id "
+                                "WHERE receiver_id=? "
+                                "ORDER BY image_id DESC LIMIT 1")
+                    .bind(receiverID)
+                    .execute();
+
+            if (!result.hasData() || result.count() != 1)
+                return Result::Failure;
+
+            const mysqlx::bytes bytes = result.fetchOne().get(0).get<mysqlx::bytes>();
+
+            *outBlob = {};
+            outBlob->resize(bytes.size());
+            std::memcpy(outBlob->data(), bytes.begin(), bytes.size());
+
+            return Result::Success;
+        }
+        catch (mysqlx::Error&)
+        {
+            return Result::Failure;
+        }
+    }
 }
