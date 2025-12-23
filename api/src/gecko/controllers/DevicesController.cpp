@@ -39,7 +39,7 @@ namespace Gecko::API::Controllers
                 return;
 
             default:
-                res.status = httplib::StatusCode::Accepted_202;
+                res.body = R"({"status":"pending"})";
                 return;
             }
 

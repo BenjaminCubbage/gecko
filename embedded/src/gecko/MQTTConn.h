@@ -42,24 +42,6 @@ namespace Gecko::Embedded
                 return false;
             }
 
-            static constexpr std::string_view StatusTopicL{ "devices/" };
-            static constexpr std::string_view StatusTopicR{ "/out/status" };
-
-            // note(ben): Topic is like devices/<username>/status
-            int topicLen = StatusTopicL.size() + username.size() + StatusTopicR.size();
-            if (topicLen + 1 > sizeof(s_statusTopic))
-            {
-                Log_Error("MQTTConn: Devices status topic exceeded size of static buffer: "
-                          "needed %d bytes, only %d bytes allocated", topicLen + 1, sizeof(s_statusTopic));
-                return false;
-            }
-
-            size_t n = 0;
-            std::memcpy(&s_statusTopic[n], StatusTopicL.data(), StatusTopicL.size()); n += StatusTopicL.size();
-            std::memcpy(&s_statusTopic[n], username.c_str(),    username.size());     n += username.size();
-            std::memcpy(&s_statusTopic[n], StatusTopicR.data(), StatusTopicR.size()); n += StatusTopicR.size();
-            s_statusTopic[n] = '\0';
-
             s_connection.port     = port;
             s_connection.username = username;
             s_connection.password = password;
@@ -72,11 +54,6 @@ namespace Gecko::Embedded
             s_connection.clientInfo.keep_alive  = KeepAliveSec;
             s_connection.clientInfo.client_user = s_connection.username.c_str();
             s_connection.clientInfo.client_pass = s_connection.password.c_str();
-
-            s_connection.clientInfo.will_topic  = s_statusTopic;
-            s_connection.clientInfo.will_msg    = LWTMessage;
-            s_connection.clientInfo.will_qos    = LWTQOS;
-            s_connection.clientInfo.will_retain = LWTRetain;
 
             s_connection.client = mqtt_client_new();
 
@@ -115,7 +92,6 @@ namespace Gecko::Embedded
         static void ConnectStatusCB(mqtt_client_t*, void* cb, mqtt_connection_status_t status)
         {
             Log_Info("MQTTConn: %s\n", ConnectionStatusToStr(status));
-
             s_connection.connected = status == MQTT_CONNECT_ACCEPTED;
             reinterpret_cast<void (*)(mqtt_connection_status_t)>(cb)(status);
         }
@@ -123,12 +99,6 @@ namespace Gecko::Embedded
         static const Connection* ConnectionState()
         {
             return &s_connection;
-        }
-
-        // note(ben): Empty string until Init()
-        static const char* StatusTopic()
-        {
-            return s_statusTopic;
         }
 
     private:
@@ -150,17 +120,6 @@ namespace Gecko::Embedded
         }
 
         static Connection s_connection;
-
-        // note(ben): We intend to deep sleep for 10 minutes, so 800 seconds
-        // keepalive should be enough time to boot up/reconnect before LWT
-        // fires
-        // If changing make sure less than mosquitto.conf max_keepalive
         static constexpr int KeepAliveSec = 800;
-
-        // note(ben): 56 should always be plenty
-        // Number is upper bound, not _entirely_ magic:
-        //      56 = strlen("devices/") + 36 + strlen("/out/status\0")
-        //      where 36 is the length of an RFC9562 UUID
-        static char s_statusTopic[56];
     };
 }

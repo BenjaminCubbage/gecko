@@ -14,7 +14,7 @@
 #include "gecko/services/DevicesService.h"
 #include "gecko/services/SharedImagesService.h"
 #include "gecko/services/UsersService.h"
-#include "gecko/topics/DevicesStatusTopic.h"
+#include "gecko/topics/DevicesHeartbeatTopic.h"
 
 namespace Gecko::API::Server
 {
@@ -29,13 +29,14 @@ namespace Gecko::API::Server
         if (!mqttClient->ConnectSync())
         {
 
-            log << "[api]: Couldn't connect to the MQTT server on port " << env.mosquittoPort << ": " << mqttClient->m_connectFailedCode << std::endl;
+            log << "[api]: Couldn't connect to the MQTT server on port " 
+                << env.mosquittoPort << ": " << mqttClient->m_connectFailedCode << std::endl;
             return false;
         }
 
         log << "[api]: Connected to MQTT server on port " << env.mosquittoPort << std::endl;
 
-        auto devicesStatusTopic = std::make_shared<Topics::DevicesStatusTopic>(mqttClient);
+        auto devicesHeartbeatTopic = std::make_shared<Topics::DevicesHeartbeatTopic>(mqttClient);
         auto connectionPool = std::make_shared<DB::ConnectionPool>(
             "127.0.0.1", env.mysqlXAPIPort, "root", env.mysqlPassword, "Gecko");
 
@@ -45,7 +46,7 @@ namespace Gecko::API::Server
 
         Services::UsersService        usersService       { dbUsers };
         Services::SharedImagesService sharedImagesService{ dbSharedImages, dbUsers };
-        Services::DevicesService      devicesService     { devicesStatusTopic, dbDevices };
+        Services::DevicesService      devicesService     { devicesHeartbeatTopic, dbDevices };
 
         httplib::SSLServer httpServer(
             env.geckoAPITLSCertPath.c_str(),

@@ -15,3 +15,4 @@ keyfile @MOSQUITTO_PKEY_PATH@
 
 max_keepalive 900
 message_size_limit 10000
+set_tcp_nodelay true

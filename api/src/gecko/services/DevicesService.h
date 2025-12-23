@@ -1,8 +1,9 @@
 #pragma once
 #include <memory>
 #include <string>
+#include <unordered_set>
 #include "gecko/db/DevicesTable.h"
-#include "gecko/topics/DevicesStatusTopic.h"
+#include "gecko/topics/DevicesHeartbeatTopic.h"
 
 namespace Gecko::API::Services
 {
@@ -27,15 +28,16 @@ namespace Gecko::API::Services
             Pending
         };
 
-        DevicesService(std::shared_ptr<Topics::DevicesStatusTopic> devicesStatusTopic,
+        DevicesService(std::shared_ptr<Topics::DevicesHeartbeatTopic> devicesHeartbeatTopic,
                        DB::DevicesTable devicesTable)
-            : m_devicesStatusTopic(devicesStatusTopic), m_devicesTable(devicesTable) {}
+            : m_devicesHeartbeatTopic(devicesHeartbeatTopic), m_devicesTable(devicesTable) {}
 
         Result GetDeviceStatus(int deviceID,
                                DeviceStatus *outStatus);
 
     private:
-        std::shared_ptr<Topics::DevicesStatusTopic> m_devicesStatusTopic;
-        DB::DevicesTable                            m_devicesTable;
+        std::shared_ptr<Topics::DevicesHeartbeatTopic> m_devicesHeartbeatTopic;
+        DB::DevicesTable                               m_devicesTable;
+        std::unordered_set<int>                        m_existingDevicesCache;
     };
 }

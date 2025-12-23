@@ -1,4 +1,5 @@
 #pragma once
+#include <chrono>
 #include <memory>
 #include <shared_mutex>
 #include <span>
@@ -9,33 +10,34 @@
 
 namespace Gecko::API::Topics
 {
-    class DevicesStatusTopic
+    class DevicesHeartbeatTopic
     {
     public:
-        // Offline:    device reported it was offline
-        // Online:     device reported it was online
-        // MaybeLater: no retained message has been received (device may not even exist, who knows)
-        // NotTracked: device isn't currently subscribed to (call BeginTrackingDevice to track)
+        // Offline: No heartbeat in grace period
+        // Online:  Heartbeat in grace period
+        // Pending: No heartbeat yet, but system started up recently
         enum class Status
         {
             Offline,
             Online,
-            MaybeLater,
-            NotTracked
+            Pending
         };
 
-        DevicesStatusTopic(std::shared_ptr<MQTT::MQTTClient> mqttClient)
+        DevicesHeartbeatTopic(std::shared_ptr<MQTT::MQTTClient> mqttClient)
             : m_mqttClient(std::move(mqttClient))
         {
+            static constexpr const char* HeartbeatTopic = "devices/+/out/heartbeat";
+
             m_mqttClient->OnMessageReceived(
                 [this] (std::string_view topic, std::span<uint8_t> payload) {
                     MessageReceivedHandler(topic, payload);
                 });
+
+            m_mqttClient->SubscribeToTopic(HeartbeatTopic, [] {}, [] (int) {});
+            m_epochStartup = EpochNow();
         }
 
         Status GetDeviceStatus(const std::string& deviceID);
-
-        void BeginTrackingDevice(const std::string& deviceID);
 
     private:
         struct SVTransparentHash
@@ -47,12 +49,21 @@ namespace Gecko::API::Topics
 
         void MessageReceivedHandler(std::string_view topic, std::span<uint8_t> payload);
 
+        static inline std::chrono::seconds EpochNow()
+        {
+            return std::chrono::duration_cast<std::chrono::seconds>(
+                std::chrono::system_clock::now().time_since_epoch());
+        }
+
         std::shared_ptr<MQTT::MQTTClient> m_mqttClient;
-        std::shared_mutex                 m_trackedDevicesMutex;
+        std::shared_mutex                 m_epochDevicesLastSeenMutex;
         std::unordered_map<
             std::string,
-            Status,
+            std::chrono::seconds,
             SVTransparentHash,
-            std::equal_to<>> m_trackedDevices;
+            std::equal_to<>> m_epochDevicesLastSeen;
+        std::chrono::seconds m_epochStartup;
+
+        static constexpr std::chrono::minutes GracePeriod{ 25 };
     };
 }

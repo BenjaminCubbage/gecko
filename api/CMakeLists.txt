@@ -89,8 +89,8 @@ set(src_files
     "${src_dir}/gecko/services/UsersService.h"
     "${src_dir}/gecko/thread/ThreadPool.cpp"
     "${src_dir}/gecko/thread/ThreadPool.h"
-    "${src_dir}/gecko/topics/DevicesStatusTopic.cpp"
-    "${src_dir}/gecko/topics/DevicesStatusTopic.h"
+    "${src_dir}/gecko/topics/DevicesHeartbeatTopic.cpp"
+    "${src_dir}/gecko/topics/DevicesHeartbeatTopic.h"
 )
 
 set(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING "" FORCE)

@@ -28,7 +28,6 @@ void published(err_t err)
 void connected(mqtt_connection_status_t status)
 {
     using namespace Gecko::Embedded;
-    MQTTPub::PublishStatus(MQTTPub::Status::Online, &published);
 }
 
 int main()
@@ -76,15 +75,16 @@ int main()
     printf("%s\n", devicePassword);
 
     MQTTConn::Init(MQTT_IP, MQTT_PORT, cert, deviceID, devicePassword);
+    MQTTPub::Init(deviceID);
     MQTTConn::Connect(&connected);
-
-    printf("%s\n", MQTTConn::StatusTopic());
-    
 
     while (1)
     {
+        if (MQTTConn::ConnectionState()->connected)
+            MQTTPub::PublishHeartbeat(&published);
+
         Wifi::Poll();
-        sleep_ms(100);
+        sleep_ms(10000);
     }
 
     gpio_put(HOLD_VSYS_EN_PIN, 0);
