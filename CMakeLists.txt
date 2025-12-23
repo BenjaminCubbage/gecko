@@ -111,6 +111,8 @@ ExternalProject_Add_Step(embedded configure_project
         -DGECKO_ARTIFACTS_DIR=${GECKO_ROOT_DIR}/build/artifacts
         -DWIFI_SSID=${WIFI_SSID}
         -DWIFI_PASSWORD=${WIFI_PASSWORD}
+        -DMQTT_IP=${MQTT_IP}
+        -DMQTT_PORT=${MQTT_PORT}
     DEPENDS
         ${CMAKE_SOURCE_DIR}/embedded/CMakeLists.txt
     # ALWAYS 1

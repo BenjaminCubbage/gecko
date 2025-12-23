@@ -3,15 +3,13 @@
 #ifndef _LWIPOPTS_EXAMPLE_COMMONH_H
 #define _LWIPOPTS_EXAMPLE_COMMONH_H
 
-
-// Common settings used in most of the pico_w examples
-// (see https://www.nongnu.org/lwip/2_1_x/group__lwip__opts.html for details)
+// note(ben): I don't know why this is important but it is.
+#define MEMP_NUM_SYS_TIMEOUT (LWIP_NUM_SYS_TIMEOUT_INTERNAL+10)
 
 // allow override in some examples
 #ifndef NO_SYS
 #define NO_SYS                      1
 #endif
-// allow override in some examples
 #ifndef LWIP_SOCKET
 #define LWIP_SOCKET                 0
 #endif
@@ -90,6 +88,8 @@
 #define PPP_DEBUG                   LWIP_DBG_OFF
 #define SLIP_DEBUG                  LWIP_DBG_OFF
 #define DHCP_DEBUG                  LWIP_DBG_OFF
+
+#define MQTT_CONNECT_TIMOUT         1
 
 #endif /* __LWIPOPTS_H__ */
 

@@ -25,7 +25,6 @@ export default defineConfig({
             '/auth': {
                 target: 'https://localhost:3001',
                 changeOrigin: true,
-                // secure: false allows self-signed certificate
                 secure: false
             }
         }

@@ -24,8 +24,6 @@ namespace Gecko::API::Controllers
             return;
         }
 
-        std::cout << deviceID << std::endl;
-
         DevicesService::DeviceStatus status{};
         switch (m_devicesService.GetDeviceStatus(deviceID, &status))
         {

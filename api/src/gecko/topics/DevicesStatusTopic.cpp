@@ -26,14 +26,18 @@ namespace Gecko::API::Topics
 
         const std::string topic = "devices/" + deviceID + "/status";
 
-        m_mqttClient->SubscribeToTopic(topic, [] {}, [] (int) {});
+        m_mqttClient->SubscribeToTopic(topic, [topic] {
+            std::cout << "Subscribed to topic " << topic << std::endl;
+        }, [topic = std::move(topic)] (int err) {
+            std::cout << "Failed to subscribe to topic " << topic << ": " << err << std::endl;
+        });
     }
 
     void DevicesStatusTopic::MessageReceivedHandler(std::string_view topic,
                                                     std::span<uint8_t> payload)
     {
         constexpr auto prefix = std::string_view("devices/");
-        constexpr auto suffix = std::string_view("/status");
+        constexpr auto suffix = std::string_view("/out/status");
 
         constexpr int maxTopicLen = prefix.size() + 36 + suffix.size();
         constexpr int minTopicLen = prefix.size() + 1  + suffix.size();

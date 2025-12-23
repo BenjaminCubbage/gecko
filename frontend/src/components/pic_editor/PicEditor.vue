@@ -24,7 +24,7 @@ const idempotencyKey = ref(crypto.randomUUID());
 
 function send() {
     if (!picEditorCanvas.value)
-        console.error(`Could not resolve templated ref 'picEditorCanvas'`)
+        console.error(`Could not resolve templated ref 'picEditorCanvas'`);
     else
         Dispatch.Post_SharedImage(
             session.value,

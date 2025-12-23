@@ -12,3 +12,6 @@ require_certificate false
 tls_version tlsv1.2
 certfile @MOSQUITTO_CERT_PATH@
 keyfile @MOSQUITTO_PKEY_PATH@
+
+max_keepalive 900
+message_size_limit 10000
