@@ -51,4 +51,35 @@ namespace Gecko::API::DB
             return Result::Failure;
         }
     }
+
+    DevicesTable::Result
+    DevicesTable::GetDevicesByOwnerID(int ownerID,
+                                      std::vector<Models::Device>* outDevices)
+    {
+        try
+        {
+            auto connection = m_connectionPool->Acquire();
+
+            auto result =
+                connection->sql("SELECT device_id, name FROM Devices "
+                                "WHERE owner_id=?")
+                    .bind(ownerID)
+                    .execute();
+
+            *outDevices = {};
+            outDevices->reserve(result.count());
+
+            for (auto row : result)
+                outDevices->push_back({
+                    .deviceID = row.get(0).get<int>(),
+                    .name     = row.get(1).get<std::string>()
+                });
+
+            return Result::Success;
+        }
+        catch (mysqlx::Error&)
+        {
+            return Result::Failure;
+        }
+    }
 }

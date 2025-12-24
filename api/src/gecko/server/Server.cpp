@@ -46,7 +46,7 @@ namespace Gecko::API::Server
 
         Services::UsersService        usersService       { dbUsers };
         Services::SharedImagesService sharedImagesService{ dbSharedImages, dbUsers };
-        Services::DevicesService      devicesService     { devicesHeartbeatTopic, dbDevices };
+        Services::DevicesService      devicesService     { devicesHeartbeatTopic, dbDevices, dbUsers };
 
         httplib::SSLServer httpServer(
             env.geckoAPITLSCertPath.c_str(),
@@ -72,9 +72,9 @@ namespace Gecko::API::Server
             env.jwtPrivateKey,
             env.jwtPublicKey };
 
-        Controllers::UsersController        usersController       { usersService, env.jwtPublicKey };
+        Controllers::UsersController        usersController       { usersService,        env.jwtPublicKey };
         Controllers::SharedImagesController sharedImagesController{ sharedImagesService, env.jwtPublicKey };
-        Controllers::DevicesController      devicesController     { devicesService };
+        Controllers::DevicesController      devicesController     { devicesService,      env.jwtPublicKey };
 
         authController        .Attach(httpServer);
         usersController       .Attach(httpServer);

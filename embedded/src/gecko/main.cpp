@@ -65,9 +65,9 @@ int main()
 
     char deviceID[37]{};
     char devicePassword[37]{};
-
     unsigned int deviceIDLen{};
     unsigned int devicePasswordLen{};
+
     FS::ReadFile("/device_id.txt",       36, deviceID,       &deviceIDLen);
     FS::ReadFile("/device_password.txt", 36, devicePassword, &devicePasswordLen);
 
@@ -78,13 +78,17 @@ int main()
     MQTTPub::Init(deviceID);
     MQTTConn::Connect(&connected);
 
+    while (!MQTTConn::ConnectionState()->connected)
+    {
+        sleep_ms(200);
+        Wifi::Poll();
+    }
+    
+
     while (1)
     {
-        if (MQTTConn::ConnectionState()->connected)
-            MQTTPub::PublishHeartbeat(&published);
-
-        Wifi::Poll();
-        sleep_ms(10000);
+        sleep_ms(1000);
+        MQTTPub::PublishHeartbeat(&published);
     }
 
     gpio_put(HOLD_VSYS_EN_PIN, 0);

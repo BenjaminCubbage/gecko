@@ -38,7 +38,7 @@ namespace Gecko::API::Controllers
         using Services::UsersService;
 
         int userID{};
-        if (!Middleware::UserIsLoggedIn{ m_pubkey }(req, res, &userID))
+        if (!Middleware::UserIsLoggedIn<int>{ m_pubkey }(req, res, &userID))
             return;
 
         Models::User user;
@@ -72,7 +72,7 @@ namespace Gecko::API::Controllers
         Json::Value patch;
         std::string username;
 
-        if (!Middleware::UserIsLoggedIn{ m_pubkey }(req, res, &userID) ||
+        if (!Middleware::UserIsLoggedIn<int>{ m_pubkey }(req, res, &userID) ||
             !Middleware::HasValidXSRFToken{ }(req, res) ||
             !Middleware::HasJSONBody{ }(req, res, &patch) ||
             !Middleware::HasJSONValueMember<std::string>{ "username" }(req, res, patch, &username) ||

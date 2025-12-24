@@ -11,13 +11,13 @@ namespace Gecko::API::Test
     {
         std::uint8_t out = 0;
 
-        ASSERT_TRUE(ParseValue::TryParseUIntegral<std::uint8_t>("0", &out));
+        ASSERT_TRUE(ParseValue::TryParseIntegral<std::uint8_t>("0", &out));
         EXPECT_EQ(out, 0);
 
-        ASSERT_TRUE(ParseValue::TryParseUIntegral<std::uint8_t>("7", &out));
+        ASSERT_TRUE(ParseValue::TryParseIntegral<std::uint8_t>("7", &out));
         EXPECT_EQ(out, 7);
 
-        ASSERT_TRUE(ParseValue::TryParseUIntegral<std::uint8_t>("255", &out));
+        ASSERT_TRUE(ParseValue::TryParseIntegral<std::uint8_t>("255", &out));
         EXPECT_EQ(out, 255);
     }
 
@@ -25,25 +25,25 @@ namespace Gecko::API::Test
     {
         std::uint8_t out = 123;
 
-        EXPECT_FALSE(ParseValue::TryParseUIntegral<std::uint8_t>("", &out));
+        EXPECT_FALSE(ParseValue::TryParseIntegral<std::uint8_t>("", &out));
         EXPECT_EQ(out, 123);
 
-        EXPECT_FALSE(ParseValue::TryParseUIntegral<std::uint8_t>(" ", &out));
+        EXPECT_FALSE(ParseValue::TryParseIntegral<std::uint8_t>(" ", &out));
         EXPECT_EQ(out, 123);
 
-        EXPECT_FALSE(ParseValue::TryParseUIntegral<std::uint8_t>("1 ", &out));
+        EXPECT_FALSE(ParseValue::TryParseIntegral<std::uint8_t>("1 ", &out));
         EXPECT_EQ(out, 123);
 
-        EXPECT_FALSE(ParseValue::TryParseUIntegral<std::uint8_t>(" 1", &out));
+        EXPECT_FALSE(ParseValue::TryParseIntegral<std::uint8_t>(" 1", &out));
         EXPECT_EQ(out, 123);
 
-        EXPECT_FALSE(ParseValue::TryParseUIntegral<std::uint8_t>("1a", &out));
+        EXPECT_FALSE(ParseValue::TryParseIntegral<std::uint8_t>("1a", &out));
         EXPECT_EQ(out, 123);
 
-        EXPECT_FALSE(ParseValue::TryParseUIntegral<std::uint8_t>("-1", &out));
+        EXPECT_FALSE(ParseValue::TryParseIntegral<std::uint8_t>("-1", &out));
         EXPECT_EQ(out, 123);
 
-        EXPECT_FALSE(ParseValue::TryParseUIntegral<std::uint8_t>("+1", &out));
+        EXPECT_FALSE(ParseValue::TryParseIntegral<std::uint8_t>("+1", &out));
         EXPECT_EQ(out, 123);
     }
 
@@ -51,10 +51,10 @@ namespace Gecko::API::Test
     {
         std::uint8_t out = 99;
 
-        ASSERT_TRUE(ParseValue::TryParseUIntegral<std::uint8_t>("000", &out));
+        ASSERT_TRUE(ParseValue::TryParseIntegral<std::uint8_t>("000", &out));
         EXPECT_EQ(out, 0);
 
-        ASSERT_TRUE(ParseValue::TryParseUIntegral<std::uint8_t>("007", &out));
+        ASSERT_TRUE(ParseValue::TryParseIntegral<std::uint8_t>("007", &out));
         EXPECT_EQ(out, 7);
     }
 
@@ -62,10 +62,10 @@ namespace Gecko::API::Test
     {
         std::uint8_t out = 200;
 
-        EXPECT_FALSE(ParseValue::TryParseUIntegral<std::uint8_t>("256", &out));
+        EXPECT_FALSE(ParseValue::TryParseIntegral<std::uint8_t>("256", &out));
         EXPECT_EQ(out, 200);
 
-        EXPECT_FALSE(ParseValue::TryParseUIntegral<std::uint8_t>("999", &out));
+        EXPECT_FALSE(ParseValue::TryParseIntegral<std::uint8_t>("999", &out));
         EXPECT_EQ(out, 200);
     }
 
@@ -74,10 +74,10 @@ namespace Gecko::API::Test
         std::uint8_t out = 42;
 
         // uint8_t maxDigits = digits10 + 1 = 2 + 1 = 3
-        EXPECT_FALSE(ParseValue::TryParseUIntegral<std::uint8_t>("0000", &out));
+        EXPECT_FALSE(ParseValue::TryParseIntegral<std::uint8_t>("0000", &out));
         EXPECT_EQ(out, 42);
 
-        EXPECT_FALSE(ParseValue::TryParseUIntegral<std::uint8_t>("1234", &out));
+        EXPECT_FALSE(ParseValue::TryParseIntegral<std::uint8_t>("1234", &out));
         EXPECT_EQ(out, 42);
     }
 
@@ -85,11 +85,11 @@ namespace Gecko::API::Test
     {
         std::uint16_t out = 0;
 
-        ASSERT_TRUE(ParseValue::TryParseUIntegral<std::uint16_t>("65535", &out));
+        ASSERT_TRUE(ParseValue::TryParseIntegral<std::uint16_t>("65535", &out));
         EXPECT_EQ(out, 65535);
 
         out = 1234;
-        EXPECT_FALSE(ParseValue::TryParseUIntegral<std::uint16_t>("65536", &out));
+        EXPECT_FALSE(ParseValue::TryParseIntegral<std::uint16_t>("65536", &out));
         EXPECT_EQ(out, 1234);
     }
 }

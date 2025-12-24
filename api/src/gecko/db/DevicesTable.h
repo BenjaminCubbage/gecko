@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include "gecko/db/ConnectionPool.h"
-#include "gecko/models/SharedImage.h"
+#include "gecko/models/Device.h"
 #include "mysqlx/xdevapi.h"
 
 namespace Gecko::API::DB
@@ -20,6 +20,9 @@ namespace Gecko::API::DB
         Result DeviceExists(int deviceID,
                             bool *outExists,
                             int *outOwnerID);
+                            
+        Result GetDevicesByOwnerID(int ownerID,
+                                   std::vector<Models::Device>* outDevices);
 
     private:
         std::shared_ptr<ConnectionPool> m_connectionPool;

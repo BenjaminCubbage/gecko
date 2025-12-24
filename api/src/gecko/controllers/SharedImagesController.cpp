@@ -48,7 +48,7 @@ namespace Gecko::API::Controllers
         int userID{};
         size_t contentLength{};
         std::string idempotencyKey;
-        if (!Middleware::UserIsLoggedIn{ m_pubkey }(req, res, &userID) ||
+        if (!Middleware::UserIsLoggedIn<int>{ m_pubkey }(req, res, &userID) ||
             !Middleware::HasContentLength{}(req, res, &contentLength) ||
             !Middleware::HasHeader{ Headers::IdempotencyKey }(req, res, &idempotencyKey) ||
             !Middleware::PathParamEquals{ "id" }(req, res, std::to_string(userID)))
@@ -102,7 +102,7 @@ namespace Gecko::API::Controllers
         using Services::SharedImagesService;
 
         int userID{};
-        if (!Middleware::UserIsLoggedIn{ m_pubkey }(req, res, &userID) ||
+        if (!Middleware::UserIsLoggedIn<int>{ m_pubkey }(req, res, &userID) ||
             !Middleware::PathParamEquals{ "id" }(req, res, std::to_string(userID)))
             return;
 

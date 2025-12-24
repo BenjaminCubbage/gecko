@@ -7,16 +7,17 @@ namespace Gecko::API::Http
     class ParseValue
     {
     public:
-        // Safely parse a string comprised of digits to an unsigned integral, 
+        // Safely parse a string comprised of digits to an integral, 
         // up to a value of std::numeric_limits<T>::max()
+        // Leading hyphen / signage not supported
         // Leading zeroes are OK but parsing will fail if the string's size
         // is greater than std::numeric_limits<T>::digits10 + 1
         // Example:
-        //      TryParseUIntegral<uint8_t>("255", &result) -> true
-        //      TryParseUIntegral<uint8_t>("256", &result) -> false (output argument untouched)
+        //      TryParseIntegral<uint8_t>("255", &result) -> true
+        //      TryParseIntegral<uint8_t>("256", &result) -> false (output argument untouched)
         template<class T>
-            requires std::is_integral_v<T> && std::is_unsigned_v<T>
-        static bool TryParseUIntegral(std::string_view str, T* outResult)
+            requires std::is_integral_v<T>
+        static bool TryParseIntegral(std::string_view str, T* outResult)
         {
             // note(ben): numeric limit is w/out change
             constexpr size_t maxDigits = std::numeric_limits<T>::digits10 + 1;

@@ -5,8 +5,9 @@
 
 namespace Gecko::API::Services
 {
-    DevicesService::Result DevicesService::GetDeviceStatus(int deviceID,
-                                                           DeviceStatus *outStatus)
+    DevicesService::Result
+    DevicesService::GetDeviceStatus(int deviceID,
+                                    DeviceStatus *outStatus)
     {
         std::string deviceIDStr = std::to_string(deviceID);
         auto status = m_devicesHeartbeatTopic->GetDeviceStatus(deviceIDStr);
@@ -22,12 +23,12 @@ namespace Gecko::API::Services
             exists = true;
         else
         {
-            EXPECT(m_devicesTable.DeviceExists(deviceID, &exists) == DB::DevicesTable::Result::Success, Result::DatabaseError);
+            EXPECT(m_dbDevices.DeviceExists(deviceID, &exists) == DB::DevicesTable::Result::Success, Result::DatabaseError);
 
             if (exists)
                 m_existingDevicesCache.insert(deviceID);
         }
-        
+
         EXPECT(exists, Result::DeviceNotFound);
 
         switch (status)
@@ -41,6 +42,22 @@ namespace Gecko::API::Services
                 *outStatus = DeviceStatus::Pending;
                 break;
         }
+
+        return Result::Success;
+    }
+
+    DevicesService::Result
+    DevicesService::GetUsersDevices(int ownerID,
+                                    std::vector<Models::Device>* outDevices)
+    {
+        EXPECT(m_dbDevices.GetDevicesByOwnerID(ownerID, outDevices) == DB::DevicesTable::Result::Success, Result::DatabaseError);
+
+        if (outDevices->size() > 0)
+            return Result::Success;
+
+        bool exists{};
+        EXPECT(m_dbUsers.UserExists(ownerID, &exists) == DB::UsersTable::Result::Success, Result::DatabaseError);
+        EXPECT(exists, Result::UserNotFound);
 
         return Result::Success;
     }

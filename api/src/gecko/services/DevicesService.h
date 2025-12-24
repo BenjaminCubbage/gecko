@@ -3,6 +3,8 @@
 #include <string>
 #include <unordered_set>
 #include "gecko/db/DevicesTable.h"
+#include "gecko/db/UsersTable.h"
+#include "gecko/models/Device.h"
 #include "gecko/topics/DevicesHeartbeatTopic.h"
 
 namespace Gecko::API::Services
@@ -16,6 +18,7 @@ namespace Gecko::API::Services
 
             /* Service-space */
             DeviceNotFound,
+            UserNotFound,
 
             /* DB fallthrough */
             DatabaseError
@@ -29,15 +32,22 @@ namespace Gecko::API::Services
         };
 
         DevicesService(std::shared_ptr<Topics::DevicesHeartbeatTopic> devicesHeartbeatTopic,
-                       DB::DevicesTable devicesTable)
-            : m_devicesHeartbeatTopic(devicesHeartbeatTopic), m_devicesTable(devicesTable) {}
+                       DB::DevicesTable devicesTable,
+                       DB::UsersTable usersTable)
+            : m_devicesHeartbeatTopic(devicesHeartbeatTopic),
+              m_dbDevices(devicesTable),
+              m_dbUsers(usersTable) {}
 
         Result GetDeviceStatus(int deviceID,
                                DeviceStatus *outStatus);
 
+        Result GetUsersDevices(int ownerID,
+                               std::vector<Models::Device>* outDevices);
+
     private:
         std::shared_ptr<Topics::DevicesHeartbeatTopic> m_devicesHeartbeatTopic;
-        DB::DevicesTable                               m_devicesTable;
+        DB::DevicesTable                               m_dbDevices;
+        DB::UsersTable                                 m_dbUsers;
         std::unordered_set<int>                        m_existingDevicesCache;
     };
 }

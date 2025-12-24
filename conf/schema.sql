@@ -38,7 +38,8 @@ CREATE TABLE IF NOT EXISTS SharedImages
 CREATE TABLE IF NOT EXISTS Devices
 (
     device_id INT PRIMARY KEY AUTO_INCREMENT,
-    owner_id INT NULL,
+    owner_id  INT NULL,
+    `name`    INT NOT NULL,
     FOREIGN KEY (owner_id)
         REFERENCES Users(user_id)
 );

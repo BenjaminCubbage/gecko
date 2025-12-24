@@ -47,8 +47,7 @@ namespace Gecko::API::Middleware
     };
 
     template<class T> requires
-        std::is_integral_v<T> &&
-        std::is_unsigned_v<T>
+        std::is_integral_v<T>
     class HasPathParam<T>
     {
     public:
@@ -68,7 +67,7 @@ namespace Gecko::API::Middleware
             }
 
             if (value->second.size() > std::numeric_limits<T>::digits10 + 1 || 
-                !Http::ParseValue::TryParseUIntegral(value->second, outPathParam))
+                !Http::ParseValue::TryParseIntegral(value->second, outPathParam))
             {
                 Http::RespondWithError::Unprocessable(res);
                 return false;

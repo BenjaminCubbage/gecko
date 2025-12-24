@@ -89,7 +89,7 @@ namespace Gecko::API::Controllers
     void AuthController::Handle_POST_LogOut(const httplib::Request& req, httplib::Response& res)
     {
         int userID{};
-        if (!Middleware::UserIsLoggedIn{ m_pubkey }(req, res, &userID) ||
+        if (!Middleware::UserIsLoggedIn<int>{ m_pubkey }(req, res, &userID) ||
             !Middleware::HasValidXSRFToken{ }(req, res))
         {
             return;
@@ -237,9 +237,8 @@ namespace Gecko::API::Controllers
 
     void AuthController::Handle_POST_Refresh(const httplib::Request &req, httplib::Response &res)
     {
-        std::string userID;
-
-        if (!Middleware::UserIsLoggedIn{ m_pubkey }(req, res, &userID))
+        int userID{};
+        if (!Middleware::UserIsLoggedIn<int>{ m_pubkey }(req, res, &userID))
             return;
 
         try
@@ -257,7 +256,7 @@ namespace Gecko::API::Controllers
                 jwt::create<jwt::traits::open_source_parsers_jsoncpp>()
                     .set_type("JWT")
                     .set_issuer(Issuer::GeckoIssuerName)
-                    .set_subject(userID)
+                    .set_subject(std::to_string(userID))
                     .set_expires_in(std::chrono::seconds{ ONE_WEEK_IN_SECONDS })
                     .set_issued_now()
                     .sign(jwt::algorithm::es256("", m_pkey))
