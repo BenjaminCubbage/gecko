@@ -13,7 +13,7 @@ namespace Gecko::API::DB
     public:
         enum class Result { Success, Failure };
 
-        SharedImagesTable(std::shared_ptr<ConnectionPool>& connectionPool)
+        SharedImagesTable(ConnectionPool* connectionPool)
             : m_connectionPool(connectionPool) {}
 
         Result CreateSharedImage(int senderID,
@@ -28,6 +28,6 @@ namespace Gecko::API::DB
                                           std::vector<uint8_t>* outBlob);
 
     private:
-        std::shared_ptr<ConnectionPool> m_connectionPool;
+        ConnectionPool* m_connectionPool;
     };
 }

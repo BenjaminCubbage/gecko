@@ -39,7 +39,7 @@ namespace Gecko::API::Services
             DatabaseError
         };
 
-        UsersService(DB::UsersTable dbUsers) : m_dbUsers(dbUsers) {}
+        UsersService(DB::UsersTable* dbUsers) : m_dbUsers(dbUsers) {}
 
         Result CreateUser(const std::string& username,
                           const std::string& oidcIss,
@@ -54,7 +54,7 @@ namespace Gecko::API::Services
         Result PatchUser(int userID, const Models::UserPatch& patch);
 
     private:
-        DB::UsersTable m_dbUsers;
+        DB::UsersTable* m_dbUsers;
         static thread_local Json::FastWriter s_jsonWriter;
         static thread_local Json::Reader     s_jsonReader;
     };

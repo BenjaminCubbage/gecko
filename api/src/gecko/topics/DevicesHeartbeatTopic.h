@@ -23,19 +23,10 @@ namespace Gecko::API::Topics
             Pending
         };
 
-        DevicesHeartbeatTopic(std::shared_ptr<MQTT::MQTTClient> mqttClient)
-            : m_mqttClient(std::move(mqttClient))
-        {
-            static constexpr const char* HeartbeatTopic = "devices/+/out/heartbeat";
+        DevicesHeartbeatTopic(MQTT::MQTTClient* mqttClient)
+            : m_mqttClient(std::move(mqttClient)) {}
 
-            m_mqttClient->OnMessageReceived(
-                [this] (std::string_view topic, std::span<uint8_t> payload) {
-                    MessageReceivedHandler(topic, payload);
-                });
-
-            m_mqttClient->SubscribeToTopic(HeartbeatTopic, [] {}, [] (int) {});
-            m_epochStartup = EpochNow();
-        }
+        void Start();
 
         Status GetDeviceStatus(const std::string& deviceID);
 
@@ -55,8 +46,8 @@ namespace Gecko::API::Topics
                 std::chrono::system_clock::now().time_since_epoch());
         }
 
-        std::shared_ptr<MQTT::MQTTClient> m_mqttClient;
-        std::shared_mutex                 m_epochDevicesLastSeenMutex;
+        MQTT::MQTTClient* m_mqttClient;
+        std::shared_mutex m_epochDevicesLastSeenMutex;
         std::unordered_map<
             std::string,
             std::chrono::seconds,

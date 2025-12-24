@@ -42,24 +42,9 @@ namespace Gecko::API::DB
               m_port(port), 
               m_user(std::move(user)), 
               m_pwd(std::move(pwd)), 
-              m_db(std::move(db))
-        {
-            m_sessions.reserve(PoolSize);
-            
-            for (size_t i = 0; i < PoolSize; ++i)
-                m_sessions.emplace_back
-                (
-                    mysqlx::Session
-                    {
-                        mysqlx::SessionOption::HOST,     m_host,
-                        mysqlx::SessionOption::PORT,     m_port,
-                        mysqlx::SessionOption::USER,     m_user,
-                        mysqlx::SessionOption::PWD,      m_pwd,
-                        mysqlx::SessionOption::DB,       m_db,
-                        mysqlx::SessionOption::SSL_MODE, mysqlx::SSLMode::REQUIRED
-                    }
-                );
-        }
+              m_db(std::move(db)) { }
+
+        bool Connect();
 
         [[nodiscard]] SessionGuard Acquire();
 

@@ -2,6 +2,19 @@
 
 namespace Gecko::API::Topics
 {
+    void DevicesHeartbeatTopic::Start()
+    {
+        static constexpr const char* HeartbeatTopic = "devices/+/out/heartbeat";
+
+        m_mqttClient->OnMessageReceived(
+            [this] (std::string_view topic, std::span<uint8_t> payload) {
+                MessageReceivedHandler(topic, payload);
+            });
+
+        m_mqttClient->SubscribeToTopic(HeartbeatTopic, [] {}, [] (int) {});
+        m_epochStartup = EpochNow();
+    }
+
     DevicesHeartbeatTopic::Status
     DevicesHeartbeatTopic::GetDeviceStatus(const std::string& deviceID)
     {

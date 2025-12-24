@@ -27,8 +27,6 @@ namespace Gecko::API::MQTT
         void SubscribeToTopic(const std::string& topic, std::function<void()> success, std::function<void(int)> failure);
 
         void OnMessageReceived(std::function<void(std::string_view, std::span<uint8_t>)> handler);
-
-        int  m_connectFailedCode{ 0 };
         
     private:
         struct SubscribeContext
@@ -51,6 +49,7 @@ namespace Gecko::API::MQTT
         std::mutex              m_connectedOrFailedMutex;
         bool m_connected{ false };
         bool m_connectFailed{ false };
+        int  m_connectFailedCode{ 0 };
 
         std::mutex                                                             m_messageReceivedHandlersMutex;
         std::vector<std::function<void(std::string_view, std::span<uint8_t>)>> m_messageReceivedHandlers;

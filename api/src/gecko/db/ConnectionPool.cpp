@@ -2,6 +2,33 @@
 
 namespace Gecko::API::DB
 {
+    bool ConnectionPool::Connect()
+    {
+        try
+        {
+            m_sessions.reserve(PoolSize);
+
+            for (size_t i = 0; i < PoolSize; ++i)
+                m_sessions.emplace_back
+                (
+                    mysqlx::Session
+                    {
+                        mysqlx::SessionOption::HOST,     m_host,
+                        mysqlx::SessionOption::PORT,     m_port,
+                        mysqlx::SessionOption::USER,     m_user,
+                        mysqlx::SessionOption::PWD,      m_pwd,
+                        mysqlx::SessionOption::DB,       m_db,
+                        mysqlx::SessionOption::SSL_MODE, mysqlx::SSLMode::REQUIRED
+                    }
+                );
+
+            return true;
+        }
+        catch (mysqlx::Error&) { }
+
+        return false;
+    }
+
     ConnectionPool::SessionGuard ConnectionPool::Acquire()
     {
         Session *session{ nullptr };

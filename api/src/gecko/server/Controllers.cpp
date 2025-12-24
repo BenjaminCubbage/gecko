@@ -1,0 +1,13 @@
+#include "gecko/server/Controllers.h"
+
+namespace Gecko::API::Server
+{
+    bool Controllers::Start(httplib::Server& server)
+    {
+        m_authController        .Attach(server);
+        m_usersController       .Attach(server);
+        m_sharedImagesController.Attach(server);
+        m_devicesController     .Attach(server);
+        return true;
+    }
+}

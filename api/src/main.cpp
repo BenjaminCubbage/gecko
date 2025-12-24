@@ -12,8 +12,8 @@ int main(int argc, char* argv[])
 
     if (argc != 2 && argc != 4)
     {
-        std::cout << "[api]: Usage: api <path/to/.env.local>\n"
-                  << "              api <path/to/.env.local> <path/to/mosquittorootclientpassword.txt> <path/to/mysqlrootclientpassword.txt>"
+        std::cout << "[main]: Usage: api <path/to/.env.local>\n"
+                  << "               api <path/to/.env.local> <path/to/mosquittorootclientpassword.txt> <path/to/mysqlrootclientpassword.txt>"
                   << std::endl;
         return 1;
     }
@@ -25,5 +25,5 @@ int main(int argc, char* argv[])
     if (!env)
         return 1;
 
-    return !Server::Server{}.Start(*env, log);
+    return !Server::Server{ std::move(*env), &log }.Start();
 }

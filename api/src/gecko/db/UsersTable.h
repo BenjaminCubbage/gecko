@@ -12,7 +12,7 @@ namespace Gecko::API::DB
     public:
         enum class Result { Success, Failure };
 
-        UsersTable(std::shared_ptr<ConnectionPool>& connectionPool) : m_connectionPool(connectionPool) {}
+        UsersTable(ConnectionPool* connectionPool) : m_connectionPool(connectionPool) {}
 
         Result UsernameExists(const std::string& username, bool* outTaken);
 
@@ -36,6 +36,6 @@ namespace Gecko::API::DB
         Result PatchUser(int userID, const Models::UserPatch& patch);
 
     private:
-        std::shared_ptr<ConnectionPool> m_connectionPool;
+        ConnectionPool* m_connectionPool;
     };
 }

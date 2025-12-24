@@ -11,7 +11,7 @@ namespace Gecko::API::DB
     public:
         enum class Result { Success, Failure };
 
-        DevicesTable(std::shared_ptr<ConnectionPool>& connectionPool)
+        DevicesTable(ConnectionPool* connectionPool)
             : m_connectionPool(connectionPool) {}
 
         Result DeviceExists(int deviceID,
@@ -25,6 +25,6 @@ namespace Gecko::API::DB
                                    std::vector<Models::Device>* outDevices);
 
     private:
-        std::shared_ptr<ConnectionPool> m_connectionPool;
+        ConnectionPool* m_connectionPool;
     };
 }

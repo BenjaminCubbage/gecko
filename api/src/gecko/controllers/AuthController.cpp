@@ -267,7 +267,7 @@ namespace Gecko::API::Controllers
         }
         catch (...)
         {
-            res.status = httplib::StatusCode::BadRequest_400;
+            Http::RespondWithError::AuthInvalid(res);
             return;
         }
     }

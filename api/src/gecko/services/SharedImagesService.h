@@ -27,7 +27,7 @@ namespace Gecko::API::Services
             DatabaseError
         };
 
-        SharedImagesService(DB::SharedImagesTable dbSharedImages, DB::UsersTable dbUsers) 
+        SharedImagesService(DB::SharedImagesTable* dbSharedImages, DB::UsersTable* dbUsers) 
             : m_dbSharedImages(dbSharedImages), m_dbUsers(dbUsers) {}
 
         Result CreateSharedImage(int senderID,
@@ -39,8 +39,8 @@ namespace Gecko::API::Services
                                           std::vector<uint8_t>* outBlob);
 
     private:
-        DB::SharedImagesTable m_dbSharedImages;
-        DB::UsersTable m_dbUsers;
+        DB::SharedImagesTable* m_dbSharedImages;
+        DB::UsersTable* m_dbUsers;
         static thread_local Json::FastWriter s_jsonWriter;
         static thread_local Json::Reader     s_jsonReader;
     };

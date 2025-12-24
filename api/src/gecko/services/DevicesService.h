@@ -31,9 +31,9 @@ namespace Gecko::API::Services
             Pending
         };
 
-        DevicesService(std::shared_ptr<Topics::DevicesHeartbeatTopic> devicesHeartbeatTopic,
-                       DB::DevicesTable devicesTable,
-                       DB::UsersTable usersTable)
+        DevicesService(Topics::DevicesHeartbeatTopic* devicesHeartbeatTopic,
+                       DB::DevicesTable* devicesTable,
+                       DB::UsersTable* usersTable)
             : m_devicesHeartbeatTopic(devicesHeartbeatTopic),
               m_dbDevices(devicesTable),
               m_dbUsers(usersTable) {}
@@ -45,9 +45,9 @@ namespace Gecko::API::Services
                                std::vector<Models::Device>* outDevices);
 
     private:
-        std::shared_ptr<Topics::DevicesHeartbeatTopic> m_devicesHeartbeatTopic;
-        DB::DevicesTable                               m_dbDevices;
-        DB::UsersTable                                 m_dbUsers;
-        std::unordered_set<int>                        m_existingDevicesCache;
+        Topics::DevicesHeartbeatTopic* m_devicesHeartbeatTopic;
+        DB::DevicesTable*              m_dbDevices;
+        DB::UsersTable*                m_dbUsers;
+        std::unordered_set<int>        m_existingDevicesCache;
     };
 }
