@@ -1,7 +1,8 @@
 <template>
     <div class="bg">
         <div class="dotted">
-            <div class="canvas-container">
+            <div class="front-and-center">
+                <RecipientSelect />
                 <PicEditor />
             </div>
 
@@ -15,6 +16,7 @@
 <script setup>
 import { ref, provide } from 'vue';
 import PicEditor from './components/pic_editor/PicEditor.vue';
+import RecipientSelect from './components/recipient_select/RecipientSelect.vue';
 import AccountWidget from './components/account_widget/AccountWidget.vue';
 import { ActiveUser } from '@/core/session/ActiveUser.js';
 import { Dispatch } from '@/core/dispatch/Dispatch.js';
@@ -62,7 +64,7 @@ provide('session', session);
         background-position-y: 50%;
     }
 
-    .header-strip-container, .canvas-container { grid-area: 1/1; }
+    .header-strip-container, .front-and-center { grid-area: 1/1; }
 
     .header-strip-container {
         place-self: start;
@@ -73,7 +75,10 @@ provide('session', session);
         pointer-events: all;
     }
 
-    .canvas-container {
+    .front-and-center {
+        display: flex;
+        flex-flow: column nowrap;
+        gap: 4px;
         place-self: center;
     }
 </style>

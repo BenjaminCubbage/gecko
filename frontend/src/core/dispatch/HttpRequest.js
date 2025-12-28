@@ -41,11 +41,8 @@ class HttpRequest {
             this.xhr.responseType === "") {
             try { body = JSON.parse(this.xhr.responseText); }
             catch { body = this.xhr.responseText; }
-            console.log("text received");
-        } else if (this.xhr.responseType === "blob") {
+        } else if (this.xhr.responseType === "blob")
             body = this.xhr.response;
-            console.log("blob received");
-        }
 
         if (status >= 200 && status < 300) {
             this._successCb?.(body, status, this.xhr);

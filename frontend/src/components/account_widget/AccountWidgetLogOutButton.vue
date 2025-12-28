@@ -18,7 +18,6 @@ const emit = defineEmits(['click']);
         margin: 4px 0;
         background: hsl(0, 100%, 71%);
         border: var(--border-small);
-        border: 2.5px solid black;
         box-shadow: 2px 2px 0 0 black;
         border-radius: 999px;
         display: flex;
