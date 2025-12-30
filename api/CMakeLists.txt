@@ -69,6 +69,8 @@ set(src_files
     "${src_dir}/gecko/middleware/HasMultipartFormDataField.h"
     "${src_dir}/gecko/middleware/HasPathParam.cpp"
     "${src_dir}/gecko/middleware/HasPathParam.h"
+    "${src_dir}/gecko/middleware/HasQueryParam.cpp"
+    "${src_dir}/gecko/middleware/HasQueryParam.h"
     "${src_dir}/gecko/middleware/HasValidOAuthXSRFNonce.cpp"
     "${src_dir}/gecko/middleware/HasValidOAuthXSRFNonce.h"
     "${src_dir}/gecko/middleware/HasValidXSRFToken.cpp"

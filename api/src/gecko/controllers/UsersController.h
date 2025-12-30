@@ -18,6 +18,7 @@ namespace Gecko::API::Controllers
     private:
         void Handle_GET_Me(const httplib::Request& req, httplib::Response& res);
         void Handle_PATCH_User(const httplib::Request& req, httplib::Response& res);
+        void Handle_GET_UserQuery(const httplib::Request& req, httplib::Response& res);
 
         Services::UsersService m_usersService;
         std::string m_pubkey;

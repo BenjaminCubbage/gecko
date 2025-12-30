@@ -10,9 +10,9 @@
                             'visibility': isPending ? 'hidden' : 'visible'
                         }">@</div>
                     <input
-                        ref="inputEl" 
-                        type="text" 
-                        class="username-text-input" 
+                        ref="inputEl"
+                        type="text"
+                        class="username-text-input"
                         :style="{
                             'visibility': isPending ? 'hidden' : 'visible'
                         }"
@@ -22,10 +22,10 @@
                         :maxlength="maxUsernameLength"
                         v-model="inputTextValue" />
 
-                    <button 
+                    <button
                         v-show="isEditing || isPending"
                         class="submit-button"
-                        :class="{ 
+                        :class="{
                             'invalid': !isValidUsernameInput(inputTextValue)
                         }"
                         ref="submitButtonEl"
@@ -36,10 +36,10 @@
                     </button>
                 </div>
 
-                <button 
+                <button
                     class="username-button"
                     :class="{ 'pending': isPending }"
-                    @click="emit('requestEdit')" 
+                    @click="emit('requestEdit')"
                     :disabled="isPending || isEditing"
                     @mousemove.self="teleportPencilToMouse"
                     @mouseenter="teleportPencilToMouse"
@@ -54,10 +54,10 @@
                     </div>
 
                     <div
-                        class="pencil-icon-container" 
+                        class="pencil-icon-container"
                         v-show="!isPending"
                         :style="{
-                            left:   `${pencilPosition.x}px`, 
+                            left:   `${pencilPosition.x}px`,
                             top:    `${pencilPosition.y}px`,
                             width:  `${pencilDimensions.x}px`,
                             height: `${pencilDimensions.y}px`
@@ -72,14 +72,14 @@
 </template>
 
 <script setup>
-import { 
-    toRefs, ref, useTemplateRef, 
+import {
+    toRefs, ref, useTemplateRef,
     nextTick, watch, computed } from 'vue';
 import { characterIsAlphaNumeric } from '@/core/string/CharacterIsAlphaNumeric.js';
 
 const minUsernameLength = 3;
 const maxUsernameLength = 18;
-const isValidUsernameChar 
+const isValidUsernameChar
     = c => characterIsAlphaNumeric(c) || c == '_';
 
 const propsObj = defineProps({
@@ -218,9 +218,9 @@ watch (isEditing, () => {
         --rotate-gradient: 0deg;
 
         animation: rotate-gradient 2s linear infinite;
-        background-image: conic-gradient(in oklch from var(--rotate-gradient) at 50% 100%, 
-            var(--red)    0%, 
-            var(--blue)   25%, 
+        background-image: conic-gradient(in oklch from var(--rotate-gradient) at 50% 100%,
+            var(--red)    0%,
+            var(--blue)   25%,
             var(--green)  50%,
             var(--yellow) 75%,
             var(--red)    100%);
@@ -266,7 +266,7 @@ watch (isEditing, () => {
         display: flex;
         justify-content: center;
         align-items: center;
-        
+
         transition: transform 200ms ease;
         transform: scale(1) rotate(0deg);
     }
@@ -314,12 +314,12 @@ watch (isEditing, () => {
         --pencil-wrapper: #ff9c08;
         --pencil-eraser:  #ff899a;
 
-        background: linear-gradient(42deg, 
-            var(--pencil-tip)     20%, 
-            var(--pencil-wood)    20%, 
-            var(--pencil-wood)    34%, 
-            var(--pencil-wrapper) 34%, 
-            var(--pencil-wrapper) 63%, 
+        background: linear-gradient(42deg,
+            var(--pencil-tip)     20%,
+            var(--pencil-wood)    20%,
+            var(--pencil-wood)    34%,
+            var(--pencil-wrapper) 34%,
+            var(--pencil-wrapper) 63%,
             var(--pencil-eraser)  63%);
         background-clip: text;
         color: transparent;
@@ -347,12 +347,12 @@ watch (isEditing, () => {
         initial-value: 0deg;
         inherits: false;
     }
-    
+
     @keyframes rotate-gradient {
         from { --rotate-gradient: 0deg; }
         to   { --rotate-gradient: 360deg; }
     }
-    
+
     @keyframes bob-pencil {
         0%   { transform: rotate(-6deg) scale(1.04); }
         25%  { transform: rotate(6deg) scale(0.99);  }

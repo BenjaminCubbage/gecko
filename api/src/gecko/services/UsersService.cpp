@@ -12,14 +12,11 @@ namespace Gecko::API::Services
                              const std::string& oidcIss,
                              const std::string& oidcSub)
     {
-        EXPECT(username.size() >= MinUsernameLength, Result::UsernameTooShort);
-        EXPECT(username.size() <= MaxUsernameLength, Result::UsernameTooLong);
+        Result usernameValid = ValidateUsername(username);
+        EXPECT(usernameValid == Result::Success, usernameValid);
 
-        EXPECT(oidcIss.size() >= MinOIDCIssLength, Result::OIDCIssTooShort);
-        EXPECT(oidcIss.size() <= MaxOIDCIssLength, Result::OIDCIssTooLong);
-
-        EXPECT(oidcSub.size() >= MinOIDCSubLength, Result::OIDCSubTooShort);
-        EXPECT(oidcSub.size() <= MaxOIDCSubLength, Result::OIDCSubTooLong);
+        Result oidcValid = ValidateOIDC(oidcIss, oidcSub);
+        EXPECT(oidcValid == Result::Success, oidcValid);
 
         if (m_dbUsers->CreateUser(username, oidcIss, oidcSub) == DB::UsersTable::Result::Success)
             return Result::Success;
@@ -46,6 +43,9 @@ namespace Gecko::API::Services
     {
         if (m_dbUsers->GetUserIDByOIDC(oidcIss, oidcSub, outUserID) == DB::UsersTable::Result::Success)
             return Result::Success;
+        
+        Result oidcValid = ValidateOIDC(oidcIss, oidcSub);
+        EXPECT(oidcValid == Result::Success, oidcValid);
 
         bool exists{};
 
@@ -69,22 +69,31 @@ namespace Gecko::API::Services
         return Result::DatabaseError;
     }
 
+    UsersService::Result 
+    UsersService::GetUserByUsername(const std::string& username,
+                                    Models::User* outUser)
+    {
+        bool exists{};
+
+        Result usernameValid = ValidateUsername(username);
+        EXPECT(usernameValid == Result::Success, usernameValid);
+
+        EXPECT(m_dbUsers->GetUserByUsernameIfExists(username, &exists, outUser) 
+               == DB::UsersTable::Result::Success,
+               Result::DatabaseError);
+
+        EXPECT(exists, Result::UserNotFound);
+        return Result::Success;
+    }
+
     UsersService::Result
     UsersService::PatchUser(int userID, const Models::UserPatch& patch)
     {
         // todo(ben): Implement propert PATCH
         // Currently, this is effectively a PUT op
 
-        EXPECT(patch.username.size() >= MinUsernameLength, Result::UsernameTooShort);
-        EXPECT(patch.username.size() <= MaxUsernameLength, Result::UsernameTooLong);
-
-        for (char c : patch.username)
-            if (c != '_' && (c < '0' || c > '9') && 
-                            (c < 'a' || c > 'z') && 
-                            (c < 'A' || c > 'Z'))
-            {
-                return Result::UsernameContainsInvalidCharacters;
-            }
+        Result usernameValid = ValidateUsername(patch.username);
+        EXPECT(usernameValid == Result::Success, usernameValid);
 
         if (m_dbUsers->PatchUser(userID, patch) == DB::UsersTable::Result::Success)
             return Result::Success;
@@ -101,5 +110,5 @@ namespace Gecko::API::Services
         EXPECT(!usernameTaken, Result::UsernameTaken);
 
         return Result::DatabaseError;
-    }
+    }    
 }

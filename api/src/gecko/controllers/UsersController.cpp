@@ -5,6 +5,7 @@
 #include "gecko/http/RespondWithError.h"
 #include "gecko/middleware/HasJSONBody.h"
 #include "gecko/middleware/HasJSONValueMember.h"
+#include "gecko/middleware/HasQueryParam.h"
 #include "gecko/middleware/HasValidXSRFToken.h"
 #include "gecko/middleware/PathParamEquals.h"
 #include "gecko/middleware/UserIsLoggedIn.h"
@@ -30,6 +31,12 @@ namespace Gecko::API::Controllers
             "/api/users/:id",
             [this] (const httplib::Request& req, httplib::Response& res) {
                 Handle_PATCH_User(req, res);
+            });
+
+        server.Get(
+            "/api/users",
+            [this] (const httplib::Request& req, httplib::Response& res) {
+                Handle_GET_UserQuery(req, res);
             });
     }
 
@@ -107,6 +114,57 @@ namespace Gecko::API::Controllers
                 return;
 
             default:
+                Http::RespondWithError::CouldNotFulfill(res);
+                return;
+        }
+    }
+    
+    void UsersController::Handle_GET_UserQuery(const httplib::Request& req, httplib::Response& res)
+    {
+        using Services::UsersService;
+
+        int userID{};
+        Json::Value patch;
+        std::string username;
+
+        if (!Middleware::UserIsLoggedIn<int>{ m_pubkey }(req, res, &userID) ||
+            !Middleware::HasQueryParam<std::string>{ "username" }(req, res, &username))
+        {
+            return;
+        }
+
+        Models::User user;
+
+        switch (m_usersService.GetUserByUsername(username, &user))
+        {
+            case UsersService::Result::Success:
+            {
+                Json::Value response{ };
+                response["user"] = Json::Value{ };
+                response["user"]["user_id"]  = user.userID;
+                response["user"]["username"] = user.username;
+                res.body = s_jsonWriter.write(response);
+                return;
+            }
+
+            case UsersService::Result::UsernameTooLong:
+                Http::RespondWithError::UsernameTooLong(res);
+                return;
+
+            case UsersService::Result::UsernameTooShort:
+                Http::RespondWithError::UsernameTooShort(res);
+                return; 
+
+            case UsersService::Result::UsernameContainsInvalidCharacters:
+                Http::RespondWithError::UsernameContainsInvalidCharacters(res);
+                return;
+
+            case UsersService::Result::UserNotFound:
+                Http::RespondWithError::UserNotFound(res);
+                return;
+
+            default:
+            case UsersService::Result::DatabaseError:
                 Http::RespondWithError::CouldNotFulfill(res);
                 return;
         }

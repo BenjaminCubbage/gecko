@@ -16,14 +16,14 @@ namespace Gecko::API::DB
             *outTaken = result.count() > 0;
             return Result::Success;
         }
-        catch (mysqlx::Error&) 
-        { 
-            return Result::Failure; 
+        catch (mysqlx::Error&)
+        {
+            return Result::Failure;
         }
     }
 
-    UsersTable::Result UsersTable::CreateUser(const std::string& username, 
-                                              const std::string& oidcIss, 
+    UsersTable::Result UsersTable::CreateUser(const std::string& username,
+                                              const std::string& oidcIss,
                                               const std::string& oidcSub)
     {
         try
@@ -38,12 +38,12 @@ namespace Gecko::API::DB
 
             return Result::Success;
         }
-        catch (mysqlx::Error&) 
-        { 
-            return Result::Failure; 
+        catch (mysqlx::Error&)
+        {
+            return Result::Failure;
         }
     }
-    
+
     UsersTable::Result UsersTable::OIDCIdentityExists(const std::string& oidcIss,
                                                       const std::string& oidcSub,
                                                       bool *outExists)
@@ -52,7 +52,7 @@ namespace Gecko::API::DB
         {
             auto connection = m_connectionPool->Acquire();
 
-            auto result = 
+            auto result =
                 connection->sql("SELECT user_id FROM Users "
                                 "WHERE oidc_iss=? AND oidc_sub=?")
                     .bind(oidcIss, oidcSub)
@@ -73,13 +73,43 @@ namespace Gecko::API::DB
         {
             auto connection = m_connectionPool->Acquire();
 
-            auto result = 
+            auto result =
                 connection->sql("SELECT user_id FROM Users "
                                 "WHERE user_id=?")
                     .bind(userID)
                     .execute();
 
             *outExists = result.count() == 1;
+            return Result::Success;
+        }
+        catch (mysqlx::Error&)
+        {
+            return Result::Failure;
+        }
+    }
+
+    UsersTable::Result UsersTable::GetUser(int userID, Models::User* outUser)
+    {
+        try
+        {
+            auto connection = m_connectionPool->Acquire();
+
+            auto result =
+                connection->sql("SELECT user_id, username, oidc_iss, oidc_sub FROM Users "
+                                "WHERE user_id=?")
+                    .bind(userID)
+                    .execute();
+
+            if (!result.hasData() || result.count() != 1)
+                return Result::Failure;
+
+            auto columns = result.fetchOne();
+
+            *outUser = {
+                .userID   = columns.get(0).get<int>(),
+                .username = columns.get(1).get<std::string>()
+            };
+
             return Result::Success;
         }
         catch (mysqlx::Error&)
@@ -96,7 +126,7 @@ namespace Gecko::API::DB
         {
             auto connection = m_connectionPool->Acquire();
 
-            auto result = 
+            auto result =
                 connection->sql("SELECT user_id FROM Users "
                                 "WHERE oidc_iss=? AND oidc_sub=?")
                     .bind(oidcIss, oidcSub)
@@ -113,28 +143,32 @@ namespace Gecko::API::DB
             return Result::Failure;
         }
     }
-    
-    UsersTable::Result UsersTable::GetUser(int userID, Models::User* outUser)
+
+    UsersTable::Result
+    UsersTable::GetUserByUsernameIfExists(const std::string& username,
+                                          bool* outExists,
+                                          Models::User* outUser)
     {
         try
         {
             auto connection = m_connectionPool->Acquire();
-            
+
             auto result =
-                connection->sql("SELECT user_id, username, oidc_iss, oidc_sub FROM Users "
-                                "WHERE user_id=?")
-                    .bind(userID)
+                connection->sql("SELECT user_id FROM Users WHERE username=?")
+                    .bind(username)
                     .execute();
 
-            if (!result.hasData() || result.count() != 1)
-                return Result::Failure;
-
-            auto columns = result.fetchOne();
-
-            *outUser = Models::User
+            if (!result.hasData() || result.count() == 0)
             {
-                .userID   = columns.get(0).get<int>(),
-                .username = columns.get(1).get<std::string>()
+                *outExists = false;
+                *outUser   = {};
+                return Result::Success;
+            }
+
+            *outExists = true;
+            *outUser = {
+                .userID   = result.fetchOne().get(0).get<int>(),
+                .username = username
             };
 
             return Result::Success;
@@ -144,18 +178,18 @@ namespace Gecko::API::DB
             return Result::Failure;
         }
     }
-    
+
     UsersTable::Result UsersTable::PatchUser(int userID, const Models::UserPatch& patch)
     {
         try
         {
             auto connection = m_connectionPool->Acquire();
-            
-            auto result = 
+
+            auto result =
                 connection->sql("UPDATE Users SET username=? WHERE user_id=?")
                     .bind(patch.username, userID)
                     .execute();
-            
+
             return result.getAffectedItemsCount()
                 ? Result::Success
                 : Result::Failure;

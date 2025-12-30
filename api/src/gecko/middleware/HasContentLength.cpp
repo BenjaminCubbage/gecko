@@ -25,7 +25,7 @@ namespace Gecko::API::Middleware
             // To truly check that the content length is a reasonable
             // size we should use another middleware component created
             // just for that
-            Http::RespondWithError::PayloadTooLarge(res);
+            Http::RespondWithError::ContentPayloadTooLarge(res);
             return false;
         }
 

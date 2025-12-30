@@ -52,9 +52,43 @@ namespace Gecko::API::Services
 
         Result GetUser(int userID, Models::User* outUser);
 
+        Result GetUserByUsername(const std::string& username,
+                                 Models::User* outUser);
+
         Result PatchUser(int userID, const Models::UserPatch& patch);
 
     private:
+        Result ValidateUsername(const std::string& username)
+        {
+            // length
+            if (username.size() < MinUsernameLength) return Result::UsernameTooShort;
+            if (username.size() > MaxUsernameLength) return Result::UsernameTooShort;
+            
+            // alphanumeric or underscore
+            for (char c : username)
+            {
+                if (c != '_' && (c < '0' || c > '9') && 
+                                (c < 'a' || c > 'z') && 
+                                (c < 'A' || c > 'Z'))
+                {
+                    return Result::UsernameContainsInvalidCharacters;
+                }
+            }
+
+            return Result::Success;
+        }
+
+        Result ValidateOIDC(const std::string& oidcIss, const std::string& oidcSub)
+        {
+            if (oidcIss.size() < MinOIDCIssLength) return Result::OIDCIssTooShort;
+            if (oidcIss.size() > MaxOIDCIssLength) return Result::OIDCIssTooLong;
+
+            if (oidcSub.size() < MinOIDCSubLength) return Result::OIDCSubTooShort;
+            if (oidcSub.size() > MaxOIDCSubLength) return Result::OIDCSubTooLong;
+
+            return Result::Success;
+        }
+
         DB::UsersTable* m_dbUsers;
         static thread_local Json::FastWriter s_jsonWriter;
         static thread_local Json::Reader     s_jsonReader;

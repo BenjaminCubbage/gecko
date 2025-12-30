@@ -55,6 +55,18 @@ namespace Gecko::API::Http
             response.status = httplib::StatusCode::BadRequest_400;
         }
 
+        static inline void BadField(httplib::Response& response, const std::string& fieldName)
+        {
+            response.body   = BuildResponseBodyWithField("bad_request", "bad_field", fieldName);
+            response.status = httplib::StatusCode::BadRequest_400;
+        }
+
+        static inline void FieldTooLong(httplib::Response& response, const std::string& field)
+        {
+            response.body   = BuildResponseBodyWithField("bad_request", "field_too_long", field);
+            response.status = httplib::StatusCode::PayloadTooLarge_413;
+        }
+
         static inline void MissingHeader(httplib::Response& response, const std::string& headerName)
         {
             response.body   = BuildResponseBodyWithHeader("bad_request", "missing_header", headerName);
@@ -145,7 +157,7 @@ namespace Gecko::API::Http
             response.status = httplib::StatusCode::UnprocessableContent_422;
         }
 
-        static inline void PayloadTooLarge(httplib::Response& response)
+        static inline void ContentPayloadTooLarge(httplib::Response& response)
         {
             response.body   = BuildResponseBody("content_too_large", "content_length");
             response.status = httplib::StatusCode::PayloadTooLarge_413;

@@ -32,7 +32,7 @@ namespace Gecko::API::Test
         ExpectErrorJson(res);
     }
 
-    TEST(HasContentLength, TooManyDigitsReturnsFalseAndSetsPayloadTooLarge)
+    TEST(HasContentLength, TooManyDigitsReturnsFalseAndSetsContentPayloadTooLarge)
     {
         httplib::Request  req{};
         httplib::Response res{};
@@ -47,7 +47,7 @@ namespace Gecko::API::Test
         const bool ok = mw(req, res, &out);
 
         ASSERT_FALSE(ok);
-        EXPECT_EQ(res.status, httplib::StatusCode::PayloadTooLarge_413);
+        EXPECT_EQ(res.status, httplib::StatusCode::ContentPayloadTooLarge_413);
         ExpectErrorJson(res);
     }
 

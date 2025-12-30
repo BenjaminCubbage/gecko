@@ -8,10 +8,10 @@
 
 namespace Gecko::API::Middleware
 {
-    template<class T>
+    template<typename T>
     class HasPathParam;
 
-    template<class T> requires
+    template<typename T> requires
         std::is_same_v<T, std::string> ||
         std::is_same_v<T, std::string_view>
     class HasPathParam<T>
@@ -22,7 +22,7 @@ namespace Gecko::API::Middleware
 
         bool operator()(const httplib::Request& req,
                         httplib::Response& res,
-                        std::string* outPathParam)
+                        T* outPathParam)
         {
             const auto value = req.path_params.find(m_paramName);
 
@@ -34,7 +34,7 @@ namespace Gecko::API::Middleware
 
             if (value->second.size() > m_maxLength)
             {
-                Http::RespondWithError::PayloadTooLarge(res);
+                Http::RespondWithError::ContentPayloadTooLarge(res);
                 return false;
             }
 
@@ -46,7 +46,7 @@ namespace Gecko::API::Middleware
         const size_t m_maxLength;
     };
 
-    template<class T> requires
+    template<typename T> requires
         std::is_integral_v<T>
     class HasPathParam<T>
     {

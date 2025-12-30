@@ -38,7 +38,7 @@ Dispatch.Get_UsersMe()
     .onNetworkError(() => console.warn('Couldn\'t GET /users/me: server didn\'t respond'));
     
 setTimeout(() => {
-    Dispatch.Get_FriendRequests(session.value)
+    Dispatch.Get_UserByUsername("johntron")
         .onSuccess(body => console.log(body))
         .onHttpError(body => console.log(body));
 }, 1000);

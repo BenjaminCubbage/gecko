@@ -22,15 +22,19 @@ namespace Gecko::API::DB
 
         Result OIDCIdentityExists(const std::string& oidcIss,
                                   const std::string& oidcSub,
-                                  bool *outExists);
+                                  bool* outExists);
 
-        Result UserExists(int userID, bool *outExists);
+        Result UserExists(int userID, bool* outExists);
+
+        Result GetUser(int userID, Models::User* outUser);
 
         Result GetUserIDByOIDC(const std::string& oidcIss,
                                const std::string& oidcSub,
                                int* outUserID);
 
-        Result GetUser(int userID, Models::User* outUser);
+        Result GetUserByUsernameIfExists(const std::string& username,
+                                         bool* outExists,
+                                         Models::User* outUser);
 
 
         Result PatchUser(int userID, const Models::UserPatch& patch);
