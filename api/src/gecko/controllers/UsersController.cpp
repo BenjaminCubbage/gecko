@@ -98,6 +98,10 @@ namespace Gecko::API::Controllers
                 Http::RespondWithError::UsernameTooShort(res);
                 return;
 
+            case UsersService::Result::UsernameContainsInvalidCharacters:
+                Http::RespondWithError::UsernameContainsInvalidCharacters(res);
+                return;
+
             case UsersService::Result::UsernameTaken:
                 Http::RespondWithError::UsernameTaken(res);
                 return;

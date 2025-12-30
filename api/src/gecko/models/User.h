@@ -7,7 +7,5 @@ namespace Gecko::API::Models
     {
         int userID;
         std::string username;
-        std::string oidcIss;
-        std::string oidcSub;
     };
 }

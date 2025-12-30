@@ -43,3 +43,17 @@ CREATE TABLE IF NOT EXISTS Devices
     FOREIGN KEY (owner_id)
         REFERENCES Users(user_id)
 );
+
+CREATE TABLE IF NOT EXISTS Friendships
+(
+    user_1 INT NOT NULL,
+    user_2 INT NOT NULL,
+    initiated_by INT NOT NULL,
+    friendship_status ENUM('pending', 'accepted') NOT NULL,
+    PRIMARY KEY (user_1, user_2),
+    FOREIGN KEY (user_1) REFERENCES Users(user_id),
+    FOREIGN KEY (user_2) REFERENCES Users(user_id),
+    FOREIGN KEY (initiated_by) REFERENCES Users(user_id),
+    CONSTRAINT canonical_ordering CHECK (user_1 < user_2),
+    CONSTRAINT initiated_by_participant CHECK (initiated_by IN (user_1, user_2))
+);

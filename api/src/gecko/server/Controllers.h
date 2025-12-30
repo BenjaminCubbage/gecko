@@ -2,6 +2,7 @@
 #include <ostream>
 #include "gecko/controllers/AuthController.h"
 #include "gecko/controllers/DevicesController.h"
+#include "gecko/controllers/FriendshipsController.h"
 #include "gecko/controllers/SharedImagesController.h"
 #include "gecko/controllers/UsersController.h"
 #include "gecko/env/Env.h"
@@ -25,7 +26,8 @@ namespace Gecko::API::Server
                 m_env->jwtPublicKey },
               m_usersController       { m_services->Users(),        m_env->jwtPublicKey },
               m_sharedImagesController{ m_services->SharedImages(), m_env->jwtPublicKey },
-              m_devicesController     { m_services->Devices(),      m_env->jwtPublicKey } { }
+              m_devicesController     { m_services->Devices(),      m_env->jwtPublicKey },
+              m_friendshipsController { m_services->Friendships(),  m_env->jwtPublicKey } {}
               
         Controllers           (const Controllers&) = delete;
         Controllers& operator=(const Controllers&) = delete;
@@ -43,5 +45,6 @@ namespace Gecko::API::Server
         API::Controllers::UsersController        m_usersController;
         API::Controllers::SharedImagesController m_sharedImagesController;
         API::Controllers::DevicesController      m_devicesController;
+        API::Controllers::FriendshipsController  m_friendshipsController;
     };
 }

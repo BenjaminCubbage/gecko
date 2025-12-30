@@ -8,6 +8,7 @@ namespace Gecko::API::Server
         m_usersController       .Attach(server);
         m_sharedImagesController.Attach(server);
         m_devicesController     .Attach(server);
+        m_friendshipsController .Attach(server);
         return true;
     }
 }

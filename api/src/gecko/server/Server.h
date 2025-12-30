@@ -31,12 +31,12 @@ namespace Gecko::API::Server
         bool Start();
 
     private:
-        Env::Env m_env;
+        Env::Env      m_env;
         std::ostream* m_log;
 
-        Topics m_topics;
-        Tables m_tables;
-        Services m_services;
+        Topics      m_topics;
+        Tables      m_tables;
+        Services    m_services;
         Controllers m_controllers;
         
         httplib::SSLServer m_httpServer;

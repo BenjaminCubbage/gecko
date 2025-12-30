@@ -72,16 +72,22 @@ namespace Gecko::API::Services
     UsersService::Result
     UsersService::PatchUser(int userID, const Models::UserPatch& patch)
     {
-        // TODO: Implement propert PATCH
-        // Currently, all PATCH ops are effectively PUT ops
+        // todo(ben): Implement propert PATCH
+        // Currently, this is effectively a PUT op
 
         EXPECT(patch.username.size() >= MinUsernameLength, Result::UsernameTooShort);
         EXPECT(patch.username.size() <= MaxUsernameLength, Result::UsernameTooLong);
 
-        // TODO: Make sure usernames contain only accepted alphanumeric characters
+        for (char c : patch.username)
+            if (c != '_' && (c < '0' || c > '9') && 
+                            (c < 'a' || c > 'z') && 
+                            (c < 'A' || c > 'Z'))
+            {
+                return Result::UsernameContainsInvalidCharacters;
+            }
 
         if (m_dbUsers->PatchUser(userID, patch) == DB::UsersTable::Result::Success)
-            return {};
+            return Result::Success;
 
         bool exists{};
 

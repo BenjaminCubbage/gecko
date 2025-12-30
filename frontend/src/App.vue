@@ -37,6 +37,12 @@ Dispatch.Get_UsersMe()
     .onSuccess(body => session.value.setActiveUser(new ActiveUser(body['user'])))
     .onNetworkError(() => console.warn('Couldn\'t GET /users/me: server didn\'t respond'));
     
+setTimeout(() => {
+    Dispatch.Get_FriendRequests(session.value)
+        .onSuccess(body => console.log(body))
+        .onHttpError(body => console.log(body));
+}, 1000);
+
 provide('session', session);
 </script>
 

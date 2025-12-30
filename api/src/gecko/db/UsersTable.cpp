@@ -134,9 +134,7 @@ namespace Gecko::API::DB
             *outUser = Models::User
             {
                 .userID   = columns.get(0).get<int>(),
-                .username = columns.get(1).get<std::string>(),
-                .oidcIss  = columns.get(2).get<std::string>(),
-                .oidcSub  = columns.get(3).get<std::string>()
+                .username = columns.get(1).get<std::string>()
             };
 
             return Result::Success;

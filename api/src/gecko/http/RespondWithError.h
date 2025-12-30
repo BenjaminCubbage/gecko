@@ -37,6 +37,12 @@ namespace Gecko::API::Http
             response.status = httplib::StatusCode::BadRequest_400;
         }
 
+        static inline void UsernameContainsInvalidCharacters(httplib::Response& response)
+        {
+            response.body   = BuildResponseBody("bad_request", "username_contains_invalid_characters");
+            response.status = httplib::StatusCode::BadRequest_400;
+        }
+
         static inline void MissingField(httplib::Response& response, const std::string& fieldName)
         {
             response.body   = BuildResponseBodyWithField("bad_request", "missing_field", fieldName);
@@ -66,6 +72,12 @@ namespace Gecko::API::Http
             response.body   = BuildResponseBody("bad_request", "bad_content_length");
             response.status = httplib::StatusCode::BadRequest_400;
         }
+        
+        static inline void SelfFriendNotAllowed(httplib::Response& response)
+        {
+            response.body = BuildResponseBody("bad_request", "self_friend_not_allowed");
+            response.status = httplib::StatusCode::BadRequest_400;
+        }
 
         static inline void UserNotFound(httplib::Response& response)
         {
@@ -76,6 +88,12 @@ namespace Gecko::API::Http
         static inline void DeviceNotFound(httplib::Response& response)
         {
             response.body   = BuildResponseBody("not_found", "device_not_found");
+            response.status = httplib::StatusCode::NotFound_404;
+        }
+
+        static inline void FriendRequestNotFound(httplib::Response& response)
+        {
+            response.body   = BuildResponseBody("not_found", "friend_request_not_found");
             response.status = httplib::StatusCode::NotFound_404;
         }
 

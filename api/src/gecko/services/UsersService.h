@@ -25,6 +25,7 @@ namespace Gecko::API::Services
             /* Service-space */
             UsernameTooShort,
             UsernameTooLong,
+            UsernameContainsInvalidCharacters,
             OIDCIssTooShort,
             OIDCIssTooLong,
             OIDCSubTooShort,
