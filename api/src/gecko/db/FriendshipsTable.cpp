@@ -178,6 +178,9 @@ namespace Gecko::API::DB
     {
         try
         {
+            if (initiatorUserID != userID1 && initiatorUserID != userID2)
+                return Result::Failure;
+
             if (!CanonicalizeFriendshipPair(&userID1, &userID2))
                 return Result::Failure;
 
