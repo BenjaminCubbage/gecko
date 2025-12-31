@@ -38,8 +38,10 @@ const userMode   = ref('loading');
 const deviceMode = ref('loading');
 
 const users = ref([]);
-
 const devices = ref([]);
+
+const selectedDevice = ref(null);
+const selectedUser   = ref(null);
 
 watch(session.value, () => {
     if (!session.value.activeUser())
@@ -71,10 +73,7 @@ watch(session.value, () => {
                         d.signalStatus = body['status'];
                     });
         });
-});
-
-const selectedDevice = ref(null);
-const selectedUser   = ref(null);
+}, { immediate: true });
 </script>
 
 <style scoped>

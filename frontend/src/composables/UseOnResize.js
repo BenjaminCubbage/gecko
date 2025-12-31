@@ -23,7 +23,7 @@ export function useOnResize() {
         if ((entry = getEntryByElement(el)) == null) {
             entries.push(entry = new Entry({
                 el: el, 
-                observer: new ResizeObserver(() => handleObserverEvent(el)),
+                observer: new ResizeObserver((e) => handleObserverEvent(el)),
                 handlers: [cb]
             }));
 

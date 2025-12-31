@@ -28,9 +28,9 @@
                         v-if="signal(modelValue) != null"
                         :status="signal(modelValue)" />
 
-                    <RecipientSelectStrokedText>
+                    <StrokedText>
                         <slot name="label" :option="option"></slot>
-                    </RecipientSelectStrokedText>
+                    </StrokedText>
                 </div>
 
                 <div v-else
@@ -43,9 +43,9 @@
             <div style="display: grid; align-items: center;">
                 <transition name="loaded" mode="out-in">
                     <div v-if="mode == 'loaded'">
-                        <RecipientSelectStrokedText style="margin-bottom: -4px">
+                        <StrokedText style="margin-bottom: -4px">
                             <slot name="label" :option="modelValue"></slot>
-                        </RecipientSelectStrokedText>
+                        </StrokedText>
 
                         <RecipientSelectDeviceSignal
                             v-if="signal(modelValue) != null"
@@ -53,9 +53,9 @@
                     </div>
 
                     <div v-else class="loading">
-                        <RecipientSelectStrokedText>
+                        <StrokedText>
                             Loading...
-                        </RecipientSelectStrokedText>
+                        </StrokedText>
                     </div>
                 </transition>
             </div>
@@ -74,8 +74,8 @@
 import { computed, nextTick, onMounted, ref,
          useTemplateRef, watch } from 'vue';
 
-import RecipientSelectStrokedText from './RecipientSelectStrokedText.vue';
 import RecipientSelectDeviceSignal from './RecipientSelectDeviceSignal.vue';
+import StrokedText from '@/components/stroked_text/StrokedText.vue';
 import { useOnResize } from '@/composables/UseOnResize';
 
 const { addResizeHandler, removeResizeHandler } = useOnResize();
@@ -94,7 +94,7 @@ watch(measureOptionsEls, (newEls, oldEls) => {
 });
 
 const props = defineProps({
-    modelValue: { type: Object, required: true },
+    modelValue: { type: null, required: true },
     options: { type: Array, required: true },
     big: { type: Boolean, default: false },
 
@@ -138,7 +138,7 @@ function updateMinMaxWidthForAnim() {
             ? measureLoadingEl?.value
             : measureOptionsEls.value[curSelectionIndex.value];
 
-        if (element) {
+        if (element && element.offsetWidth) {
             animMaxWidth.value = `${element.offsetWidth + 12}px`;
             animMinWidth.value = `${element.offsetWidth + 12}px`;
         }
@@ -212,8 +212,8 @@ function tryMoveSelection(by) {
 
     border-radius: 2px;
     color: black;
-    background: linear-gradient(30deg, #91df43 25%, #b3e87d 25%, #b3e87d 50%, #a6ed5e 50%, #a6ed5e 75%, #ccebad 75%);
 
+    background: linear-gradient(30deg, #91df43 25%, #b3e87d 25%, #b3e87d 50%, #a6ed5e 50%, #a6ed5e 75%, #ccebad 75%);
     background-size: 25% 100%;
     background-repeat: repeat;
 

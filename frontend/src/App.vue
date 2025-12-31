@@ -1,13 +1,13 @@
 <template>
     <div class="bg">
         <div class="dotted">
-            <div class="front-and-center">
-                <RecipientSelect />
-                <PicEditor />
+            <div class="header-strip-container">
+                <Navbar class="navigation-bar" @selectedTabChanged="v => selectedTab = v" />
             </div>
 
-            <div class="header-strip-container">
-                <AccountWidget />
+            <div class="front-and-center" v-show="selectedTab == 'canvas'">
+                <RecipientSelect style="margin-bottom: 4px;" />
+                <PicEditor />
             </div>
         </div>
     </div>
@@ -17,11 +17,13 @@
 import { ref, provide } from 'vue';
 import PicEditor from './components/pic_editor/PicEditor.vue';
 import RecipientSelect from './components/recipient_select/RecipientSelect.vue';
-import AccountWidget from './components/account_widget/AccountWidget.vue';
+import Navbar from './components/navbar/Navbar.vue';
 import { ActiveUser } from '@/core/session/ActiveUser.js';
 import { Dispatch } from '@/core/dispatch/Dispatch.js';
 import { Cookies } from '@/core/storage/Cookies.js';
 import { Session } from '@/core/session/Session.js';
+
+const selectedTab = ref('canvas');
 
 const session = ref(new Session());
 const xsrfToken = () => Cookies.byName('__Host-xsrf_token');
@@ -36,12 +38,6 @@ if (!session.value.xsrfCookie())
 Dispatch.Get_UsersMe()
     .onSuccess(body => session.value.setActiveUser(new ActiveUser(body['user'])))
     .onNetworkError(() => console.warn('Couldn\'t GET /users/me: server didn\'t respond'));
-    
-setTimeout(() => {
-    Dispatch.Get_UserByUsername("johntron")
-        .onSuccess(body => console.log(body))
-        .onHttpError(body => console.log(body));
-}, 1000);
 
 provide('session', session);
 </script>
@@ -56,8 +52,6 @@ provide('session', session);
 
     .dotted {
         height: 100%;
-        display: grid;
-
         --dot-color: #0756b2;
         background-image: radial-gradient(circle at top,    var(--dot-color) 2px, transparent 2px),
                           radial-gradient(circle at bottom, var(--dot-color) 2px, transparent 2px),
@@ -70,15 +64,8 @@ provide('session', session);
         background-position-y: 50%;
     }
 
-    .header-strip-container, .front-and-center { grid-area: 1/1; }
-
-    .header-strip-container {
-        place-self: start;
-        pointer-events: none;
-    }
-
-    :where(.header-strip-container > *) {
-        pointer-events: all;
+    .navigation-bar {
+        align-self: start;
     }
 
     .front-and-center {
@@ -86,5 +73,22 @@ provide('session', session);
         flex-flow: column nowrap;
         gap: 4px;
         place-self: center;
+        place-content: center;
+        place-items: center;
+    }
+
+    .swap-screens-enter-active,
+    .swap-screens-leave-active {
+        transition: transform 120ms ease, opacity 120ms ease;
+    }
+
+    .swap-screens-enter-from {
+        transform: translateX(-5px);
+        opacity: 0;
+    }
+
+    .swap-screens-leave-to {
+        transform: translateX(5px);
+        opacity: 0;
     }
 </style>

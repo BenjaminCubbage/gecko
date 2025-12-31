@@ -1,34 +1,30 @@
 <template>
     <div class="recipient-select-device-signal">
-        <RecipientSelectStrokedText>
+        <StrokedText>
             <transition name="transition" mode="out-in">
                 <template v-if="statusOn">
-                    <div class="status-text--on">
-                    </div>
+                    <div class="status-text--on"></div>
                 </template>
 
                 <template v-else-if="statusOff">
-                    <div class="status-text--off">
-                    </div>
+                    <div class="status-text--off"></div>
                 </template>
 
                 <template v-else-if="statusPending">
-                    <div class="status-text--pending">
-                    </div>
+                    <div class="status-text--pending"></div>
                 </template>
 
                 <template v-else>
-                    <div class="status-text--loading">
-                    </div>
+                    <div class="status-text--loading"></div>
                 </template>
             </transition>
-        </RecipientSelectStrokedText>
+        </StrokedText>
     </div>
 </template>
 
 <script setup>
 import { computed } from 'vue';
-import RecipientSelectStrokedText from './RecipientSelectStrokedText.vue';
+import StrokedText from '@/components/stroked_text/StrokedText.vue';
 
 const props = defineProps({
     // 'online'  -> device is online
@@ -65,7 +61,7 @@ const statusLoading = computed(() => !statusOn && !statusOff && !statusPending);
 
     .status-text--pending::after {
         color: dodgerblue;
-        content: 'PENDING';
+        content: 'STATUS PENDING';
     }
 
     .status-text--loading::after {
