@@ -14,12 +14,16 @@ const emit = defineEmits(['click']);
     .logout-button {
         font-family: var(--font-heading);
         font-size: 2.2rem;
+        color: black;
+
         padding: 0 12px;
         margin: 4px 0;
+
         background: hsl(0, 100%, 71%);
         border: var(--border-small);
         box-shadow: 2px 2px 0 0 black;
         border-radius: 999px;
+        
         display: flex;
         justify-content: center;
         align-items: center;

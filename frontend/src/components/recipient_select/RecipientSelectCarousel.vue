@@ -7,7 +7,7 @@
         <button
             class="arrow arrow-left"
             @click="carouselPrev"
-            :disabled="mode != 'loaded' || !hasPrev">
+            :disabled="mode != 'ready' || !hasPrev">
             &lt;
         </button>
 
@@ -20,7 +20,7 @@
             <!-- Measuring only (pos absolute, for width anim) -->
             <div class="measure-options">
                 <div
-                    v-if="mode == 'loaded'"
+                    v-if="mode == 'ready'"
                     v-for="option in options"
                     ref="measureOptionsEls"
                     style="display: grid; align-items: center;">
@@ -42,7 +42,7 @@
 
             <div style="display: grid; align-items: center;">
                 <transition name="loaded" mode="out-in">
-                    <div v-if="mode == 'loaded'">
+                    <div v-if="mode == 'ready'">
                         <StrokedText style="margin-bottom: -4px">
                             <slot name="label" :option="modelValue"></slot>
                         </StrokedText>
@@ -64,7 +64,7 @@
         <button
             class="arrow arrow-right"
             @click="carouselNext"
-            :disabled="mode != 'loaded' || !hasNext">
+            :disabled="mode != 'ready' || !hasNext">
             &gt;
         </button>
     </div>
@@ -107,7 +107,7 @@ const props = defineProps({
 
     // FSM
     // 'loading' -> loading screen shown
-    // 'loaded'  -> recipients are loaded and should be displayed
+    // 'ready'  -> recipients are loaded and should be displayed
     // 'error'   -> error shown
     mode: { type: String, default: 'loading' }
 });
@@ -213,7 +213,11 @@ function tryMoveSelection(by) {
     border-radius: 2px;
     color: black;
 
-    background: linear-gradient(30deg, #91df43 25%, #b3e87d 25%, #b3e87d 50%, #a6ed5e 50%, #a6ed5e 75%, #ccebad 75%);
+    background: linear-gradient(30deg,
+        #91df43 25%,
+        #b3e87d 25% 50%,
+        #a6ed5e 50% 75%,
+        #ccebad 75%);
     background-size: 25% 100%;
     background-repeat: repeat;
 
@@ -230,15 +234,16 @@ function tryMoveSelection(by) {
 }
 
 .arrow-right:hover:not(:disabled) {
-    transform: scale(1.1) rotateZ(-3deg);
+    transform: scale(1.06);
 }
 
 .arrow-left:hover:not(:disabled) {
-    transform: scale(1.1) rotateZ(3deg);
+    transform: scale(1.06);
 }
 
 .arrow:active:not(:disabled) {
     transform: scale(0.97);
+    box-shadow: none;
 }
 
 .loaded-enter-active,

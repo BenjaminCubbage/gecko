@@ -6,7 +6,7 @@ namespace Gecko::API::Services
 {
     FriendshipsService::Result
     FriendshipsService::GetFriendships(int userID,
-                                       std::vector<Models::User>* outFriends)
+                                       std::vector<std::pair<Models::User, Models::FriendshipMetadata>>* outFriends)
     {
         if (m_dbFriendships->GetActiveFriendships(userID, outFriends) == DB::FriendshipsTable::Result::Success)
         {

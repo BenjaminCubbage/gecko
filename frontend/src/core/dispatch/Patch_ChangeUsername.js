@@ -1,15 +1,12 @@
 import { HttpRequest } from './HttpRequest.js';
 
 class Patch_ChangeUsername extends HttpRequest {
-    constructor(session, newUsername) {
-        const url = `/api/users/${session.activeUser().json()["user_id"]}`;
+    constructor(userID, xsrfToken, newUsername) {
         super(
             'PATCH', 
-            url, 
+            `/api/users/${userID}`,
             { 'username': newUsername }, 
-            [
-                { name: 'X-XSRF-TOKEN', value: session.xsrfCookie() }
-            ]
+            [ { name: 'X-XSRF-TOKEN', value: xsrfToken } ]
         );
     }
 }

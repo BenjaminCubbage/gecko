@@ -24,6 +24,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    color: black;
 }
 
 /* Firefox implemented this before Chrome. There's a
@@ -38,5 +39,7 @@
 
 .stroked-back {
     -webkit-text-stroke: 4px white;
+    pointer-events: none;
+    user-select: none;
 }
 </style>

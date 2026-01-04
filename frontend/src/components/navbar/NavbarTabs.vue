@@ -4,14 +4,14 @@
             <button
                 class="canvas"
                 :class="{ 'active-option': modelValue == 'canvas' }"
-                @click="selectOption('canvas')">
+                @click="selectedTab = 'canvas'">
                 <StrokedText>CANVAS</StrokedText>
             </button>
 
             <button
                 class="friends"
                 :class="{ 'active-option': modelValue == 'friends' }"
-                @click="selectOption('friends')">
+                @click="selectedTab = 'friends'">
                 <StrokedText>FRIENDS</StrokedText>
             </button>
         </div>
@@ -21,18 +21,7 @@
 <script setup>
 import StrokedText from '@/components/stroked_text/StrokedText.vue';
 
-const props = defineProps({
-    // 'canvas' | 'friends'
-    modelValue: { type: String, default: 'canvas' }
-});
-
-const emit = defineEmits([
-    'update:modelValue'
-]);
-
-function selectOption(optionName) {
-    emit('update:modelValue', optionName);
-}
+const selectedTab = defineModel({ default: 'canvas' });
 </script>
 
 <style scoped>
@@ -60,10 +49,8 @@ function selectOption(optionName) {
 .canvas {
     background: linear-gradient(-30deg,
         #91df43 25%,
-        #b3e87d 25%,
-        #b3e87d 50%,
-        #a6ed5e 50%,
-        #a6ed5e 75%,
+        #b3e87d 25% 50%,
+        #a6ed5e 50% 75%,
         #ccebad 75%
     );
 }
@@ -71,10 +58,8 @@ function selectOption(optionName) {
 .friends {
     background: linear-gradient(-30deg,
         #ffb35a 25%,
-        #ffd8a3 25%,
-        #ffd8a3 50%,
-        #ffbf73 50%,
-        #ffbf73 75%,
+        #ffd8a3 25% 50%,
+        #ffbf73 50% 75%,
         #fff1df 75%
     );
 }

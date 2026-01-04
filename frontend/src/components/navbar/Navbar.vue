@@ -1,23 +1,15 @@
 <template>
     <nav class="navbar">
         <AccountWidget class="account" />
-        <NavbarTabs v-model="tabSelection" class="pill" />
+        <NavbarTabs v-model="selectedTab" class="pill" />
     </nav>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
 import AccountWidget from '@/components/account_widget/AccountWidget.vue';
 import NavbarTabs from './NavbarTabs.vue';
 
-const emit = defineEmits([
-    // See NavbarTabs.vue
-    'selectedTabChanged'
-]);
-
-const tabSelection = ref('canvas');
-
-watch(tabSelection, () => emit('selectedTabChanged', tabSelection.value), { immedate: true });
+const selectedTab = defineModel('selectedTab');
 </script>
 
 <style scoped>

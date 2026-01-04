@@ -1,6 +1,8 @@
 #include "gecko/db/FriendshipsTable.h"
 #include <utility>
 
+#define DATE_FORMAT "'%m/%d/%Y'"
+
 namespace
 {
     // Make userID1 always lt userID2
@@ -21,7 +23,7 @@ namespace Gecko::API::DB
 {
     FriendshipsTable::Result
     FriendshipsTable::GetActiveFriendships(int userID,
-                                           std::vector<Models::User>* outFriends)
+                                           std::vector<std::pair<Models::User, Models::FriendshipMetadata>>* outFriends)
     {
         try
         {
@@ -29,12 +31,12 @@ namespace Gecko::API::DB
 
             auto result =
                 connection->sql(
-                        "SELECT f.user_2, u.username "
+                        "SELECT f.user_2, u.username, DATE_FORMAT(accepted_on, " DATE_FORMAT ") "
                         "FROM Friendships f "
                             "JOIN Users u ON u.user_id=f.user_2 "
                         "WHERE f.user_1=? AND f.friendship_status='accepted' "
                         "UNION ALL "
-                        "SELECT f.user_1, u.username "
+                        "SELECT f.user_1, u.username, DATE_FORMAT(accepted_on, " DATE_FORMAT ") "
                         "FROM Friendships f "
                             "JOIN Users u ON u.user_id=f.user_1 "
                         "WHERE f.user_2=? AND f.friendship_status='accepted'")
@@ -46,8 +48,13 @@ namespace Gecko::API::DB
 
             for (auto row : result)
                 outFriends->push_back({
-                    .userID   = row.get(0).get<int>(),
-                    .username = row.get(1).get<std::string>()
+                    Models::User {
+                        .userID   = row.get(0).get<int>(),
+                        .username = row.get(1).get<std::string>()
+                    },
+                    Models::FriendshipMetadata {
+                        .acceptedOn = row.get(2).get<std::string>()
+                    }
                 });
 
             return Result::Success;
@@ -169,7 +176,6 @@ namespace Gecko::API::DB
             return Result::Failure;
         }
     }
-
 
     FriendshipsTable::Result
     FriendshipsTable::SetPendingFriendshipActive(int userID1,

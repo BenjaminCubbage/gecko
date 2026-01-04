@@ -30,6 +30,9 @@ namespace Gecko::API::Controllers
         void Handle_POST_FriendRequestsAccept(const httplib::Request& req,
                                               httplib::Response& res);
 
+        void Handle_DELETE_FriendsOrFriendRequests(const httplib::Request& req,
+                                                   httplib::Response& res);
+
         Services::FriendshipsService m_friendshipsService;
         std::string m_pubkey;
 

@@ -2,12 +2,16 @@
     <div class="bg">
         <div class="dotted">
             <div class="header-strip-container">
-                <Navbar class="navigation-bar" @selectedTabChanged="v => selectedTab = v" />
+                <Navbar class="navigation-bar" v-model:selectedTab="selectedTab" />
             </div>
 
             <div class="front-and-center" v-show="selectedTab == 'canvas'">
                 <RecipientSelect style="margin-bottom: 4px;" />
                 <PicEditor />
+            </div>
+
+            <div class="front-and-center" v-show="selectedTab == 'friends'">
+                <FriendsList />
             </div>
         </div>
     </div>
@@ -15,44 +19,39 @@
 
 <script setup>
 import { ref, provide } from 'vue';
+import FriendsList from './components/friends_list/FriendsList.vue'
+import Navbar from './components/navbar/Navbar.vue';
 import PicEditor from './components/pic_editor/PicEditor.vue';
 import RecipientSelect from './components/recipient_select/RecipientSelect.vue';
-import Navbar from './components/navbar/Navbar.vue';
-import { ActiveUser } from '@/core/session/ActiveUser.js';
-import { Dispatch } from '@/core/dispatch/Dispatch.js';
-import { Cookies } from '@/core/storage/Cookies.js';
-import { Session } from '@/core/session/Session.js';
+import { FriendsStore } from '@/core/store/FriendsStore.js';
+import { Keys } from '@/core/store/Keys.js';
+import { SessionStore } from '@/core/store/SessionStore.js';
 
-const selectedTab = ref('canvas');
+const selectedTab = ref('friends');
+const session = new SessionStore();
+const friends = new FriendsStore();
 
-const session = ref(new Session());
-const xsrfToken = () => Cookies.byName('__Host-xsrf_token');
-session.value.setXSRFCookie(xsrfToken());
+provide(Keys.SessionStore, session);
+provide(Keys.FriendsStore, friends);
 
-if (!session.value.xsrfCookie())
-    Dispatch.Get_XSRF()
-        .onSuccess(() => session.value.setXSRFCookie(xsrfToken()))
-        .onNetworkError(() => console.warn('Couldn\'t GET XSRF token: server didn\'t respond.'))
-        .onHttpError((body, status) => console.warn(`Couldn't GET XSRF Token. code: ${status} body: ${body}`));
-
-Dispatch.Get_UsersMe()
-    .onSuccess(body => session.value.setActiveUser(new ActiveUser(body['user'])))
-    .onNetworkError(() => console.warn('Couldn\'t GET /users/me: server didn\'t respond'));
-
-provide('session', session);
+(async () => {
+    await session.init();
+    await friends.init(session);
+})();
 </script>
 
 <style scoped>
+    :global(body), .bg {
+        background: #4d7cfc;
+    }
+
     .bg {
-        min-height: 100%;
-        background: #0a7bff;
+        height: 100dvh;
         display: grid;
-        place-items: stretch;
     }
 
     .dotted {
-        height: 100%;
-        --dot-color: #0756b2;
+        --dot-color: #3557b0;
         background-image: radial-gradient(circle at top,    var(--dot-color) 2px, transparent 2px),
                           radial-gradient(circle at bottom, var(--dot-color) 2px, transparent 2px),
                           radial-gradient(circle at right,  var(--dot-color) 2px, transparent 2px),
@@ -61,7 +60,10 @@ provide('session', session);
         background-size: 32px 32px;
         background-repeat: repeat;
         background-position-x: 50%;
-        background-position-y: 50%;
+        background-position-y: 0;
+        
+        scrollbar-gutter: stable both-edges;
+        overflow-y: auto;
     }
 
     .navigation-bar {
@@ -72,7 +74,6 @@ provide('session', session);
         display: flex;
         flex-flow: column nowrap;
         gap: 4px;
-        place-self: center;
         place-content: center;
         place-items: center;
     }

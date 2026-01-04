@@ -8,6 +8,8 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-size: 62.5%;
+
+  color-scheme: dark;
 }
 
 html, body {
@@ -35,11 +37,6 @@ button, a {
 }
 
 ::selection {
-  text-decoration: underline;
-  text-decoration-style: wavy;
-  text-decoration-skip-ink: none;
-  text-decoration-thickness: 3px;
-  text-decoration-color: lightcoral;
   background-color: black;
   color: white;
 }

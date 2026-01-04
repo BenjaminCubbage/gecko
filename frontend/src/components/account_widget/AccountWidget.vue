@@ -2,13 +2,13 @@
     <div class="header-strip">
         <transition name="login-appear" mode="out-in">
             <AccountWidgetLogInButton 
-                v-if="!session.loggedIn()" 
+                v-if="!session.activeUser().value"
                 href="/auth/login" />
             
             <div v-else>
                 <div class="badge-section">
                     <AccountWidgetUsernameBadge
-                        :username="session.activeUser().json()['username']"
+                        :username="session.activeUser().value['username']"
                         :status="userBadgeStatus"
                         :forbiddenUsernames="forbiddenUsernames"
                         @requestEdit="userBadgeStatus = 'editing'"
@@ -33,37 +33,36 @@ import AccountWidgetLogOutButton from './AccountWidgetLogOutButton.vue';
 import AccountWidgetUsernameBadge from './AccountWidgetUsernameBadge.vue';
 import AccountWidgetStatusBubble from './AccountWidgetStatusBubble.vue';
 
-import { Dispatch } from '@/core/dispatch/Dispatch.js';
 import { errorResponseToDisplayString } from '@/core/http/ErrorResponseToDisplayString';
+import { Keys } from '@/core/store/Keys.js';
+import { HttpError, NetworkError } from '@/core/store/Errors.js';
 
 const statusBubble = useTemplateRef('statusBubble');
-const session = inject('session');
 
-const userBadgeStatus = ref('normal');
+const session = inject(Keys.SessionStore);
+
+const userBadgeStatus    = ref('normal');
 const forbiddenUsernames = ref([]);
 
-function changeUsername(newUsername) {
-    userBadgeStatus.value = 'pending';
+async function changeUsername(newUsername) {
+    userBadgeStatus.value = 'loading';
 
-    Dispatch.Patch_ChangeUsername(session.value, newUsername)
-        .onSuccess(() => {
-            session.value.activeUser().json()['username'] = newUsername;
-            userBadgeStatus.value = 'normal';
-        })
-        .onNetworkError(() => statusBubble.value.showMessage('Couldn\'t connect to the server!'))
-        .onHttpError(body => {
-            statusBubble.value.showMessage(errorResponseToDisplayString(body));
+    try {
+        await session.changeUsername(newUsername);
 
-            if (body?.error?.reason === 'username_taken')
-                forbiddenUsernames.value.push(newUsername);
-        })
-        .onError(() => userBadgeStatus.value = 'editing');
+        userBadgeStatus.value = 'normal';
+    } catch (e) {
+        if (e instanceof HttpError)
+            statusBubble.value.showMessage(errorResponseToDisplayString(e.body));
+        else if (e instanceof NetworkError)
+            statusBubble.value.showMessage(`Couldn't connect to the server!`);
+
+        userBadgeStatus.value = 'editing';
+    }
 }
 
-function logout() {
-    Dispatch.Post_LogOut(session.value)
-        .onSuccess(() => session.value.setActiveUser(null))
-        .onHttpError((body, status) => console.warn(`Couldn't POST_LogOut. code: ${status} body: ${body}`));
+async function logout() {
+    session.logOut();
 }
 </script>
 

@@ -32,8 +32,9 @@
 import { inject, ref, watch } from 'vue';
 import RecipientSelectCarousel from './RecipientSelectCarousel.vue';
 import { Dispatch } from '../../core/dispatch/Dispatch';
+import { Keys } from '@/core/store/Keys.js';
 
-const session = inject('session');
+const session = inject(Keys.SessionStore);
 const userMode   = ref('loading');
 const deviceMode = ref('loading');
 
@@ -43,20 +44,19 @@ const devices = ref([]);
 const selectedDevice = ref(null);
 const selectedUser   = ref(null);
 
-watch(session.value, () => {
-    if (!session.value.activeUser())
+watch(session.activeUser(), user => {
+    if (!user)
         return;
 
-    users.value[0] = session.value.activeUser().json()
-
-    selectedUser.value = users.value[0];
-    userMode.value = 'loaded';
+    users.value[0]     = user;
+    selectedUser.value = user;
+    userMode.value = 'ready';
 
     // note(ben): Cheap hack for now.
     if (devices.value.length)
         return;
 
-    Dispatch.Get_UsersDevices(session.value.activeUser().json()['user_id'])
+    Dispatch.Get_UsersDevices(session.activeUser().value['user_id'])
         .onSuccess(body => {
             devices.value = body.devices.map(d => ({
                 deviceID:     d['device_id'],
@@ -65,7 +65,7 @@ watch(session.value, () => {
             }));
 
             selectedDevice.value = devices.value[0];
-            deviceMode.value = 'loaded';
+            deviceMode.value = 'ready';
 
             for (let d of devices.value)
                 Dispatch.Get_DevicesStatus(d.deviceID)

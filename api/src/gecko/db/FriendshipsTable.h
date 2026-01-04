@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "gecko/db/ConnectionPool.h"
+#include "gecko/models/FriendshipMetadata.h"
 #include "gecko/models/User.h"
 #include "mysqlx/xdevapi.h"
 
@@ -16,7 +17,7 @@ namespace Gecko::API::DB
 
         // Accepted friendships involving userID.
         Result GetActiveFriendships(int userID,
-                                    std::vector<Models::User>* outFriends);
+                                    std::vector<std::pair<Models::User, Models::FriendshipMetadata>>* outFriends);
 
         // Pending friendships involving userID, split by direction.
         // Incoming: initiated_by != userID

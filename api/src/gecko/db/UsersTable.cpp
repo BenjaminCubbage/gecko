@@ -154,7 +154,7 @@ namespace Gecko::API::DB
             auto connection = m_connectionPool->Acquire();
 
             auto result =
-                connection->sql("SELECT user_id FROM Users WHERE username=?")
+                connection->sql("SELECT user_id, username FROM Users WHERE username=?")
                     .bind(username)
                     .execute();
 
@@ -165,10 +165,12 @@ namespace Gecko::API::DB
                 return Result::Success;
             }
 
+            auto row = result.fetchOne();
+
             *outExists = true;
             *outUser = {
-                .userID   = result.fetchOne().get(0).get<int>(),
-                .username = username
+                .userID   = row.get(0).get<int>(),
+                .username = row.get(1).get<std::string>()
             };
 
             return Result::Success;

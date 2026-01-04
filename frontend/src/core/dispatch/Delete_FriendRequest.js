@@ -1,14 +1,14 @@
 import { HttpRequest } from './HttpRequest.js';
 
-class Post_FriendRequestCreate extends HttpRequest {
+class Delete_FriendRequest extends HttpRequest {
     constructor(userID, xsrfToken, otherUserID) {
         super(
-            'POST',
+            'DELETE',
             `/api/users/${userID}/friend-requests`,
-            { 'user_id': otherUserID }, 
+            { 'user_id': otherUserID },
             [ { name: 'X-XSRF-TOKEN', value: xsrfToken } ]
         );
     }
 }
 
-export { Post_FriendRequestCreate };
+export { Delete_FriendRequest };

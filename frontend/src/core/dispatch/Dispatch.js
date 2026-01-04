@@ -1,3 +1,5 @@
+import { Delete_FriendRequest } from './Delete_FriendRequest.js'
+import { Delete_Friend } from './Delete_Friend.js'
 import { Get_DevicesStatus} from './Get_DevicesStatus.js';
 import { Get_FriendRequests } from './Get_FriendRequests.js';
 import { Get_Friends } from './Get_Friends.js';
@@ -13,6 +15,8 @@ import { Post_LogOut } from './Post_LogOut.js';
 import { Post_SharedImage } from './Post_SharedImage.js';
 
 export const Dispatch = {
+    Delete_Friend:            (...args) => new Delete_Friend(...args),
+    Delete_FriendRequest:     (...args) => new Delete_FriendRequest(...args),
     Get_DevicesStatus:        (...args) => new Get_DevicesStatus(...args),
     Get_FriendRequests:       (...args) => new Get_FriendRequests(...args),
     Get_Friends:              (...args) => new Get_Friends(...args),

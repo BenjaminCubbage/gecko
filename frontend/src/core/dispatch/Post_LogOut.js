@@ -1,10 +1,10 @@
 import { HttpRequest } from './HttpRequest.js';
 
 class Post_LogOut extends HttpRequest {
-    constructor(session) {
+    constructor(xsrfToken) {
         const url = '/auth/logout';
         super('POST', url, null, [
-            { name: 'X-XSRF-TOKEN', value: session.xsrfCookie() }
+            { name: 'X-XSRF-TOKEN', value: xsrfToken }
         ]);
     }
 }

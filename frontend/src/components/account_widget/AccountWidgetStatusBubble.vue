@@ -50,6 +50,7 @@ defineExpose({ showMessage });
         border-radius: 4px;
         font-family: var(--font-heading);
         font-size: 2.2rem;
+        color: black;
         line-height: 0.9;
 
         padding: 8px 16px;

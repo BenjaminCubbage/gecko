@@ -11,30 +11,31 @@
 </template>
 
 <script setup>
-import { useTemplateRef, ref, inject } from 'vue';
+import { useTemplateRef, inject } from 'vue';
 import PicEditorButton from './PicEditorButton.vue';
 import PicEditorCanvas from './PicEditorCanvas.vue';
-import { CanvasSave } from '@/core/canvas/CanvasSave.js';
-import { CanvasLoad } from '@/core/canvas/CanvasLoad.js';
 import { Dispatch } from '@/core/dispatch/Dispatch.js';
+import { Keys } from '@/core/store/Keys.js';
 
 const picEditorCanvas = useTemplateRef('picEditorCanvas');
-const session = inject('session');
-const idempotencyKey = ref(crypto.randomUUID());
+const session = inject(Keys.SessionStore);
+
+let idempotencyKey = crypto.randomUUID();
 
 function send() {
     if (!picEditorCanvas.value)
-        console.error(`Could not resolve templated ref 'picEditorCanvas'`);
-    else
-        Dispatch.Post_SharedImage(
-            session.value,
-            idempotencyKey.value,
-            session.value.activeUser().json()["user_id"],
-            picEditorCanvas.value.readGIBBlob());
+        throw new Error('Could not resolve templated ref');
+
+    Dispatch.Post_SharedImage(
+        session.activeUserID(),
+        session.xsrfCookie(),
+        idempotencyKey,
+        session.activeUserID(),
+        picEditorCanvas.value.readGIBBlob());
 }
 
 function getLatest() {
-    Dispatch.Get_LatestImage(session.value)
+    Dispatch.Get_LatestImage(session.activeUserID(), session.xsrfCookie())
         .onSuccess(async body => {
             const arr = new Uint8Array(await body.arrayBuffer());
             picEditorCanvas.value.writeGIBBlob(arr);
@@ -57,7 +58,7 @@ function clear() {
 }
 
 function canvasChanged() {
-    idempotencyKey.value = crypto.randomUUID();
+    idempotencyKey = crypto.randomUUID();
 }
 </script>
 

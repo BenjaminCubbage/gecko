@@ -1,8 +1,10 @@
 #pragma once
+#include <utility>
 #include <vector>
 #include "gecko/db/FriendshipsTable.h"
 #include "gecko/db/UsersTable.h"
 #include "gecko/models/User.h"
+#include "gecko/models/FriendshipMetadata.h"
 
 namespace Gecko::API::Services
 {
@@ -36,7 +38,7 @@ namespace Gecko::API::Services
 
         // Accepted friendships
         Result GetFriendships(int userID,
-                              std::vector<Models::User>* outFriends);
+                              std::vector<std::pair<Models::User, Models::FriendshipMetadata>>* outFriends);
 
         Result FriendshipExists(int userID1,
                                 int userID2,
