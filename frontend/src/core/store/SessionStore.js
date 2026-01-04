@@ -1,7 +1,9 @@
-import { ref, shallowRef, readonly, triggerRef } from 'vue';
+import { ref } from 'vue';
 import { Cookies } from '@/core/storage/Cookies.js';
 import { Dispatch } from '../dispatch/Dispatch.js';
-import { NetworkError, HttpError } from './Errors.js';
+import { ResourceLockedError, NetworkError, HttpError } from './Errors.js';
+import { ResourceMutex } from './Mutex.js';
+import { User } from '@/core/models/User.js';
 
 // Stores data needed to make calls over the wire, as well
 // as the current active user
@@ -9,22 +11,24 @@ class SessionStore {
     constructor(activeUser = null, xsrfCookie = null) {
         this._activeUser = ref(activeUser);
         this._xsrfCookie = xsrfCookie;
-
-        // 'uninitialized' | 'error' | 'loading' | 'ready'
-        this._state   = ref('uninitialized');
-        this._stateRO = readonly(this._state);
+        
+        this._state = ref('uninitialized');
+        this._mutex = new ResourceMutex();
     }
 
-    state()        { return this._stateRO; }
+    // FSM representing the current load state of the
+    // session store
+    // 'uninitialized' | 'error' | 'loading' | 'loggedout' | 'ready'
+    state()        { return this._state; }
 
     // Returns null if not logged in
     activeUser()   { return this._activeUser; }
     xsrfCookie()   { return this._xsrfCookie; }
-    activeUserID() { return this._activeUser.value['user_id']; }
+    activeUserID() { return this._activeUser.value.userID; }
 
     // Assigns objects from props to the activeUser object
     // If props is falsy, the activeUser is set to null (logged out)
-    updateCachedActiveUser(props) {
+    updateActiveUserInCache(props) {
         if (!props) {
             this._activeUser.value = null;
         } else {
@@ -41,7 +45,7 @@ class SessionStore {
 
         try {
             const [_, isLoggedIn] = await Promise.all([this._initXSRF(), this._initUser()]);
-            this._state.value = 'ready';
+            this._state.value = isLoggedIn ? 'ready' : 'loggedout';
             return isLoggedIn;
         } catch (e) {
             this._state.value = 'error';
@@ -49,17 +53,28 @@ class SessionStore {
         }
     }
 
+    // Sends a message to the server requesting a username change
     async changeUsername(newUsername) {
-        await new Promise((resolve, reject) => {
-            Dispatch.Patch_ChangeUsername(this.activeUserID(), this.xsrfCookie(), newUsername)
-                .onSuccess(() => resolve())
-                .onNetworkError(() => reject(new NetworkError()))
-                .onHttpError((body, status) => reject(new HttpError(status, body)));
-        });
+        if (newUsername === this._activeUser.value['username'])
+            return;
 
-        this.updateCachedActiveUser({
-            'username': newUsername
-        });
+        if (!this._mutex.tryLock())
+            throw new ResourceLockedError();
+
+        try {
+            await new Promise((resolve, reject) => {
+                Dispatch.Patch_ChangeUsername(this.activeUserID(), this.xsrfCookie(), newUsername)
+                    .onSuccess(() => resolve())
+                    .onNetworkError(() => reject(new NetworkError()))
+                    .onHttpError((body, status) => reject(new HttpError(status, body)));
+            });
+
+            this.updateActiveUserInCache({
+                'username': newUsername
+            });
+        } finally {
+            this._mutex.unlock();
+        }
     }
 
     // Returns true if the user was not already logged out
@@ -76,7 +91,8 @@ class SessionStore {
                 .onNetworkError(() => reject(new NetworkError()));
         });
 
-        this.updateCachedActiveUser(null);
+        this._state.value      = 'loggedout'
+        this._activeUser.value = null;
         return true;
     }
 
@@ -101,16 +117,23 @@ class SessionStore {
     }
 
     async _initUser() {
-        const responseBody = await new Promise((resolve, reject) => {
-            Dispatch.Get_UsersMe()
-                .onSuccess(body => resolve(body))
-                .onHttpError(() => resolve(null))
-                .onNetworkError(() => reject(new NetworkError()));
-        });
+        if (!this._mutex.tryLock())
+            throw new ResourceLockedError();
 
-        if (responseBody) {
-            this.updateCachedActiveUser(responseBody['user']);
-            return true;
+        try {
+            const responseBody = await new Promise((resolve, reject) => {
+                Dispatch.Get_UsersMe()
+                    .onSuccess(body => resolve(body))
+                    .onHttpError(() => resolve(null))
+                    .onNetworkError(() => reject(new NetworkError()));
+            });
+
+            if (responseBody) {
+                this._activeUser.value = User.fromJSON(responseBody['user']);
+                return true;
+            }
+        } finally {
+            this._mutex.unlock();
         }
 
         return false;

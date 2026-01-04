@@ -13,27 +13,27 @@
 
             <FriendsListEntry
                 v-else
-                :entryType="searchResultType"
-                :user="searchResultUser"
+                :entryType="searchResult.type"
+                :user="searchResult.user"
                 @sendRequest="sendRequest"
                 @acceptRequest="acceptRequest"
                 isSearchResult>
                 <template #username="{ user }">
-                    {{ user['username'] }}
+                    {{ user.username }}
                 </template>
             </FriendsListEntry>
 
-            <FriendsListDivider v-if="friends.pendingIncoming().value.length">
+            <FriendsListDivider v-if="friends.pendingIncoming().length">
                 Incoming Requests
             </FriendsListDivider>
             
             <FriendsListEntry
-                v-for="user in friends.pendingIncoming().value"
-                :user="user"
+                v-for="friend in friends.pendingIncoming()"
+                :user="friend.user"
                 entryType="pendingin"
                 @delete="deleteFriendOrRequest"
                 @acceptRequest="acceptRequest"
-                :key="user['user_id']">
+                :key="friend.user.userID">
                 <template #username="{ user }">
                     {{ user.username }}
                 </template>
@@ -47,22 +47,23 @@
                 :message="friendsPlaceholderMessage" />
 
             <FriendsListEntry
-                v-for="user in friends.pendingOutgoing().value"
-                :user="user"
+                v-for="friend in friends.pendingOutgoing()"
+                :user="friend.user"
                 entryType="pendingout"
                 @delete="deleteFriendOrRequest"
-                :key="user['user_id']">
+                :key="friend.user.userID">
                 <template #username="{ user }">
-                    {{ user['username'] }}
+                    {{ user.username }}
                 </template>
             </FriendsListEntry>
 
             <FriendsListEntry
-                v-for="user in friends.activeFriends().value"
-                :user="user"
+                v-for="friend in friends.activeFriends()"
+                :user="friend.user"
+                :acceptedOn="friend.acceptedOn"
                 entryType="active"
                 @delete="deleteFriendOrRequest"
-                :key="user['user_id']">
+                :key="friend.user.userID">
                 <template #username="{ user }">
                     {{ user.username }}
                 </template>
@@ -72,10 +73,11 @@
 </template>
 
 <script setup>
-import { shallowRef, toRaw, ref, inject, watch, nextTick, triggerRef } from 'vue';
+import { ref, inject, watch, nextTick, triggerRef } from 'vue';
 import { Dispatch } from '@/core/dispatch/Dispatch.js';
 import { equalsIgnoreCase } from '@/core/string/EqualsIgnoreCase.js';
 import { Keys } from '@/core/store/Keys.js';
+import { User } from '@/core/models/User.js';
 
 import FriendsListBorder from './FriendsListBorder.vue';
 import FriendsListEntry from './FriendsListEntry.vue';
@@ -89,8 +91,8 @@ const friends = inject(Keys.FriendsStore);
 const searchText = ref('');
 const searchMode = ref('normal');
 
-const searchResultUser = ref(null);
-const searchResultType = ref('me');
+// { user: <number>, type: <string>, acceptedOn: <string> | null } | null
+const searchResult = ref(null);
 
 // note(ben): Placeholder only shown when this is not falsy (like null)
 const searchResultPlaceholderVariant = ref('loading');
@@ -100,21 +102,14 @@ const friendsPlaceholderVariant = ref('loading');
 const friendsPlaceholderMessage = ref('Loading Friends');
 
 watch(session.state(), state => {
-    if (state === 'ready' && session.activeUser().value && searchText.value === '') {
-        searchResultUser.value = session.activeUser().value;
-        searchResultType.value = 'me';
+    if (state === 'ready' && session.activeUser().value && !searchResult.value) {
         searchResultPlaceholderVariant.value = null;
+        searchResult.value = {
+            user: session.activeUser().value,
+            type: 'me'
+        };
     }
 }, { immediate: true });
-
-watch(session.activeUser(), async user => {
-    if (searchResultType.value === 'me') {
-        searchResultUser['asdfsdfsdfdsf'] = searchResultUser['asdfsdfsdfdsf'] ? searchResultUser['asdfsdfsdfdsf'] + 1 : 1;
-        triggerRef(searchResultUser);
-        await nextTick();
-        triggerRef(searchResultUser);
-    }
-});
 
 watch([ friends.state(),
         friends.pendingIncoming(),
@@ -126,6 +121,14 @@ watch([ friends.state(),
         case 'uninitialized':
             friendsPlaceholderVariant.value = 'loading';
             friendsPlaceholderMessage.value = 'Loading Friends';
+            break;
+
+        case 'loggedout':
+            friendsPlaceholderVariant.value = 'info';
+            friendsPlaceholderMessage.value = `Log in to have friends`;
+
+            searchResultPlaceholderVariant.value = 'info';
+            searchResultPlaceholderMessage.value = `Log in to have friends`;
             break;
         
         case 'error':
@@ -139,8 +142,8 @@ watch([ friends.state(),
         case 'ready':
             if (friends.pendingOutgoing() != null &&
                 friends.activeFriends() != null) {
-                if (!friends.activeFriends().value.length &&
-                    !friends.pendingOutgoing().value.length) {
+                if (!friends.activeFriends().length &&
+                    !friends.pendingOutgoing().length) {
                     friendsPlaceholderVariant.value = 'info';
                     friendsPlaceholderMessage.value = 'No Friends (how sad)';
                 } else {
@@ -152,74 +155,53 @@ watch([ friends.state(),
 }, { immediate: true, deep: true });
 
 async function sendRequest(user) {
-    await friends.createFriendRequest(session, toRaw(user));
+    await friends.createFriendRequest(session, user);
 
-    if (toRaw(searchResultUser.value) === toRaw(user))
-        searchResultType.value = 'pendingout';
+    if (searchResult.value.user.userID === user.userID)
+        searchResult.value.type = 'pendingout';
 }
 
 async function acceptRequest(user) {
-    await friends.acceptFriendRequest(session, toRaw(user));
+    await friends.acceptFriendRequest(session, user.userID);
 
-    if (toRaw(searchResultUser.value) === toRaw(user))
-        searchResultType.value = 'active';
+    if (searchResult.value.user.userID === user.userID)
+        searchResult.value.type = 'active';
 }
 
 async function deleteFriendOrRequest(user) {
-    await friends.deleteFriendOrRequest(session, toRaw(user));
+    await friends.deleteFriendOrRequest(session, user.userID);
 
-    if (toRaw(searchResultUser.value) === toRaw(user))
-        searchResultType.value = 'notfriends';
+    if (searchResult.value.user.userID === user.userID)
+        searchResult.value.type = 'notfriends';
 }
 
 function search() {
-    // note(ben): We check to see if the user is already friended by their
-    // username (like a cache)
+    if (!session.activeUser().value)
+        return false;
 
-    // Therefore, If a user changes their name and the friends list hasn't
-    // yet been refreshed, the search result will be for the _old_ username.
-
-    if (equalsIgnoreCase(session.activeUser().value['username'], searchText.value)) {
-        searchResultPlaceholderVariant.value = null;
-        searchResultUser.value = session.activeUser().value;
-        searchResultType.value = 'me';
+    if (tryFillSearchResultFromCache(searchText.value))
         return;
-    }
-
-    const [user, type] = friends.getFriendInCacheByUsername(searchText.value);
-
-    if (user) {
-        searchResultUser.value = user;
-        searchResultPlaceholderVariant.value = null;
-
-        switch (type) {
-            case 'active':     searchResultType.value = 'active';     return;
-            case 'pendingin':  searchResultType.value = 'pendingin';  return;
-            case 'pendingout': searchResultType.value = 'pendingout'; return;
-            default:
-                searchResultPlaceholderVariant.value = 'error';
-                searchResultPlaceholderMessage.value = `Uhhh... that shouldn't happen`;
-                throw new Error('[FriendsList]: Unknown friendship type when getting friend from cache');
-        }
-    }
 
     searchMode.value = 'loading';
     Dispatch.Get_UserByUsername(searchText.value)
         .onSuccess(body => {
             searchMode.value = 'normal';
 
-            const duplicate = friends.updateFriendInCacheIfExists(
-                body['user']['user_id'], 
-                body['user']);
+            const user      = User.fromJSON(body['user']);
+            const duplicate = friends.updateFriendInCacheIfExists(user.userID, {
+                user: user
+            });
 
             if (!duplicate) {
                 searchResultPlaceholderVariant.value = null;
-                searchResultUser.value = duplicate ?? body['user'];
-                searchResultType.value = 'notfriends';
+                searchResult.value = {
+                    user: duplicate ?? user,
+                    type: 'notfriends'
+                };
             } else {
                 // We already know this person after all--use the
                 // cache instead
-                search();
+                tryFillSearchResultFromCache(searchText.value);
             }
         })
         .onHttpError((body, status) => {
@@ -234,7 +216,7 @@ function search() {
                                                      + `error: ${status}: ${JSON.stringify(body)}`;
             }
 
-            searchResultUser.value = null;
+            searchResult.value = null;
             searchMode.value = 'normal';
         })
         .onNetworkError(() => {
@@ -243,6 +225,40 @@ function search() {
             searchMode.value = 'normal';
         });
 }
+
+function tryFillSearchResultFromCache(username) {
+    if (friends.state().value !== 'ready')
+        return false;
+
+    if (session.activeUser().value && equalsIgnoreCase(session.activeUser().value.username, username)) {
+        searchResultPlaceholderVariant.value = null;
+        searchResult.value = {
+            user: session.activeUser().value,
+            type: 'me'
+        };
+
+        return true;
+    }
+    
+    const [friend, type] = friends.getFriendInCacheByUsername(username);
+
+    if (friend) {
+        searchResult.value.user = friend.user;
+        searchResultPlaceholderVariant.value = null;
+
+        switch (type) {
+            case 'active':     searchResult.value.type = 'active';     return true;
+            case 'pendingin':  searchResult.value.type = 'pendingin';  return true;
+            case 'pendingout': searchResult.value.type = 'pendingout'; return true;
+            default:
+                searchResultPlaceholderVariant.value = 'error';
+                searchResultPlaceholderMessage.value = `Uhhh... that shouldn't happen`;
+                throw new Error('[FriendsList]: Unknown friendship type when getting friend from cache');
+        }
+    }
+
+    return false;
+}
 </script>
 
 <style scoped>
@@ -250,13 +266,8 @@ function search() {
     container: c / inline-size;
 
     display: grid;
-
     width: 600px;
-/*
-    width: 1000px;
-    grid-template-columns: 1fr 1fr; */
     gap: 0px;
-
     margin-bottom: 12px;
 
     z-index: 0;

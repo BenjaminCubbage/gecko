@@ -54,4 +54,4 @@ class MultiResourceMutex {
     }
 }
 
-export { MultiResourceMutex };
+export { ResourceMutex, MultiResourceMutex };

@@ -56,7 +56,7 @@ watch(session.activeUser(), user => {
     if (devices.value.length)
         return;
 
-    Dispatch.Get_UsersDevices(session.activeUser().value['user_id'])
+    Dispatch.Get_UsersDevices(session.activeUserID())
         .onSuccess(body => {
             devices.value = body.devices.map(d => ({
                 deviceID:     d['device_id'],

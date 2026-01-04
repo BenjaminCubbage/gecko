@@ -18,7 +18,7 @@
 </template>
 
 <script setup>
-import { ref, provide } from 'vue';
+import { ref, provide, computed, watch } from 'vue';
 import FriendsList from './components/friends_list/FriendsList.vue'
 import Navbar from './components/navbar/Navbar.vue';
 import PicEditor from './components/pic_editor/PicEditor.vue';
@@ -38,6 +38,15 @@ provide(Keys.FriendsStore, friends);
     await session.init();
     await friends.init(session);
 })();
+
+watch(session.state(), (newState, oldState) => {
+    if ((newState === 'loggedout' && oldState === 'ready') ||
+        (oldState === 'loggedout' && newState === 'ready')) {
+        friends.resync();
+    }
+
+    console.log(newState, oldState);
+});
 </script>
 
 <style scoped>

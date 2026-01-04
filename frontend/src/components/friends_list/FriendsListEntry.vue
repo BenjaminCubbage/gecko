@@ -18,7 +18,7 @@
             </div>
 
             <div class="subheading-section">
-                <span v-if="isActive"          class="subh-label subh-label--joined"     >Friends Since 01/02/2026</span>
+                <span v-if="isActive"          class="subh-label subh-label--joined"     >Friends Since {{ acceptedOn }}</span>
                 <span v-else-if="isPendingIn"  class="subh-label subh-label--pending-in" >Requests Friend</span>
                 <span v-else-if="isPendingOut" class="subh-label subh-label--pending-out">Request Sent</span>
                 <span v-else-if="isNotFriends" class="subh-label subh-label--not-friends">Not Friends</span>
@@ -60,10 +60,9 @@ const props = defineProps({
     // 'notfriends' | 'pendingin' | 'pendingout' | 'active' | 'me'
     entryType:      { type: String, default: 'active' },
     user:           { type: Object, required: true },
-    isSearchResult: { type: Boolean, default: false }
+    isSearchResult: { type: Boolean, default: false },
+    acceptedOn:     { type: String, required: false }
 });
-
-console.log(props.user);
 
 const emit = defineEmits([
     'sendRequest',
