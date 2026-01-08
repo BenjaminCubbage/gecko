@@ -17,13 +17,14 @@ namespace Gecko::API::Thread
     class Scheduler
     {
     public:
-        static constexpr const size_t ScheduleBufferSize{ 256 };
+        static constexpr const size_t ScheduleQueueSize{ 256 };
 
-        static_assert(ScheduleBufferSize > 0, "ScheduleBufferSize must be > 0");
+        static_assert(ScheduleQueueSize > 0, "ScheduleQueueSize must be > 0");
 
         // intent(ScheduleBuffer): To act as a free-list data structure
         // optimized for fast insertion and removal of scheduled tasks,
         // and caching of the next scheduled task.
+
         // This implementation is not designed to be thread-safe and the
         // user is responsible for enforcing mutual exclusion.
         class ScheduleBuffer
@@ -48,7 +49,6 @@ namespace Gecko::API::Thread
 
             // Returns false if the buffer was full, otherwise true
             bool AddTask(TimePoint due, std::function<void ()>&& func, bool* outIsNextDue);
-
             void RemoveTask(Task *task);
 
             inline void ClearTasks() { Reset(); }
@@ -62,7 +62,7 @@ namespace Gecko::API::Thread
             Task *m_freeHead;
             Task *m_nextDue;
 
-            std::array<Task, ScheduleBufferSize> m_tasks;
+            std::array<Task, ScheduleQueueSize> m_tasks;
         };
 
         typedef ScheduleBuffer::Task      Task;
@@ -71,16 +71,18 @@ namespace Gecko::API::Thread
         enum class Result
         {
             Success = 0,
-            NotRunning,
-            AlreadyRunning,
-            IsShuttingDown,
-            SchedulerBufferFull,
-            AlreadyJoined,
-            NotYetJoined,
-            UnknownError,
-            PoolBufferFull,
-            PoolNotStarted,
-            UnknownPoolError
+
+            StartDenied_NotIdle,
+
+            ScheduleDenied_NotStarted,
+            ScheduleDenied_PoolNotStarted,
+            ScheduleFailed_QueueFull,
+            ScheduleFailed_ThreadPoolQueueFull,
+            ScheduleFailed_PoolError,
+
+            JoinDenied_AlreadyJoined,
+
+            ShutdownDenied_NotRunning
         };
 
         enum class State

@@ -100,7 +100,7 @@ namespace Gecko::API::Thread
         switch (m_state)
         {
             case State::Running:
-                return Result::AlreadyRunning;
+                return Result::StartDenied_NotIdle;
 
             case State::NotRunning:
                 m_state = State::Running;
@@ -113,7 +113,7 @@ namespace Gecko::API::Thread
 
             case State::ShuttingDownSlow:
             case State::ShuttingDownFast:
-                return Result::IsShuttingDown;
+                return Result::StartDenied_NotIdle;
         }
 
         std::terminate();
@@ -130,24 +130,21 @@ namespace Gecko::API::Thread
                     case ThreadPool::Result::Success:
                         return Result::Success;
 
-                    case ThreadPool::Result::ScheduleFailed_QueueFull:
-                        return Result::PoolBufferFull;
-
                     case ThreadPool::Result::ScheduleDenied_NotStarted:
-                        return Result::PoolNotStarted;
+                        return Result::ScheduleDenied_PoolNotStarted;
+
+                    case ThreadPool::Result::ScheduleFailed_QueueFull:
+                        return Result::ScheduleFailed_ThreadPoolQueueFull;
 
                     default:
-                        return Result::UnknownPoolError;
+                        return Result::ScheduleFailed_PoolError;
                 }
-
                 break;
 
             case State::NotRunning:
-                return Result::NotRunning;
-
             case State::ShuttingDownSlow:
             case State::ShuttingDownFast:
-                return Result::IsShuttingDown;
+                return Result::ScheduleDenied_NotStarted;
         }
 
         std::terminate();
@@ -173,7 +170,7 @@ namespace Gecko::API::Thread
                     bool isNextDue{ false };
 
                     if (!m_buffer.AddTask(at, std::move(func), &isNextDue))
-                        return Result::SchedulerBufferFull;
+                        return Result::ScheduleFailed_QueueFull;
 
                     if (isNextDue)
                         m_cv.notify_one();
@@ -181,11 +178,9 @@ namespace Gecko::API::Thread
                 return Result::Success;
 
             case State::NotRunning:
-                return Result::NotRunning;
-
             case State::ShuttingDownSlow:
             case State::ShuttingDownFast:
-                return Result::IsShuttingDown;
+                return Result::ScheduleDenied_NotStarted;
         }
 
         std::terminate();
@@ -199,7 +194,7 @@ namespace Gecko::API::Thread
             std::unique_lock lk{ m_mutex };
 
             if (!m_thread || !m_thread->joinable())
-                return Result::AlreadyJoined;
+                return Result::JoinDenied_AlreadyJoined;
 
             if (m_thread->get_id() == std::this_thread::get_id())
                 throw std::logic_error("Tried to join thread with itself");
@@ -231,11 +226,9 @@ namespace Gecko::API::Thread
                 return Result::Success;
 
             case State::NotRunning:
-                return Result::NotRunning;
-
             case State::ShuttingDownSlow:
             case State::ShuttingDownFast:
-                return Result::IsShuttingDown;
+                return Result::ShutdownDenied_NotRunning;
         }
 
         std::terminate();
@@ -261,7 +254,7 @@ namespace Gecko::API::Thread
                 if (timerFinished)
                 {
                     m_mutex.unlock();
-                    // todo(ben): Don't eat errors
+                    // todo(ben): Don't just eat errors
                     if (m_pool->Schedule(task->func) != ThreadPool::Result::Success)
                         task->func = {};
                     m_mutex.lock();
