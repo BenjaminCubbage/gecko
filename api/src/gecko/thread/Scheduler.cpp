@@ -125,8 +125,22 @@ namespace Gecko::API::Thread
         switch (m_state)
         {
             case State::Running:
-                m_pool->Schedule(std::move(func));
-                return Result::Success;
+                switch (m_pool->Schedule(func))
+                {
+                    case ThreadPool::Result::Success:
+                        return Result::Success;
+
+                    case ThreadPool::Result::ScheduleFailed_QueueFull:
+                        return Result::PoolBufferFull;
+
+                    case ThreadPool::Result::ScheduleDenied_NotStarted:
+                        return Result::PoolNotStarted;
+
+                    default:
+                        return Result::UnknownPoolError;
+                }
+
+                break;
 
             case State::NotRunning:
                 return Result::NotRunning;
@@ -139,7 +153,7 @@ namespace Gecko::API::Thread
         std::terminate();
     }
 
-    Scheduler::Result Scheduler::ScheduleAfter(std::chrono::nanoseconds delay, 
+    Scheduler::Result Scheduler::ScheduleAfter(std::chrono::nanoseconds delay,
                                               std::function<void ()>&& func)
     {
         return ScheduleAt(TimePoint::clock::now() + delay, std::move(func));
@@ -159,7 +173,7 @@ namespace Gecko::API::Thread
                     bool isNextDue{ false };
 
                     if (!m_buffer.AddTask(at, std::move(func), &isNextDue))
-                        return Result::BufferFull;
+                        return Result::SchedulerBufferFull;
 
                     if (isNextDue)
                         m_cv.notify_one();
@@ -247,7 +261,9 @@ namespace Gecko::API::Thread
                 if (timerFinished)
                 {
                     m_mutex.unlock();
-                    m_pool->Schedule(std::move(task->func));
+                    // todo(ben): Don't eat errors
+                    if (m_pool->Schedule(task->func) != ThreadPool::Result::Success)
+                        task->func = {};
                     m_mutex.lock();
                     m_buffer.RemoveTask(task);
                 }

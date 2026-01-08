@@ -74,10 +74,13 @@ namespace Gecko::API::Thread
             NotRunning,
             AlreadyRunning,
             IsShuttingDown,
-            BufferFull,
+            SchedulerBufferFull,
             AlreadyJoined,
             NotYetJoined,
-            UnknownError
+            UnknownError,
+            PoolBufferFull,
+            PoolNotStarted,
+            UnknownPoolError
         };
 
         enum class State

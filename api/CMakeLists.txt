@@ -103,6 +103,8 @@ set(src_files
     "${src_dir}/gecko/services/SharedImagesService.h"
     "${src_dir}/gecko/services/UsersService.cpp"
     "${src_dir}/gecko/services/UsersService.h"
+    "${src_dir}/gecko/thread/MPMCJobQueue.cpp"
+    "${src_dir}/gecko/thread/MPMCJobQueue.h"
     "${src_dir}/gecko/thread/Scheduler.cpp"
     "${src_dir}/gecko/thread/Scheduler.h"
     "${src_dir}/gecko/thread/ThreadPool.cpp"

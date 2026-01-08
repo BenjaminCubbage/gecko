@@ -8,8 +8,6 @@ namespace Gecko::API::Server
 {
     bool Server::Start()
     {
-        using namespace std::chrono_literals;
-
         if (!m_topics.Start() ||
             !m_tables.Start() ||
             !m_controllers.Start(m_httpServer))
