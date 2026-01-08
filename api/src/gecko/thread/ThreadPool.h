@@ -6,7 +6,7 @@
 #include <thread>
 #include <vector>
 
-namespace Gecko::API
+namespace Gecko::API::Thread
 {
     class ThreadPool
     {

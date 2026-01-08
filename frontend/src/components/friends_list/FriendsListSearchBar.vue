@@ -1,21 +1,24 @@
 <template>
-    <div class="friends-list-search-bar">
-        <div class="border" 
+    <div
+        class="friends-list-search-bar"
+        :class="{ 'disabled': disabled }">
+        <div class="border"
             @keydown.enter="enterPressed = true"
-            @keyup.enter="() => { 
-                enterPressed = false; 
-                submit(); 
+            @keyup.enter="() => {
+                enterPressed = false;
+                submit();
             }"
             @focusout="enterPressed = false">
             <UsernameInput
                 v-model="inputText"
                 class="search-input"
+                :disabled="disabled"
                 @validityChanged="v => inputIsValid = v" />
 
             <button
                 class="search-button"
                 :class="{ 'pressed-down': inputIsValid && mode == 'normal' && enterPressed }"
-                :disabled="!inputIsValid || mode == 'loading'"
+                :disabled="disabled || !inputIsValid || mode == 'loading'"
                 @click="submit">
                 <div                 v-if="mode == 'normal'" class="search-icon hn hn-search"></div>
                 <LoadingSpinner v-else-if="mode == 'loading'" />
@@ -31,7 +34,8 @@ import LoadingSpinner from '@/components/loading_spinner/LoadingSpinner.vue';
 
 const props = defineProps({
     // 'normal' | 'loading'
-    mode: { type: String, default: 'normal' }
+    mode: { type: String, default: 'normal' },
+    disabled: { type: Boolean, default: false }
 });
 
 const emit = defineEmits([ 'submit' ]);
@@ -101,6 +105,16 @@ function submit() {
 .search-button:active .search-icon,
 .search-button.pressed-down .search-icon {
     transform: translateY(2px);
+}
+
+.friends-list-search-bar.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.search-input:disabled {
+    pointer-events: none;
+    opacity: 0;
 }
 
 .search-button:disabled {

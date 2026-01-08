@@ -1,6 +1,6 @@
 #include "gecko/thread/ThreadPool.h"
 
-namespace Gecko::API
+namespace Gecko::API::Thread
 {
     void ThreadPool::ThreadLoop()
     {

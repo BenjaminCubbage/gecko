@@ -1,4 +1,5 @@
 #pragma once
+#include <chrono>
 #include <memory>
 #include <mutex>
 #include <string>
@@ -13,11 +14,11 @@ namespace Gecko::API::DB
     private:
         struct Session
         {
-            Session(mysqlx::Session&& instance) 
-                : m_instance(std::move(instance)) {}
+            bool m_isOpen{ false };
+            bool m_acquired{ false };
 
-            bool m_inUse{ false };
-            mysqlx::Session m_instance;
+            std::optional<mysqlx::Session> m_instance{ std::nullopt };
+            std::chrono::seconds m_epochLastUsed{ 0 };
         };
 
         struct SessionReleaser
@@ -36,7 +37,6 @@ namespace Gecko::API::DB
         using SessionGuard = std::unique_ptr<mysqlx::Session, SessionReleaser>;
 
     public:
-        // [!!!] Throws on failure
         ConnectionPool(std::string host, int port, std::string user, std::string pwd, std::string db)
             : m_host(std::move(host)), 
               m_port(port), 
@@ -44,17 +44,25 @@ namespace Gecko::API::DB
               m_pwd(std::move(pwd)), 
               m_db(std::move(db)) { }
 
-        bool Connect();
+        bool Start();
 
         [[nodiscard]] SessionGuard Acquire();
 
     private:
         void Release(Session& session) noexcept;
+
+        inline mysqlx::Session OpenSessionInstance();
         
+        static inline std::chrono::seconds EpochNow()
+        {
+            return std::chrono::duration_cast<std::chrono::seconds>(
+                std::chrono::steady_clock::now().time_since_epoch());
+        }
+
         static constexpr size_t PoolSize = 4;
 
         std::mutex m_sessionsMutex;
-        std::vector<Session> m_sessions;
+        std::array<Session, PoolSize> m_sessions;
         std::condition_variable m_sessionsSignal;
 
         std::string m_host;
@@ -62,5 +70,7 @@ namespace Gecko::API::DB
         std::string m_user;
         std::string m_pwd;
         std::string m_db;
+
+        static constexpr std::chrono::minutes SessionTimeout{ 1 };
     };
 }

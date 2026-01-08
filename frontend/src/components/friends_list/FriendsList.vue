@@ -4,6 +4,7 @@
             <FriendsListSearchBar
                 v-model="searchText"
                 :mode="searchMode"
+                :disabled="!session.activeUser().value"
                 @submit="search" />
 
             <FriendsListPlaceholderMessage
@@ -26,7 +27,7 @@
             <FriendsListDivider v-if="friends.pendingIncoming().length">
                 Incoming Requests
             </FriendsListDivider>
-            
+
             <FriendsListEntry
                 v-for="friend in friends.pendingIncoming()"
                 :user="friend.user"
@@ -130,13 +131,15 @@ watch([ friends.state(),
             searchResultPlaceholderVariant.value = 'info';
             searchResultPlaceholderMessage.value = `Log in to have friends`;
             break;
-        
+
         case 'error':
             friendsPlaceholderVariant.value = 'error';
             friendsPlaceholderMessage.value = `Couldn't Load Friends`;
 
-            searchResultPlaceholderVariant.value = 'error';
-            searchResultPlaceholderMessage.value = `Couldn't Load Friends`;
+            if (searchResult.value == null) {
+                searchResultPlaceholderVariant.value = 'error';
+                searchResultPlaceholderMessage.value = `Couldn't Load Friends`;
+            }
             break;
 
         case 'ready':
@@ -239,7 +242,7 @@ function tryFillSearchResultFromCache(username) {
 
         return true;
     }
-    
+
     const [friend, type] = friends.getFriendInCacheByUsername(username);
 
     if (friend) {

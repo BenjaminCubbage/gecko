@@ -2,31 +2,9 @@
 
 namespace Gecko::API::DB
 {
-    bool ConnectionPool::Connect()
+    bool ConnectionPool::Start()
     {
-        try
-        {
-            m_sessions.reserve(PoolSize);
-
-            for (size_t i = 0; i < PoolSize; ++i)
-                m_sessions.emplace_back
-                (
-                    mysqlx::Session
-                    {
-                        mysqlx::SessionOption::HOST,     m_host,
-                        mysqlx::SessionOption::PORT,     m_port,
-                        mysqlx::SessionOption::USER,     m_user,
-                        mysqlx::SessionOption::PWD,      m_pwd,
-                        mysqlx::SessionOption::DB,       m_db,
-                        mysqlx::SessionOption::SSL_MODE, mysqlx::SSLMode::REQUIRED
-                    }
-                );
-
-            return true;
-        }
-        catch (mysqlx::Error&) { }
-
-        return false;
+        return true;
     }
 
     ConnectionPool::SessionGuard ConnectionPool::Acquire()
@@ -36,26 +14,43 @@ namespace Gecko::API::DB
 
         m_sessionsSignal.wait(lk, [this, &session] {
             for (auto& s : m_sessions)
-                if (!s.m_inUse)
+                if (!s.m_acquired)
                 {
-                    session = &s;
-                    s.m_inUse = true;
+                    session      = &s;
+                    s.m_acquired = true;
                     return true;
                 }
 
             return false;
         });
 
-        return SessionGuard{ &session->m_instance, SessionReleaser{ this, session } };
+        if (!session->m_instance)
+            session->m_instance.emplace(OpenSessionInstance());
+
+        return SessionGuard(&*session->m_instance, SessionReleaser{ this, session });
     }
 
     void ConnectionPool::Release(ConnectionPool::Session& session) noexcept
     {
         {
             std::unique_lock lk{ m_sessionsMutex };
-            session.m_inUse = false;
+            session.m_acquired      = false;
+            session.m_epochLastUsed = EpochNow();
         }
 
         m_sessionsSignal.notify_one();
+    }
+
+    mysqlx::Session ConnectionPool::OpenSessionInstance()
+    {
+        return mysqlx::Session
+        {
+            mysqlx::SessionOption::HOST,     m_host,
+            mysqlx::SessionOption::PORT,     m_port,
+            mysqlx::SessionOption::USER,     m_user,
+            mysqlx::SessionOption::PWD,      m_pwd,
+            mysqlx::SessionOption::DB,       m_db,
+            mysqlx::SessionOption::SSL_MODE, mysqlx::SSLMode::REQUIRED
+        };
     }
 }

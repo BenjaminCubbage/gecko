@@ -44,8 +44,6 @@ watch(session.state(), (newState, oldState) => {
         (oldState === 'loggedout' && newState === 'ready')) {
         friends.resync();
     }
-
-    console.log(newState, oldState);
 });
 </script>
 
@@ -70,7 +68,7 @@ watch(session.state(), (newState, oldState) => {
         background-repeat: repeat;
         background-position-x: 50%;
         background-position-y: 0;
-        
+
         scrollbar-gutter: stable both-edges;
         overflow-y: auto;
     }
