@@ -4,10 +4,11 @@ namespace Gecko::API::Server
 {
     bool Tables::Start()
     {
-        if (!m_dbConnectionPool.Start())
+        if (auto r{ m_dbConnectionPool.Start() }; r != DB::ConnectionPool::Result::Success)
         {
-            *m_log << "[Tables]: Couldn't connect to the MySQL XAPI server via\n";
-            *m_log << "[Tables]: Note: On port " << m_env->mysqlXAPIPort << std::endl;
+            *m_log << "[Tables]: Couldn't connect to the MySQL XAPI server\n";
+            *m_log << "[Tables]:     On port:    " << m_env->mysqlXAPIPort << '\n';
+            *m_log << "[Tables]:     Error code: " << (int)r << std::endl;
             return false;
         }
 

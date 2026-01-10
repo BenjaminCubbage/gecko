@@ -1,31 +1,60 @@
 #pragma once
+#include <array>
+#include <atomic>
 #include <chrono>
+#include <expected>
 #include <memory>
 #include <mutex>
+#include <optional>
 #include <string>
-#include <vector>
 #include <condition_variable>
 #include "mysqlx/xdevapi.h"
+#include "gecko/thread/Scheduler.h"
 
 namespace Gecko::API::DB
 {
     class ConnectionPool
     {
+    public:
+        static constexpr const size_t PoolSize = 4;
+        static constexpr const std::chrono::minutes SessionTimeout{ 1 };
+
+        enum class Result
+        {
+            Success = 0,
+
+            StartDenied_NotIdle,
+            StartFailed_CouldNotStartTimeoutJob,
+
+            StopDenied_NotStarted,
+
+            AcquireDenied_NotStarted,
+            AcquireFailed_ConnectionFailed
+        };
+
     private:
+        enum class State
+        {
+            Stopped, Starting, Running, Stopping
+        };
+
+        enum class SessionTimeoutJobState
+        {
+            Stopped, Running, Stopping, Error
+        };
+
         struct Session
         {
-            bool m_isOpen{ false };
-            bool m_acquired{ false };
-
-            std::optional<mysqlx::Session> m_instance{ std::nullopt };
-            std::chrono::seconds m_epochLastUsed{ 0 };
+            bool isAcquired{ false };
+            std::optional<mysqlx::Session> instance{ std::nullopt };
+            Thread::Scheduler::TimePoint lastUsed{};
         };
 
         struct SessionReleaser
         {
             SessionReleaser(ConnectionPool* pool, Session* session)
                 : m_pool(pool), m_session(session) {}
-            
+
             ConnectionPool* m_pool;
             Session* m_session;
 
@@ -34,36 +63,49 @@ namespace Gecko::API::DB
             }
         };
 
-        using SessionGuard = std::unique_ptr<mysqlx::Session, SessionReleaser>;
+        typedef std::unique_ptr<mysqlx::Session, SessionReleaser> SessionGuard;
 
     public:
-        ConnectionPool(std::string host, int port, std::string user, std::string pwd, std::string db)
-            : m_host(std::move(host)), 
-              m_port(port), 
-              m_user(std::move(user)), 
-              m_pwd(std::move(pwd)), 
+        ConnectionPool(Thread::Scheduler* scheduler,
+                       std::string host,
+                       int port,
+                       std::string user,
+                       std::string pwd,
+                       std::string db)
+            : m_scheduler(scheduler),
+              m_host(std::move(host)),
+              m_port(port),
+              m_user(std::move(user)),
+              m_pwd(std::move(pwd)),
               m_db(std::move(db)) { }
 
-        bool Start();
+        ~ConnectionPool()
+        {
+            (void)StopSync();
+        }
 
-        [[nodiscard]] SessionGuard Acquire();
+        Result Start();
+        Result StopSync();
+
+        [[nodiscard]] std::expected<SessionGuard, Result> Acquire();
 
     private:
         void Release(Session& session) noexcept;
 
-        inline mysqlx::Session OpenSessionInstance();
-        
-        static inline std::chrono::seconds EpochNow()
-        {
-            return std::chrono::duration_cast<std::chrono::seconds>(
-                std::chrono::steady_clock::now().time_since_epoch());
-        }
+        bool SessionTimeoutJob_Start();
+        bool SessionTimeoutJob_Tick();
+        bool SessionTimeoutJob_StopSync();
 
-        static constexpr size_t PoolSize = 4;
+        inline std::optional<mysqlx::Session> OpenSessionInstance();
 
-        std::mutex m_sessionsMutex;
+        std::mutex m_mutex;
+        State m_state{ State::Stopped };
+
         std::array<Session, PoolSize> m_sessions;
-        std::condition_variable m_sessionsSignal;
+        std::condition_variable m_sessionsCV;
+
+        std::atomic<size_t> m_acquiredCount;
+        std::condition_variable m_acquiredCountZeroCV;
 
         std::string m_host;
         int         m_port;
@@ -71,6 +113,8 @@ namespace Gecko::API::DB
         std::string m_pwd;
         std::string m_db;
 
-        static constexpr std::chrono::minutes SessionTimeout{ 1 };
+        Thread::Scheduler* m_scheduler;
+        Thread::Scheduler::TaskHandle m_sessionTimeoutJob;
+        SessionTimeoutJobState m_sessionTimeoutJobState{ SessionTimeoutJobState::Stopped };
     };
 }

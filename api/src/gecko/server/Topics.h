@@ -28,7 +28,7 @@ namespace Gecko::API::Server
         bool Start();
 
     private:
-        Env::Env* m_env;
+        Env::Env*     m_env;
         std::ostream* m_log;
 
         MQTT::MQTTClient m_mqttClient;

@@ -12,12 +12,14 @@ namespace Gecko::API::DB
         {
             auto connection = m_connectionPool->Acquire();
 
-            // note(ben): mysqlx::byte is unsigned char
+            if (!connection)
+                return Result::Failure;
 
+            // note(ben): mysqlx::byte is unsigned char
             const mysqlx::bytes span{ reinterpret_cast<const mysqlx::byte*>(bytes.data()), bytes.size() };
 
             auto insertBlobResult =
-                connection->sql("INSERT INTO SharedImageBlobs (idempotency_key, bytes) VALUES (?, ?)")
+                connection.value()->sql("INSERT INTO SharedImageBlobs (idempotency_key, bytes) VALUES (?, ?)")
                     .bind(idempotencyKey, span)
                     .execute();
 
@@ -28,7 +30,7 @@ namespace Gecko::API::DB
             // not affected by other concurrent mysql sessions.
 
             auto queryBlobIDResult =
-                connection->sql("SELECT LAST_INSERT_ID()").execute();
+                connection.value()->sql("SELECT LAST_INSERT_ID()").execute();
 
             if (queryBlobIDResult.count() != 1)
                 return Result::Failure;
@@ -38,7 +40,7 @@ namespace Gecko::API::DB
             // note(ben): Potential for orphaned blob if this fails; Acceptable for now.
 
             auto insertSharedImageResult =
-                connection->sql("INSERT INTO SharedImages (image_blob_id, sender_id, receiver_id) "
+                connection.value()->sql("INSERT INTO SharedImages (image_blob_id, sender_id, receiver_id) "
                                 "VALUES (?, ?, ?)")
                     .bind(blobID, senderID, receiverID)
                     .execute();
@@ -61,8 +63,11 @@ namespace Gecko::API::DB
         {
             auto connection = m_connectionPool->Acquire();
 
+            if (!connection)
+                return Result::Failure;
+
             auto result =
-                connection->sql("SELECT 1 FROM SharedImageBlobs "
+                connection.value()->sql("SELECT 1 FROM SharedImageBlobs "
                                 "WHERE idempotency_key = ?")
                     .bind(idempotencyKey)
                     .execute();
@@ -84,8 +89,11 @@ namespace Gecko::API::DB
         {
             auto connection = m_connectionPool->Acquire();
 
+            if (!connection)
+                return Result::Failure;
+
             auto result =
-                connection->sql("SELECT ib.bytes FROM SharedImages si "
+                connection.value()->sql("SELECT ib.bytes FROM SharedImages si "
                                     "LEFT JOIN SharedImageBlobs ib "
                                     "ON si.image_blob_id=ib.image_blob_id "
                                 "WHERE receiver_id=? "

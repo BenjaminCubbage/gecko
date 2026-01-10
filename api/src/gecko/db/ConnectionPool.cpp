@@ -1,56 +1,220 @@
 #include "gecko/db/ConnectionPool.h"
+#include <algorithm>
+#include <assert.h>
 
 namespace Gecko::API::DB
 {
-    bool ConnectionPool::Start()
+    ConnectionPool::Result ConnectionPool::Start()
     {
-        return true;
+        {
+            std::unique_lock lk{ m_mutex };
+
+            if (m_state != State::Stopped)
+                return Result::StartDenied_NotIdle;
+
+            m_state = State::Starting;
+        }
+
+        if (!SessionTimeoutJob_Start())
+            return Result::StartFailed_CouldNotStartTimeoutJob;
+
+        {
+            std::unique_lock lk{ m_mutex };
+            m_state = State::Running;
+        }
+
+        return Result::Success;
     }
 
-    ConnectionPool::SessionGuard ConnectionPool::Acquire()
+    ConnectionPool::Result ConnectionPool::StopSync()
     {
-        Session *session{ nullptr };
-        std::unique_lock lk{ m_sessionsMutex };
+        std::unique_lock lk{ m_mutex };
 
-        m_sessionsSignal.wait(lk, [this, &session] {
-            for (auto& s : m_sessions)
-                if (!s.m_acquired)
-                {
-                    session      = &s;
-                    s.m_acquired = true;
-                    return true;
-                }
+        if (m_state != State::Running)
+            return Result::StopDenied_NotStarted;
 
-            return false;
+        m_state = State::Stopping;
+        m_sessionsCV.notify_all();
+
+        m_acquiredCountZeroCV.wait(lk, [&] {
+            return m_acquiredCount == 0;
         });
 
-        if (!session->m_instance)
-            session->m_instance.emplace(OpenSessionInstance());
+        SessionTimeoutJob_StopSync();
+        m_state = State::Stopped;
 
-        return SessionGuard(&*session->m_instance, SessionReleaser{ this, session });
+        return Result::Success;
+    }
+
+    std::expected<ConnectionPool::SessionGuard, ConnectionPool::Result> 
+    ConnectionPool::Acquire()
+    {
+        Session *session{ nullptr };
+        bool needConnect{ false };
+
+        {
+            std::unique_lock lk{ m_mutex };
+
+            m_sessionsCV.wait(lk, [&] {
+                if (m_state != State::Running)
+                    return true;
+
+                for (auto& s : m_sessions)
+                    if (!s.isAcquired)
+                    {
+                        ++m_acquiredCount;
+                        s.isAcquired = true;
+                        session     = &s;
+                        needConnect = !session->instance;
+
+                        return true;
+                    }
+
+                return false;
+            });
+
+            if (m_state != State::Running)
+                return std::unexpected { Result::AcquireDenied_NotStarted };
+        }
+
+        if (needConnect)
+        {
+            auto newConnection = OpenSessionInstance();
+
+            if (!newConnection)
+            {
+                Release(*session);
+                return std::unexpected { Result::AcquireFailed_ConnectionFailed };
+            }
+
+            std::unique_lock lk{ m_mutex };
+
+            if (m_state != State::Running)
+            {
+                Release(*session);
+                return std::unexpected { Result::AcquireDenied_NotStarted };
+            }
+
+            session->instance.emplace(std::move(*newConnection));
+        }
+
+        return SessionGuard(&*session->instance, SessionReleaser{ this, session });
     }
 
     void ConnectionPool::Release(ConnectionPool::Session& session) noexcept
     {
-        {
-            std::unique_lock lk{ m_sessionsMutex };
-            session.m_acquired      = false;
-            session.m_epochLastUsed = EpochNow();
-        }
+        std::unique_lock lk{ m_mutex };
 
-        m_sessionsSignal.notify_one();
+        assert(m_acquiredCount != 0 &&
+               "m_acquiredCount should never be zero when trying to release a session.");
+
+        --m_acquiredCount;
+        session.isAcquired = false;
+        session.lastUsed   = Thread::Scheduler::Now();
+
+        m_sessionsCV.notify_one();
+
+        if (m_state == State::Stopping && m_acquiredCount == 0)
+            m_acquiredCountZeroCV.notify_one();
     }
 
-    mysqlx::Session ConnectionPool::OpenSessionInstance()
+    bool ConnectionPool::SessionTimeoutJob_Start()
     {
-        return mysqlx::Session
         {
-            mysqlx::SessionOption::HOST,     m_host,
-            mysqlx::SessionOption::PORT,     m_port,
-            mysqlx::SessionOption::USER,     m_user,
-            mysqlx::SessionOption::PWD,      m_pwd,
-            mysqlx::SessionOption::DB,       m_db,
-            mysqlx::SessionOption::SSL_MODE, mysqlx::SSLMode::REQUIRED
-        };
+            std::unique_lock lk{ m_mutex };
+
+            if (m_sessionTimeoutJobState == SessionTimeoutJobState::Running)
+                return false;
+
+            m_sessionTimeoutJobState = SessionTimeoutJobState::Running;
+        }
+
+        return SessionTimeoutJob_Tick();
+    }
+
+    bool ConnectionPool::SessionTimeoutJob_Tick()
+    {
+        std::unique_lock lk{ m_mutex };
+
+        if (m_sessionTimeoutJobState != SessionTimeoutJobState::Running)
+            return false;
+
+        const auto now = Thread::Scheduler::Now();
+        auto nextWakeup = now + SessionTimeout;
+
+        for (auto& s : m_sessions)
+        {
+            if (s.isAcquired || !s.instance)
+                continue;
+
+            auto deadline = s.lastUsed + SessionTimeout;
+
+            if (deadline <= now)
+            {
+                try { s.instance->close(); } catch (...) {}
+                s.instance.reset();
+            }
+            else 
+                nextWakeup = std::min(nextWakeup, deadline);
+        }
+
+        lk.unlock();
+        auto result = m_scheduler->ScheduleJobAt(nextWakeup, [this] {
+            SessionTimeoutJob_Tick();
+        }, &m_sessionTimeoutJob);
+        lk.lock();
+
+        if (result != Thread::Scheduler::Result::Success)
+        {
+            m_sessionTimeoutJobState = SessionTimeoutJobState::Error;
+            return false;
+        }
+
+        return true;
+    }
+
+    bool ConnectionPool::SessionTimeoutJob_StopSync()
+    {
+        std::unique_lock lk{ m_mutex };
+
+        if (m_sessionTimeoutJobState != SessionTimeoutJobState::Running)
+            return false;
+
+        m_sessionTimeoutJobState = SessionTimeoutJobState::Stopping;
+
+        for (;;)
+        {
+            auto jobHandle = m_sessionTimeoutJob;
+
+            lk.unlock();
+            m_scheduler->CancelJobOrWait(jobHandle);
+            lk.lock();
+
+            if (m_sessionTimeoutJob == jobHandle)
+                break;
+        }
+
+        m_sessionTimeoutJobState = SessionTimeoutJobState::Stopped;
+        return true;
+    }
+
+    std::optional<mysqlx::Session> ConnectionPool::OpenSessionInstance()
+    {
+        try
+        {
+            return mysqlx::Session
+            {
+                mysqlx::SessionOption::HOST,     m_host,
+                mysqlx::SessionOption::PORT,     m_port,
+                mysqlx::SessionOption::USER,     m_user,
+                mysqlx::SessionOption::PWD,      m_pwd,
+                mysqlx::SessionOption::DB,       m_db,
+                mysqlx::SessionOption::SSL_MODE, mysqlx::SSLMode::REQUIRED
+            };
+        }
+        catch (mysqlx::Error& err)
+        {
+            return std::nullopt;
+        }
     }
 }

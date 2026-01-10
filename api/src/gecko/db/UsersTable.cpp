@@ -2,14 +2,19 @@
 
 namespace Gecko::API::DB
 {
+    using DB::ConnectionPool;
+
     UsersTable::Result UsersTable::UsernameExists(const std::string& username, bool* outTaken)
     {
         try
         {
             auto connection = m_connectionPool->Acquire();
 
+            if (!connection)
+                return Result::Failure;
+
             auto result =
-                connection->sql("SELECT 1 FROM Users WHERE username=?")
+                connection.value()->sql("SELECT 1 FROM Users WHERE username=?")
                     .bind(username)
                     .execute();
 
@@ -30,8 +35,11 @@ namespace Gecko::API::DB
         {
             auto connection = m_connectionPool->Acquire();
 
+            if (!connection)
+                return Result::Failure;
+
             const auto result =
-                connection->sql("INSERT INTO Users (username, oidc_iss, oidc_sub) "
+                connection.value()->sql("INSERT INTO Users (username, oidc_iss, oidc_sub) "
                                 "VALUES (?, ?, ?) ")
                     .bind(username, oidcIss, oidcSub)
                     .execute();
@@ -52,8 +60,11 @@ namespace Gecko::API::DB
         {
             auto connection = m_connectionPool->Acquire();
 
+            if (!connection)
+                return Result::Failure;
+
             auto result =
-                connection->sql("SELECT user_id FROM Users "
+                connection.value()->sql("SELECT user_id FROM Users "
                                 "WHERE oidc_iss=? AND oidc_sub=?")
                     .bind(oidcIss, oidcSub)
                     .execute();
@@ -73,8 +84,11 @@ namespace Gecko::API::DB
         {
             auto connection = m_connectionPool->Acquire();
 
+            if (!connection)
+                return Result::Failure;
+
             auto result =
-                connection->sql("SELECT user_id FROM Users "
+                connection.value()->sql("SELECT user_id FROM Users "
                                 "WHERE user_id=?")
                     .bind(userID)
                     .execute();
@@ -94,8 +108,11 @@ namespace Gecko::API::DB
         {
             auto connection = m_connectionPool->Acquire();
 
+            if (!connection)
+                return Result::Failure;
+
             auto result =
-                connection->sql("SELECT user_id, username, oidc_iss, oidc_sub FROM Users "
+                connection.value()->sql("SELECT user_id, username, oidc_iss, oidc_sub FROM Users "
                                 "WHERE user_id=?")
                     .bind(userID)
                     .execute();
@@ -126,8 +143,11 @@ namespace Gecko::API::DB
         {
             auto connection = m_connectionPool->Acquire();
 
+            if (!connection)
+                return Result::Failure;
+
             auto result =
-                connection->sql("SELECT user_id FROM Users "
+                connection.value()->sql("SELECT user_id FROM Users "
                                 "WHERE oidc_iss=? AND oidc_sub=?")
                     .bind(oidcIss, oidcSub)
                     .execute();
@@ -153,8 +173,11 @@ namespace Gecko::API::DB
         {
             auto connection = m_connectionPool->Acquire();
 
+            if (!connection)
+                return Result::Failure;
+
             auto result =
-                connection->sql("SELECT user_id, username FROM Users WHERE username=?")
+                connection.value()->sql("SELECT user_id, username FROM Users WHERE username=?")
                     .bind(username)
                     .execute();
 
@@ -187,8 +210,11 @@ namespace Gecko::API::DB
         {
             auto connection = m_connectionPool->Acquire();
 
+            if (!connection)
+                return Result::Failure;
+
             auto result =
-                connection->sql("UPDATE Users SET username=? WHERE user_id=?")
+                connection.value()->sql("UPDATE Users SET username=? WHERE user_id=?")
                     .bind(patch.username, userID)
                     .execute();
 

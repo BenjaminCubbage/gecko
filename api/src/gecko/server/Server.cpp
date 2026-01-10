@@ -8,6 +8,11 @@ namespace Gecko::API::Server
 {
     bool Server::Start()
     {
+        using namespace std::chrono_literals;
+
+        m_threadPool.Start();
+        m_scheduler.Start();
+
         if (!m_topics.Start() ||
             !m_tables.Start() ||
             !m_controllers.Start(m_httpServer))

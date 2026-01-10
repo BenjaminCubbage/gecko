@@ -2,6 +2,8 @@
 
 namespace Gecko::API::DB
 {
+    using DB::ConnectionPool;
+
     DevicesTable::Result
     DevicesTable::DeviceExists(int deviceID,
                                bool *outExists)
@@ -10,8 +12,11 @@ namespace Gecko::API::DB
         {
             auto connection = m_connectionPool->Acquire();
 
+            if (!connection)
+                return Result::Failure;
+
             auto result =
-                connection->sql("SELECT 1 FROM Devices WHERE device_id=?")
+                connection.value()->sql("SELECT 1 FROM Devices WHERE device_id=?")
                     .bind(deviceID)
                     .execute();
 
@@ -33,8 +38,11 @@ namespace Gecko::API::DB
         {
             auto connection = m_connectionPool->Acquire();
 
+            if (!connection)
+                return Result::Failure;
+
             auto result =
-                connection->sql("SELECT owner_id FROM Devices "
+                connection.value()->sql("SELECT owner_id FROM Devices "
                                 "WHERE device_id=?")
                     .bind(deviceID)
                     .execute();
@@ -60,8 +68,11 @@ namespace Gecko::API::DB
         {
             auto connection = m_connectionPool->Acquire();
 
+            if (!connection)
+                return Result::Failure;
+
             auto result =
-                connection->sql("SELECT device_id, name FROM Devices "
+                connection.value()->sql("SELECT device_id, name FROM Devices "
                                 "WHERE owner_id=?")
                     .bind(ownerID)
                     .execute();

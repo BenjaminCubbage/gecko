@@ -10,7 +10,7 @@
 #include <thread>
 #include <utility>
 #include <vector>
-#include "MPMCJobQueue.h"
+#include "MPMCQueue.h"
 
 namespace Gecko::API::Thread
 {
@@ -36,9 +36,14 @@ namespace Gecko::API::Thread
     class ThreadPool
     {
     public:
-        using Job = std::function<void()>;
+        // intent(ThreadCount, MaxQueueSize): These are constexpr because 
+        // I only ever need one thread pool in my whole application.
+        static constexpr size_t ThreadCount{ 4 };
+        static constexpr size_t MaxQueueSize{ 256 };
 
-        static constexpr const size_t MaxQueueSize{ 256 };
+        static_assert((MaxQueueSize > 1) & !(MaxQueueSize & (MaxQueueSize - 1)), "MaxQueueSize must be a power of two.");
+        static constexpr size_t MaxInflightTickets{ ThreadCount + MaxQueueSize };
+        static constexpr size_t InflightTicket_Free{ std::numeric_limits<size_t>::max() };
 
         enum class Result
         {
@@ -60,10 +65,22 @@ namespace Gecko::API::Thread
             JoinDenied_AlreadyJoined
         };
 
+        struct JobHandle
+        {
+            size_t ticketID;
+            size_t ticketIndex;
+        };
+
     private:
+        struct Job
+        {
+            std::function<void ()> func;
+            JobHandle handle;
+        };
+
         enum class MainState
         {
-            Starting, Started, Stopping, Stopped, Halted
+            Starting, Running, Stopping, Stopped, Halted
         };
 
         enum class JoinState
@@ -77,13 +94,18 @@ namespace Gecko::API::Thread
         };
 
     public:
-        ThreadPool(size_t threadCount) 
-            : m_threads(std::vector<std::optional<std::thread>>(threadCount)) {}
+        ThreadPool()
+        {
+            for (size_t i = 0; i < m_inflightTickets.size(); ++i)
+                m_inflightTickets[i] = InflightTicket_Free;
+        }
 
         ~ThreadPool();
         Result Start();
         Result Stop();
-        Result Schedule(Job& job);
+        Result ScheduleJob(std::function<void ()>& func, JobHandle* outHandle);
+        Result WaitForJobCompletion(const JobHandle& handle) noexcept;
+        bool IsJobCompleted(const JobHandle& handle) const noexcept;
         Result Join();
 
     private:
@@ -98,11 +120,15 @@ namespace Gecko::API::Thread
         std::atomic<ExecState> m_execState{ ExecState::Running };
 
         // Work + wakeups
-        MPMCJobQueue<MaxQueueSize> m_jobs{};
+        MPMCQueue<Job, MaxQueueSize> m_jobs{};
         std::counting_semaphore<std::numeric_limits<int32_t>::max()> m_sem{ 0 };
 
+        // Track individual job statuses
+        // size_t{ -1 } means the slot is free
+        std::array<std::atomic<size_t>, MaxInflightTickets> m_inflightTickets;
+        std::atomic<size_t> m_nextTicketID;
+
         // Workers
-        std::size_t m_threadCount{ 0 };
-        std::vector<std::optional<std::thread>> m_threads{};
+        std::array<std::optional<std::thread>, ThreadCount> m_threads{};
     };
 }

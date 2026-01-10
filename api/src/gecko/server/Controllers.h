@@ -37,8 +37,9 @@ namespace Gecko::API::Server
         bool Start(httplib::Server& server);
 
     private:
-        Env::Env* m_env;
+        Env::Env*     m_env;
         std::ostream* m_log;
+        
         Services* m_services;
 
         API::Controllers::AuthController         m_authController;

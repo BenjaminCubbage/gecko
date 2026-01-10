@@ -21,6 +21,8 @@ namespace
 
 namespace Gecko::API::DB
 {
+    using DB::ConnectionPool;
+
     FriendshipsTable::Result
     FriendshipsTable::GetActiveFriendships(int userID,
                                            std::vector<std::pair<Models::User, Models::FriendshipMetadata>>* outFriends)
@@ -29,8 +31,11 @@ namespace Gecko::API::DB
         {
             auto connection = m_connectionPool->Acquire();
 
+            if (!connection)
+                return Result::Failure;
+
             auto result =
-                connection->sql(
+                connection.value()->sql(
                         "SELECT f.user_2, u.username, DATE_FORMAT(accepted_on, " DATE_FORMAT ") "
                         "FROM Friendships f "
                             "JOIN Users u ON u.user_id=f.user_2 "
@@ -74,8 +79,11 @@ namespace Gecko::API::DB
         {
             auto connection = m_connectionPool->Acquire();
 
+            if (!connection)
+                return Result::Failure;
+
             auto result =
-                connection->sql(
+                connection.value()->sql(
                         "SELECT f.user_2, u.username, f.initiated_by "
                         "FROM Friendships f "
                             "JOIN Users u ON u.user_id=f.user_2 "
@@ -131,8 +139,11 @@ namespace Gecko::API::DB
 
             auto connection = m_connectionPool->Acquire();
 
+            if (!connection)
+                return Result::Failure;
+
             const auto result =
-                connection->sql(
+                connection.value()->sql(
                         "INSERT INTO Friendships (user_1, user_2, initiated_by, friendship_status) "
                         "VALUES (?, ?, ?, 'pending')")
                     .bind(userID1, userID2, initiatorUserID)
@@ -159,8 +170,11 @@ namespace Gecko::API::DB
 
             auto connection = m_connectionPool->Acquire();
 
+            if (!connection)
+                return Result::Failure;
+
             const auto result =
-                connection->sql(
+                connection.value()->sql(
                         "UPDATE Friendships "
                         "SET friendship_status='accepted' "
                         "WHERE user_1=? AND user_2=? AND friendship_status='pending'")
@@ -192,8 +206,11 @@ namespace Gecko::API::DB
 
             auto connection = m_connectionPool->Acquire();
 
+            if (!connection)
+                return Result::Failure;
+
             const auto result =
-                connection->sql(
+                connection.value()->sql(
                         "UPDATE Friendships "
                         "SET friendship_status='accepted' "
                         "WHERE user_1=? AND user_2=? AND initiated_by=? AND friendship_status='pending'")
@@ -221,8 +238,11 @@ namespace Gecko::API::DB
 
             auto connection = m_connectionPool->Acquire();
 
+            if (!connection)
+                return Result::Failure;
+
             const auto result =
-                connection->sql(
+                connection.value()->sql(
                         "DELETE FROM Friendships "
                         "WHERE user_1=? AND user_2=?")
                     .bind(userID1, userID2)
@@ -254,8 +274,11 @@ namespace Gecko::API::DB
 
             auto connection = m_connectionPool->Acquire();
 
+            if (!connection)
+                return Result::Failure;
+
             auto result =
-                connection->sql(
+                connection.value()->sql(
                         "SELECT 1 FROM Friendships "
                         "WHERE user_1=? AND user_2=? AND friendship_status='accepted' "
                         "LIMIT 1")
@@ -284,8 +307,11 @@ namespace Gecko::API::DB
 
             auto connection = m_connectionPool->Acquire();
 
+            if (!connection)
+                return Result::Failure;
+
             auto result =
-                connection->sql(
+                connection.value()->sql(
                         "SELECT initiated_by FROM Friendships "
                         "WHERE user_1=? AND user_2=? AND friendship_status='pending' "
                         "LIMIT 1")

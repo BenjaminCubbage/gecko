@@ -5,16 +5,20 @@
 #include "gecko/db/SharedImagesTable.h"
 #include "gecko/db/UsersTable.h"
 #include "gecko/env/Env.h"
+#include "gecko/thread/ThreadPool.h"
+#include "gecko/thread/Scheduler.h"
 
 namespace Gecko::API::Server
 {
     class Tables
     {
     public:
-        Tables(Env::Env* env, std::ostream* log)
+        Tables(Env::Env* env, std::ostream* log, Thread::Scheduler* scheduler)
             : m_env{ env },
               m_log{ log },
+              m_scheduler{ scheduler },
               m_dbConnectionPool{
+                m_scheduler,
                 "127.0.0.1",
                 m_env->mysqlXAPIPort, "root",
                 m_env->mysqlPassword, "Gecko" },
@@ -36,8 +40,10 @@ namespace Gecko::API::Server
         bool Start();
 
     private:
-        Env::Env *m_env;
+        Env::Env*     m_env;
         std::ostream* m_log;
+
+        Thread::Scheduler* m_scheduler;
 
         DB::ConnectionPool    m_dbConnectionPool;
         DB::UsersTable        m_dbUsers;
