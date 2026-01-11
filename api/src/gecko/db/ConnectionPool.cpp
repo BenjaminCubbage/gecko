@@ -1,28 +1,27 @@
 #include "gecko/db/ConnectionPool.h"
+#include "gecko/logging/Logger.h"
 #include <algorithm>
 #include <assert.h>
 
 namespace Gecko::API::DB
 {
+    using Logging::Logger;
+
     ConnectionPool::Result ConnectionPool::Start()
     {
-        {
-            std::unique_lock lk{ m_mutex };
+        std::unique_lock lk{ m_mutex };
 
-            if (m_state != State::Stopped)
-                return Result::StartDenied_NotIdle;
+        if (m_state != State::Stopped)
+            return Result::StartDenied_NotIdle;
 
-            m_state = State::Starting;
-        }
+        m_state = State::Starting;
 
+        lk.unlock();
         if (!SessionTimeoutJob_Start())
             return Result::StartFailed_CouldNotStartTimeoutJob;
+        lk.lock();
 
-        {
-            std::unique_lock lk{ m_mutex };
-            m_state = State::Running;
-        }
-
+        m_state = State::Running;
         return Result::Success;
     }
 
@@ -46,7 +45,7 @@ namespace Gecko::API::DB
         return Result::Success;
     }
 
-    std::expected<ConnectionPool::SessionGuard, ConnectionPool::Result> 
+    std::expected<ConnectionPool::SessionGuard, ConnectionPool::Result>
     ConnectionPool::Acquire()
     {
         Session *session{ nullptr };
@@ -83,17 +82,24 @@ namespace Gecko::API::DB
 
             if (!newConnection)
             {
+                Logger::Error() <<
+                "[ConnectionPool.Acquire]: Failed to connect to the "
+                "MySQL server";
+
                 Release(*session);
                 return std::unexpected { Result::AcquireFailed_ConnectionFailed };
             }
 
             std::unique_lock lk{ m_mutex };
-
             if (m_state != State::Running)
             {
                 Release(*session);
                 return std::unexpected { Result::AcquireDenied_NotStarted };
             }
+
+            Logger::Debug() <<
+            "[ConnectionPool.Acquire]: Opened a new session with the "
+            "MySQL server";
 
             session->instance.emplace(std::move(*newConnection));
         }
@@ -105,8 +111,7 @@ namespace Gecko::API::DB
     {
         std::unique_lock lk{ m_mutex };
 
-        assert(m_acquiredCount != 0 &&
-               "m_acquiredCount should never be zero when trying to release a session.");
+        assert(m_acquiredCount != 0);
 
         --m_acquiredCount;
         session.isAcquired = false;
@@ -153,19 +158,27 @@ namespace Gecko::API::DB
             {
                 try { s.instance->close(); } catch (...) {}
                 s.instance.reset();
+
+                Logger::Debug() <<
+                "[ConnectionPool.SessionTimeoutJob_Tick]: Closed a MySQL "
+                "session because it wasn't being used";
             }
-            else 
+            else
                 nextWakeup = std::min(nextWakeup, deadline);
         }
 
         lk.unlock();
-        auto result = m_scheduler->ScheduleJobAt(nextWakeup, [this] {
+        auto r = m_scheduler->ScheduleJobAt(nextWakeup, [this] {
             SessionTimeoutJob_Tick();
         }, &m_sessionTimeoutJob);
         lk.lock();
 
-        if (result != Thread::Scheduler::Result::Success)
+        if (r != Thread::Scheduler::Result::Success)
         {
+            Logger::Error() <<
+            "[ConnectionPool.SessionTimeoutJob_Tick]: Couldn't "
+            "schedule the next timeout job. Error code: " + std::to_string((int)r);
+
             m_sessionTimeoutJobState = SessionTimeoutJobState::Error;
             return false;
         }

@@ -16,7 +16,7 @@ namespace Gecko::API::Server
             return false;
         }
 
-        Logger::Info() << "[Tables.Start]: Successfully connected to the MySQL server";
+        Logger::Info() << "[Tables.Start]: Successfully initialized MySQL connection pool";
         return true;
     }
 }
