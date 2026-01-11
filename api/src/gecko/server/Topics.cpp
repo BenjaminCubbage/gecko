@@ -1,18 +1,22 @@
 #include "gecko/server/Topics.h"
+#include "gecko/logging/Logger.h"
 
 namespace Gecko::API::Server
 {
     bool Topics::Start()
     {
+        using Logging::Logger;
+
         if (!m_mqttClient.ConnectSync())
         {
-            *m_log << "[Topics]: Couldn't connect to the MQTT server\n";
-            *m_log << "[Topics]: Note: On port " << m_env->mosquittoPort << std::endl;
+            Logger::Error() << "[Topics.Start]: Couldn't connect to the MQTT server\n";
+            Logger::Error() << "[Topics.Start]: ~ On port: " + std::to_string(m_env->mosquittoPort);
             return false;
         }
 
-        *m_log << "[Topics]: Successfully connected to MQTT server" << std::endl;
+        Logging::Logger::Info() << "[Topics.Start]: Successfully connected to MQTT server";
         Heartbeat().Start();
+
         return true;
     }
 }

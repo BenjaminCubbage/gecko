@@ -1,5 +1,4 @@
 #pragma once
-#include <ostream>
 #include "gecko/db/DevicesTable.h"
 #include "gecko/db/FriendshipsTable.h"
 #include "gecko/db/SharedImagesTable.h"
@@ -13,9 +12,8 @@ namespace Gecko::API::Server
     class Tables
     {
     public:
-        Tables(Env::Env* env, std::ostream* log, Thread::Scheduler* scheduler)
+        Tables(Env::Env* env, Thread::Scheduler* scheduler)
             : m_env{ env },
-              m_log{ log },
               m_scheduler{ scheduler },
               m_dbConnectionPool{
                 m_scheduler,
@@ -41,7 +39,6 @@ namespace Gecko::API::Server
 
     private:
         Env::Env*     m_env;
-        std::ostream* m_log;
 
         Thread::Scheduler* m_scheduler;
 

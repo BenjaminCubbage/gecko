@@ -1,5 +1,7 @@
 #include <string>
 #include "httplib.h"
+#include "gecko/logging/ConsoleLogger.h"
+#include "gecko/logging/Logger.h"
 #include "gecko/env/Env.h"
 #include "gecko/env/EnvPopulate.h"
 #include "gecko/server/Server.h"
@@ -8,7 +10,13 @@ using namespace Gecko::API;
 
 int main(int argc, char* argv[])
 {
-    std::ostream& log = std::cout;
+    using Logging::Logger;
+    using Logging::ConsoleLogger;
+
+    Logger::InitInfo<ConsoleLogger>("[INF] ");
+    Logger::InitWarn<ConsoleLogger>("[WRN] ");
+    Logger::InitError<ConsoleLogger>("[ERR] ");
+    Logger::InitDebug<ConsoleLogger>("[DBG] ");
 
     if (argc != 2 && argc != 4)
     {
@@ -19,11 +27,11 @@ int main(int argc, char* argv[])
     }
 
     const auto env = argc == 2
-        ? Env::EnvPopulate::Populate(argv[1], std::cout)
-        : Env::EnvPopulate::Populate(argv[1], std::cout, argv[2], argv[3]);
+        ? Env::EnvPopulate::Populate(argv[1])
+        : Env::EnvPopulate::Populate(argv[1], argv[2], argv[3]);
 
     if (!env)
         return 1;
 
-    return !Server::Server{ std::move(*env), &log }.Start();
+    return !Server::Server{ std::move(*env) }.Start();
 }

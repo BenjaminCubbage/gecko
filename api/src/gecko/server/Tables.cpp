@@ -1,18 +1,22 @@
 #include "gecko/server/Tables.h"
+#include <string>
+#include "gecko/logging/Logger.h"
 
 namespace Gecko::API::Server
 {
     bool Tables::Start()
     {
+        using Logging::Logger;
+
         if (auto r{ m_dbConnectionPool.Start() }; r != DB::ConnectionPool::Result::Success)
         {
-            *m_log << "[Tables]: Couldn't connect to the MySQL XAPI server\n";
-            *m_log << "[Tables]:     On port:    " << m_env->mysqlXAPIPort << '\n';
-            *m_log << "[Tables]:     Error code: " << (int)r << std::endl;
+            Logger::Error() << "[Tables.Start]: Couldn't connect to the MySQL XAPI server";
+            Logger::Error() << "[Tables.Start]: ~ On port:    " + std::to_string(m_env->mysqlXAPIPort);
+            Logger::Error() << "[Tables.Start]: ~ Error code: " + std::to_string((int)r);
             return false;
         }
 
-        *m_log << "[Tables]: Successfully connected to the MySQL server\n";
+        Logger::Info() << "[Tables.Start]: Successfully connected to the MySQL server";
         return true;
     }
 }

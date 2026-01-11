@@ -14,9 +14,8 @@ namespace Gecko::API::Server
     class Controllers
     {
     public:
-        Controllers(Env::Env* env, std::ostream* log, Services* services)
+        Controllers(Env::Env* env, Services* services)
             : m_env{ env },
-              m_log{ log },
               m_services{ services },
               m_authController{
                 m_services->Users(),
@@ -38,7 +37,6 @@ namespace Gecko::API::Server
 
     private:
         Env::Env*     m_env;
-        std::ostream* m_log;
         
         Services* m_services;
 

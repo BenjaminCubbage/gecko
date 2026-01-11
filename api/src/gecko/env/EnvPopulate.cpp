@@ -1,11 +1,13 @@
 #include "gecko/env/EnvPopulate.h"
 #include "gecko/env/EnvParse.h"
 #include "gecko/fs/ReadWholeFile.h"
+#include "gecko/logging/Logger.h"
 
 namespace Gecko::API::Env
 {
+    using Logging::Logger;
+
     std::optional<Env> EnvPopulate::Populate(const std::string& filepath, 
-                                             std::ostream& log,
                                              const std::optional<std::string>& mosquittoPasswordPathOverride,
                                              const std::optional<std::string>& mysqlPasswordPathOverride)
     {
@@ -15,7 +17,7 @@ namespace Gecko::API::Env
 
         if (!fileContents)
         {
-            log << "[api]: Environment file contents couldn't be read: " << filepath << std::endl;
+            Logger::Error() << "[EnvPopulate.Populate]: Environment file couldn't be opened: " + filepath;
             return std::nullopt;
         }
 
@@ -23,24 +25,24 @@ namespace Gecko::API::Env
 
         if (keyValues.empty())
         {
-            log << "[api]: Environment file contained no parseable keys: " << filepath << std::endl;
+            Logger::Error() << "[EnvPopulate.Populate]: Environment file could not be parsed: " + filepath;
             return std::nullopt;
         }
 
-        if (!GetKeyValue(keyValues, "GECKO_API_TLS_CERT_PATH",           &env.geckoAPITLSCertPath,           log)) return std::nullopt;
-        if (!GetKeyValue(keyValues, "GECKO_API_TLS_PKEY_PATH",           &env.geckoAPITLSPkeyPath,           log)) return std::nullopt;
-        if (!GetKeyValue(keyValues, "GECKO_API_JWT_PKEY_PATH",           &env.geckoAPIJWTPkeyPath,           log)) return std::nullopt;
-        if (!GetKeyValue(keyValues, "GECKO_API_JWT_PUBKEY_PATH",         &env.geckoAPIJWTPubkeyPath,         log)) return std::nullopt;
-        if (!GetKeyValue(keyValues, "GECKO_API_OAUTH_CLIENTID_PATH",     &env.geckoAPIOAuthClientIDPath,     log)) return std::nullopt;
-        if (!GetKeyValue(keyValues, "GECKO_API_OAUTH_CLIENTSECRET_PATH", &env.geckoAPIOAuthClientSecretPath, log)) return std::nullopt;
-        if (!GetKeyValue(keyValues, "GECKO_API_PORT",                    &env.geckoAPIPort,                  log)) return std::nullopt;
-        if (!GetKeyValue(keyValues, "MOSQUITTO_PORT",                    &env.mosquittoPort,                 log)) return std::nullopt;
-        if (!GetKeyValue(keyValues, "MYSQL_XAPI_PORT",                   &env.mysqlXAPIPort,                 log)) return std::nullopt;
-        if (!GetKeyValue(keyValues, "MOSQUITTO_CERT_PATH",               &env.mosquittoCertPath,             log)) return std::nullopt;
+        if (!GetKeyValue(keyValues, "GECKO_API_TLS_CERT_PATH",           &env.geckoAPITLSCertPath          )) return std::nullopt;
+        if (!GetKeyValue(keyValues, "GECKO_API_TLS_PKEY_PATH",           &env.geckoAPITLSPkeyPath          )) return std::nullopt;
+        if (!GetKeyValue(keyValues, "GECKO_API_JWT_PKEY_PATH",           &env.geckoAPIJWTPkeyPath          )) return std::nullopt;
+        if (!GetKeyValue(keyValues, "GECKO_API_JWT_PUBKEY_PATH",         &env.geckoAPIJWTPubkeyPath        )) return std::nullopt;
+        if (!GetKeyValue(keyValues, "GECKO_API_OAUTH_CLIENTID_PATH",     &env.geckoAPIOAuthClientIDPath    )) return std::nullopt;
+        if (!GetKeyValue(keyValues, "GECKO_API_OAUTH_CLIENTSECRET_PATH", &env.geckoAPIOAuthClientSecretPath)) return std::nullopt;
+        if (!GetKeyValue(keyValues, "GECKO_API_PORT",                    &env.geckoAPIPort                 )) return std::nullopt;
+        if (!GetKeyValue(keyValues, "MOSQUITTO_PORT",                    &env.mosquittoPort                )) return std::nullopt;
+        if (!GetKeyValue(keyValues, "MYSQL_XAPI_PORT",                   &env.mysqlXAPIPort                )) return std::nullopt;
+        if (!GetKeyValue(keyValues, "MOSQUITTO_CERT_PATH",               &env.mosquittoCertPath            )) return std::nullopt;
 
         if (!mosquittoPasswordPathOverride)
         {
-            if (!GetKeyValue(keyValues, "GECKO_API_MOSQUITTO_ROOT_PASSWORD_PATH", &env.geckoAPIMosquittoRootPasswordPath, log)) 
+            if (!GetKeyValue(keyValues, "GECKO_API_MOSQUITTO_ROOT_PASSWORD_PATH", &env.geckoAPIMosquittoRootPasswordPath)) 
                 return std::nullopt;
         }
         else 
@@ -48,32 +50,31 @@ namespace Gecko::API::Env
 
         if (!mysqlPasswordPathOverride)
         {
-            if (!GetKeyValue(keyValues, "GECKO_API_MYSQL_ROOT_PASSWORD_PATH", &env.geckoAPIMySQLRootPasswordPath, log)) 
+            if (!GetKeyValue(keyValues, "GECKO_API_MYSQL_ROOT_PASSWORD_PATH", &env.geckoAPIMySQLRootPasswordPath)) 
                 return std::nullopt;
         }
         else 
             env.geckoAPIMySQLRootPasswordPath = *mysqlPasswordPathOverride;
 
-        if (!GetStringFromFilepath(env.mosquittoCertPath,                 &env.mosquittoCert,     log)) return std::nullopt;
-        if (!GetStringFromFilepath(env.geckoAPIMosquittoRootPasswordPath, &env.mosquittoPassword, log)) return std::nullopt;
-        if (!GetStringFromFilepath(env.geckoAPIMySQLRootPasswordPath,     &env.mysqlPassword,     log)) return std::nullopt;
-        if (!GetStringFromFilepath(env.geckoAPIOAuthClientIDPath,         &env.oauthClientID,     log)) return std::nullopt;
-        if (!GetStringFromFilepath(env.geckoAPIOAuthClientSecretPath,     &env.oauthClientSecret, log)) return std::nullopt;
-        if (!GetStringFromFilepath(env.geckoAPIJWTPkeyPath,               &env.jwtPrivateKey,     log)) return std::nullopt;
-        if (!GetStringFromFilepath(env.geckoAPIJWTPubkeyPath,             &env.jwtPublicKey,      log)) return std::nullopt;
+        if (!GetStringFromFilepath(env.mosquittoCertPath,                 &env.mosquittoCert))     return std::nullopt;
+        if (!GetStringFromFilepath(env.geckoAPIMosquittoRootPasswordPath, &env.mosquittoPassword)) return std::nullopt;
+        if (!GetStringFromFilepath(env.geckoAPIMySQLRootPasswordPath,     &env.mysqlPassword))     return std::nullopt;
+        if (!GetStringFromFilepath(env.geckoAPIOAuthClientIDPath,         &env.oauthClientID))     return std::nullopt;
+        if (!GetStringFromFilepath(env.geckoAPIOAuthClientSecretPath,     &env.oauthClientSecret)) return std::nullopt;
+        if (!GetStringFromFilepath(env.geckoAPIJWTPkeyPath,               &env.jwtPrivateKey))     return std::nullopt;
+        if (!GetStringFromFilepath(env.geckoAPIJWTPubkeyPath,             &env.jwtPublicKey))      return std::nullopt;
 
         return env;
     }
 
     bool EnvPopulate::GetKeyValue(const std::unordered_map<std::string, std::string>& keyValues, 
                                   const std::string& key,
-                                  std::string* outValue,
-                                  std::ostream& log)
+                                  std::string* outValue)
     {
         const auto it = keyValues.find(key);
         if (it == keyValues.end())
         {
-            log << "[api]: Environment key " << key << " was not found" << std::endl;
+            Logger::Error() << "[EnvPopulate.GetKeyValue]: Environment key not found: " + key;
             return false;
         }
 
@@ -83,12 +84,11 @@ namespace Gecko::API::Env
 
     bool EnvPopulate::GetKeyValue(const std::unordered_map<std::string, std::string>& keyValues, 
                                   const std::string& key,
-                                  int *outValue,
-                                  std::ostream& log)
+                                  int *outValue)
     {
         std::string str;
 
-        if (!GetKeyValue(keyValues, key, &str, log))
+        if (!GetKeyValue(keyValues, key, &str))
             return false;
 
         try
@@ -98,25 +98,24 @@ namespace Gecko::API::Env
         }
         catch (const std::invalid_argument&)
         {
-            log << "[api]: Environment key " << key << "was not an integer" << std::endl;
+            Logger::Error() << "[EnvPopulate.GetKeyValue]: Environment key not an integer: " + key;
             return false;
         }
         catch (const std::out_of_range&)
         {
-            log << "[api]: Environment key " << key << "was out of range" << std::endl;
+            Logger::Error() << "[EnvPopulate.GetKeyValue]: Environment key integral was out of range: " + key;
             return false;
         }
     }
     
     bool EnvPopulate::GetStringFromFilepath(const std::string& path, 
-                                            std::string* outValue,
-                                            std::ostream& log)
+                                            std::string* outValue)
     {
         const auto contents = FS::ReadWholeFile(path);
 
         if (!contents)
         {
-            log << "[api]: Could not load required file at " << path << std::endl;
+            Logger::Error() << "[EnvPopulate.GetStringFromFilepath]: Could not load required file: " + path;
             return false;
         }
 

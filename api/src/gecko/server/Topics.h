@@ -1,5 +1,5 @@
 #pragma once
-#include <ostream>
+#include <string>
 #include "gecko/env/Env.h"
 #include "gecko/mqtt/MQTTClient.h"
 #include "gecko/topics/DevicesHeartbeatTopic.h"
@@ -9,9 +9,8 @@ namespace Gecko::API::Server
     class Topics
     {
     public:
-        Topics(Env::Env* env, std::ostream* log)
+        Topics(Env::Env* env)
             : m_env{ env },
-              m_log{ log },
               m_mqttClient{
                   "ssl://localhost:" + std::to_string(m_env->mosquittoPort),
                   m_env->mosquittoCertPath, "root",
@@ -29,7 +28,6 @@ namespace Gecko::API::Server
 
     private:
         Env::Env*     m_env;
-        std::ostream* m_log;
 
         MQTT::MQTTClient m_mqttClient;
         API::Topics::DevicesHeartbeatTopic m_devicesHeartbeatTopic;
