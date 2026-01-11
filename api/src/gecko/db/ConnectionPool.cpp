@@ -177,7 +177,7 @@ namespace Gecko::API::DB
         {
             Logger::Error() <<
             "[ConnectionPool.SessionTimeoutJob_Tick]: Couldn't "
-            "schedule the next timeout job. Error code: " + std::to_string((int)r);
+            "schedule the next timeout job. Error code: " + std::to_string(std::to_underlying(r));
 
             m_sessionTimeoutJobState = SessionTimeoutJobState::Error;
             return false;
