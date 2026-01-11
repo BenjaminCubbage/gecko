@@ -162,6 +162,7 @@ namespace Gecko::API::Thread
             const bool timedOut =
                 !m_cv.wait_until(lk, wake, [&] {
                     return
+                        !hasDue && m_queue.AnyUnpooledTasks() ||
                         hasDue && !m_queue.IsNextDue(task) ||
                         m_state == State::ShuttingDownFast ||
                         m_state == State::ShuttingDownSlow && !m_queue.AnyUnpooledTasks();
