@@ -107,6 +107,8 @@ set(src_files
     "${src_dir}/gecko/thread/MPMCQueue.h"
     "${src_dir}/gecko/thread/Scheduler.cpp"
     "${src_dir}/gecko/thread/Scheduler.h"
+    "${src_dir}/gecko/thread/SchedulerFLQueue.cpp"
+    "${src_dir}/gecko/thread/SchedulerFLQueue.h"
     "${src_dir}/gecko/thread/ThreadPool.cpp"
     "${src_dir}/gecko/thread/ThreadPool.h"
     "${src_dir}/gecko/topics/DevicesHeartbeatTopic.cpp"

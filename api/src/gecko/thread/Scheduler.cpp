@@ -5,143 +5,6 @@
 
 namespace Gecko::API::Thread
 {
-    Scheduler::ScheduleBuffer::ScheduleBuffer()
-    {
-        for (size_t i = 0; i < m_tasks.size(); ++i)
-            m_tasks[i].index = i;
-
-        Reset();
-    }
-
-    bool Scheduler::ScheduleBuffer::AddTask(ThreadPool* threadPool,
-                                            TimePoint due,
-                                            TaskFunc&& func,
-                                            TaskHandle* outHandle,
-                                            bool* outIsNextDue)
-    {
-        assert(outHandle && outIsNextDue);
-        *outIsNextDue = false;
-
-        if (!m_freeHead)
-        {
-            // note(ben): It is 3:00 in the morning and I just need
-            // to get this done, so this is a super naive implementation.
-
-            // Find all jobs that are completed but not yet marked as
-            // free and mark them as free.
-            for (size_t i = 0; i < m_end; ++i)
-            {
-                if (auto& task = m_tasks[i];
-                    task.poolHandle && threadPool->IsJobCompleted(*task.poolHandle))
-                {
-                    bool unused{};
-                    RemoveTask(&task, &unused);
-                }
-            }
-
-            // No jobs were completed; we really are out of room
-            if (!m_freeHead)
-                return false;
-        }
-
-        Task *task = m_freeHead;
-        m_freeHead = m_freeHead->nextFree;
-
-        task->ticket   = ++m_nextTicket;
-        task->isFree   = false;
-        task->nextFree = nullptr;
-
-        task->due  = due;
-        task->func = std::move(func);
-
-        if (!m_nextDue || *task->due < *m_nextDue->due)
-        {
-            *outIsNextDue = true;
-            m_nextDue     = task;
-        }
-
-        outHandle->index  = task->index;
-        outHandle->ticket = task->ticket;
-
-        m_end = std::max(m_end, task->index + 1);
-        return true;
-    }
-
-    void Scheduler::ScheduleBuffer::RemoveTask(Task* task, bool *outWasNextDue)
-    {
-        task->ticket   = Ticket_Free;
-        task->isFree   = true;
-        task->nextFree = m_freeHead;
-        m_freeHead     = task;
-
-        task->due        = std::nullopt;
-        task->poolHandle = std::nullopt;
-        task->func       = {};
-
-        if (task == m_nextDue)
-        {
-            GetNextDue(m_tasks, m_end, &m_nextDue, &m_end);
-            *outWasNextDue = true;
-        }
-
-        *outWasNextDue = false;
-    }
-
-    void Scheduler::ScheduleBuffer::MarkTaskPushedToPool(Task* task,
-                                                         const ThreadPool::JobHandle& poolHandle)
-    {
-        task->due        = std::nullopt;
-        task->poolHandle = poolHandle;
-
-        if (task == m_nextDue)
-            GetNextDue(m_tasks, m_end, &m_nextDue, &m_end);
-    }
-
-    void Scheduler::ScheduleBuffer::Reset()
-    {
-        for (size_t i = 0; i < m_tasks.size() - 1; ++i)
-        {
-            m_tasks[i].isFree   = true;
-            m_tasks[i].nextFree = &m_tasks[i + 1];
-
-            m_tasks[i].func = {};
-            m_tasks[i].due  = {};
-        }
-
-        m_tasks.back().isFree   = true;
-        m_tasks.back().nextFree = nullptr;
-
-        m_tasks.back().func = {};
-        m_tasks.back().due  = {};
-
-        m_end      = 0;
-        m_freeHead = &m_tasks[0];
-        m_nextDue  = nullptr;
-    }
-
-    void Scheduler::ScheduleBuffer::GetNextDue(std::array<Task, ScheduleQueueSize>& arr,
-                                               size_t end,
-                                               Task** outNextDue,
-                                               size_t* outNewEnd)
-    {
-        *outNextDue = nullptr;
-        *outNewEnd  = 0;
-
-        for (size_t i = 0; i < end; ++i)
-        {
-            if (arr[i].isFree)
-                continue;
-
-            *outNewEnd = i + 1;
-
-            if (!arr[i].due)
-                continue;
-
-            if (!*outNextDue || *arr[i].due < *(*outNextDue)->due)
-                *outNextDue = &arr[i];
-        }
-    }
-
     Scheduler::Result Scheduler::Start()
     {
         std::unique_lock lk{ m_mutex };
@@ -151,10 +14,10 @@ namespace Gecko::API::Thread
                 return Result::StartDenied_NotIdle;
 
             case State::NotRunning:
-                assert(!m_thread && "m_thread should always be nullopt when in the NotRunning state.");
+                assert(!m_schedulerThread);
 
                 m_state = State::Running;
-                m_thread.emplace(&Scheduler::ThreadLoop, this);
+                m_schedulerThread.emplace(&Scheduler::ThreadLoop, this);
                 return Result::Success;
 
             case State::ShuttingDownSlow:
@@ -166,15 +29,15 @@ namespace Gecko::API::Thread
     }
 
     Scheduler::Result Scheduler::ScheduleJobAfter(std::chrono::nanoseconds delay,
-                                                  TaskFunc&& func,
-                                                  TaskHandle *outHandle)
+                                                  std::function<void ()>&& func,
+                                                  TaskHandle *outTask)
     {
-        return ScheduleJobAt(TimePoint::clock::now() + delay, std::move(func), outHandle);
+        return ScheduleJobAt(TimePoint::clock::now() + delay, std::move(func), outTask);
     }
 
     Scheduler::Result Scheduler::ScheduleJobAt(TimePoint at,
-                                               TaskFunc&& func,
-                                               TaskHandle *outHandle)
+                                               std::function<void ()>&& func,
+                                               TaskHandle *outTask)
     {
         std::unique_lock lk{ m_mutex };
         switch (m_state)
@@ -183,8 +46,8 @@ namespace Gecko::API::Thread
                 {
                     bool isNextDue{};
 
-                    if (!m_buffer.AddTask(m_pool, at, std::move(func), outHandle, &isNextDue))
-                        return Result::ScheduleFailed_QueueFull;
+                    if (!m_queue.QueueTask(at, std::move(func), outTask, &isNextDue))
+                        return Result::ScheduleFailed_FLQueueFull;
 
                     if (isNextDue)
                         m_cv.notify_one();
@@ -201,85 +64,65 @@ namespace Gecko::API::Thread
         std::terminate();
     }
 
-    Scheduler::Result Scheduler::CancelJob(const TaskHandle& handle)
+    Scheduler::Result Scheduler::CancelJob(const TaskHandle& task)
     {
         std::unique_lock lk{ m_mutex };
 
-        Task* task;
+        std::optional<ThreadPool::JobHandle> poolHandle;
+        std::optional<TimePoint>             due;
 
-        if (!m_buffer.TryGetTaskFromHandle(handle, &task))
-            return Result::Success;
+        if (!m_queue.QueryTask(task, &due, &poolHandle))
+            return Result::CancelFailed_AlreadyCompleted;
 
-        if (task->due)
-        {
-            bool wasNextDue{};
-            m_buffer.RemoveTask(task, &wasNextDue);
+        if (!due)
+            return Result::CancelFailed_CurrentlyRunning;
 
-            if (wasNextDue)
-                m_cv.notify_one();
+        bool wasNextDue{};
+        m_queue.RemoveTask(task, &wasNextDue);
 
-            return Result::Success;
-        }
-        
-        return Result::CancelFailed_NotScheduled;
-
-        lk.unlock();
-        m_pool->WaitForJobCompletion(*task->poolHandle);
+        if (wasNextDue)
+            m_cv.notify_one();
 
         return Result::Success;
     }
 
-    Scheduler::Result Scheduler::CancelJobOrWait(const TaskHandle& handle)
+    Scheduler::Result Scheduler::CancelJobOrWait(const TaskHandle& task)
     {
+        std::unique_lock lk{ m_mutex };
 
-        switch (auto r = CancelJob(handle))
-        {
-            case Result::Success:
-                return Result::Success;
+        std::optional<ThreadPool::JobHandle> poolHandle;
+        std::optional<TimePoint>             due;
 
-            case Result::CancelFailed_NotScheduled:
-                if (Task* task; m_buffer.TryGetTaskFromHandle(handle, &task))
-                {
-                    if (!m_pool->IsJobCompleted(*task->poolHandle))
-                    {
-                        m_pool->WaitForJobCompletion(*task->poolHandle);
-                        return Result::Success;
-                    }
-                }
+        if (!m_queue.QueryTask(task, &due, &poolHandle))
+            return Result::CancelFailed_AlreadyCompleted;
 
-                return Result::CancelOrWaitFailed_AlreadyCompleted;
+        assert(due.has_value() ^ poolHandle.has_value());
 
-            default:
-                return r;
-        }
-
-        std::terminate();
+        if (poolHandle)
+            m_pool->WaitForJobCompletion(*poolHandle);
+        
+        m_queue.RemoveTask(task);
+        return Result::Success;
     }
 
     Scheduler::Result Scheduler::Join()
     {
-        std::jthread thread;
+        std::unique_lock lk{ m_mutex };
 
-        {
-            std::unique_lock lk{ m_mutex };
+        if (!m_schedulerThread || !m_schedulerThread->joinable())
+            return Result::JoinDenied_AlreadyJoined;
 
-            if (!m_thread || !m_thread->joinable())
-                return Result::JoinDenied_AlreadyJoined;
+        assert(m_schedulerThread->get_id() != std::this_thread::get_id() &&
+                "Join() should never be called from the scheduler thread.");
 
-            assert(m_thread->get_id() != std::this_thread::get_id() &&
-                   "Join() should never be called from the scheduler thread.");
+        auto thread = std::move(*m_schedulerThread);
+        m_schedulerThread.reset();
 
-            thread = std::move(*m_thread);
-            m_thread.reset();
-        }
-
+        lk.unlock();
         thread.join();
+        lk.lock();
 
-        {
-            std::unique_lock lk{ m_mutex };
-            m_state = State::NotRunning;
-        }
-
+        m_state = State::NotRunning;
         return Result::Success;
     }
 
@@ -310,44 +153,31 @@ namespace Gecko::API::Thread
 
         while (true)
         {
-            Task* task = nullptr;
-            const bool hasDue = m_buffer.NextTaskDue(&task);
+            SchedulerFLQueue::TaskHandle task;
+            TimePoint due;
 
-            const auto wake =
-                (hasDue && task && task->due)
-                    ? *task->due
-                    : TimePoint::max();
+            const bool hasDue = m_queue.NextDue(&task, &due);
+            const auto wake = hasDue ? due : TimePoint::max();
 
             const bool timedOut =
-                !m_cv.wait_until(lk, wake, [this, &task] {
-                    Task* newTask = nullptr;
-                    if (m_buffer.NextTaskDue(&newTask) && newTask != task)
-                        return true;
-
-                    return 
+                !m_cv.wait_until(lk, wake, [&] {
+                    return
+                        hasDue && !m_queue.IsNextDue(task) ||
                         m_state == State::ShuttingDownFast ||
-                        m_state == State::ShuttingDownSlow && !m_buffer.AnyTasks();
+                        m_state == State::ShuttingDownSlow && !m_queue.AnyUnpooledTasks();
                 });
 
-            if ((m_state == State::Running || m_state == State::ShuttingDownSlow) &&
-                timedOut && task)
+            if (m_state == State::Running ||
+                m_state == State::ShuttingDownSlow)
             {
-                ThreadPool::JobHandle poolHandle;
-                if (m_pool->ScheduleJob(task->func, &poolHandle) == ThreadPool::Result::Success)
-                {
-                    m_buffer.MarkTaskPushedToPool(task, poolHandle);
-                }
-                else
-                {
-                    bool unused{};
-                    m_buffer.RemoveTask(task, &unused);
-                }
+                if (timedOut && hasDue)
+                    m_queue.PushToPool(task);
             }
 
-            if ((m_state == State::ShuttingDownSlow && !m_buffer.AnyTasks()) ||
-                m_state == State::ShuttingDownFast)
+            if ((m_state == State::ShuttingDownSlow && !m_queue.AnyUnpooledTasks()) ||
+                (m_state == State::ShuttingDownFast))
             {
-                m_buffer.ClearTasks();
+                m_queue.ClearTasks();
                 return;
             }
         }

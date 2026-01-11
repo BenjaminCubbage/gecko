@@ -126,9 +126,7 @@ namespace Gecko::API::Thread
 
     ThreadPool::Result ThreadPool::WaitForJobCompletion(const JobHandle& handle) noexcept
     {
-        assert(handle.ticketIndex < m_inflightTickets.size() &&
-               "Handle's ticket index should never be greater than the maximum possible.");
-
+        assert(handle.ticketIndex < m_inflightTickets.size());
         m_inflightTickets[handle.ticketIndex].wait(handle.ticketID, std::memory_order_acquire);
         return Result::Success;
     }
