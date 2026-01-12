@@ -20,7 +20,7 @@ namespace Gecko::API::Services
 
         enum class Result
         {
-            Success,
+            OK,
 
             /* Service-space */
             UsernameTooShort,
@@ -75,7 +75,7 @@ namespace Gecko::API::Services
                 }
             }
 
-            return Result::Success;
+            return Result::OK;
         }
 
         Result ValidateOIDC(const std::string& oidcIss, const std::string& oidcSub)
@@ -86,7 +86,7 @@ namespace Gecko::API::Services
             if (oidcSub.size() < MinOIDCSubLength) return Result::OIDCSubTooShort;
             if (oidcSub.size() > MaxOIDCSubLength) return Result::OIDCSubTooLong;
 
-            return Result::Success;
+            return Result::OK;
         }
 
         DB::UsersTable* m_dbUsers;

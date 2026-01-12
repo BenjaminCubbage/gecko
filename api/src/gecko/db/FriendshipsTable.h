@@ -10,7 +10,7 @@ namespace Gecko::API::DB
     class FriendshipsTable
     {
     public:
-        enum class Result { Success, Failure };
+        enum class Result { OK, Failure };
 
         explicit FriendshipsTable(ConnectionPool* connectionPool)
             : m_connectionPool(connectionPool) {}

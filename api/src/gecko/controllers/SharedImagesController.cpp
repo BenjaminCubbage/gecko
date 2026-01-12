@@ -73,7 +73,7 @@ namespace Gecko::API::Controllers
 
         switch (m_sharedImagesService.CreateSharedImage(userID, userID, idempotencyKey, *fdContent))
         {
-            case SharedImagesService::Result::Success:
+            case SharedImagesService::Result::OK:
                 res.status = httplib::StatusCode::Created_201;
                 return;
 
@@ -110,7 +110,7 @@ namespace Gecko::API::Controllers
         std::vector<uint8_t> bytes;
         switch (m_sharedImagesService.GetLatestReceivedImageBlob(userID, &bytes))
         {
-            case SharedImagesService::Result::Success:
+            case SharedImagesService::Result::OK:
                 res.set_content(
                     reinterpret_cast<char*>(bytes.data()), 
                     bytes.size(), 

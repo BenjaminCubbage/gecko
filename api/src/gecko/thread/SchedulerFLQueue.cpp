@@ -103,7 +103,7 @@ namespace Gecko::API::Thread
         ThreadPool::JobHandle poolHandle;
 
         if (m_threadPool->ScheduleJob(task->func, &poolHandle) !=
-            ThreadPool::Result::Success) [[unlikely]]
+            ThreadPool::Result::OK) [[unlikely]]
         {
             // todo(ben): Right now, we just destroy tasks that couldn't
             // be scheduled. In the future we might consider some sort of

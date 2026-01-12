@@ -9,7 +9,7 @@ namespace Gecko::Compression
 	class Decoder
 	{
 	public:
-		enum class Result { Success, Aborted };
+		enum class Result { OK, Aborted };
 		static std::optional<UncompressedBitonal> TryDecompressBitonal(CompressedBitonal& compressed);
 
 	private:

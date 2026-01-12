@@ -11,7 +11,7 @@ namespace Gecko::Embedded
     public:
         enum class Result
         {
-            Success,
+            OK,
             CouldNotOpen,
             CertDotPEMNotThere,
             CertTooBig
@@ -46,7 +46,7 @@ namespace Gecko::Embedded
             s_certificate[s_certificateLen++] = '\0';
             *outCertificate = std::string_view{ s_certificate, s_certificateLen };
 
-            return Result::Success;
+            return Result::OK;
         }
 
     private:

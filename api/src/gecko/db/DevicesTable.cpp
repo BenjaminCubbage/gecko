@@ -21,7 +21,7 @@ namespace Gecko::API::DB
                     .execute();
 
             *outExists = result.count() == 1;
-            return Result::Success;
+            return Result::OK;
         }
         catch (mysqlx::Error&)
         {
@@ -52,7 +52,7 @@ namespace Gecko::API::DB
                 ? result.fetchOne().get(0).get<int>()
                 : -1;
 
-            return Result::Success;
+            return Result::OK;
         }
         catch (mysqlx::Error&)
         {
@@ -86,7 +86,7 @@ namespace Gecko::API::DB
                     .name     = row.get(1).get<std::string>()
                 });
 
-            return Result::Success;
+            return Result::OK;
         }
         catch (mysqlx::Error&)
         {

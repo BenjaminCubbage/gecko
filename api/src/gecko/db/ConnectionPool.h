@@ -16,12 +16,12 @@ namespace Gecko::API::DB
     class ConnectionPool
     {
     public:
-        static constexpr const size_t PoolSize = 4;
+        static constexpr const size_t PoolSize{ 4 };
         static constexpr const std::chrono::minutes SessionTimeout{ 1 };
 
         enum class Result
         {
-            Success = 0,
+            OK = 0,
 
             StartDenied_NotIdle,
             StartFailed_CouldNotStartTimeoutJob,

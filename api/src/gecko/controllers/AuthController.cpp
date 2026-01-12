@@ -185,7 +185,7 @@ namespace Gecko::API::Controllers
 
             switch (m_usersService.CreateUser(username, iss, sub))
             {
-                case Services::UsersService::Result::Success:
+                case Services::UsersService::Result::OK:
                 case Services::UsersService::Result::UserAlreadyExists:
                     break;
 
@@ -195,7 +195,7 @@ namespace Gecko::API::Controllers
             }
 
             int userID{};
-            if (m_usersService.GetUserIDByOIDC(iss, sub, &userID) != Services::UsersService::Result::Success)
+            if (m_usersService.GetUserIDByOIDC(iss, sub, &userID) != Services::UsersService::Result::OK)
             {
                 // User _should_ exist by now.
                 Http::RespondWithError::CouldNotFulfill(res);

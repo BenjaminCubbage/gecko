@@ -15,7 +15,7 @@ namespace Gecko::API::Services
         if (status == Topics::DevicesHeartbeatTopic::Status::Online)
         {
             *outStatus = DeviceStatus::Online;
-            return Result::Success;
+            return Result::OK;
         }
 
         bool exists{};
@@ -23,7 +23,7 @@ namespace Gecko::API::Services
             exists = true;
         else
         {
-            EXPECT(m_dbDevices->DeviceExists(deviceID, &exists) == DB::DevicesTable::Result::Success, Result::DatabaseError);
+            EXPECT(m_dbDevices->DeviceExists(deviceID, &exists) == DB::DevicesTable::Result::OK, Result::DatabaseError);
 
             if (exists)
                 m_existingDevicesCache.insert(deviceID);
@@ -43,22 +43,22 @@ namespace Gecko::API::Services
                 break;
         }
 
-        return Result::Success;
+        return Result::OK;
     }
 
     DevicesService::Result
     DevicesService::GetUsersDevices(int ownerID,
                                     std::vector<Models::Device>* outDevices)
     {
-        EXPECT(m_dbDevices->GetDevicesByOwnerID(ownerID, outDevices) == DB::DevicesTable::Result::Success, Result::DatabaseError);
+        EXPECT(m_dbDevices->GetDevicesByOwnerID(ownerID, outDevices) == DB::DevicesTable::Result::OK, Result::DatabaseError);
 
         if (outDevices->size() > 0)
-            return Result::Success;
+            return Result::OK;
 
         bool exists{};
-        EXPECT(m_dbUsers->UserExists(ownerID, &exists) == DB::UsersTable::Result::Success, Result::DatabaseError);
+        EXPECT(m_dbUsers->UserExists(ownerID, &exists) == DB::UsersTable::Result::OK, Result::DatabaseError);
         EXPECT(exists, Result::UserNotFound);
 
-        return Result::Success;
+        return Result::OK;
     }
 }

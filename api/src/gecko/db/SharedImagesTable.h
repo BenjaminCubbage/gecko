@@ -11,7 +11,7 @@ namespace Gecko::API::DB
     class SharedImagesTable
     {
     public:
-        enum class Result { Success, Failure };
+        enum class Result { OK, Failure };
 
         SharedImagesTable(ConnectionPool* connectionPool)
             : m_connectionPool(connectionPool) {}

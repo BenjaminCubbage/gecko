@@ -39,7 +39,7 @@ namespace Gecko::API::Controllers
         DevicesService::DeviceStatus status{};
         switch (m_devicesService.GetDeviceStatus(deviceID, &status))
         {
-        case DevicesService::Result::Success:
+        case DevicesService::Result::OK:
             switch (status)
             {
             case DevicesService::DeviceStatus::Online:
@@ -81,7 +81,7 @@ namespace Gecko::API::Controllers
 
         switch (m_devicesService.GetUsersDevices(ownerID, &devices))
         {
-            case DevicesService::Result::Success:
+            case DevicesService::Result::OK:
             {
                 Json::Value response;
                 response["devices"] = Json::arrayValue;

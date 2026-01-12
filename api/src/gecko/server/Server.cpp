@@ -11,8 +11,8 @@ namespace Gecko::API::Server
     {
         using Logging::Logger;
 
-        if (m_threadPool.Start() != Thread::ThreadPool::Result::Success ||
-            m_scheduler.Start() != Thread::Scheduler::Result::Success)
+        if (m_threadPool.Start() != Thread::ThreadPool::Result::OK ||
+            m_scheduler.Start() != Thread::Scheduler::Result::OK)
         {
             Logger::Error() << "[Server.Start] Failed to start thread pool or scheduler";
             return false;

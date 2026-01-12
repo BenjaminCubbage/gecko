@@ -8,18 +8,18 @@ namespace Gecko::API::Services
     FriendshipsService::GetFriendships(int userID,
                                        std::vector<std::pair<Models::User, Models::FriendshipMetadata>>* outFriends)
     {
-        if (m_dbFriendships->GetActiveFriendships(userID, outFriends) == DB::FriendshipsTable::Result::Success)
+        if (m_dbFriendships->GetActiveFriendships(userID, outFriends) == DB::FriendshipsTable::Result::OK)
         {
             if (outFriends->size() > 0)
-                return Result::Success;
+                return Result::OK;
 
             // note(ben): Distinguish "no friends" from "no such user"
             bool exists{};
-            EXPECT(m_dbUsers->UserExists(userID, &exists) == DB::UsersTable::Result::Success,
+            EXPECT(m_dbUsers->UserExists(userID, &exists) == DB::UsersTable::Result::OK,
                    Result::DatabaseError);
             EXPECT(exists, Result::UserNotFound);
 
-            return Result::Success;
+            return Result::OK;
         }
 
         return Result::DatabaseError;
@@ -33,24 +33,24 @@ namespace Gecko::API::Services
         EXPECT(userID1 != userID2, Result::SelfFriendNotAllowed);
 
         EXPECT(m_dbFriendships->ActiveFriendshipExists(userID1, userID2, outExists)
-               == DB::FriendshipsTable::Result::Success,
+               == DB::FriendshipsTable::Result::OK,
                Result::DatabaseError);
 
         if (*outExists)
-            return Result::Success;
+            return Result::OK;
 
         // note(ben): Distinguish "not friends" from "user(s) don't exist"
         bool user1Exists{};
-        EXPECT(m_dbUsers->UserExists(userID1, &user1Exists) == DB::UsersTable::Result::Success,
+        EXPECT(m_dbUsers->UserExists(userID1, &user1Exists) == DB::UsersTable::Result::OK,
                Result::DatabaseError);
         EXPECT(user1Exists, Result::User1NotFound);
 
         bool user2Exists{};
-        EXPECT(m_dbUsers->UserExists(userID2, &user2Exists) == DB::UsersTable::Result::Success,
+        EXPECT(m_dbUsers->UserExists(userID2, &user2Exists) == DB::UsersTable::Result::OK,
                Result::DatabaseError);
         EXPECT(user2Exists, Result::User2NotFound);
 
-        return Result::Success;
+        return Result::OK;
     }
 
     FriendshipsService::Result
@@ -58,22 +58,22 @@ namespace Gecko::API::Services
                                           std::vector<Models::User>* outIncoming,
                                           std::vector<Models::User>* outOutgoing)
     {
-        if (m_dbFriendships->GetPendingFriendships(userID, outIncoming, outOutgoing) == DB::FriendshipsTable::Result::Success)
+        if (m_dbFriendships->GetPendingFriendships(userID, outIncoming, outOutgoing) == DB::FriendshipsTable::Result::OK)
         {
             if (outIncoming->size() > 0 || outOutgoing->size() > 0)
-                return Result::Success;
+                return Result::OK;
 
             // note(ben): Distinguish "no requests" from "no such user"
             bool exists{};
-            EXPECT(m_dbUsers->UserExists(userID, &exists) == DB::UsersTable::Result::Success,
+            EXPECT(m_dbUsers->UserExists(userID, &exists) == DB::UsersTable::Result::OK,
                    Result::DatabaseError);
             EXPECT(exists, Result::UserNotFound);
 
-            return Result::Success;
+            return Result::OK;
         }
 
         bool exists{};
-        EXPECT(m_dbUsers->UserExists(userID, &exists) == DB::UsersTable::Result::Success,
+        EXPECT(m_dbUsers->UserExists(userID, &exists) == DB::UsersTable::Result::OK,
                Result::DatabaseError);
         EXPECT(exists, Result::UserNotFound);
 
@@ -86,29 +86,29 @@ namespace Gecko::API::Services
     {
         EXPECT(initiatorUserID != otherUserID, Result::SelfFriendNotAllowed);
 
-        if (m_dbFriendships->CreatePendingFriendship(initiatorUserID, otherUserID) == DB::FriendshipsTable::Result::Success)
-            return Result::Success;
+        if (m_dbFriendships->CreatePendingFriendship(initiatorUserID, otherUserID) == DB::FriendshipsTable::Result::OK)
+            return Result::OK;
 
         bool activeExists{};
         EXPECT(m_dbFriendships->ActiveFriendshipExists(initiatorUserID, otherUserID, &activeExists)
-               == DB::FriendshipsTable::Result::Success,
+               == DB::FriendshipsTable::Result::OK,
                Result::DatabaseError);
         EXPECT(!activeExists, Result::AlreadyFriends);
 
         bool pendingExists{};
         int pendingInitiator = -1;
         EXPECT(m_dbFriendships->PendingFriendshipExists(initiatorUserID, otherUserID, &pendingExists, &pendingInitiator)
-               == DB::FriendshipsTable::Result::Success,
+               == DB::FriendshipsTable::Result::OK,
                Result::DatabaseError);
         EXPECT(!pendingExists, Result::FriendRequestAlreadyExists);
 
         bool user1Exists{};
-        EXPECT(m_dbUsers->UserExists(initiatorUserID, &user1Exists) == DB::UsersTable::Result::Success,
+        EXPECT(m_dbUsers->UserExists(initiatorUserID, &user1Exists) == DB::UsersTable::Result::OK,
                Result::DatabaseError);
         EXPECT(user1Exists, Result::User1NotFound);
 
         bool user2Exists{};
-        EXPECT(m_dbUsers->UserExists(otherUserID, &user2Exists) == DB::UsersTable::Result::Success,
+        EXPECT(m_dbUsers->UserExists(otherUserID, &user2Exists) == DB::UsersTable::Result::OK,
                Result::DatabaseError);
         EXPECT(user2Exists, Result::User2NotFound);
 
@@ -124,24 +124,24 @@ namespace Gecko::API::Services
         if (m_dbFriendships->SetPendingFriendshipActive(accepterUserID,
                                                         otherUserID,
                                                         otherUserID)
-            == DB::FriendshipsTable::Result::Success)
+            == DB::FriendshipsTable::Result::OK)
         {
-            return Result::Success;
+            return Result::OK;
         }
 
         bool activeExists{};
         EXPECT(m_dbFriendships->ActiveFriendshipExists(accepterUserID, otherUserID, &activeExists)
-               == DB::FriendshipsTable::Result::Success,
+               == DB::FriendshipsTable::Result::OK,
                Result::DatabaseError);
         EXPECT(!activeExists, Result::AlreadyFriends);
 
         bool user1Exists{};
-        EXPECT(m_dbUsers->UserExists(accepterUserID, &user1Exists) == DB::UsersTable::Result::Success,
+        EXPECT(m_dbUsers->UserExists(accepterUserID, &user1Exists) == DB::UsersTable::Result::OK,
                Result::DatabaseError);
         EXPECT(user1Exists, Result::User1NotFound);
 
         bool user2Exists{};
-        EXPECT(m_dbUsers->UserExists(otherUserID, &user2Exists) == DB::UsersTable::Result::Success,
+        EXPECT(m_dbUsers->UserExists(otherUserID, &user2Exists) == DB::UsersTable::Result::OK,
                Result::DatabaseError);
         EXPECT(user2Exists, Result::User2NotFound);
 
@@ -154,24 +154,24 @@ namespace Gecko::API::Services
     {
         EXPECT(userID1 != userID2, Result::SelfFriendNotAllowed);
 
-        if (m_dbFriendships->DeleteFriendship(userID1, userID2) == DB::FriendshipsTable::Result::Success)
-            return Result::Success;
+        if (m_dbFriendships->DeleteFriendship(userID1, userID2) == DB::FriendshipsTable::Result::OK)
+            return Result::OK;
 
         // note(ben): Distinguish "not friends / no request" from "user(s) don't exist"
         bool user1Exists{};
-        EXPECT(m_dbUsers->UserExists(userID1, &user1Exists) == DB::UsersTable::Result::Success,
+        EXPECT(m_dbUsers->UserExists(userID1, &user1Exists) == DB::UsersTable::Result::OK,
                Result::DatabaseError);
         EXPECT(user1Exists, Result::User1NotFound);
 
         bool user2Exists{};
-        EXPECT(m_dbUsers->UserExists(userID2, &user2Exists) == DB::UsersTable::Result::Success,
+        EXPECT(m_dbUsers->UserExists(userID2, &user2Exists) == DB::UsersTable::Result::OK,
                Result::DatabaseError);
         EXPECT(user2Exists, Result::User2NotFound);
 
         // note(ben): If a relationship still exists, the delete failing is a DB error.
         bool activeExists{};
         EXPECT(m_dbFriendships->ActiveFriendshipExists(userID1, userID2, &activeExists)
-               == DB::FriendshipsTable::Result::Success,
+               == DB::FriendshipsTable::Result::OK,
             Result::DatabaseError);
         EXPECT(!activeExists, Result::DatabaseError);
 
@@ -181,7 +181,7 @@ namespace Gecko::API::Services
                                                         userID2,
                                                         &pendingExists,
                                                         &pendingInitiator)
-               == DB::FriendshipsTable::Result::Success,
+               == DB::FriendshipsTable::Result::OK,
                Result::DatabaseError);
 
         return pendingExists

@@ -22,7 +22,7 @@ namespace Gecko::API::DB
         lk.lock();
 
         m_state = State::Running;
-        return Result::Success;
+        return Result::OK;
     }
 
     ConnectionPool::Result ConnectionPool::StopSync()
@@ -42,7 +42,7 @@ namespace Gecko::API::DB
         SessionTimeoutJob_StopSync();
         m_state = State::Stopped;
 
-        return Result::Success;
+        return Result::OK;
     }
 
     std::expected<ConnectionPool::SessionGuard, ConnectionPool::Result>
@@ -173,7 +173,7 @@ namespace Gecko::API::DB
         }, &m_sessionTimeoutJob);
         lk.lock();
 
-        if (r != Thread::Scheduler::Result::Success)
+        if (r != Thread::Scheduler::Result::OK)
         {
             Logger::Error() <<
             "[ConnectionPool.SessionTimeoutJob_Tick]: Couldn't "

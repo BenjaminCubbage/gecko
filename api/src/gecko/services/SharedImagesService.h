@@ -14,7 +14,7 @@ namespace Gecko::API::Services
 
         enum class Result
         {
-            Success,
+            OK,
 
             /* Service-space */
             SenderNotFound,

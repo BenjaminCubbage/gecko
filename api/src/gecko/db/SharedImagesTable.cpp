@@ -46,7 +46,7 @@ namespace Gecko::API::DB
                     .execute();
 
             return insertSharedImageResult.getAffectedItemsCount() > 0
-                ? Result::Success
+                ? Result::OK
                 : Result::Failure;
         }
         catch (mysqlx::Error&)
@@ -73,7 +73,7 @@ namespace Gecko::API::DB
                     .execute();
 
             *outExists = result.hasData() && result.count() > 0;
-            return Result::Success;
+            return Result::OK;
         }
         catch (mysqlx::Error&)
         {
@@ -110,7 +110,7 @@ namespace Gecko::API::DB
             outBlob->resize(bytes.size());
             std::memcpy(outBlob->data(), bytes.begin(), bytes.size());
 
-            return Result::Success;
+            return Result::OK;
         }
         catch (mysqlx::Error&)
         {

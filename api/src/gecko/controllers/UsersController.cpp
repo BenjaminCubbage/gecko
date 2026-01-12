@@ -51,7 +51,7 @@ namespace Gecko::API::Controllers
         Models::User user;
         switch (m_usersService.GetUser(userID, &user))
         {
-            case UsersService::Result::Success:
+            case UsersService::Result::OK:
             {
                 Json::Value response{ };
                 response["user"] = Json::Value{ };
@@ -90,7 +90,7 @@ namespace Gecko::API::Controllers
 
         switch (m_usersService.PatchUser(userID, { .username = username }))
         {
-            case UsersService::Result::Success:
+            case UsersService::Result::OK:
                 return;
 
             case UsersService::Result::UserNotFound:
@@ -137,7 +137,7 @@ namespace Gecko::API::Controllers
 
         switch (m_usersService.GetUserByUsername(username, &user))
         {
-            case UsersService::Result::Success:
+            case UsersService::Result::OK:
             {
                 Json::Value response{ };
                 response["user"] = Json::Value{ };

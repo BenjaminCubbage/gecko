@@ -73,7 +73,7 @@ namespace Gecko::API::MQTT
     }
 
     void MQTTClient::SubscribeToTopic(const std::string& topic,
-                                      std::function<void()> onSuccess,
+                                      std::function<void()> onOK,
                                       std::function<void(int)> onFailure)
     {
         // note(ben): new / delete semantics ended up being simplest here. I'm not
@@ -101,7 +101,7 @@ namespace Gecko::API::MQTT
         MQTTAsync_responseOptions opts = MQTTAsync_responseOptions_initializer;
         opts.onSuccess = subscribe;
         opts.onFailure = subscribeFailure;
-        opts.context   = new SubscribeContext{ onSuccess, onFailure };
+        opts.context   = new SubscribeContext{ onOK, onFailure };
 
         if (MQTTAsync_subscribe(m_client, topic.c_str(), 1, &opts) != MQTTASYNC_SUCCESS)
         {

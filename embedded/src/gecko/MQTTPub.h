@@ -7,7 +7,7 @@ namespace Gecko::Embedded
     class MQTTPub
     {
     public:
-        enum class Result { Success, NotConnected };
+        enum class Result { OK, NotConnected };
         enum class Status { Online, Offline };
 
         static bool Init(const std::string& username)
@@ -53,7 +53,7 @@ namespace Gecko::Embedded
                 reinterpret_cast<void*>(cb));
             cyw43_arch_lwip_end();
 
-            return Result::Success;
+            return Result::OK;
         }
 
     private:

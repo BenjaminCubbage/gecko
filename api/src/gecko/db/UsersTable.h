@@ -10,7 +10,7 @@ namespace Gecko::API::DB
     class UsersTable
     {
     public:
-        enum class Result { Success, Failure };
+        enum class Result { OK, Failure };
 
         UsersTable(ConnectionPool* connectionPool) : m_connectionPool(connectionPool) {}
 

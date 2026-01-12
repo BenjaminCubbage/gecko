@@ -18,7 +18,7 @@ namespace Gecko::API::Thread
 
                 m_state = State::Running;
                 m_schedulerThread.emplace(&Scheduler::ThreadLoop, this);
-                return Result::Success;
+                return Result::OK;
 
             case State::ShuttingDownSlow:
             case State::ShuttingDownFast:
@@ -52,7 +52,7 @@ namespace Gecko::API::Thread
                     if (isNextDue)
                         m_cv.notify_one();
 
-                    return Result::Success;
+                    return Result::OK;
                 }
 
             case State::NotRunning:
@@ -83,7 +83,7 @@ namespace Gecko::API::Thread
         if (wasNextDue)
             m_cv.notify_one();
 
-        return Result::Success;
+        return Result::OK;
     }
 
     Scheduler::Result Scheduler::CancelJobOrWait(const TaskHandle& task)
@@ -102,7 +102,7 @@ namespace Gecko::API::Thread
             m_pool->WaitForJobCompletion(*poolHandle);
         
         m_queue.RemoveTask(task);
-        return Result::Success;
+        return Result::OK;
     }
 
     Scheduler::Result Scheduler::Join()
@@ -123,7 +123,7 @@ namespace Gecko::API::Thread
         lk.lock();
 
         m_state = State::NotRunning;
-        return Result::Success;
+        return Result::OK;
     }
 
     Scheduler::Result Scheduler::Shutdown(bool fast)
@@ -136,7 +136,7 @@ namespace Gecko::API::Thread
                     ? State::ShuttingDownFast
                     : State::ShuttingDownSlow;
                 m_cv.notify_one();
-                return Result::Success;
+                return Result::OK;
 
             case State::NotRunning:
             case State::ShuttingDownSlow:

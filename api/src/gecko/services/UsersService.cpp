@@ -13,23 +13,23 @@ namespace Gecko::API::Services
                              const std::string& oidcSub)
     {
         Result usernameValid = ValidateUsername(username);
-        EXPECT(usernameValid == Result::Success, usernameValid);
+        EXPECT(usernameValid == Result::OK, usernameValid);
 
         Result oidcValid = ValidateOIDC(oidcIss, oidcSub);
-        EXPECT(oidcValid == Result::Success, oidcValid);
+        EXPECT(oidcValid == Result::OK, oidcValid);
 
-        if (m_dbUsers->CreateUser(username, oidcIss, oidcSub) == DB::UsersTable::Result::Success)
-            return Result::Success;
+        if (m_dbUsers->CreateUser(username, oidcIss, oidcSub) == DB::UsersTable::Result::OK)
+            return Result::OK;
 
         bool exists{};
 
-        EXPECT(m_dbUsers->OIDCIdentityExists(oidcIss, oidcSub, &exists) == DB::UsersTable::Result::Success,
+        EXPECT(m_dbUsers->OIDCIdentityExists(oidcIss, oidcSub, &exists) == DB::UsersTable::Result::OK,
                Result::DatabaseError);
         EXPECT(!exists, Result::UserAlreadyExists);
 
         bool usernameTaken{};
 
-        EXPECT(m_dbUsers->UsernameExists(username, &usernameTaken) == DB::UsersTable::Result::Success,
+        EXPECT(m_dbUsers->UsernameExists(username, &usernameTaken) == DB::UsersTable::Result::OK,
                Result::DatabaseError);
         EXPECT(!usernameTaken, Result::UsernameTaken);
 
@@ -41,15 +41,15 @@ namespace Gecko::API::Services
                                   const std::string& oidcSub,
                                   int* outUserID)
     {
-        if (m_dbUsers->GetUserIDByOIDC(oidcIss, oidcSub, outUserID) == DB::UsersTable::Result::Success)
-            return Result::Success;
+        if (m_dbUsers->GetUserIDByOIDC(oidcIss, oidcSub, outUserID) == DB::UsersTable::Result::OK)
+            return Result::OK;
         
         Result oidcValid = ValidateOIDC(oidcIss, oidcSub);
-        EXPECT(oidcValid == Result::Success, oidcValid);
+        EXPECT(oidcValid == Result::OK, oidcValid);
 
         bool exists{};
 
-        EXPECT(m_dbUsers->OIDCIdentityExists(oidcIss, oidcSub, &exists) == DB::UsersTable::Result::Success,
+        EXPECT(m_dbUsers->OIDCIdentityExists(oidcIss, oidcSub, &exists) == DB::UsersTable::Result::OK,
                Result::DatabaseError);
         EXPECT(exists, Result::UserNotFound);
 
@@ -59,11 +59,11 @@ namespace Gecko::API::Services
     UsersService::Result
     UsersService::GetUser(int userID, Models::User* outUser)
     {
-        if (m_dbUsers->GetUser(userID, outUser) == DB::UsersTable::Result::Success)
-            return Result::Success;
+        if (m_dbUsers->GetUser(userID, outUser) == DB::UsersTable::Result::OK)
+            return Result::OK;
 
         bool exists{};
-        EXPECT(m_dbUsers->UserExists(userID, &exists) == DB::UsersTable::Result::Success, Result::DatabaseError);
+        EXPECT(m_dbUsers->UserExists(userID, &exists) == DB::UsersTable::Result::OK, Result::DatabaseError);
         EXPECT(exists, Result::UserNotFound);
 
         return Result::DatabaseError;
@@ -76,14 +76,14 @@ namespace Gecko::API::Services
         bool exists{};
 
         Result usernameValid = ValidateUsername(username);
-        EXPECT(usernameValid == Result::Success, usernameValid);
+        EXPECT(usernameValid == Result::OK, usernameValid);
 
         EXPECT(m_dbUsers->GetUserByUsernameIfExists(username, &exists, outUser) 
-               == DB::UsersTable::Result::Success,
+               == DB::UsersTable::Result::OK,
                Result::DatabaseError);
 
         EXPECT(exists, Result::UserNotFound);
-        return Result::Success;
+        return Result::OK;
     }
 
     UsersService::Result
@@ -93,19 +93,19 @@ namespace Gecko::API::Services
         // Currently, this is effectively a PUT op
 
         Result usernameValid = ValidateUsername(patch.username);
-        EXPECT(usernameValid == Result::Success, usernameValid);
+        EXPECT(usernameValid == Result::OK, usernameValid);
 
-        if (m_dbUsers->PatchUser(userID, patch) == DB::UsersTable::Result::Success)
-            return Result::Success;
+        if (m_dbUsers->PatchUser(userID, patch) == DB::UsersTable::Result::OK)
+            return Result::OK;
 
         bool exists{};
 
-        EXPECT(m_dbUsers->UserExists(userID, &exists) == DB::UsersTable::Result::Success, Result::DatabaseError);
+        EXPECT(m_dbUsers->UserExists(userID, &exists) == DB::UsersTable::Result::OK, Result::DatabaseError);
         EXPECT(exists, Result::UserNotFound);
 
         bool usernameTaken{};
 
-        EXPECT(m_dbUsers->UsernameExists(patch.username, &usernameTaken) == DB::UsersTable::Result::Success,
+        EXPECT(m_dbUsers->UsernameExists(patch.username, &usernameTaken) == DB::UsersTable::Result::OK,
                Result::DatabaseError);
         EXPECT(!usernameTaken, Result::UsernameTaken);
 

@@ -19,7 +19,7 @@ namespace Gecko::API::DB
                     .execute();
 
             *outTaken = result.count() > 0;
-            return Result::Success;
+            return Result::OK;
         }
         catch (mysqlx::Error&)
         {
@@ -44,7 +44,7 @@ namespace Gecko::API::DB
                     .bind(username, oidcIss, oidcSub)
                     .execute();
 
-            return Result::Success;
+            return Result::OK;
         }
         catch (mysqlx::Error&)
         {
@@ -70,7 +70,7 @@ namespace Gecko::API::DB
                     .execute();
 
             *outExists = result.count() > 0;
-            return Result::Success;
+            return Result::OK;
         }
         catch (mysqlx::Error&)
         {
@@ -94,7 +94,7 @@ namespace Gecko::API::DB
                     .execute();
 
             *outExists = result.count() == 1;
-            return Result::Success;
+            return Result::OK;
         }
         catch (mysqlx::Error&)
         {
@@ -127,7 +127,7 @@ namespace Gecko::API::DB
                 .username = columns.get(1).get<std::string>()
             };
 
-            return Result::Success;
+            return Result::OK;
         }
         catch (mysqlx::Error&)
         {
@@ -156,7 +156,7 @@ namespace Gecko::API::DB
                 return Result::Failure;
 
             *outUserID = result.fetchOne().get(0).get<int>();
-            return Result::Success;
+            return Result::OK;
         }
         catch (mysqlx::Error&)
         {
@@ -185,7 +185,7 @@ namespace Gecko::API::DB
             {
                 *outExists = false;
                 *outUser   = {};
-                return Result::Success;
+                return Result::OK;
             }
 
             auto row = result.fetchOne();
@@ -196,7 +196,7 @@ namespace Gecko::API::DB
                 .username = row.get(1).get<std::string>()
             };
 
-            return Result::Success;
+            return Result::OK;
         }
         catch (mysqlx::Error&)
         {
@@ -219,7 +219,7 @@ namespace Gecko::API::DB
                     .execute();
 
             return result.getAffectedItemsCount()
-                ? Result::Success
+                ? Result::OK
                 : Result::Failure;
         }
         catch (mysqlx::Error&)

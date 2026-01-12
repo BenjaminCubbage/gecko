@@ -72,7 +72,7 @@ namespace Gecko::API::Thread
         m_joinState.store(JoinState::NotJoined, std::memory_order_release);
         m_mainState.store(MainState::Running,   std::memory_order_release);
         m_mainState.notify_all();
-        return Result::Success;
+        return Result::OK;
     }
 
     ThreadPool::Result ThreadPool::Stop()
@@ -84,7 +84,7 @@ namespace Gecko::API::Thread
 
         std::unique_lock<std::shared_mutex> lk{ m_scheduling };
         m_sem.release(static_cast<std::ptrdiff_t>(m_threads.size()));
-        return Result::Success;
+        return Result::OK;
     }
 
     ThreadPool::Result ThreadPool::ScheduleJob(std::function<void ()>& func, JobHandle* outHandle)
@@ -121,14 +121,14 @@ namespace Gecko::API::Thread
         });
 
         m_sem.release();
-        return Result::Success;
+        return Result::OK;
     }
 
     ThreadPool::Result ThreadPool::WaitForJobCompletion(const JobHandle& handle) noexcept
     {
         assert(handle.ticketIndex < m_inflightTickets.size());
         m_inflightTickets[handle.ticketIndex].wait(handle.ticketID, std::memory_order_acquire);
-        return Result::Success;
+        return Result::OK;
     }
 
     bool ThreadPool::IsJobCompleted(const JobHandle& handle) const noexcept
@@ -157,13 +157,13 @@ namespace Gecko::API::Thread
             m_mainState.store(MainState::Stopped, std::memory_order_release);
             m_mainState.notify_all();
 
-            return Result::Success;
+            return Result::OK;
         }
 
         if (expected == JoinState::Joining)
         {
             m_joinState.wait(JoinState::Joining, std::memory_order_acquire);
-            return Result::Success;
+            return Result::OK;
         }
 
         return Result::JoinDenied_AlreadyJoined;

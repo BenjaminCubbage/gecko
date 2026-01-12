@@ -18,18 +18,18 @@ namespace Gecko::API::Services
         
         bool idempotencyKeyExists{};
         EXPECT(m_dbSharedImages->IdempotencyKeyExists(idempotencyKey, &idempotencyKeyExists) 
-               == DB::SharedImagesTable::Result::Success, Result::DatabaseError);
+               == DB::SharedImagesTable::Result::OK, Result::DatabaseError);
         EXPECT(!idempotencyKeyExists, Result::IdempotencyKeyReplayed);
 
-        if (m_dbSharedImages->CreateSharedImage(senderID, receiverID, idempotencyKey, bytes) == DB::SharedImagesTable::Result::Success)
-            return Result::Success;
+        if (m_dbSharedImages->CreateSharedImage(senderID, receiverID, idempotencyKey, bytes) == DB::SharedImagesTable::Result::OK)
+            return Result::OK;
 
         bool senderExists{};
-        EXPECT(m_dbUsers->UserExists(senderID, &senderExists) == DB::UsersTable::Result::Success, Result::DatabaseError);
+        EXPECT(m_dbUsers->UserExists(senderID, &senderExists) == DB::UsersTable::Result::OK, Result::DatabaseError);
         EXPECT(senderExists, Result::SenderNotFound);
         
         bool receiverExists{};
-        EXPECT(m_dbUsers->UserExists(receiverID, &receiverExists) == DB::UsersTable::Result::Success, Result::DatabaseError);
+        EXPECT(m_dbUsers->UserExists(receiverID, &receiverExists) == DB::UsersTable::Result::OK, Result::DatabaseError);
         EXPECT(receiverExists, Result::ReceiverNotFound);
 
         return Result::DatabaseError;
@@ -39,11 +39,11 @@ namespace Gecko::API::Services
     SharedImagesService::GetLatestReceivedImageBlob(int receiverID,
                                                     std::vector<uint8_t>* outBlob)
     {
-        if (m_dbSharedImages->GetLatestReceivedImageBlob(receiverID, outBlob) == DB::SharedImagesTable::Result::Success)
-            return Result::Success;
+        if (m_dbSharedImages->GetLatestReceivedImageBlob(receiverID, outBlob) == DB::SharedImagesTable::Result::OK)
+            return Result::OK;
 
         bool receiverExists{};
-        EXPECT(m_dbUsers->UserExists(receiverID, &receiverExists) == DB::UsersTable::Result::Success, Result::DatabaseError);
+        EXPECT(m_dbUsers->UserExists(receiverID, &receiverExists) == DB::UsersTable::Result::OK, Result::DatabaseError);
         EXPECT(receiverExists, Result::ReceiverNotFound);
 
         return Result::DatabaseError;

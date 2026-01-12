@@ -14,7 +14,7 @@ namespace Gecko::API::Services
     public:
         enum class Result
         {
-            Success,
+            OK,
 
             /* Service-space */
             DeviceNotFound,

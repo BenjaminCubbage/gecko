@@ -24,7 +24,7 @@ namespace Gecko::API::Thread
 
         enum class Result
         {
-            Success = 0,
+            OK = 0,
 
             StartDenied_NotIdle,
 

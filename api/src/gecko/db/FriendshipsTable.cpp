@@ -62,7 +62,7 @@ namespace Gecko::API::DB
                     }
                 });
 
-            return Result::Success;
+            return Result::OK;
         }
         catch (mysqlx::Error&)
         {
@@ -117,7 +117,7 @@ namespace Gecko::API::DB
                     outIncoming->push_back(std::move(other));
             }
 
-            return Result::Success;
+            return Result::OK;
         }
         catch (mysqlx::Error&)
         {
@@ -150,7 +150,7 @@ namespace Gecko::API::DB
                     .execute();
 
             return result.getAffectedItemsCount() == 1
-                ? Result::Success
+                ? Result::OK
                 : Result::Failure;
         }
         catch (mysqlx::Error&)
@@ -182,7 +182,7 @@ namespace Gecko::API::DB
                     .execute();
 
             return result.getAffectedItemsCount() == 1
-                ? Result::Success
+                ? Result::OK
                 : Result::Failure;
         }
         catch (mysqlx::Error&)
@@ -218,7 +218,7 @@ namespace Gecko::API::DB
                     .execute();
 
             return result.getAffectedItemsCount() == 1
-                ? Result::Success
+                ? Result::OK
                 : Result::Failure;
         }
         catch (mysqlx::Error&)
@@ -249,7 +249,7 @@ namespace Gecko::API::DB
                     .execute();
 
             return result.getAffectedItemsCount() == 1
-                ? Result::Success
+                ? Result::OK
                 : Result::Failure;
         }
         catch (mysqlx::Error&)
@@ -286,7 +286,7 @@ namespace Gecko::API::DB
                     .execute();
 
             *outExists = result.hasData() && result.count() == 1;
-            return Result::Success;
+            return Result::OK;
         }
         catch (mysqlx::Error&)
         {
@@ -324,7 +324,7 @@ namespace Gecko::API::DB
                 ? result.fetchOne().get(0).get<int>()
                 : -1;
 
-            return Result::Success;
+            return Result::OK;
         }
         catch (mysqlx::Error&)
         {

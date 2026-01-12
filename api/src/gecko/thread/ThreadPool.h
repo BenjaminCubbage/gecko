@@ -47,7 +47,7 @@ namespace Gecko::API::Thread
 
         enum class Result
         {
-            Success = 0,
+            OK = 0,
 
             // Start()
             StartDenied_Terminating,

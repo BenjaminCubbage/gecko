@@ -81,7 +81,7 @@ namespace Gecko::API::Controllers
         std::vector<std::pair<Models::User, Models::FriendshipMetadata>> friends{};
         switch (m_friendshipsService.GetFriendships(userID, &friends))
         {
-            case FriendshipsService::Result::Success:
+            case FriendshipsService::Result::OK:
             {
                 Json::Value response{ Json::objectValue };
                 response["friends"] = Json::arrayValue;
@@ -126,7 +126,7 @@ namespace Gecko::API::Controllers
 
         switch (m_friendshipsService.GetFriendRequests(userID, &incoming, &outgoing))
         {
-            case FriendshipsService::Result::Success:
+            case FriendshipsService::Result::OK:
             {
                 Json::Value response{ Json::objectValue };
                 response["friend_requests"] = Json::objectValue;
@@ -187,7 +187,7 @@ namespace Gecko::API::Controllers
 
         switch (m_friendshipsService.CreateFriendRequest(userID, otherUserID))
         {
-            case FriendshipsService::Result::Success:
+            case FriendshipsService::Result::OK:
                 res.status = httplib::StatusCode::Created_201;
                 return;
 
@@ -233,7 +233,7 @@ namespace Gecko::API::Controllers
 
         switch (m_friendshipsService.AcceptFriendRequest(userID, otherUserID))
         {
-            case FriendshipsService::Result::Success:
+            case FriendshipsService::Result::OK:
             case FriendshipsService::Result::AlreadyFriends:
                 res.status = httplib::StatusCode::OK_200;
                 return;
@@ -278,7 +278,7 @@ namespace Gecko::API::Controllers
 
         switch (m_friendshipsService.DeleteFriendshipOrFriendRequest(userID, otherUserID))
         {
-            case FriendshipsService::Result::Success:
+            case FriendshipsService::Result::OK:
                 res.status = httplib::StatusCode::OK_200;
                 return;
 
