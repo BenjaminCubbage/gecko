@@ -70,7 +70,7 @@ namespace Gecko::API::Test
         const bool ok = mw(req, res, &out);
 
         ASSERT_FALSE(ok);
-        EXPECT_EQ(res.status, httplib::StatusCode::ContentPayloadTooLarge_413); // adjust if ContentPayloadTooLarge differs
+        EXPECT_EQ(res.status, httplib::StatusCode::PayloadTooLarge_413);
         ExpectErrorJson(res);
     }
 

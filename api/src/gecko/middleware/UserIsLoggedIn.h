@@ -11,15 +11,13 @@
 
 namespace Gecko::API::Middleware
 {
-    template<typename T> requires
-        std::is_integral_v<T>
     class UserIsLoggedIn
     {
     public:
         UserIsLoggedIn(std::string pubkey) 
             : m_pubkey(std::move(pubkey)) {}
 
-        bool operator()(const httplib::Request& req, httplib::Response& res, T* outUserID)
+        bool operator()(const httplib::Request& req, httplib::Response& res, int* outUserID)
         {
             const auto& cookieHeader = req.get_header_value("Cookie");
 
@@ -43,7 +41,7 @@ namespace Gecko::API::Middleware
                 const auto decodedAuthCookie 
                     = jwt::decode<jwt::traits::open_source_parsers_jsoncpp>(*cookieValue);
                     
-                if (!Http::ParseValue::TryParseIntegral<T>(decodedAuthCookie.get_subject(), outUserID))
+                if (!Http::ParseValue::TryParseIntegral<int>(decodedAuthCookie.get_subject(), outUserID))
                 {
                     Http::RespondWithError::AuthInvalid(res);
                     return false;

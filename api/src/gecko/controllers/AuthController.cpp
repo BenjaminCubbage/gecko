@@ -89,8 +89,8 @@ namespace Gecko::API::Controllers
     void AuthController::Handle_POST_LogOut(const httplib::Request& req, httplib::Response& res)
     {
         int userID{};
-        if (!Middleware::UserIsLoggedIn<int>{ m_pubkey }(req, res, &userID) ||
-            !Middleware::HasValidXSRFToken{ }(req, res))
+        if (!Middleware::UserIsLoggedIn{ m_pubkey }(req, res, &userID) ||
+            !Middleware::HasValidXSRFToken{}(req, res))
         {
             return;
         }
@@ -116,8 +116,8 @@ namespace Gecko::API::Controllers
         std::string code;
         std::string state;
 
-        if (!Middleware::IsSuccessfulOAuthCallback{ }(req, res, &code, &state) ||
-            !Middleware::HasValidOAuthXSRFNonce{ }(req, res, state))
+        if (!Middleware::IsSuccessfulOAuthCallback{}(req, res, &code, &state) ||
+            !Middleware::HasValidOAuthXSRFNonce{}(req, res, state))
         {
             res.set_redirect("/");
             return;
@@ -238,7 +238,7 @@ namespace Gecko::API::Controllers
     void AuthController::Handle_POST_Refresh(const httplib::Request &req, httplib::Response &res)
     {
         int userID{};
-        if (!Middleware::UserIsLoggedIn<int>{ m_pubkey }(req, res, &userID))
+        if (!Middleware::UserIsLoggedIn{ m_pubkey }(req, res, &userID))
             return;
 
         try

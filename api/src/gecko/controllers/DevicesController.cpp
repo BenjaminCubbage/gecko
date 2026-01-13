@@ -71,7 +71,7 @@ namespace Gecko::API::Controllers
 
         int requesterID{};
         int ownerID{};
-        if (!Middleware::UserIsLoggedIn<int>{ m_pubkey }(req, res, &requesterID) ||
+        if (!Middleware::UserIsLoggedIn{ m_pubkey }(req, res, &requesterID) ||
             !Middleware::HasPathParam<int>{ "user_id" }(req, res, &ownerID))
         {
             return;

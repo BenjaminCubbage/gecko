@@ -23,7 +23,11 @@ namespace Gecko::API::Server
               m_controllers{ &m_env, &m_services },
               m_httpServer{
                   m_env.geckoAPITLSCertPath.c_str(),
-                  m_env.geckoAPITLSPkeyPath.c_str() } {}
+                  m_env.geckoAPITLSPkeyPath.c_str() } 
+        {
+            m_httpServer.set_tcp_nodelay(true);
+            m_httpServer.set_payload_max_length(16 * 1024);
+        }
 
         Server           (const Server&) = delete;
         Server& operator=(const Server&) = delete;

@@ -43,7 +43,7 @@ F7I8hoPgaOZjyhh+BrPDO6CL6D/aW/yPObXXm7SpZogmRwGROcOA3yUleg==
         res.status = httplib::StatusCode::OK_200;
 
         UserIsLoggedIn middleware{ kEcPublicKey };
-        std::string userID;
+        int userID;
 
         const bool ok = middleware(req, res, &userID);
 
@@ -69,7 +69,7 @@ F7I8hoPgaOZjyhh+BrPDO6CL6D/aW/yPObXXm7SpZogmRwGROcOA3yUleg==
         req.set_header("Cookie", "other=abc123");
 
         UserIsLoggedIn middleware{ kEcPublicKey };
-        std::string userID;
+        int userID;
 
         const bool ok = middleware(req, res, &userID);
 
@@ -97,7 +97,7 @@ F7I8hoPgaOZjyhh+BrPDO6CL6D/aW/yPObXXm7SpZogmRwGROcOA3yUleg==
         req.set_header("Cookie", cookieName + '=' + badToken);
 
         UserIsLoggedIn middleware{ kEcPublicKey };
-        std::string userID;
+        int userID;
 
         const bool ok = middleware(req, res, &userID);
 
@@ -125,18 +125,18 @@ F7I8hoPgaOZjyhh+BrPDO6CL6D/aW/yPObXXm7SpZogmRwGROcOA3yUleg==
         res.body.clear();
 
         const std::string cookieName{ Cookies::HostHttpGeckoAuth };
-        const std::string expectedUserID{ "user-123" };
+        const int expectedUserID{ 123 };
 
         const auto token =
             jwt::create<JsonTraits>()
                 .set_issuer(Issuer::GeckoIssuerName)
-                .set_subject(expectedUserID)
+                .set_subject(std::to_string(expectedUserID))
                 .sign(jwt::algorithm::es256{ "", kEcPrivateKey });
 
         req.set_header("Cookie", cookieName + '=' + token);
 
         UserIsLoggedIn middleware{ kEcPublicKey };
-        std::string userID;
+        int userID;
 
         const bool ok = middleware(req, res, &userID);
 
@@ -161,7 +161,7 @@ F7I8hoPgaOZjyhh+BrPDO6CL6D/aW/yPObXXm7SpZogmRwGROcOA3yUleg==
 
         const std::string cookieName{ Cookies::HostHttpGeckoAuth };
         const std::string subjectStr{ "42" };
-        const int         expectedUserID = 42;
+        const int expectedUserID = 42;
 
         const auto token =
             jwt::create<JsonTraits>()
@@ -263,7 +263,7 @@ F7I8hoPgaOZjyhh+BrPDO6CL6D/aW/yPObXXm7SpZogmRwGROcOA3yUleg==
         {
             httplib::Request  req;
             httplib::Response res;
-            std::string       userID;
+            int userID;
 
             res.status = httplib::StatusCode::OK_200;
 
@@ -278,14 +278,14 @@ F7I8hoPgaOZjyhh+BrPDO6CL6D/aW/yPObXXm7SpZogmRwGROcOA3yUleg==
             ASSERT_TRUE(middleware(req, res, &userID));
             EXPECT_EQ(res.status, httplib::StatusCode::OK_200);
             EXPECT_TRUE(res.body.empty());
-            EXPECT_EQ(userID, "100");
+            EXPECT_EQ(userID, 100);
         }
 
         // 2: invalid token
         {
             httplib::Request  req;
             httplib::Response res;
-            std::string       userID;
+            int userID;
 
             res.status = httplib::StatusCode::OK_200;
 
@@ -300,7 +300,7 @@ F7I8hoPgaOZjyhh+BrPDO6CL6D/aW/yPObXXm7SpZogmRwGROcOA3yUleg==
         {
             httplib::Request  req;
             httplib::Response res;
-            int               userID = -1;
+            int userID = -1;
 
             res.status = httplib::StatusCode::OK_200;
 

@@ -4,7 +4,7 @@
 #include "jwt-cpp/traits/open-source-parsers-jsoncpp/traits.h"
 #include "gecko/http/Constants.h"
 #include "gecko/middleware/HasAnyMultipartFormData.h"
-#include "gecko/middleware/HasContentLength.h"
+#include "gecko/middleware/HasContentLengthLTE.h"
 #include "gecko/middleware/HasHeader.h"
 #include "gecko/middleware/HasMultipartFormDataField.h"
 #include "gecko/middleware/PathParamEquals.h"
@@ -48,8 +48,8 @@ namespace Gecko::API::Controllers
         int userID{};
         size_t contentLength{};
         std::string idempotencyKey;
-        if (!Middleware::UserIsLoggedIn<int>{ m_pubkey }(req, res, &userID) ||
-            !Middleware::HasContentLength{}(req, res, &contentLength) ||
+        if (!Middleware::UserIsLoggedIn{ m_pubkey }(req, res, &userID) ||
+            !Middleware::HasContentLengthLTE{}(req, res, 1024 * 10, &contentLength) ||
             !Middleware::HasHeader{ Headers::IdempotencyKey }(req, res, &idempotencyKey) ||
             !Middleware::PathParamEquals{ "id" }(req, res, std::to_string(userID)))
         {
@@ -102,7 +102,7 @@ namespace Gecko::API::Controllers
         using Services::SharedImagesService;
 
         int userID{};
-        if (!Middleware::UserIsLoggedIn<int>{ m_pubkey }(req, res, &userID) ||
+        if (!Middleware::UserIsLoggedIn{ m_pubkey }(req, res, &userID) ||
             !Middleware::PathParamEquals{ "id" }(req, res, std::to_string(userID)))
             return;
 

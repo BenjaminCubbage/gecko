@@ -1,6 +1,7 @@
 #include "gecko/controllers/FriendshipsController.h"
 #include <utility>
 #include "gecko/http/RespondWithError.h"
+#include "gecko/middleware/HasContentLengthLTE.h"
 #include "gecko/middleware/HasJSONBody.h"
 #include "gecko/middleware/HasJSONValueMember.h"
 #include "gecko/middleware/HasValidXSRFToken.h"
@@ -72,7 +73,7 @@ namespace Gecko::API::Controllers
         using Services::FriendshipsService;
 
         int userID{};
-        if (!Middleware::UserIsLoggedIn<int>{ m_pubkey }(req, res, &userID) ||
+        if (!Middleware::UserIsLoggedIn{ m_pubkey }(req, res, &userID) ||
             !Middleware::PathParamEquals{ "id" }(req, res, std::to_string(userID)))
         {
             return;
@@ -115,7 +116,7 @@ namespace Gecko::API::Controllers
         using Services::FriendshipsService;
 
         int userID{};
-        if (!Middleware::UserIsLoggedIn<int>{ m_pubkey }(req, res, &userID) ||
+        if (!Middleware::UserIsLoggedIn{ m_pubkey }(req, res, &userID) ||
             !Middleware::PathParamEquals{ "id" }(req, res, std::to_string(userID)))
         {
             return;
@@ -168,16 +169,18 @@ namespace Gecko::API::Controllers
     }
         
     void FriendshipsController::Handle_POST_FriendRequests(const httplib::Request& req,
-                                                            httplib::Response& res)
+                                                           httplib::Response& res)
     {
         using Services::FriendshipsService;
 
+        size_t contentLength{};
         int userID{};
         int otherUserID{};
         Json::Value body;
 
-        if (!Middleware::UserIsLoggedIn<int>{ m_pubkey }(req, res, &userID) ||
+        if (!Middleware::UserIsLoggedIn{ m_pubkey }(req, res, &userID) ||
             !Middleware::HasValidXSRFToken{}(req, res) ||
+            !Middleware::HasContentLengthLTE{}(req, res, 1024 * 2, &contentLength) ||
             !Middleware::HasJSONBody{}(req, res, &body) ||
             !Middleware::HasJSONValueMember<int>{ "user_id" }(req, res, body, &otherUserID) ||
             !Middleware::PathParamEquals{ "id" }(req, res, std::to_string(userID)))
@@ -218,14 +221,16 @@ namespace Gecko::API::Controllers
     {
         using Services::FriendshipsService;
 
+        size_t contentLength{};
         int userID{};
         int otherUserID{};
         Json::Value body;
 
-        if (!Middleware::UserIsLoggedIn<int>{ m_pubkey }(req, res, &userID) ||
+        if (!Middleware::UserIsLoggedIn{ m_pubkey }(req, res, &userID) ||
+            !Middleware::HasValidXSRFToken{}(req, res) ||
             !Middleware::PathParamEquals{ "id" }(req, res, std::to_string(userID)) ||
-            !Middleware::HasValidXSRFToken{ }(req, res) ||
-            !Middleware::HasJSONBody{ }(req, res, &body) ||
+            !Middleware::HasContentLengthLTE{}(req, res, 1024 * 2, &contentLength) ||
+            !Middleware::HasJSONBody{}(req, res, &body) ||
             !Middleware::HasJSONValueMember<int>{ "user_id" }(req, res, body, &otherUserID))
         {
             return;
@@ -263,12 +268,14 @@ namespace Gecko::API::Controllers
     {
         using Services::FriendshipsService;
 
+        size_t contentLength{};
         int userID{};
         int otherUserID{};
         Json::Value body;
 
-        if (!Middleware::UserIsLoggedIn<int>{ m_pubkey }(req, res, &userID) ||
+        if (!Middleware::UserIsLoggedIn{ m_pubkey }(req, res, &userID) ||
             !Middleware::HasValidXSRFToken{}(req, res) ||
+            !Middleware::HasContentLengthLTE{}(req, res, 1024 * 2, &contentLength) ||
             !Middleware::HasJSONBody{}(req, res, &body) ||
             !Middleware::HasJSONValueMember<int>{ "user_id" }(req, res, body, &otherUserID) ||
             !Middleware::PathParamEquals{ "id" }(req, res, std::to_string(userID)))

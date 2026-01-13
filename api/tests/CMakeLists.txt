@@ -17,7 +17,7 @@ set(src_files
     "${test_src_dir}/http/ParseHeaderTest.cpp"
     "${test_src_dir}/http/ParseValueTest.cpp"
     "${test_src_dir}/http/RespondWithErrorTest.cpp"
-    "${test_src_dir}/middleware/HasContentLengthTest.cpp"
+    "${test_src_dir}/middleware/HasContentLengthLTETest.cpp"
     "${test_src_dir}/middleware/HasHeaderTest.cpp"
     "${test_src_dir}/middleware/HasJSONBodyTest.cpp"
     "${test_src_dir}/middleware/HasMultipartFormDataFieldTest.cpp"

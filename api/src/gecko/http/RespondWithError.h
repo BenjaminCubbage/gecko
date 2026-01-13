@@ -16,12 +16,12 @@ namespace Gecko::API::Http
         static inline void BadContentLength(httplib::Response& response)
         {
             response.body   = BuildResponseBody("bad_content_length", "not_valid");
-            response.status = httplib::StatusCode::LengthRequired_411;
+            response.status = httplib::StatusCode::BadRequest_400;
         }
 
         static inline void ContentPayloadTooLarge(httplib::Response& response)
         {
-            response.body   = BuildResponseBody("content_too_large", "too_large");
+            response.body   = BuildResponseBody("bad_content_length", "too_large");
             response.status = httplib::StatusCode::PayloadTooLarge_413;
         }
 
