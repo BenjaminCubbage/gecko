@@ -11,7 +11,7 @@ namespace Gecko::API::Middleware
 
         if (contentLength.empty())
         {
-            Http::RespondWithError::BadContentLength(res);
+            Http::RespondWithError::ContentLengthRequired(res);
             return false;
         }
 

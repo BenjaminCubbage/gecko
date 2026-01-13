@@ -7,6 +7,24 @@ namespace Gecko::API::Http
     class RespondWithError
     {
     public:
+        static inline void ContentLengthRequired(httplib::Response& response)
+        {
+            response.body   = BuildResponseBody("bad_content_length", "length_required");
+            response.status = httplib::StatusCode::LengthRequired_411;
+        }
+
+        static inline void BadContentLength(httplib::Response& response)
+        {
+            response.body   = BuildResponseBody("bad_content_length", "not_valid");
+            response.status = httplib::StatusCode::LengthRequired_411;
+        }
+
+        static inline void ContentPayloadTooLarge(httplib::Response& response)
+        {
+            response.body   = BuildResponseBody("content_too_large", "too_large");
+            response.status = httplib::StatusCode::PayloadTooLarge_413;
+        }
+
         static inline void CouldNotFulfill(httplib::Response& response)
         {
             response.body   = BuildResponseBody("could_not_fulfill", "internal_error");
@@ -76,12 +94,6 @@ namespace Gecko::API::Http
         static inline void BadHeader(httplib::Response& response, const std::string& headerName)
         {
             response.body   = BuildResponseBodyWithHeader("bad_request", "missing_header", headerName);
-            response.status = httplib::StatusCode::BadRequest_400;
-        }
-
-        static inline void BadContentLength(httplib::Response& response)
-        {
-            response.body   = BuildResponseBody("bad_request", "bad_content_length");
             response.status = httplib::StatusCode::BadRequest_400;
         }
         
@@ -155,12 +167,6 @@ namespace Gecko::API::Http
         {
             response.body   = BuildResponseBody("unprocessable", "malformed_request");
             response.status = httplib::StatusCode::UnprocessableContent_422;
-        }
-
-        static inline void ContentPayloadTooLarge(httplib::Response& response)
-        {
-            response.body   = BuildResponseBody("content_too_large", "content_length");
-            response.status = httplib::StatusCode::PayloadTooLarge_413;
         }
 
         static inline std::string BuildResponseBody(const std::string& code, const std::string& reason)
