@@ -239,8 +239,8 @@ namespace Gecko::Embedded
                 return;
             }
 
-            Log_Debug("MQTTSub: Incoming publish at topic %s with total "
-                      "length %u\n", topic, (unsigned)totLen);
+            Log_Debug("MQTTSub: Incoming publish at topic %s "
+                      "(total length: %u)\n", topic, (unsigned)totLen);
 
             s_incoming->reading = true;
         }

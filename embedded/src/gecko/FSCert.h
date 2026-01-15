@@ -41,6 +41,7 @@ namespace Gecko::Embedded
     private:
         // note(ben): 4kB max certificate length
         static constexpr int AllocCertSize = 1024 * 4;
+        
         static char s_certificate[AllocCertSize];
         static unsigned int s_certificateLen;
     };

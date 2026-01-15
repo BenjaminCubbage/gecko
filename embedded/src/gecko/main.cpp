@@ -1,6 +1,6 @@
 #include "gecko/FS.h"
 #include "gecko/FSCert.h"
-#include "gecko/FSSafeReadWrite.h"
+#include "gecko/FSTwoPhase.h"
 #include "gecko/Log.h"
 #include "gecko/MQTTConn.h"
 #include "gecko/MQTTPub.h"
@@ -47,7 +47,7 @@ int main()
     unsigned int oldLatestImageIDLen{};
     unsigned int newLatestImageIDLen{};
 
-    FSSafeReadWrite::ReadFile(
+    FSTwoPhase::ReadCommitted(
         "/latest_image_id.txt", 
         100, 
         oldLatestImageID, 
@@ -74,10 +74,10 @@ int main()
         return false;
     }
 
-    FSSafeReadWrite::WriteFile(
+    FSTwoPhase::WriteAndCommit(
         "/latest_image_id.txt",
         newLatestImageID,
-        newLatestImageIDLen,
+        newLatestImageIDLen + 1,
         true);
 
     Log_Debug("Main: Preparing to subscribe to the latest "
