@@ -12,8 +12,8 @@ namespace Gecko::Embedded
         loss.
 
         Uses A/B files with commit flags to limit the ability of
-        partial writes (mainly as a result of power loss) from
-        overwriting the previously stored data.
+        partial writes (mainly as a result of power loss) to
+        overwrite the previously stored data.
 
         When writes are completed, a commit flag is set indicating
         the A/B file was successfully written and recent.
@@ -67,8 +67,8 @@ namespace Gecko::Embedded
         /*
             Write data to the associated file, then commit the A/B.
 
-            Returns true if the data was successfully written
-            Otherwise, false
+            Returns true if the data was successfully written.
+            Otherwise, false.
         */
         static bool WriteAndCommit(const std::string& filename,
                                    const char* bytes,
@@ -78,8 +78,8 @@ namespace Gecko::Embedded
         /*
             Read the committed A/B file if it exists.
 
-            Returns true if the data was successfully read
-            Otherwise, false
+            Returns true if the data was successfully read.
+            Otherwise, false.
         */
         static bool ReadCommitted(const std::string& filename,
                                   unsigned int readBytes,

@@ -4,11 +4,10 @@
 namespace Gecko::Embedded
 {
     FATFS FS::s_fs;
-    FS::State FS::s_state{ State::NotMounted };
 
     bool FS::Mount()
     {
-        Log_Debug("FS: Mounting SD card\n");
+        Log_Debug("FS: Mounting SD card default drive\n");
 
         FRESULT r;
         if (auto r = f_mount(&s_fs, "", 1))
@@ -17,7 +16,6 @@ namespace Gecko::Embedded
             return false;
         }
         
-        s_state = State::Mounted;
         Log_Info("FS: Successfully mounted\n");
         return true;
     }
@@ -26,12 +24,6 @@ namespace Gecko::Embedded
     {
         FIL fp{};
 
-        if (s_state != State::Mounted)
-        {
-            Log_Error("FS: Can't read, not yet mounted\n");
-            return false;
-        }
-        
         if (auto r = f_open(&fp, filename, FA_READ))
         {
             Log_Error("FS: Could not open file for reading: %s: %s\n", filename, FResultToStr(r));
@@ -53,12 +45,6 @@ namespace Gecko::Embedded
     {
         FIL fp{};
 
-        if (s_state != State::Mounted)
-        {
-            Log_Error("FS: Can't write file, not yet mounted\n");
-            return false;
-        }
-        
         if (auto r = f_open(&fp, filename, FA_WRITE | (writeOverExisting ? FA_OPEN_ALWAYS : FA_CREATE_ALWAYS)))
         {
             Log_Error("FS: Could not create or open file %s: %s\n", filename, FResultToStr(r));
