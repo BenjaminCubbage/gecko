@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 
 namespace Gecko::Embedded
@@ -7,7 +8,7 @@ namespace Gecko::Embedded
     public:
         Wifi() = delete;
         static bool Init();
-        static bool Connect(const std::string& wifiSSID, const std::string& wifiPassword);
+        static bool ConnectSync(const std::string& wifiSSID, const std::string& wifiPassword);
         static void Poll();
 
     private:

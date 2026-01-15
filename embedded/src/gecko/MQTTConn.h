@@ -3,6 +3,7 @@
 #include <string>
 #include <string_view>
 #include "gecko/Log.h"
+#include "gecko/Wifi.h"
 #include "lwip/apps/mqtt_priv.h"
 #include "lwip/apps/mqtt.h"
 #include "lwip/inet.h"
@@ -13,6 +14,11 @@ namespace Gecko::Embedded
     class MQTTConn
     {
     public:
+        enum class Status
+        {
+            Uninitialized, NotConnected, Connecting, Connected, Error
+        };
+
         struct Connection
         {
             std::string username;
@@ -23,7 +29,7 @@ namespace Gecko::Embedded
             mqtt_connect_client_info_t clientInfo;
             mqtt_client_t *client;
 
-            bool connected;
+            Status status{ Status::Uninitialized };
         };
 
         static bool Init(const std::string& ipStr,
@@ -32,9 +38,11 @@ namespace Gecko::Embedded
                          const std::string& username,
                          const std::string& password)
         {
-            static constexpr int LWTQOS             = 1;
-            static constexpr int LWTRetain          = 1;
-            static constexpr const char* LWTMessage = "off";
+            if (s_connection.status != Status::Uninitialized)
+            {
+                Log_Error("MQTTConn: Tried to initialize more than once\n");
+                return false;
+            }
 
             if (!ip4addr_aton(ipStr.c_str(), &s_connection.ip))
             {
@@ -63,42 +71,92 @@ namespace Gecko::Embedded
                 return false;
             }
 
+            s_connection.status = Status::NotConnected;
             return true;
         }
 
-        static bool Connect(void (*cb)(mqtt_connection_status_t))
+        static bool Connect()
         {
             cyw43_arch_lwip_begin();
+            if (s_connection.status == Status::Uninitialized)
+            {
+                Log_Error("MQTTConn: Tried to connect but not yet initialized\n");
+                goto fail;
+            }
+
+            if (s_connection.status == Status::Connected ||
+                s_connection.status == Status::Connecting)
+            {
+                Log_Error("MQTTConn: Tried to connect but already connected or trying to connect\n");
+                goto fail;
+            }
+            
             if (mqtt_client_connect(
                 s_connection.client,
                 &s_connection.ip,
                 s_connection.port,
                 ConnectStatusCB,
-                reinterpret_cast<void*>(cb),
+                nullptr,
                 &s_connection.clientInfo) != ERR_OK)
             {
                 Log_Error("MQTTConn: MQTT broker connection error\n");
-                cyw43_arch_lwip_end();
-                return false;
+                s_connection.status = Status::Error;
+                goto fail;
             }
 
-            // note(ben): Enable this when doing tls
-            // mbedtls_ssl_set_hostname(altcp_tls_context(state->mqtt_client_inst->conn), MQTT_SERVER);
-
+            s_connection.status = Status::Connecting;
             cyw43_arch_lwip_end();
             return true;
+
+        fail:
+            cyw43_arch_lwip_end();
+            return false;
+        }
+
+        static bool ConnectSync()
+        {
+            if (!Connect())
+                return false;
+
+            while (s_connection.status == MQTTConn::Status::Connecting)
+            {
+                Wifi::Poll();
+                sleep_ms(90);
+            }
+
+            return s_connection.status == MQTTConn::Status::Connected;
+        }
+
+        static void Disconnect()
+        {
+            cyw43_arch_lwip_begin();
+            mqtt_disconnect(s_connection.client);
+            s_connection.status = Status::NotConnected;
+            cyw43_arch_lwip_end();
         }
 
         static void ConnectStatusCB(mqtt_client_t*, void* cb, mqtt_connection_status_t status)
         {
-            Log_Info("MQTTConn: %s\n", ConnectionStatusToStr(status));
-            s_connection.connected = status == MQTT_CONNECT_ACCEPTED;
-            reinterpret_cast<void (*)(mqtt_connection_status_t)>(cb)(status);
+            if (status == MQTT_CONNECT_ACCEPTED)
+            {
+                Log_Info("MQTTConn: Connected\n");
+                s_connection.status = Status::Connected;
+            }
+            else
+            {
+                Log_Error("MQTTConn: Couldn't connect: %s\n", ConnectionStatusToStr(status));
+                s_connection.status = Status::Error;
+            }
         }
 
-        static const Connection* ConnectionState()
+        static inline const Connection* ConnectionState()
         {
             return &s_connection;
+        }
+
+        static inline Status ConnectionStatus()
+        {
+            return s_connection.status;
         }
 
     private:

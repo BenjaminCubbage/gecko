@@ -126,3 +126,5 @@ ExternalProject_Add_Step(embedded build_project
         --target embedded
     ALWAYS 1
 )
+
+ExternalProject_Add_StepTargets(embedded build_project)

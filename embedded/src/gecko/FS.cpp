@@ -4,36 +4,77 @@
 namespace Gecko::Embedded
 {
     FATFS FS::s_fs;
+    FS::State FS::s_state{ State::NotMounted };
 
     bool FS::Mount()
     {
         Log_Debug("FS: Mounting SD card\n");
 
         FRESULT r;
-        if (r = f_mount(&s_fs, "", 1))
+        if (auto r = f_mount(&s_fs, "", 1))
+        {
             Log_Error("FS: Could not mount SD card: %s\n", FResultToStr(r));
-        else
-            Log_Info("FS: Successfully mounted\n");
-
-        return r == 0;
+            return false;
+        }
+        
+        s_state = State::Mounted;
+        Log_Info("FS: Successfully mounted\n");
+        return true;
     }
 
-    FRESULT FS::ReadFile(const char* filename, int readBytes, char* outBuffer, unsigned int* outBytesRead)
+    bool FS::ReadFile(const char* filename, unsigned int readBytes, char* outBuffer, unsigned int* outBytesRead)
     {
-        FRESULT r{};
         FIL fp{};
-        
-        if (r = f_open(&fp, filename, FA_READ))
+
+        if (s_state != State::Mounted)
         {
-            Log_Error("FS: Could not open file %s: %s\n", filename, FResultToStr(r));
-            return r;
+            Log_Error("FS: Can't read, not yet mounted\n");
+            return false;
+        }
+        
+        if (auto r = f_open(&fp, filename, FA_READ))
+        {
+            Log_Error("FS: Could not open file for reading: %s: %s\n", filename, FResultToStr(r));
+            return false;
         }
 
-        if (r = f_read(&fp, outBuffer, readBytes, outBytesRead))
-            Log_Error("FS: Could not read file %s: %s\n", filename, FResultToStr(r));
+        if (auto r = f_read(&fp, outBuffer, readBytes, outBytesRead))
+        {
+            Log_Error("FS: Could not read file: %s: %s\n", filename, FResultToStr(r));
+            f_close(&fp);
+            return false;
+        }
 
         f_close(&fp);
-        return r;
+        return true;
+    }
+
+    bool FS::WriteFile(const char* filename, const char* bytes, unsigned int numBytes, bool writeOverExisting)
+    {
+        FIL fp{};
+
+        if (s_state != State::Mounted)
+        {
+            Log_Error("FS: Can't write file, not yet mounted\n");
+            return false;
+        }
+        
+        if (auto r = f_open(&fp, filename, FA_WRITE | (writeOverExisting ? FA_OPEN_ALWAYS : FA_CREATE_ALWAYS)))
+        {
+            Log_Error("FS: Could not create or open file %s: %s\n", filename, FResultToStr(r));
+            return true;
+        }
+
+        unsigned int numWritten{};
+        if (auto r = f_write(&fp, bytes, numBytes, &numWritten))
+        {
+            Log_Error("FS: Could not write to opened file %s: %s\n", filename, FResultToStr(r));
+            f_close(&fp);
+            return false;
+        }
+
+        f_close(&fp);
+        return true;
     }
     
     const char* FS::FResultToStr(FRESULT result)

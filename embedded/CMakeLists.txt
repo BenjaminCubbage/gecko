@@ -26,6 +26,8 @@ add_executable(embedded
     "${src_dir}/FS.h"
     "${src_dir}/FSCert.cpp"
     "${src_dir}/FSCert.h"
+    "${src_dir}/FSSafeReadWrite.cpp"
+    "${src_dir}/FSSafeReadWrite.h"
     "${src_dir}/Log.cpp"
     "${src_dir}/Log.h"
     "${src_dir}/main.cpp"
@@ -33,38 +35,42 @@ add_executable(embedded
     "${src_dir}/MQTTConn.h"
     "${src_dir}/MQTTPub.cpp"
     "${src_dir}/MQTTPub.h"
+    "${src_dir}/MQTTSub.cpp"
+    "${src_dir}/MQTTSub.h"
     "${src_dir}/Wifi.cpp"
     "${src_dir}/Wifi.h")
 
 target_link_libraries(embedded PRIVATE
     fatfs
-    sdcard
-    pico_mbedtls
-    pico_stdlib
-    pico_printf
-    pico_lwip_mqtt
+    hardware_i2c
+    inky_frame_7
+    pico_cyw43_arch_lwip_poll
     pico_lwip_mbedtls
-    pico_cyw43_arch_lwip_poll)
+    pico_lwip_mqtt
+    pico_mbedtls
+    pico_printf
+    pico_stdlib
+    sdcard)
 
 target_precompile_headers(embedded PUBLIC
     <string.h>
     <time.h>
-    [["mbedtls_config.h"]]
-    [["lwipopts.h"]]
-    [["pico/stdlib.h"]]
-    [["pico/stdio.h"]]
-    [["pico/cyw43_arch.h"]]
-    [["hardware/uart.h"]]
     [["hardware/gpio.h"]]
-    [["lwip/pbuf.h"]]
+    [["hardware/uart.h"]]
     [["lwip/altcp_tcp.h"]]
     [["lwip/altcp_tls.h"]]
-    [["lwip/dns.h"]])
+    [["lwip/dns.h"]]
+    [["lwip/pbuf.h"]]
+    [["lwipopts.h"]]
+    [["mbedtls_config.h"]]
+    [["pico/cyw43_arch.h"]]
+    [["pico/stdio.h"]]
+    [["pico/stdlib.h"]])
 
 target_include_directories(embedded PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/src
     ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${pimoroni_pico_SOURCE_DIR}/drivers)
+    ${pimoroni_pico_SOURCE_DIR})
 pico_add_extra_outputs(embedded)
 
 target_compile_definitions(embedded PRIVATE

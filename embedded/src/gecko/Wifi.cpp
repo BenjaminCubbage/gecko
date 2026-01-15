@@ -16,7 +16,7 @@ namespace Gecko::Embedded
         return true;
     }
 
-    bool Wifi::Connect(const std::string& wifiSSID, const std::string& wifiPassword)
+    bool Wifi::ConnectSync(const std::string& wifiSSID, const std::string& wifiPassword)
     {
         int result{};
         if (result = cyw43_arch_wifi_connect_timeout_ms(
@@ -25,7 +25,7 @@ namespace Gecko::Embedded
             CYW43_AUTH_WPA2_AES_PSK,
             TimeoutMS))
         {
-            Log_Error("Error: Failed to connect: Status code %d ", result);
+            Log_Error("Wifi: Failed to connect: Status code %d ", result);
             return false;
         }
 
@@ -34,6 +34,8 @@ namespace Gecko::Embedded
 
     void Wifi::Poll()
     {
+        cyw43_arch_lwip_begin();
         cyw43_arch_poll();
+        cyw43_arch_lwip_end();
     }
 }
