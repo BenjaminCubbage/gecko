@@ -1,4 +1,4 @@
-#include "BitOperations.h"
+#include "gecko/BitOperations.h"
 
 namespace Gecko::Compression
 {

@@ -45,14 +45,6 @@ function getLatest() {
         });
 }
 
-// function save() {
-//     CanvasSave.promptSaveCompressed(picEditorCanvas.value?.getCanvasElement()).catch(()=>{});
-// }
-
-// function load() {
-//     CanvasLoad.promptLoadCompressed(picEditorCanvas.value?.getCanvasElement()).catch(()=>{});
-// }
-
 function clear() {
     picEditorCanvas.value?.clear();
 }

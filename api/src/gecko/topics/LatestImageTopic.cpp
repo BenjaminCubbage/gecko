@@ -6,18 +6,21 @@ namespace Gecko::API::Topics
                                               int imageID,
                                               const std::vector<uint8_t>& image)
     {
-        const std::string topic
+        const std::string latestImageIDTopic
+            = "devices/" + std::to_string(deviceID) + "/in/latest-image-id";
+
+        const std::string latestImageTopic
             = "devices/" + std::to_string(deviceID) + "/in/latest-image";
 
         std::string imageIDStr = std::to_string(imageID);
 
         m_mqttClient->PublishMessage(
-            topic, std::span<const uint8_t>{ 
+            latestImageIDTopic, std::span<const uint8_t>{ 
                 reinterpret_cast<const uint8_t*>(imageIDStr.c_str()),
                 imageIDStr.size() },
             true, nullptr, nullptr);
 
         m_mqttClient->PublishMessage(
-            topic, image, true, nullptr, nullptr);
+            latestImageTopic, image, true, nullptr, nullptr);
     }
 }

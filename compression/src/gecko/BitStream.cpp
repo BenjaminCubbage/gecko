@@ -1,6 +1,7 @@
-#include "BitStream.h"
+#include "gecko/BitStream.h"
 #include <algorithm>
 #include <bit>
+#include <cstring>
 
 namespace Gecko::Compression
 {

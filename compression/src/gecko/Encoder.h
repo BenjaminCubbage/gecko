@@ -1,7 +1,7 @@
 #pragma once
-#include "CompressedBitonal.h"
-#include "UncompressedBitonal.h"
-#include "BitStream.h"
+#include "gecko/CompressedBitonal.h"
+#include "gecko/UncompressedBitonal.h"
+#include "gecko/BitStream.h"
 
 
 namespace Gecko::Compression

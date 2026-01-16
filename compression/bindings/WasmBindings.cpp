@@ -1,13 +1,13 @@
+#include "gecko/CompressedBitonal.h"
+#include "gecko/Decoder.h"
+#include "gecko/Encoder.h"
+#include "gecko/UncompressedBitonal.h"
 #include <emscripten/val.h>
 #include <emscripten/bind.h>
 #include <optional>
 #include <cstddef>
 #include <cstdint>
 #include <vector>
-#include "CompressedBitonal.h"
-#include "UncompressedBitonal.h"
-#include "Encoder.h"
-#include "Decoder.h"
 
 
 namespace Gecko::Compression::WasmBindings

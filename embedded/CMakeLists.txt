@@ -8,12 +8,13 @@ set(PICO_SDK_FETCH_FROM_GIT_TAG "2.2.0")
 include(pico_sdk_import.cmake)
 
 project(gecko_embedded LANGUAGES C CXX)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(src_dir "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko")
 pico_sdk_init()
 include(FetchContent)
+
+add_subdirectory(../compression compression)
 
 FetchContent_Declare(pimoroni_pico
     GIT_REPOSITORY https://github.com/pimoroni/pimoroni-pico
@@ -22,25 +23,26 @@ FetchContent_Declare(pimoroni_pico
 FetchContent_MakeAvailable(pimoroni_pico)
 
 add_executable(embedded
-    "${src_dir}/FS.cpp"
-    "${src_dir}/FS.h"
-    "${src_dir}/FSCert.cpp"
-    "${src_dir}/FSCert.h"
-    "${src_dir}/FSTwoPhase.cpp"
-    "${src_dir}/FSTwoPhase.h"
-    "${src_dir}/Log.cpp"
-    "${src_dir}/Log.h"
-    "${src_dir}/main.cpp"
-    "${src_dir}/MQTTConn.cpp"
-    "${src_dir}/MQTTConn.h"
-    "${src_dir}/MQTTPub.cpp"
-    "${src_dir}/MQTTPub.h"
-    "${src_dir}/MQTTSub.cpp"
-    "${src_dir}/MQTTSub.h"
-    "${src_dir}/Wifi.cpp"
-    "${src_dir}/Wifi.h")
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/FS.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/FS.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/FSCert.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/FSCert.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/FSTwoPhase.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/FSTwoPhase.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/Log.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/Log.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/MQTTConn.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/MQTTConn.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/MQTTPub.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/MQTTPub.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/MQTTSub.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/MQTTSub.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/Wifi.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/Wifi.h")
 
 target_link_libraries(embedded PRIVATE
+    compression_lib
     fatfs
     hardware_i2c
     inky_frame_7

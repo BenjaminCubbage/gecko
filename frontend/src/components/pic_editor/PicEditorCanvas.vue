@@ -1,6 +1,6 @@
 <template>
     <div class="canvas-frame" @pointerdown="dragMouse" @pointermove="dragMouse" @touchmove="dragTouch" @mouseleave="stopDragging" @touchend="stopDragging" @mouseup="stopDragging">
-        <canvas ref="canvas" class="canvas" width="600" height="300"></canvas>
+        <canvas ref="canvas" class="canvas" width="480" height="288"></canvas>
     </div>
 </template>
 
@@ -29,7 +29,7 @@ onMounted(() => {
 
     ctx.value.fillStyle             = 'white';
     ctx.value.lineCap               = 'round';
-    ctx.value.lineWidth             = 5;
+    ctx.value.lineWidth             = 4;
     ctx.value.imageSmoothingEnabled = false;
     clear();
 });

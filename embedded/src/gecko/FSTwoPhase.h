@@ -62,7 +62,7 @@ namespace Gecko::Embedded
         static constexpr size_t MaxInputFilenameLength{
             MaxTotalFilenameLength - std::tuple_size_v<Suffix> };
             
-        static_assert(std::tuple_size_v<Suffix> > MaxTotalFilenameLength);
+        static_assert(std::tuple_size_v<Suffix> < MaxTotalFilenameLength);
 
         /*
             Write data to the associated file, then commit the A/B.

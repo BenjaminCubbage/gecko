@@ -1,8 +1,8 @@
-#include "UncompressedBitonal.h"
+#include "gecko/UncompressedBitonal.h"
+#include "gecko/BitOperations.h"
+#include <bit>
 #include <span>
 #include <stdexcept>
-#include <bit>
-#include "BitOperations.h"
 
 
 namespace Gecko::Compression

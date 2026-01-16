@@ -1,5 +1,5 @@
-#include "CompressedBitonal.h"
-#include "BitStream.h"
+#include "gecko/CompressedBitonal.h"
+#include "gecko/BitStream.h"
 
 
 namespace Gecko::Compression
