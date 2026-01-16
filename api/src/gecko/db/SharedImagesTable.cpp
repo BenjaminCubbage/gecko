@@ -6,7 +6,8 @@ namespace Gecko::API::DB
     SharedImagesTable::CreateSharedImage(int senderID,
                                          int receiverID,
                                          const std::string& idempotencyKey,
-                                         const std::vector<uint8_t>& bytes)
+                                         const std::vector<uint8_t>& bytes,
+                                         int* outSharedImageID)
     {
         try
         {
@@ -15,7 +16,10 @@ namespace Gecko::API::DB
             if (!connection)
                 return Result::Failure;
 
-            // note(ben): mysqlx::byte is unsigned char
+            /*
+                note(ben): mysqlx::byte is unsigned char
+            */
+
             const mysqlx::bytes span{ reinterpret_cast<const mysqlx::byte*>(bytes.data()), bytes.size() };
 
             auto insertBlobResult =
@@ -26,8 +30,11 @@ namespace Gecko::API::DB
             if (insertBlobResult.getAffectedItemsCount() == 0)
                 return Result::Failure;
 
-            // note(ben): Multi-statements are not supported in this library. LAST_INSERT_ID() is
-            // not affected by other concurrent mysql sessions.
+            /*
+                note(ben): Multi-statements are not supported in this
+                library. LAST_INSERT_ID() is not affected by other open
+                sessions (no racing)
+            */
 
             auto queryBlobIDResult =
                 connection.value()->sql("SELECT LAST_INSERT_ID()").execute();
@@ -37,7 +44,12 @@ namespace Gecko::API::DB
 
             const int blobID = queryBlobIDResult.fetchOne().get(0);
 
-            // note(ben): Potential for orphaned blob if this fails; Acceptable for now.
+            /*
+                note(ben): Potential for orphaned blob if this fails.
+                In general this... isn't a good way of doing things. I
+                really shouldn't have gone with a library that doesn't
+                support error codes, of all things :^p
+            */
 
             auto insertSharedImageResult =
                 connection.value()->sql("INSERT INTO SharedImages (image_blob_id, sender_id, receiver_id) "
@@ -45,9 +57,18 @@ namespace Gecko::API::DB
                     .bind(blobID, senderID, receiverID)
                     .execute();
 
-            return insertSharedImageResult.getAffectedItemsCount() > 0
-                ? Result::OK
-                : Result::Failure;
+            if (insertSharedImageResult.getAffectedItemsCount() <= 0)
+                return Result::Failure;
+
+            auto querySharedImageIDResult =
+                connection.value()->sql("SELECT LAST_INSERT_ID()").execute();
+
+            if (querySharedImageIDResult.count() != 1)
+                return Result::Failure;
+
+            *outSharedImageID = querySharedImageIDResult.fetchOne().get(0);
+
+            return Result::OK;
         }
         catch (mysqlx::Error&)
         {

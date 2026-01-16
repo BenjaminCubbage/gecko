@@ -45,6 +45,14 @@ namespace Gecko::API::MQTT
                                                  void* context1 = nullptr,
                                                  void* context2 = nullptr);
 
+        bool PublishMessage(const std::string& topic,
+                            const std::span<const uint8_t> message,
+                            bool retained,
+                            InflightHandler pubSucc,
+                            InflightHandler pubFail,
+                            void* context1 = nullptr,
+                            void* context2 = nullptr);
+
     private:
         struct Receiver
         {
@@ -66,6 +74,8 @@ namespace Gecko::API::MQTT
         void Callback_ConnectionLost(char*);
         void Callback_Subscribed(MQTTAsync_successData5* s);
         void Callback_SubscriptionFailed(MQTTAsync_failureData5* s);
+        void Callback_Published(MQTTAsync_successData5* s);
+        void Callback_PublishFailed(MQTTAsync_failureData5* s);
         int Callback_MessageReceived(char *topicName,
                                      int topicLen,
                                      MQTTAsync_message *message);
@@ -82,9 +92,9 @@ namespace Gecko::API::MQTT
         std::mutex                                    m_inflightMutex;
         std::unordered_map<MQTTAsync_token, Inflight> m_inflight;
 
+        std::atomic<uint32_t> m_nextSubscriptionID{ 1 };
+
         std::mutex                             m_subscriptionsMutex;
         std::unordered_map<uint32_t, Receiver> m_subscriptions;
-
-        std::atomic<uint32_t> m_nextSubscriptionID{ 1 };
     };
 }

@@ -142,8 +142,11 @@ namespace Gecko::API::MQTT
             /* Fail (couldn't insert) */
             return std::nullopt;
 
-        if (MQTTAsync_subscribe(m_client, topic.c_str(), 1, &opts) != MQTTASYNC_SUCCESS)
+        if (auto r = MQTTAsync_subscribe(m_client, topic.c_str(), 1, &opts))
         {
+            Logger::Warn() << "[MQTTClient.SubscribeToTopic]: Couldn't subscribe to topic " + topic;
+            Logger::Warn() << "[MQTTClient.SubscribeToTopic]: ~ Code: " + std::to_string(r);
+
             /* Fail (couldn't subscribe) */
             m_subscriptionsMutex.lock();
             m_subscriptions.erase(subscriptionID);
@@ -153,9 +156,9 @@ namespace Gecko::API::MQTT
         }
 
         /*
-            note(ben): taking opts.token and using it as a key here is 
-            technically a race condition. This is explicitely mentioned 
-            as a "gotcha" in the Paho Async MQTT documentation and the 
+            note(ben): taking opts.token and using it as a key here is
+            technically a race condition. This is explicitely mentioned
+            as a "gotcha" in the Paho Async MQTT documentation and the
             behavior is referenced by Paho MQTT Issue 24.
 
             https://github.com/eclipse-paho/paho.mqtt.c/issues/24
@@ -163,7 +166,7 @@ namespace Gecko::API::MQTT
             The issue is that the event may have already been completed
             by the time we are able to use opts.token. So we're given
             this token, but by the time MQTTAsync_subscribe is completed
-            the success/failure event associated with the token may have 
+            the success/failure event associated with the token may have
             already been run.
 
             A potential solution would be to check if the event was
@@ -190,6 +193,74 @@ namespace Gecko::API::MQTT
         }
 
         return subscriptionID;
+    }
+
+    bool MQTTClient::PublishMessage(const std::string& topic,
+                                    const std::span<const uint8_t> message,
+                                    bool retained,
+                                    InflightHandler pubSucc,
+                                    InflightHandler pubFail,
+                                    void* context1,
+                                    void* context2)
+    {
+        const auto callback_published = [](void* context, MQTTAsync_successData5* response) {
+            reinterpret_cast<MQTTClient *>(context)->Callback_Connected(response); };
+
+        const auto callback_publishFailed = [](void* context, MQTTAsync_failureData5* response) {
+            reinterpret_cast<MQTTClient *>(context)->Callback_ConnectionFailed(response); };
+
+        MQTTAsync_responseOptions opts = MQTTAsync_responseOptions_initializer;
+        opts.onSuccess5 = callback_published;
+        opts.onFailure5 = callback_publishFailed;
+        opts.context = this;
+
+        if (auto r = MQTTAsync_send(
+                m_client,
+                topic.c_str(),
+                message.size(),
+                message.data(),
+                1,
+                static_cast<int>(retained),
+                &opts))
+        {
+            /* Fail */
+            Logger::Warn() << "[MQTTClient.PublishMessage]: Couldn't publish message to " + topic;
+            Logger::Warn() << "[MQTTClient.PublishMessage]: ~ Code: " + std::to_string(r);
+            return false;
+        }
+
+        if (!pubSucc && !pubFail)
+            /* No need to set callbacks */
+            return true;
+        
+        /*
+            note(ben): This is a race condition for the same
+            reason as described in SubscribeToTopic
+        */
+
+        m_inflightMutex.lock();
+        auto [it, inserted] = m_inflight.insert({ opts.token, Inflight{
+            .handlerSucc = pubSucc,
+            .handlerFail = pubFail,
+            .context1    = context1,
+            .context2    = context2
+        } });
+        m_inflightMutex.unlock();
+
+        if (!inserted)
+        {
+            Logger::Error() << 
+            "[MQTTClient.PublishMessage]: Couldn't insert "
+            "inflight message for some reason";
+
+            /* 
+                note(ben): We return false, though we _did_ publish the 
+                message, which is strange.
+            */
+            return false;
+        }
+
+        return true;
     }
 
     /*
@@ -242,6 +313,30 @@ namespace Gecko::API::MQTT
     }
 
     void MQTTClient::Callback_SubscriptionFailed(MQTTAsync_failureData5* s)
+    {
+        std::lock_guard lk{ m_inflightMutex };
+
+        if (auto it = m_inflight.find(s->token); it != m_inflight.end())
+        {
+            if (Inflight& inflight = it->second; inflight.handlerFail)
+                inflight.handlerFail(inflight.context1, inflight.context2);
+            m_inflight.erase(it);
+        }
+    }
+
+    void MQTTClient::Callback_Published(MQTTAsync_successData5* s)
+    {
+        std::lock_guard lk{ m_inflightMutex };
+
+        if (auto it = m_inflight.find(s->token); it != m_inflight.end())
+        {
+            if (Inflight& inflight = it->second; inflight.handlerSucc)
+                inflight.handlerSucc(inflight.context1, inflight.context2);
+            m_inflight.erase(it);
+        }
+    }
+
+    void MQTTClient::Callback_PublishFailed(MQTTAsync_failureData5* s)
     {
         std::lock_guard lk{ m_inflightMutex };
 

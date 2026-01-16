@@ -16,6 +16,7 @@ namespace Gecko::API::Server
 
         Logging::Logger::Info() << "[Topics.Start]: Successfully connected to MQTT server";
         Heartbeat().Start();
+        LatestImage().Start();
 
         return true;
     }

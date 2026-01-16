@@ -16,8 +16,8 @@ namespace Gecko::API::Server
             : m_env{ env },
               m_tables{ tables },
               m_usersService       { &tables->Users() },
-              m_sharedImagesService{ &tables->SharedImages(), &tables->Users() },
               m_devicesService     { &topics->Heartbeat(), &tables->Devices(), &tables->Users() },
+              m_sharedImagesService{ &m_devicesService, &topics->LatestImage(), &tables->SharedImages(), &tables->Users() },
               m_friendshipsService { &tables->Friendships(), &tables->Users() } {}
 
         Services           (const Services&) = delete;
@@ -37,8 +37,8 @@ namespace Gecko::API::Server
         Tables* m_tables;
 
         API::Services::UsersService        m_usersService;
-        API::Services::SharedImagesService m_sharedImagesService;
         API::Services::DevicesService      m_devicesService;
+        API::Services::SharedImagesService m_sharedImagesService;
         API::Services::FriendshipsService  m_friendshipsService;
     };
 }

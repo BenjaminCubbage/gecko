@@ -6,9 +6,9 @@ namespace Gecko::API::Topics
     {
         static constexpr const char* HeartbeatTopic{ "devices/+/out/heartbeat" };
 
-        const auto callback_messageArrived = [] (void *c1, void* c2, 
-                                                 std::string_view sv, 
-                                                 std::span<uint8_t> data) {
+        const auto callback_messageReceived = [] (void *c1, void* c2, 
+                                                  std::string_view sv, 
+                                                  std::span<uint8_t> data) {
             reinterpret_cast<DevicesHeartbeatTopic*>(c1)->Callback_MessageReceived(c2, sv, data);
         };
 
@@ -16,10 +16,10 @@ namespace Gecko::API::Topics
             HeartbeatTopic,
             nullptr,
             nullptr,
-            callback_messageArrived,
+            callback_messageReceived,
             this,
             nullptr);
-            
+
         m_startupTime = Clock::now();
     }
 
@@ -48,9 +48,6 @@ namespace Gecko::API::Topics
 
         constexpr int maxTopicLen = prefix.size() + 36 + suffix.size();
         constexpr int minTopicLen = prefix.size() + 1  + suffix.size();
-
-        std::cout << topic << std::endl;
-        std::cout << (char)payload[0] << std::endl;
 
         if (topic.size() < minTopicLen ||
             topic.size() > maxTopicLen ||

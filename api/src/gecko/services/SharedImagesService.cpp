@@ -1,6 +1,4 @@
 #include "gecko/services/SharedImagesService.h"
-#include <iostream>
-#include <type_traits>
 #include "gecko/rand/UUID.h"
 
 #define EXPECT(cond, failResult) do { if (!(cond)) return failResult; } while(0)
@@ -21,8 +19,26 @@ namespace Gecko::API::Services
                == DB::SharedImagesTable::Result::OK, Result::DatabaseError);
         EXPECT(!idempotencyKeyExists, Result::IdempotencyKeyReplayed);
 
-        if (m_dbSharedImages->CreateSharedImage(senderID, receiverID, idempotencyKey, bytes) == DB::SharedImagesTable::Result::OK)
+        if (int sharedImageID{};
+            m_dbSharedImages->CreateSharedImage(
+                senderID, 
+                receiverID, 
+                idempotencyKey, 
+                bytes, 
+                &sharedImageID) == DB::SharedImagesTable::Result::OK)
+        {
+            /* Publish to MQTT topic */
+
+            std::vector<Models::Device> devices;
+            if (m_devicesService->GetUsersDevices(receiverID, &devices) == DevicesService::Result::OK)
+            {
+                for (auto& device : devices)
+                    m_latestImageTopic->PublishLatestImage(
+                        device.deviceID, sharedImageID, bytes);
+            }
+            
             return Result::OK;
+        }
 
         bool senderExists{};
         EXPECT(m_dbUsers->UserExists(senderID, &senderExists) == DB::UsersTable::Result::OK, Result::DatabaseError);

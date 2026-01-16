@@ -21,7 +21,9 @@ namespace Gecko::API::Topics
             Push the latest image and latest image ID to the MQTT server
             as a retained message.
         */
-        void PushLatestImage(int imageID, const std::vector<uint8_t>& image);
+        void PublishLatestImage(int deviceID,
+                                int imageID,
+                                const std::vector<uint8_t>& image);
 
     private:
         void MessageReceivedHandler(std::string_view topic, std::span<uint8_t> payload);

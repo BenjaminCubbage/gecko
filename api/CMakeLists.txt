@@ -113,6 +113,8 @@ set(src_files
     "${src_dir}/gecko/thread/ThreadPool.h"
     "${src_dir}/gecko/topics/DevicesHeartbeatTopic.cpp"
     "${src_dir}/gecko/topics/DevicesHeartbeatTopic.h"
+    "${src_dir}/gecko/topics/LatestImageTopic.cpp"
+    "${src_dir}/gecko/topics/LatestImageTopic.h"
 )
 
 set(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING "" FORCE)

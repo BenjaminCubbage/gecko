@@ -19,7 +19,8 @@ namespace Gecko::API::DB
         Result CreateSharedImage(int senderID,
                                  int receiverID,
                                  const std::string& idempotencyKey,
-                                 const std::vector<uint8_t>& bytes);
+                                 const std::vector<uint8_t>& bytes,
+                                 int* outSharedImageID);
 
         Result IdempotencyKeyExists(const std::string& idempotencyKey,
                                     bool *outExists);
