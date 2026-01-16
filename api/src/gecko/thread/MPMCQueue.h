@@ -7,11 +7,12 @@
 
 namespace Gecko::API::Thread
 {
-    // intent(MPMCQueue): To have a simple lock-free, bounded MPMC queue
-    // for storing the jobs in Scheduler. It can also be adapted for storing
-    // other types of data later if need be.
+    /*
+        intent(MPMCQueue): To have a simple lock-free, bounded MPMC
+        queue for multithreaded use.
 
-    // This is based on a bounded MPMC algorithm by Dmitry Vyukov.
+        This is based on a bounded MPMC algorithm by Dmitry Vyukov.
+    */
     template<typename T, size_t Capacity>
     class MPMCQueue
     {
@@ -42,6 +43,10 @@ namespace Gecko::API::Thread
                 m_jobs[i].seq = i;
         }
 
+        /*
+            Try to dequeue an item. Returns std::nullopt if
+            nothing found.
+        */
         std::optional<T>
         TryDequeue()
         {
@@ -58,9 +63,10 @@ namespace Gecko::API::Thread
                 if (seq > h + 1)
                     continue;
 
-                if (!m_head.compare_exchange_strong(h, h + 1,
-                                                    std::memory_order_relaxed,
-                                                    std::memory_order_relaxed))
+                if (!m_head.compare_exchange_strong(
+                        h, h + 1,
+                        std::memory_order_relaxed,
+                        std::memory_order_relaxed))
                     continue;
 
                 auto data = std::move(job.data);
@@ -69,24 +75,27 @@ namespace Gecko::API::Thread
             }
         }
 
-        // Reserve a slot in the queue, but don't mark it as "ready"
-        // until EnqueueCommit() is called.
+        /*
+            Reserve a slot in the queue, but don't mark it as "ready"
+            until EnqueueCommit() is called.
 
-        // Separating EnqueueReserve and EnqueueCommit allows the
-        // caller to:
-        // (1) Reserve a queue cell (ensuring capacity exists) without
-        //     making it visible to consumers yet, then
-        // (2) perform any prerequisite work (e.g., reserving a
-        //     completion slot) and fully initialize the cell, and finally
-        // (3) publish the cell with a release-store so consumers may
-        //     digest it.
+            Separating EnqueueReserve and EnqueueCommit allows the
+            caller to:
 
-        // Once a slot is reserved, it should be committed hastily; the
-        // head cannot move beyond an uncommitted reservation, and the
-        // queue will eventually halt on the uncommitted enqueue
+            (1) Reserve a queue cell (ensuring capacity exists) without
+                making it visible to consumers yet, then
+            (2) perform any prerequisite work (e.g., reserving a
+                completion slot) and fully initialize the cell, and finally
+            (3) publish the cell with a release-store so consumers may
+                digest it.
 
-        // Thus, only light work--or none at all--should be performed
-        // between reservation and commiting.
+            Once a slot is reserved, it should be committed quickly; the
+            head cannot move beyond an uncommitted reservation, and the
+            queue will eventually halt on the uncommitted enqueue.
+
+            Thus, only light work--or none at all--should be performed
+            between reservation and commiting.
+        */
         bool TryEnqueueAcquire(EnqTicket* outTicket)
         {
             for (;;)
@@ -116,6 +125,9 @@ namespace Gecko::API::Thread
             }
         }
 
+        /*
+            Mark the acquired ticket as "ready".
+        */
         void EnqueuePublish(EnqTicket ticket, T&& data)
         {
             ticket.cell->data = std::forward<T>(data);

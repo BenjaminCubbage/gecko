@@ -4,41 +4,53 @@ namespace Gecko::API::Topics
 {
     void DevicesHeartbeatTopic::Start()
     {
-        static constexpr const char* HeartbeatTopic = "devices/+/out/heartbeat";
+        static constexpr const char* HeartbeatTopic{ "devices/+/out/heartbeat" };
 
-        m_mqttClient->OnMessageReceived(
-            [this] (std::string_view topic, std::span<uint8_t> payload) {
-                MessageReceivedHandler(topic, payload);
-            });
+        const auto callback_messageArrived = [] (void *c1, void* c2, 
+                                                 std::string_view sv, 
+                                                 std::span<uint8_t> data) {
+            reinterpret_cast<DevicesHeartbeatTopic*>(c1)->Callback_MessageReceived(c2, sv, data);
+        };
 
-        m_mqttClient->SubscribeToTopic(HeartbeatTopic, [] {}, [] (int) {});
-        m_epochStartup = EpochNow();
+        m_mqttClient->SubscribeToTopic(
+            HeartbeatTopic,
+            nullptr,
+            nullptr,
+            callback_messageArrived,
+            this,
+            nullptr);
+            
+        m_startupTime = Clock::now();
     }
 
-    DevicesHeartbeatTopic::Status
+    DevicesHeartbeatTopic::DeviceStatus
     DevicesHeartbeatTopic::GetDeviceStatus(const std::string& deviceID)
     {
-        std::shared_lock lk{ m_epochDevicesLastSeenMutex };
-        const auto it = m_epochDevicesLastSeen.find(deviceID);
+        std::shared_lock lk{ m_devicesLastSeenMutex };
+        const auto it = m_devicesLastSeen.find(deviceID);
 
-        if (it == m_epochDevicesLastSeen.end())
-            return EpochNow() - m_epochStartup <= GracePeriod
-                ? Status::Pending
-                : Status::Offline;
+        if (it == m_devicesLastSeen.end())
+            return Clock::now() - m_startupTime <= GracePeriod
+                ? DeviceStatus::Pending
+                : DeviceStatus::Offline;
 
-        return EpochNow() - it->second <= GracePeriod
-            ? Status::Online
-            : Status::Offline;
+        return Clock::now() - it->second <= GracePeriod
+            ? DeviceStatus::Online
+            : DeviceStatus::Offline;
     }
 
-    void DevicesHeartbeatTopic::MessageReceivedHandler(std::string_view topic,
-                                                       std::span<uint8_t> payload)
+    void DevicesHeartbeatTopic::Callback_MessageReceived(void* context,
+                                                         std::string_view topic,
+                                                         std::span<uint8_t> payload)
     {
         constexpr auto prefix = std::string_view("devices/");
         constexpr auto suffix = std::string_view("/out/heartbeat");
 
         constexpr int maxTopicLen = prefix.size() + 36 + suffix.size();
         constexpr int minTopicLen = prefix.size() + 1  + suffix.size();
+
+        std::cout << topic << std::endl;
+        std::cout << (char)payload[0] << std::endl;
 
         if (topic.size() < minTopicLen ||
             topic.size() > maxTopicLen ||
@@ -50,7 +62,7 @@ namespace Gecko::API::Topics
 
         std::string_view deviceID = topic.substr(prefix.size(), topic.size() - prefix.size() - suffix.size());
 
-        std::unique_lock lk{ m_epochDevicesLastSeenMutex };
-        m_epochDevicesLastSeen.insert_or_assign(std::string(deviceID), EpochNow());
+        std::unique_lock lk{ m_devicesLastSeenMutex };
+        m_devicesLastSeen.insert_or_assign(std::string(deviceID), Clock::now());
     }
 }

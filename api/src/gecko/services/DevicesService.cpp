@@ -12,7 +12,7 @@ namespace Gecko::API::Services
         std::string deviceIDStr = std::to_string(deviceID);
         auto status = m_devicesHeartbeatTopic->GetDeviceStatus(deviceIDStr);
 
-        if (status == Topics::DevicesHeartbeatTopic::Status::Online)
+        if (status == Topics::DevicesHeartbeatTopic::DeviceStatus::Online)
         {
             *outStatus = DeviceStatus::Online;
             return Result::OK;
@@ -33,11 +33,11 @@ namespace Gecko::API::Services
 
         switch (status)
         {
-            case Topics::DevicesHeartbeatTopic::Status::Offline:
+            case Topics::DevicesHeartbeatTopic::DeviceStatus::Offline:
                 *outStatus = DeviceStatus::Offline;
                 break;
 
-            case Topics::DevicesHeartbeatTopic::Status::Pending:
+            case Topics::DevicesHeartbeatTopic::DeviceStatus::Pending:
             default:
                 *outStatus = DeviceStatus::Pending;
                 break;

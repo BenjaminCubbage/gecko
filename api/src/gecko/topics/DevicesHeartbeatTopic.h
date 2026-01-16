@@ -10,51 +10,71 @@
 
 namespace Gecko::API::Topics
 {
+    /*
+        intent(DevicesHeartbeatTopic): To subscribe to the
+        devices/+/out/heartbeat topic and store which devices
+        were recently online in a std::unordered_map.
+
+        This can be used to e.g. display to users which of
+        another user's devices are currently connected to the
+        internet and ready to receive a shared image.
+    */
     class DevicesHeartbeatTopic
     {
     public:
-        // Offline: No heartbeat in grace period
-        // Online:  Heartbeat in grace period
-        // Pending: No heartbeat yet, but system started up recently
-        enum class Status
+        using Clock = std::chrono::system_clock;
+
+        /*
+            If a device does not send a message within this amount
+            of time, it is considered offline.
+        */
+        static constexpr std::chrono::minutes GracePeriod{ 25 };
+
+        /*
+            Pending: No heartbeat yet, but system started up recently
+            Offline: No heartbeat within grace period
+            Online:  Received a heartbeat within the grace period
+        */
+        enum class DeviceStatus
         {
+            Pending,
             Offline,
             Online,
-            Pending
         };
 
         DevicesHeartbeatTopic(MQTT::MQTTClient* mqttClient)
-            : m_mqttClient(std::move(mqttClient)) {}
+            : m_mqttClient(mqttClient) {}
 
+        /*
+            Initialize and start listening for heartbeats.
+        */
         void Start();
 
-        Status GetDeviceStatus(const std::string& deviceID);
+        /*
+            Get the status of the associated device. Use this only
+            after calling Start().
+        */
+        DeviceStatus GetDeviceStatus(const std::string& deviceID);
 
     private:
         struct SVTransparentHash
         {
             using is_transparent = void;
-            size_t operator()(std::string_view sv)    const { return std::hash<std::string_view>{}(sv);  }
-            size_t operator()(const std::string& str) const { return std::hash<std::string_view>{}(str); }
+            size_t operator()(std::string_view sv)   const { return std::hash<std::string_view>{}(sv); }
+            size_t operator()(const std::string& sv) const { return std::hash<std::string_view>{}(sv); }
         };
 
-        void MessageReceivedHandler(std::string_view topic, std::span<uint8_t> payload);
-
-        static inline std::chrono::seconds EpochNow()
-        {
-            return std::chrono::duration_cast<std::chrono::seconds>(
-                std::chrono::system_clock::now().time_since_epoch());
-        }
+        void Callback_MessageReceived(void* context, 
+                                      std::string_view topic, 
+                                      std::span<uint8_t> payload);
 
         MQTT::MQTTClient* m_mqttClient;
-        std::shared_mutex m_epochDevicesLastSeenMutex;
+        std::shared_mutex m_devicesLastSeenMutex;
         std::unordered_map<
             std::string,
-            std::chrono::seconds,
+            std::chrono::time_point<Clock>,
             SVTransparentHash,
-            std::equal_to<>> m_epochDevicesLastSeen;
-        std::chrono::seconds m_epochStartup;
-
-        static constexpr std::chrono::minutes GracePeriod{ 25 };
+            std::equal_to<>> m_devicesLastSeen;
+        std::chrono::time_point<Clock> m_startupTime;
     };
 }

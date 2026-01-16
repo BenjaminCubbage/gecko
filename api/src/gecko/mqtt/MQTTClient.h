@@ -1,11 +1,11 @@
 #pragma once
 #include <atomic>
-#include <condition_variable>
-#include <functional>
 #include <mutex>
 #include <span>
 #include <string>
 #include <string_view>
+#include <unordered_map>
+#include <utility>
 #include <vector>
 #include "MQTTAsync.h"
 
@@ -14,56 +14,77 @@ namespace Gecko::API::MQTT
     class MQTTClient
     {
     public:
-        MQTTClient(std::string address, std::string brokerCertPath, std::string username, std::string password)
+        using ReceivedHandler = void (*)(void* context1, void* context2, std::string_view topic, std::span<uint8_t> message);
+        using InflightHandler = void (*)(void* context1, void* context2);
+
+        enum class ConnectionStatus
+        {
+            NotConnected,
+            Connecting,
+            Connected,
+            ConnectionFailed
+        };
+
+        MQTTClient(std::string address,
+                   std::string brokerCertPath,
+                   std::string username,
+                   std::string password)
             : m_address(std::move(address)),
               m_brokerCertPath(std::move(brokerCertPath)),
               m_username(std::move(username)),
               m_password(std::move(password)) {}
 
-        void Connect();
+        bool Connect();
 
         bool ConnectSync();
 
-        void SubscribeToTopic(const std::string& topic, std::function<void()> success, std::function<void(int)> failure);
+        std::optional<uint32_t> SubscribeToTopic(const std::string& topic,
+                                                 InflightHandler subSucc,
+                                                 InflightHandler subFail,
+                                                 ReceivedHandler messageReceived,
+                                                 void* context1 = nullptr,
+                                                 void* context2 = nullptr);
 
-        void OnMessageReceived(std::function<void(std::string_view, std::span<uint8_t>)> handler);
-        
     private:
-        struct SubscribeContext
+        struct Receiver
         {
-            std::function<void()> onSuccess;
-            std::function<void(int)> onFailure;
+            ReceivedHandler handler;
+            void* context1;
+            void* context2;
         };
 
-        void HandleConnect(MQTTAsync_successData* response);
+        struct Inflight
+        {
+            InflightHandler handlerSucc;
+            InflightHandler handlerFail;
+            void* context1;
+            void* context2;
+        };
 
-        void HandleConnectFailure(MQTTAsync_failureData* response);
+        void Callback_Connected(MQTTAsync_successData5*);
+        void Callback_ConnectionFailed(MQTTAsync_failureData5*);
+        void Callback_ConnectionLost(char*);
+        void Callback_Subscribed(MQTTAsync_successData5* s);
+        void Callback_SubscriptionFailed(MQTTAsync_failureData5* s);
+        int Callback_MessageReceived(char *topicName,
+                                     int topicLen,
+                                     MQTTAsync_message *message);
 
-        void HandleConnectionLost(char* cause);
-
-        int HandleMessageReceived(char *topicName, int topicLen, MQTTAsync_message *message);
-
-        // note (ben): It's hacky, but connectedOrFailedMutex guards
-        // m_connected AND m_connectFailed
-        std::condition_variable m_connectedOrFailedSignal;
-        std::mutex              m_connectedOrFailedMutex;
-        bool m_connected{ false };
-        bool m_connectFailed{ false };
-        int  m_connectFailedCode{ 0 };
-
-        std::mutex                                                             m_messageReceivedHandlersMutex;
-        std::vector<std::function<void(std::string_view, std::span<uint8_t>)>> m_messageReceivedHandlers;
-
-        std::mutex                                m_subscribeHandlersMutex;
-        std::unordered_map<int, SubscribeContext> m_subscribeHandlers{ 0 };
-        int                                       m_subscribeKeyIncrementer{ 0 };
-
-        MQTTAsync m_client;
         std::string m_address;
         std::string m_brokerCertPath;
         std::string m_username;
         std::string m_password;
 
-        static thread_local MQTTAsync_failureData s_genericFailure;
+        MQTTAsync m_client;
+
+        std::atomic<ConnectionStatus> m_connectionStatus{ ConnectionStatus::NotConnected };
+
+        std::mutex                                    m_inflightMutex;
+        std::unordered_map<MQTTAsync_token, Inflight> m_inflight;
+
+        std::mutex                             m_subscriptionsMutex;
+        std::unordered_map<uint32_t, Receiver> m_subscriptions;
+
+        std::atomic<uint32_t> m_nextSubscriptionID{ 1 };
     };
 }
