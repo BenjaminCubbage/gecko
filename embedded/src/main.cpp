@@ -24,6 +24,13 @@ inline constexpr uint16_t RGB_Yel = 0b010;
 inline constexpr uint16_t RGB_Whi = 0b111;
 inline constexpr uint16_t RGB_Bla = 0b000;
 
+int WakeUpIn(int minutes)
+{
+    sleep_ms(50);
+    inky.sleep(minutes);
+    return 0;
+}
+
 int main()
 {
     using namespace Gecko::Embedded;
@@ -50,10 +57,7 @@ int main()
         !MQTTConn::ConnectSync() ||
         !MQTTSub::Init(deviceID) ||
         !MQTTPub::Init(deviceID))
-    {
-        inky.sleep();
-        return 1;
-    }
+        return WakeUpIn(5);
 
     char oldLatestImageID[101]{};
     const char* newLatestImageID;
@@ -67,10 +71,7 @@ int main()
         &oldLatestImageIDLen);
 
     if (!MQTTSub::GetLatestImageIDSync(10, &newLatestImageID, &newLatestImageIDLen))
-    {
-        inky.sleep();
-        return 1;
-    }
+        return WakeUpIn(5);
 
     MQTTPub::PublishHeartbeatSync();
 
@@ -78,12 +79,8 @@ int main()
     Log_Info("Main: New image ID: %s\n", newLatestImageID);
 
     if (std::strcmp(oldLatestImageID, newLatestImageID) == 0)
-    {
-        Log_Info("Main: No new image\n");
-        sleep_ms(90);
-        inky.sleep();
-        return 1;
-    }
+        /* No new image. */
+        return WakeUpIn(5);
 
     const char* imageBuffer;
     unsigned int imageSize;
@@ -91,10 +88,7 @@ int main()
     if (!MQTTSub::GetLatestImageSync(10, &imageBuffer, &imageSize) || !imageSize)
     {
         Log_Error("Main: Waited for image but it never arrived\n");
-
-        sleep_ms(90);
-        inky.sleep();
-        return 1;
+        return WakeUpIn(5);
     }
 
     std::vector<uint8_t> compressed(imageSize);
@@ -106,10 +100,7 @@ int main()
     if (!compressedBitonal)
     {
         Log_Error("Main: Could't initialize CompressedBitonal object\n");
-
-        sleep_ms(90);
-        inky.sleep();
-        return 1;
+        return WakeUpIn(5);
     }
 
     auto writeSpan = [] (void* c1, void* c2,
@@ -146,11 +137,8 @@ int main()
 
     if (!decompressed)
     {
-        Log_Error("Main: Couldn't decompress bitonal\n");
-
-        sleep_ms(90);
-        inky.sleep();
-        return 1;
+        Log_Error("Main: Failed to decompress bitonal\n");
+        return WakeUpIn(5);
     }
 
     inky.update(true);
@@ -161,6 +149,5 @@ int main()
         newLatestImageIDLen + 1,
         true);
 
-    inky.sleep();
-    return 0;
+    return WakeUpIn(5);
 }
