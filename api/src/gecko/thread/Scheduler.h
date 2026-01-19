@@ -13,9 +13,15 @@
 
 namespace Gecko::API::Thread
 {
-    // intent(Scheduler): To provide a simple way to schedule tasks
-    // to be run in a thread pool after a given duration of time
-    // has elapsed.
+    /*
+        intent(Scheduler): To provide a simple way to schedule tasks
+        to be run in a thread pool after a given duration of time
+        has elapsed.
+
+        Basically, there's the thread pool, which runs the tasks, and
+        then there's the scheduler thread, whose only job it is is to
+        wait for tasks to be ready to run.
+    */
     class Scheduler
     {
     public:
@@ -66,15 +72,58 @@ namespace Gecko::API::Thread
         Scheduler           (const Scheduler&) = delete;
         Scheduler& operator=(const Scheduler&) = delete;
 
+        /*
+            Start the scheduler if currently stopped and joined.
+
+            Most of these methods assume the thread pool is actively
+            running. If it isn't, nothing horrible should happen, but
+            the queue will eventually fill up and new tasks will be
+            rejected.
+        */
         Result Start();
+
+        /*
+            Schedule job after a set amount of time.
+        */
         Result ScheduleJobAfter(std::chrono::nanoseconds delay, std::function<void ()>&& func, TaskHandle *outTask);
+
+        /*
+            Schedule a job to run at the given time point.
+        */
         Result ScheduleJobAt(TimePoint at, std::function<void ()>&& func, TaskHandle *outTask);
+
+        /*
+            Cancel the associated job, if it isn't yet completed. If it
+            is currently running, do nothing.
+        */
         Result CancelJob(const TaskHandle& task);
+
+        /*
+            Cancel the associated job, if it isn't yet completed. If it
+            is currently running in the thread pool, wait for it to
+            complete.
+        */
         Result CancelJobOrWait(const TaskHandle& task);
+
+        /*
+            Stop the scheduler once all tasks are pushed to the pool.
+        */
         inline Result ShutdownSlow() { return Shutdown(false); }
+
+        /*
+            Stop the scheduler and cancel all queued tasks.
+        */
         inline Result ShutdownFast() { return Shutdown(true); }
+
+        /*
+            Join the scheduler to the current thread. This must be
+            called before attempting to restart the scheduler.
+
+            This does not wait for all jobs to complete; it waits for
+            all threads to be queued to the thread pool, at which point
+            the scheduler thread will be ready to join.
+        */
         Result Join();
-        static inline TimePoint Now() { return TimePoint::clock::now(); }
 
     private:
         Result Shutdown(bool fast);

@@ -21,12 +21,8 @@ namespace Gecko::API::Rand
         blocks[6] = static_cast<uint16_t>(r2 >> 32);
         blocks[7] = static_cast<uint16_t>(r2 >> 48);
 
-        // RFC-9562
-        // note(ben): Do we _need_ to be RFC-9562 compliant? Not _really_. But
-        // we might as well.
-
-        blocks[3] = (blocks[3] & 0x0FFF) | 0x4000; // V4, pseudorandom
-        blocks[4] = (blocks[4] & 0x3FFF) | 0x8000; // Variant
+        blocks[3] = (blocks[3] & 0x0FFF) | 0x4000; /* V4 */
+        blocks[4] = (blocks[4] & 0x3FFF) | 0x8000; /* Variant */
 
         std::string result;
         result.reserve(UUIDLength);
@@ -58,8 +54,6 @@ namespace Gecko::API::Rand
     bool UUID::IsValidV4UUID(const std::string& str)
     {
         const auto isHexDigit = [] (char c) {
-            // note(ben): It is technically not guaranteed that C++ uses
-            // ascii, but this works in any sane implementation
             return (c >= '0' && c <= '9') ||
                    (c >= 'a' && c <= 'f') ||
                    (c >= 'A' && c <= 'F');

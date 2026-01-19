@@ -112,8 +112,7 @@ namespace Gecko::API::Thread
         if (!m_schedulerThread || !m_schedulerThread->joinable())
             return Result::JoinDenied_AlreadyJoined;
 
-        assert(m_schedulerThread->get_id() != std::this_thread::get_id() &&
-                "Join() should never be called from the scheduler thread.");
+        assert(m_schedulerThread->get_id() != std::this_thread::get_id());
 
         auto thread = std::move(*m_schedulerThread);
         m_schedulerThread.reset();

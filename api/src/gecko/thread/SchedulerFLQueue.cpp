@@ -25,11 +25,13 @@ namespace Gecko::API::Thread
 
         if (!m_freeHead)
         {
-            // note(ben): It is 3:00 in the morning and I just need
-            // to get this done, so this is a super naive implementation.
-
-            // Find all jobs that are completed but not yet marked as
-            // free and mark them as free.
+            /*
+                note(ben): It is 3AM and I just need to get this done, so 
+                this is a super naive "good enough" implementation.
+                
+                Find all jobs that are completed but not yet marked as
+                free and mark them as free.
+            */
             for (size_t i = 0; i < m_end; ++i)
             {
                 if (auto& task = m_tasks[i];
@@ -39,8 +41,8 @@ namespace Gecko::API::Thread
                 }
             }
 
-            // No jobs were completed; we really are out of room
             if (!m_freeHead)
+                /* We really _are_ out of room. */
                 return false;
         }
 
@@ -105,9 +107,11 @@ namespace Gecko::API::Thread
         if (m_threadPool->ScheduleJob(task->func, &poolHandle) !=
             ThreadPool::Result::OK) [[unlikely]]
         {
-            // todo(ben): Right now, we just destroy tasks that couldn't
-            // be scheduled. In the future we might consider some sort of
-            // retry system.
+            /*
+                todo(ben): Right now, we just destroy tasks that couldn't
+                be scheduled. In the future we might consider some sort of
+                retry system.
+            */
 
             RemoveTask(handle);
             return false;

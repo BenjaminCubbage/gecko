@@ -11,6 +11,15 @@
 
 namespace Gecko::API::MQTT
 {
+    /*
+        intent(MQTTClient): I needed a thread-safe wrapper around
+        Paho MQTT's C-style API.
+
+        This class is designed to keep track of inflight requests
+        and notify consumers of incoming messages. When subscribing
+        to a topic, a consumer can specify a handler that will only
+        be called for incoming messages on that topic.
+    */
     class MQTTClient
     {
     public:
@@ -34,10 +43,33 @@ namespace Gecko::API::MQTT
               m_username(std::move(username)),
               m_password(std::move(password)) {}
 
+        /*
+            Connect to the server.
+
+            Returns true if the connection process was commenced.
+            Otherwise, false.
+        */
         bool Connect();
 
+        /*
+            Connect to the server synchronously.
+
+            Returns true if the connection process was completed
+            successfully.
+            Otherwise, false.
+        */
         bool ConnectSync();
 
+        /*
+            Try to subscribe to a topic.
+
+            messageReceived is called when an incoming message matches
+            the associated subscribed topic.
+
+            Returns a handle to the subscription if commenced.
+            Otherwise, std::nullopt. In this case, subFail will not be
+            called.
+        */
         std::optional<uint32_t> SubscribeToTopic(const std::string& topic,
                                                  InflightHandler subSucc,
                                                  InflightHandler subFail,
@@ -45,6 +77,12 @@ namespace Gecko::API::MQTT
                                                  void* context1 = nullptr,
                                                  void* context2 = nullptr);
 
+        /*
+            Try to publish a message.
+
+            Returns true if the publishing process was commenced.
+            Otherwise, false.
+        */
         bool PublishMessage(const std::string& topic,
                             const std::span<const uint8_t> message,
                             bool retained,

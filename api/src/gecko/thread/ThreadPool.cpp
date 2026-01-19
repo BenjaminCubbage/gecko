@@ -37,9 +37,11 @@ namespace Gecko::API::Thread
             return Result::StartDenied_NotStopped;
         }
 
-        // note(ben): From here, we must leave "Starting" no matter what
-        // (success or failure), and we must notify_all() so the destructor
-        // can't hang.
+        /*
+            note(ben): From here, we must leave "Starting" no matter what
+            (success or failure), and we must notify_all() so the destructor
+            can't hang.
+        */
         try
         {
             for (size_t i = 0; i < m_threads.size(); ++i)
@@ -47,8 +49,10 @@ namespace Gecko::API::Thread
         }
         catch (...)
         {
-            // note(ben): This is a best-effort rollback: Perform roughly
-            // the work of Stop(), except don't touch the threads that threw.
+            /*
+                note(ben): This is a best-effort rollback: Perform roughly
+                the work of Stop(), except don't touch the threads that threw.
+            */
             m_mainState.store(MainState::Stopping, std::memory_order_release);
             m_mainState.notify_all();
 
@@ -102,11 +106,11 @@ namespace Gecko::API::Thread
             return Result::ScheduleFailed_QueueFull;
 
         size_t ticketID{ m_nextTicketID.fetch_add(1) };
-        size_t ticketIndex{ ticketID & (MaxQueueSize - 1) };
+        size_t ticketIndex{ ticketID & (QueueSize - 1) };
 
         for (;; ++ticketIndex)
         {
-            size_t swap = InflightTicket_Free;
+            size_t swap = NPos;
             if (m_inflightTickets[ticketIndex].compare_exchange_weak(
                 swap, ticketID, std::memory_order_relaxed, std::memory_order_relaxed))
                 break;
@@ -149,11 +153,16 @@ namespace Gecko::API::Thread
                 t.reset();
             }
 
-            // Publish join completion first (prevents Start() from seeing Stopped early)
+            /*
+                Publish join completion first (prevents Start() from seeing 
+                Stopped early)
+            */
             m_joinState.store(JoinState::Joined, std::memory_order_release);
             m_joinState.notify_all();
 
-            // Then publish stopped (Start() gates on this)
+            /*
+                Then publish stopped (Start() gates on this)
+            */
             m_mainState.store(MainState::Stopped, std::memory_order_release);
             m_mainState.notify_all();
 
@@ -182,7 +191,7 @@ namespace Gecko::API::Thread
                     try { job->func(); } catch (...) { }
 
                     m_inflightTickets[job->handle.ticketIndex].store(
-                        InflightTicket_Free, std::memory_order_release);
+                        NPos, std::memory_order_release);
 
                     m_inflightTickets[job->handle.ticketIndex].notify_all();
 
