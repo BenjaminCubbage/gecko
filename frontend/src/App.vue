@@ -27,7 +27,7 @@ import { FriendsStore } from '@/core/store/FriendsStore.js';
 import { Keys } from '@/core/store/Keys.js';
 import { SessionStore } from '@/core/store/SessionStore.js';
 
-const selectedTab = ref('friends');
+const selectedTab = ref('canvas');
 const session = new SessionStore();
 const friends = new FriendsStore();
 

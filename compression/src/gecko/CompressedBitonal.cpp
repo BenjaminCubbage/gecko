@@ -62,9 +62,9 @@ namespace Gecko::Compression
 
 		auto read32 = [&](size_t offset) -> uint32_t {
 			return (static_cast<uint32_t>(buffer[offset + 0])) |
-				(static_cast<uint32_t>(buffer[offset + 1]) << 8) |
-				(static_cast<uint32_t>(buffer[offset + 2]) << 16) |
-				(static_cast<uint32_t>(buffer[offset + 3]) << 24);
+				   (static_cast<uint32_t>(buffer[offset + 1]) << 8) |
+				   (static_cast<uint32_t>(buffer[offset + 2]) << 16) |
+				   (static_cast<uint32_t>(buffer[offset + 3]) << 24);
 			};
 
 		const uint32_t headerSize = read32(2);

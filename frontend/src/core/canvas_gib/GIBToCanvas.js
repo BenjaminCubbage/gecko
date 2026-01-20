@@ -17,28 +17,32 @@ class GIBToCanvas {
             Module.CompressedBitonal_StorageFormat.GIB
         );
 
-        const uncompressedBitonal = Module.Decoder.TryDecompressBitonal(compressedBitonal);
-        const uncompressedBytes   = uncompressedBitonal.GetBGR();
+        const rgba = new Uint8ClampedArray(compressedBitonal.GetWidth() *
+                                           compressedBitonal.GetHeight() * 4);
 
-        // BGR -> RGBA
-        const pixelCount = uncompressedBytes.size() / 3;
-        const rgba = new Uint8ClampedArray(pixelCount * 4);
-        for (let i = 0; i < pixelCount; ++i) {
-            rgba[i * 4 + 0] = uncompressedBytes.get(i * 3 + 0);
-            rgba[i * 4 + 1] = uncompressedBytes.get(i * 3 + 1);
-            rgba[i * 4 + 2] = uncompressedBytes.get(i * 3 + 2);
-            rgba[i * 4 + 3] = 255;
-        }
+        const cb = Module.addFunction((y, xStart, xEnd, white) => {
+            let start = compressedBitonal.GetWidth() * y + xStart;
+            let end   = start + xEnd - xStart;
 
-        const width  = uncompressedBitonal.GetWidth();
-        const height = uncompressedBitonal.GetHeight();
+            for (let i = start; i <= end; ++i) {
+                rgba[i * 4 + 0] = white ? 255 : 0;
+                rgba[i * 4 + 1] = rgba[i * 4 + 0];
+                rgba[i * 4 + 2] = rgba[i * 4 + 0];
+                rgba[i * 4 + 3] = 255;
+            }
+        }, "viiii");
+
+        Module.Decoder.TryDecompressBitonal(compressedBitonal, cb);
+        Module.removeFunction(cb);
+
+
+        const width     = compressedBitonal.GetWidth();
+        const height    = compressedBitonal.GetHeight();
 
         const imageData = new ImageData(rgba, width, height);
 
         ctx.putImageData(imageData, 0, 0);
 
-        uncompressedBytes.delete();
-        uncompressedBitonal.delete();
         compressedBitonal.delete();
         compressedBytes.delete();
     }

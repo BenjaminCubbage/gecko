@@ -26,6 +26,9 @@ set(inc_files
     "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/Decoder.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/Encoder.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/UncompressedBitonal.h")
+    
+set(compression_wasm_bindings_src 
+    "${CMAKE_CURRENT_SOURCE_DIR}/bindings/WasmBindings.cpp")
 
 add_library(compression_lib STATIC)
 target_sources(compression_lib PRIVATE ${src_files} ${inc_files})
@@ -46,6 +49,7 @@ add_custom_command(
     DEPENDS
         ${src_files}
         ${inc_files}
+        ${compression_wasm_bindings_src}
 
     OUTPUT
         ${compression_artifacts_dir}/compression.js
@@ -56,10 +60,12 @@ add_custom_command(
     COMMAND
         cd ${compression_artifacts_dir} &&
         ${emcc_script_path} --std=c++20 -O3
+            -sALLOW_TABLE_GROWTH=1
+            -sEXPORTED_RUNTIME_METHODS=addFunction,removeFunction
             -I "${CMAKE_CURRENT_SOURCE_DIR}/src"
             --bind
                 ${src_files}
-                "${CMAKE_CURRENT_SOURCE_DIR}/bindings/WasmBindings.cpp"
+                ${compression_wasm_bindings_src}
             -o compression.js
 )
 

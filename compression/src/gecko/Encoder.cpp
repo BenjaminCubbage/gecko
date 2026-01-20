@@ -2,7 +2,6 @@
 #include "gecko/CodeWords.h"
 #include <unordered_map>
 
-
 namespace Gecko::Compression
 {
 	std::optional<CompressedBitonal> Encoder::TryCompressBitonal(const UncompressedBitonal& uncompressed)
@@ -17,7 +16,6 @@ namespace Gecko::Compression
 
 		return CompressedBitonal{ std::move(bs), uncompressed.GetWidth(), uncompressed.GetHeight() };
 	}
-
 
 	void Encoder::EncodeRow(const UncompressedBitonal& uncompressed, BitStream& bs, size_t pixelY)
 	{
@@ -56,13 +54,11 @@ namespace Gecko::Compression
 		}
 	}
 
-
 	void Encoder::EncodePass(BitStream& bs)
 	{
 		const auto& prefix = CodeWords::LookupModePrefixFromType(CodeWords::ModePrefixType::Pass);
 		bs.PushBack(prefix.prefixBits, prefix.prefixLengthBits);
 	}
-
 
 	void Encoder::EncodeVerticalMode(BitStream& bs, int a1MinusB1)
 	{
@@ -85,7 +81,6 @@ namespace Gecko::Compression
 		const auto& prefix = CodeWords::LookupModePrefixFromType(it->second);
 		bs.PushBack(prefix.prefixBits, prefix.prefixLengthBits);
 	}
-
 
 	void Encoder::EncodeHorizontalMode(BitStream& bs, int a1MinusA0, int a2MinusA1, bool a0IsWhite)
 	{
@@ -116,7 +111,6 @@ namespace Gecko::Compression
 		}
 	}
 
-
 	int Encoder::FindNextChangedInRowOfColor(const UncompressedBitonal& uncompressed, int vPixelX, int vPixelY, bool white)
 	{
 		int changedX = FindNextChangedInRow(uncompressed, vPixelX, vPixelY);
@@ -125,7 +119,6 @@ namespace Gecko::Compression
 			? changedX
 			: FindNextChangedInRow(uncompressed, changedX, vPixelY);
 	}
-
 
 	int Encoder::FindNextChangedInRow(const UncompressedBitonal& uncompressed, int vPixelX, int vPixelY)
 	{
@@ -138,7 +131,6 @@ namespace Gecko::Compression
 		/* We can return a value outside bounds because we're returning a virtual coordinate. */
 		return static_cast<int>(uncompressed.GetWidth());
 	}
-
 
 	bool Encoder::IsCoordinateWhite(const UncompressedBitonal& uncompressed, int vPixelX, int vPixelY)
 	{

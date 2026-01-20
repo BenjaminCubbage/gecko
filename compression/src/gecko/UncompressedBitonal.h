@@ -10,7 +10,7 @@ namespace Gecko::Compression
 {
 	class UncompressedBitonal
 	{
-	  public:
+	public:
 		enum class StorageFormat { BMPStrict24 /* Bitmap file */ };
 
 		UncompressedBitonal(std::vector<uint8_t> bgr, size_t width, size_t height)
@@ -37,7 +37,7 @@ namespace Gecko::Compression
 		static std::optional<std::vector<uint8_t>> TryWriteToBuffer(const UncompressedBitonal& uncompressed, StorageFormat format);
 		static std::optional<UncompressedBitonal> TryReadFromBuffer(const std::vector<uint8_t>& buffer, StorageFormat format);
 
-	  private:
+	private:
 		static constexpr int HeaderSize = 54;
 
 		std::vector<uint8_t> bgr;

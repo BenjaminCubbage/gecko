@@ -20,6 +20,7 @@ namespace Gecko::Compression::WasmBindings
         /*
          *  UncompressedBitonal
          */
+
         emscripten::enum_<UncompressedBitonal::StorageFormat>("UncompressedBitonal_StorageFormat")
             .value("BMPStrict24", UncompressedBitonal::StorageFormat::BMPStrict24);
 
@@ -36,24 +37,47 @@ namespace Gecko::Compression::WasmBindings
         /*
          *  CompressedBitonal
          */
+
         emscripten::enum_<CompressedBitonal::StorageFormat>("CompressedBitonal_StorageFormat")
             .value("GIB", CompressedBitonal::StorageFormat::GIB);
 
         emscripten::class_<CompressedBitonal>("CompressedBitonal")
             .class_function("TryWriteToBuffer", &CompressedBitonal::TryWriteToBuffer)
-            .class_function("TryReadFromBuffer", &CompressedBitonal::TryReadFromBuffer);
+            .class_function("TryReadFromBuffer", &CompressedBitonal::TryReadFromBuffer)
+            .function("GetWidth", &CompressedBitonal::GetWidth)
+            .function("GetHeight", &CompressedBitonal::GetHeight);;
 
         emscripten::register_optional<CompressedBitonal>();
 
         /*
          *  Decoder
          */
+
         emscripten::class_<Decoder>("Decoder")
-            .class_function("TryDecompressBitonal", &Decoder::TryDecompressBitonal);
+            .class_function("TryDecompressBitonal",
+                (void (*)(CompressedBitonal, int)) [] (CompressedBitonal compressed, int cbIntPtr) {
+                    auto cb = reinterpret_cast<void (*)(int, int, int, int)>(cbIntPtr);
+
+                    auto cbWrapper = [] (void* cbContext, 
+                                         void*,
+                                         size_t pixelY,
+                                         size_t pixelXStart,
+                                         size_t pixelXEnd,
+                                         bool white) {
+                        ((decltype(cb))cbContext)(pixelY, pixelXStart, pixelXEnd, white);
+                    };
+
+                    Decoder::TryDecompressBitonal(compressed, Decoder::Drawer{
+                        .handler  = cbWrapper,
+                        .context1 = (void*)cb,
+                        .context2 = nullptr
+                    });
+                });
 
         /*
          *  Encoder
          */
+
         emscripten::class_<Encoder>("Encoder")
             .class_function("TryCompressBitonal", &Encoder::TryCompressBitonal);
     }

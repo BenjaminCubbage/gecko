@@ -12,16 +12,13 @@ namespace Gecko::Compression
 		enum class StorageFormat { GIB /* Gecko Image Binary, in-house format */ };
 
 		CompressedBitonal(BitStream bitstream, size_t width, size_t height)
-			: bitstream(bitstream), width(width), height(height) {
-		}
+			: bitstream(bitstream), width(width), height(height) {}
 
 		CompressedBitonal(const CompressedBitonal& other)
-			: bitstream(other.bitstream), width(other.width), height(other.height) {
-		}
+			: bitstream(other.bitstream), width(other.width), height(other.height) {}
 
 		CompressedBitonal(CompressedBitonal&& other) noexcept
-			: bitstream(std::move(other.bitstream)), width(other.width), height(other.height) {
-		}
+			: bitstream(std::move(other.bitstream)), width(other.width), height(other.height) {}
 
 		CompressedBitonal& operator=(const CompressedBitonal& other) = default;
 		~CompressedBitonal() = default;
@@ -33,7 +30,6 @@ namespace Gecko::Compression
 
 		static std::optional<std::vector<std::uint8_t>> TryWriteToBuffer(const CompressedBitonal& compressed, StorageFormat format);
 		static std::optional<CompressedBitonal> TryReadFromBuffer(const std::vector<std::uint8_t>& buffer, StorageFormat format);
-
 
 	  private:
 		BitStream bitstream;

@@ -1,9 +1,3 @@
-if(WIN32)
-    set(shell_command cmd /c)
-else()
-    set(shell_command bash -c)
-endif()
-
 ExternalProject_Add(emsdk
     PREFIX emsdk
     GIT_REPOSITORY https://github.com/emscripten-core/emsdk.git
@@ -15,14 +9,14 @@ ExternalProject_Add(emsdk
 
 ExternalProject_Get_Property(emsdk SOURCE_DIR)
 
-ExternalProject_Add_Step(emsdk install_latest
+ExternalProject_Add_Step(emsdk emsdk_install
     DEPENDEES download
-    COMMAND ./emsdk install latest
+    COMMAND ./emsdk install 4.0.23
     WORKING_DIRECTORY ${SOURCE_DIR}
 )
 
-ExternalProject_Add_Step(emsdk activate_latest
-    DEPENDEES install_latest
-    COMMAND ./emsdk activate latest
+ExternalProject_Add_Step(emsdk emsdk_active
+    DEPENDEES emsdk_install
+    COMMAND ./emsdk activate 4.0.23
     WORKING_DIRECTORY ${SOURCE_DIR}
 )
