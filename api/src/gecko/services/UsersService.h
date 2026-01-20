@@ -8,7 +8,7 @@ namespace Gecko::API::Services
 {
     class UsersService
     {
-    public:
+      public:
         static constexpr size_t MinUsernameLength = 3;
         static constexpr size_t MaxUsernameLength = 18;
 
@@ -57,7 +57,7 @@ namespace Gecko::API::Services
 
         Result PatchUser(int userID, const Models::UserPatch& patch);
 
-    private:
+      private:
         Result ValidateUsername(const std::string& username)
         {
             // length

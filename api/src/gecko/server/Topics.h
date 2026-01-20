@@ -9,7 +9,7 @@ namespace Gecko::API::Server
 {
     class Topics
     {
-    public:
+      public:
         Topics(Env::Env* env)
             : m_env{ env },
               m_mqttClient{
@@ -29,7 +29,7 @@ namespace Gecko::API::Server
 
         bool Start();
 
-    private:
+      private:
         Env::Env*     m_env;
 
         MQTT::MQTTClient m_mqttClient;

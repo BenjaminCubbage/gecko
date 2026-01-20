@@ -15,7 +15,7 @@ namespace Gecko::API::DB
 {
     class ConnectionPool
     {
-    public:
+      public:
         static constexpr const size_t PoolSize{ 4 };
         static constexpr const std::chrono::minutes SessionTimeout{ 1 };
 
@@ -32,7 +32,7 @@ namespace Gecko::API::DB
             AcquireFailed_ConnectionFailed
         };
 
-    private:
+      private:
         enum class State
         {
             Stopped, Starting, Running, Stopping
@@ -65,7 +65,7 @@ namespace Gecko::API::DB
 
         typedef std::unique_ptr<mysqlx::Session, SessionReleaser> SessionGuard;
 
-    public:
+      public:
         ConnectionPool(Thread::Scheduler* scheduler,
                        std::string host,
                        int port,
@@ -89,7 +89,7 @@ namespace Gecko::API::DB
 
         [[nodiscard]] std::expected<SessionGuard, Result> Acquire();
 
-    private:
+      private:
         void Release(Session& session) noexcept;
 
         bool SessionTimeoutJob_Start();

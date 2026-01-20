@@ -21,7 +21,7 @@ namespace Gecko::API::Topics
     */
     class DevicesHeartbeatTopic
     {
-    public:
+      public:
         using Clock = std::chrono::system_clock;
 
         /*
@@ -56,7 +56,7 @@ namespace Gecko::API::Topics
         */
         DeviceStatus GetDeviceStatus(const std::string& deviceID);
 
-    private:
+      private:
         struct SVTransparentHash
         {
             using is_transparent = void;

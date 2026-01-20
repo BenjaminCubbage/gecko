@@ -14,10 +14,10 @@ namespace Gecko::Compression
 
 	class Encoder
 	{
-	public:
+	  public:
 		static std::optional<CompressedBitonal> TryCompressBitonal(const UncompressedBitonal& uncompressed);
 
-	private:
+	  private:
 		static void EncodeRow(const UncompressedBitonal& uncompressed, BitStream& bs, size_t pixelY);
 		static void EncodePass(BitStream& bs);
 		static void EncodeVerticalMode(BitStream& bs, int a1MinusB1);

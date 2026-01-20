@@ -11,7 +11,7 @@ namespace Gecko::Compression
 {
 	class BitStream
 	{
-	private:
+	  private:
 		struct BitPosition
 		{
 			size_t byte = 0;
@@ -59,7 +59,7 @@ namespace Gecko::Compression
 				bytes.resize(bytes.size() + 24);
 		}
 
-	public:
+	  public:
 		BitStream(std::vector<uint8_t> bytes)
 			: bytes(bytes), readerPos(BitPosition{ .byte = 0, .bit = 0 }), writerPos(BitPosition{ .byte = bytes.size(), .bit = 0 })
 		{

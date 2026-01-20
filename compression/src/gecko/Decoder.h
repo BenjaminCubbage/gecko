@@ -8,7 +8,7 @@ namespace Gecko::Compression
 {
 	class Decoder
 	{
-	public:
+	  public:
 		using DrawerCallback = void (*)(void* context1,
                                         void* context2,
                                         size_t pixelY,
@@ -33,7 +33,7 @@ namespace Gecko::Compression
 		enum class Result { OK, Aborted };
 		static bool TryDecompressBitonal(CompressedBitonal compressed, const Drawer& drawer);
 
-	private:
+	  private:
 		static bool DecodeRow(CompressedBitonal& compressed, const std::optional<Row>& previousRow, Row& currentRow, const Drawer& drawer);
 		static bool DecodeHorizontalIntegrals(CompressedBitonal& compressed, bool a0IsWhite, int* outA1Delta, int* outA2Delta);
 

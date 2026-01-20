@@ -10,7 +10,7 @@ namespace Gecko::API::DB
 {
     class SharedImagesTable
     {
-    public:
+      public:
         enum class Result { OK, Failure };
 
         SharedImagesTable(ConnectionPool* connectionPool)
@@ -28,7 +28,7 @@ namespace Gecko::API::DB
         Result GetLatestReceivedImageBlob(int receiverID,
                                           std::vector<uint8_t>* outBlob);
 
-    private:
+      private:
         ConnectionPool* m_connectionPool;
     };
 }

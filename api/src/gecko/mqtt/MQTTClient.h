@@ -22,7 +22,7 @@ namespace Gecko::API::MQTT
     */
     class MQTTClient
     {
-    public:
+      public:
         using ReceivedHandler = void (*)(void* context1, void* context2, std::string_view topic, std::span<uint8_t> message);
         using InflightHandler = void (*)(void* context1, void* context2);
 
@@ -91,7 +91,7 @@ namespace Gecko::API::MQTT
                             void* context1 = nullptr,
                             void* context2 = nullptr);
 
-    private:
+      private:
         struct Receiver
         {
             ReceivedHandler handler;

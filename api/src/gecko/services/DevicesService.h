@@ -11,7 +11,7 @@ namespace Gecko::API::Services
 {
     class DevicesService
     {
-    public:
+      public:
         enum class Result
         {
             OK,
@@ -44,7 +44,7 @@ namespace Gecko::API::Services
         Result GetUsersDevices(int ownerID,
                                std::vector<Models::Device>* outDevices);
 
-    private:
+      private:
         Topics::DevicesHeartbeatTopic* m_devicesHeartbeatTopic;
         DB::DevicesTable*              m_dbDevices;
         DB::UsersTable*                m_dbUsers;

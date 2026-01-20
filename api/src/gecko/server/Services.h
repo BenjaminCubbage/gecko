@@ -11,7 +11,7 @@ namespace Gecko::API::Server
 {
     class Services
     {
-    public:
+      public:
         Services(Env::Env* env, Tables* tables, Topics* topics)
             : m_env{ env },
               m_tables{ tables },
@@ -30,7 +30,7 @@ namespace Gecko::API::Server
         inline API::Services::DevicesService&      Devices()      { return m_devicesService; }
         inline API::Services::FriendshipsService&  Friendships()  { return m_friendshipsService; }
 
-    private:
+      private:
         Env::Env* m_env;
 
         Topics* m_topics;

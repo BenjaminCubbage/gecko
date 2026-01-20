@@ -24,7 +24,7 @@ namespace Gecko::API::Thread
     */
     class Scheduler
     {
-    public:
+      public:
         using TaskHandle = SchedulerFLQueue::TaskHandle;
         using TimePoint  = SchedulerFLQueue::TimePoint;
 
@@ -125,7 +125,7 @@ namespace Gecko::API::Thread
         */
         Result Join();
 
-    private:
+      private:
         Result Shutdown(bool fast);
         void ThreadLoop();
 

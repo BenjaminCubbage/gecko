@@ -8,7 +8,7 @@ namespace Gecko::Embedded
 {
     class MQTTSub
     {
-    public:
+      public:
         enum class Status
         {
             Uninitialized, Ready
@@ -19,7 +19,7 @@ namespace Gecko::Embedded
             Uninitialized, Ready, Subscribing, Subscribed, Receiving, Received, Error
         };
 
-    private:
+      private:
         struct Inbox
         {
             static constexpr size_t MaxTopicLen{ 128 };
@@ -38,7 +38,7 @@ namespace Gecko::Embedded
             size_t messageLen{ 0 };
         };
 
-    public:
+      public:
         static bool Init(const std::string_view& username)
         {
             if (s_status != Status::Uninitialized)
@@ -230,7 +230,7 @@ namespace Gecko::Embedded
             return inbox->status != SubStatus::Error;
         }
 
-    private:
+      private:
         static void Callback_Subscribed(void* context, err_t err)
         {
             auto inbox = reinterpret_cast<Inbox*>(context);

@@ -11,7 +11,7 @@ namespace Gecko::API::Server
 {
     class Tables
     {
-    public:
+      public:
         Tables(Env::Env* env, Thread::Scheduler* scheduler)
             : m_env{ env },
               m_scheduler{ scheduler },
@@ -37,7 +37,7 @@ namespace Gecko::API::Server
 
         bool Start();
 
-    private:
+      private:
         Env::Env*     m_env;
 
         Thread::Scheduler* m_scheduler;

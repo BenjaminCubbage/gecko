@@ -7,13 +7,13 @@ namespace Gecko::API::Controllers
 {
     class DevicesController
     {
-    public:
+      public:
         DevicesController(Services::DevicesService devicesService, std::string pubkey)
             : m_devicesService(devicesService), m_pubkey(std::move(pubkey)) {}
 
         void Attach(httplib::Server& server);
 
-    private:
+      private:
         void Handle_GET_DeviceStatus(const httplib::Request& req, httplib::Response& res);
 
         void Handle_GET_UsersDevices(const httplib::Request& req, httplib::Response& res);

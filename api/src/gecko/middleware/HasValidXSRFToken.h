@@ -6,7 +6,7 @@ namespace Gecko::API::Middleware
 {
     class HasValidXSRFToken
     {
-    public:
+      public:
         bool operator()(const httplib::Request& req, httplib::Response& res);
     };
 }

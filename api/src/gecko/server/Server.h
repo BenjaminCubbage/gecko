@@ -12,7 +12,7 @@ namespace Gecko::API::Server
 {
     class Server
     {
-    public:
+      public:
         Server(Env::Env env)
             : m_env{ std::move(env) },
               m_threadPool {},
@@ -36,7 +36,7 @@ namespace Gecko::API::Server
 
         bool Start();
 
-    private:
+      private:
         Env::Env      m_env;
 
         Thread::ThreadPool m_threadPool;

@@ -12,7 +12,7 @@ namespace Gecko::Compression
 	 */
 	class CodeWords
 	{
-	public:
+	  public:
 		enum class IntegralPrefixType : uint8_t
 		{
 			MakeUp,
@@ -62,7 +62,7 @@ namespace Gecko::Compression
 
 		static inline int IntegralDifferenceFromVerticalModePrefixType(ModePrefixType type) { return static_cast<int>(type); }
 
-	private:
+	  private:
 		static IntegralPrefix& GetNextIntegralPrefix(std::map<int, IntegralPrefix&>& prefixes, uint16_t integralValue);
 		static void StoreIntegralEncoding(std::vector<IntegralPrefix>& lookup, std::map<int, IntegralPrefix&>& prefixMap, uint16_t prefix, uint16_t prefixLengthBits, uint16_t integral, IntegralPrefixType type);
 		static void StoreModeEncoding(std::vector<ModePrefixType>& modes, std::map<ModePrefixType, ModePrefix>& prefixMap, uint16_t prefix, uint16_t prefixLengthBits, ModePrefixType type);

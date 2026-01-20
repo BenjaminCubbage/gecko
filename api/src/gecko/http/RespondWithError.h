@@ -6,7 +6,7 @@ namespace Gecko::API::Http
 {
     class RespondWithError
     {
-    public:
+      public:
         static inline void ContentLengthRequired(httplib::Response& response)
         {
             response.body   = BuildResponseBody("bad_content_length", "length_required");

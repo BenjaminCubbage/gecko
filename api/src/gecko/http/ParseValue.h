@@ -6,7 +6,7 @@ namespace Gecko::API::Http
 {
     class ParseValue
     {
-    public:
+      public:
         // Safely parse a string comprised of digits to an integral,
         // up to a value of std::numeric_limits<T>::max()
         // Leading hyphen / signage not supported
@@ -56,7 +56,7 @@ namespace Gecko::API::Http
             return true;
         }
 
-    private:
+      private:
         static inline bool IsDigit(char c)
         {
             return c >= '0' && c <= '9';

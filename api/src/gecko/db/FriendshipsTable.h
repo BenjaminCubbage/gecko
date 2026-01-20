@@ -9,7 +9,7 @@ namespace Gecko::API::DB
 {
     class FriendshipsTable
     {
-    public:
+      public:
         enum class Result { OK, Failure };
 
         explicit FriendshipsTable(ConnectionPool* connectionPool)
@@ -58,7 +58,7 @@ namespace Gecko::API::DB
                                        bool* outExists,
                                        int* initiatorUserID);
 
-    private:
+      private:
         ConnectionPool* m_connectionPool;
     };
 }

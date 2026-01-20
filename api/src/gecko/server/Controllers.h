@@ -13,7 +13,7 @@ namespace Gecko::API::Server
 {
     class Controllers
     {
-    public:
+      public:
         Controllers(Env::Env* env, Services* services)
             : m_env{ env },
               m_services{ services },
@@ -35,7 +35,7 @@ namespace Gecko::API::Server
 
         bool Start(httplib::Server& server);
 
-    private:
+      private:
         Env::Env*     m_env;
 
         Services* m_services;

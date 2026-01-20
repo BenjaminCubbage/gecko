@@ -8,7 +8,7 @@ namespace Gecko::Embedded
 {
     class FSCert
     {
-    public:
+      public:
         static bool ReadCert(std::string_view* outCertificate)
         {
             // note(ben): TLS cert needs space to have null terminator at the end
@@ -38,7 +38,7 @@ namespace Gecko::Embedded
             return true;
         }
 
-    private:
+      private:
         // note(ben): 4kB max certificate length
         static constexpr int AllocCertSize = 1024 * 4;
 

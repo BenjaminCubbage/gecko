@@ -8,14 +8,14 @@ namespace Gecko::API::Controllers
 {
     class UsersController
     {
-    public:
+      public:
         UsersController(Services::UsersService usersService, std::string pubkey) :
                         m_usersService(usersService),
                         m_pubkey(std::move(pubkey)) {}
 
         void Attach(httplib::Server& server);
 
-    private:
+      private:
         void Handle_GET_Me(const httplib::Request& req, httplib::Response& res);
         void Handle_PATCH_User(const httplib::Request& req, httplib::Response& res);
         void Handle_GET_UserQuery(const httplib::Request& req, httplib::Response& res);

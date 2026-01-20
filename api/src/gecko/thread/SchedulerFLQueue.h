@@ -19,7 +19,7 @@ namespace Gecko::API::Thread
     */
     class SchedulerFLQueue
     {
-    public:
+      public:
         static constexpr const size_t ScheduleQueueSize{ 512 };
 
         static constexpr const size_t Ticket_Free{ std::numeric_limits<size_t>::max() };
@@ -40,7 +40,7 @@ namespace Gecko::API::Thread
             }
         };
 
-    private:
+      private:
         struct Task
         {
             /* Self-aware handle */
@@ -58,7 +58,7 @@ namespace Gecko::API::Thread
             std::optional<ThreadPool::JobHandle> poolHandle;
         };
 
-    public:
+      public:
         SchedulerFLQueue(ThreadPool* threadPool);
 
         SchedulerFLQueue           (SchedulerFLQueue&&) = default;
@@ -135,7 +135,7 @@ namespace Gecko::API::Thread
             return m_nextDue != nullptr;
         }
 
-    private:
+      private:
         void Reset();
 
         void RescanNextDueAndFLEnd(size_t searchEnd);

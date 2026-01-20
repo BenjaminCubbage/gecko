@@ -39,7 +39,7 @@ namespace Gecko::API::Thread
     */
     class ThreadPool
     {
-    public:
+      public:
         /*
             Number of threads.
         */
@@ -82,7 +82,7 @@ namespace Gecko::API::Thread
             size_t ticketIndex;
         };
 
-    private:
+      private:
         struct Job
         {
             std::function<void ()> func;
@@ -104,7 +104,7 @@ namespace Gecko::API::Thread
             Alive, Terminating
         };
 
-    public:
+      public:
         ThreadPool()
         {
             for (size_t i = 0; i < m_inflightTickets.size(); ++i)
@@ -155,7 +155,7 @@ namespace Gecko::API::Thread
         */
         Result Join();
 
-    private:
+      private:
         void ThreadLoop() noexcept;
 
         /* Scheduling gate: shared for Schedule(), unique for Stop() */

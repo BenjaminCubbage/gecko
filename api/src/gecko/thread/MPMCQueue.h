@@ -16,7 +16,7 @@ namespace Gecko::API::Thread
     template<typename T, size_t Capacity>
     class MPMCQueue
     {
-    private:
+      private:
         static_assert((Capacity > 1) & !(Capacity & (Capacity - 1)), "Capacity must be a power of two.");
 
         struct Cell
@@ -25,7 +25,7 @@ namespace Gecko::API::Thread
             T data;
         };
 
-    public:
+      public:
         struct EnqTicket
         {
             size_t t;
@@ -134,7 +134,7 @@ namespace Gecko::API::Thread
             ticket.cell->seq.store(ticket.t + 1, std::memory_order_release);
         }
 
-    private:
+      private:
         alignas(64) std::atomic<size_t> m_head{ 0 };
         alignas(64) std::atomic<size_t> m_tail{ 0 };
         std::array<Cell, Capacity> m_jobs;

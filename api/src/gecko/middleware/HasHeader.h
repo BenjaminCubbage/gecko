@@ -6,7 +6,7 @@ namespace Gecko::API::Middleware
 {
     class HasHeader
     {
-    public:
+      public:
         HasHeader(std::string headerName)
             : m_headerName(std::move(headerName)) {}
 
@@ -14,7 +14,7 @@ namespace Gecko::API::Middleware
                         httplib::Response& res,
                         std::string* outHeaderValue);
 
-    private:
+      private:
         std::string m_headerName;
     };
 }

@@ -6,7 +6,7 @@ namespace Gecko::API::Env
 {
     class EnvParse
     {
-    public:
+      public:
         static std::unordered_map<std::string, std::string> Parse(const std::string &str);
     };
 }

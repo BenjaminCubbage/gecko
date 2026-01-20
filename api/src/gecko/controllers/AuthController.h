@@ -8,7 +8,7 @@ namespace Gecko::API::Controllers
 {
     class AuthController
     {
-    public:
+      public:
         AuthController(Services::UsersService usersService,
                        std::string oauthClientID,
                        std::string oauthClientSecret,
@@ -22,7 +22,7 @@ namespace Gecko::API::Controllers
 
         void Attach(httplib::Server& server);
 
-    private:
+      private:
         void Handle_GET_LogIn(const httplib::Request& req, httplib::Response& res);
         void Handle_POST_LogOut(const httplib::Request& req, httplib::Response& res);
         void Handle_GET_OAuthCallback(const httplib::Request& req, httplib::Response& res);

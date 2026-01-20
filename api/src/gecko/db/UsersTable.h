@@ -9,7 +9,7 @@ namespace Gecko::API::DB
 {
     class UsersTable
     {
-    public:
+      public:
         enum class Result { OK, Failure };
 
         UsersTable(ConnectionPool* connectionPool) : m_connectionPool(connectionPool) {}
@@ -39,7 +39,7 @@ namespace Gecko::API::DB
 
         Result PatchUser(int userID, const Models::UserPatch& patch);
 
-    private:
+      private:
         ConnectionPool* m_connectionPool;
     };
 }

@@ -7,7 +7,7 @@ namespace Gecko::API::Middleware
 {
     class HasJSONBody
     {
-    public:
+      public:
         bool operator()(const httplib::Request& req, httplib::Response& res, Json::Value* outParsed);
     };
 }

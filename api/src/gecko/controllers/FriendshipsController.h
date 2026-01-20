@@ -9,7 +9,7 @@ namespace Gecko::API::Controllers
 {
     class FriendshipsController
     {
-    public:
+      public:
         FriendshipsController(Services::FriendshipsService friendshipsService,
                               std::string pubkey)
             : m_friendshipsService(std::move(friendshipsService)),
@@ -17,7 +17,7 @@ namespace Gecko::API::Controllers
 
         void Attach(httplib::Server& server);
 
-    private:
+      private:
         void Handle_GET_Friends(const httplib::Request& req,
                                 httplib::Response& res);
 

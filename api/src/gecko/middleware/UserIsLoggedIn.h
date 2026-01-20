@@ -13,7 +13,7 @@ namespace Gecko::API::Middleware
 {
     class UserIsLoggedIn
     {
-    public:
+      public:
         UserIsLoggedIn(std::string pubkey)
             : m_pubkey(std::move(pubkey)) {}
 
@@ -60,7 +60,7 @@ namespace Gecko::API::Middleware
             return false;
         }
 
-    private:
+      private:
         const std::string m_pubkey;
     };
 }

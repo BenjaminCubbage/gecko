@@ -5,7 +5,7 @@ namespace Gecko::API::Middleware
 {
     class HasContentLengthLTE
     {
-    public:
+      public:
         bool operator()(const httplib::Request& req,
                         httplib::Response& res,
                         size_t max,

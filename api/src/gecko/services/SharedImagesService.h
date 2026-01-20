@@ -11,7 +11,7 @@ namespace Gecko::API::Services
 {
     class SharedImagesService
     {
-    public:
+      public:
         static constexpr int MaxImageSize = 1024 * 10;
 
         enum class Result
@@ -46,7 +46,7 @@ namespace Gecko::API::Services
         Result GetLatestReceivedImageBlob(int receiverID,
                                           std::vector<uint8_t>* outBlob);
 
-    private:
+      private:
         Services::DevicesService* m_devicesService;
 
         Topics::LatestImageTopic* m_latestImageTopic;

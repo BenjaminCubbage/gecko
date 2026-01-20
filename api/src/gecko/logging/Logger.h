@@ -7,7 +7,7 @@ namespace Gecko::API::Logging
 {
     class Logger
     {
-    public:
+      public:
         virtual ~Logger() = default;
 
         template<typename TLogger, typename ...TArgs> requires
@@ -45,7 +45,7 @@ namespace Gecko::API::Logging
 
         virtual void operator<<(const std::string& v) = 0;
 
-    private:
+      private:
         static inline std::unique_ptr<Logger> m_infoLogger;
         static inline std::unique_ptr<Logger> m_warnLogger;
         static inline std::unique_ptr<Logger> m_errorLogger;

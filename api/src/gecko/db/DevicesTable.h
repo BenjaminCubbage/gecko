@@ -8,7 +8,7 @@ namespace Gecko::API::DB
 {
     class DevicesTable
     {
-    public:
+      public:
         enum class Result { OK, Failure };
 
         DevicesTable(ConnectionPool* connectionPool)
@@ -24,7 +24,7 @@ namespace Gecko::API::DB
         Result GetDevicesByOwnerID(int ownerID,
                                    std::vector<Models::Device>* outDevices);
 
-    private:
+      private:
         ConnectionPool* m_connectionPool;
     };
 }

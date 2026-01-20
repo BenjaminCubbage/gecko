@@ -5,13 +5,13 @@ namespace Gecko::Embedded
 {
     class Wifi
     {
-    public:
+      public:
         Wifi() = delete;
         static bool Init();
         static bool ConnectSync(const std::string& wifiSSID, const std::string& wifiPassword);
         static void Poll();
 
-    private:
+      private:
         static constexpr int TimeoutMS = 10 * 1000;
     };
 }

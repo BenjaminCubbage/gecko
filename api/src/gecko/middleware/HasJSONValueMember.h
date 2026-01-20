@@ -13,7 +13,7 @@ namespace Gecko::API::Middleware
         std::is_same<T, std::string>::value
     class HasJSONValueMember
     {
-    public:
+      public:
         HasJSONValueMember(std::string memberName)
             : m_memberName(std::move(memberName)) {}
 

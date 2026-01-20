@@ -8,7 +8,7 @@ namespace Gecko::Embedded
 {
     class MQTTPub
     {
-    public:
+      public:
         enum PubStatus
         {
             // Uninitialized -> Ready -> Publishing -> (Published | Error) -> Publishing
@@ -91,7 +91,7 @@ namespace Gecko::Embedded
             return s_heartbeatPubStatus == PubStatus::Published;
         }
 
-    private:
+      private:
         static void PublishCallback(void* state, err_t err)
         {
             PubStatus* status = reinterpret_cast<PubStatus*>(state);

@@ -10,7 +10,7 @@ namespace Gecko::API::Services
 {
     class FriendshipsService
     {
-    public:
+      public:
         enum class Result
         {
             OK,
@@ -60,7 +60,7 @@ namespace Gecko::API::Services
         Result DeleteFriendshipOrFriendRequest(int userID1,
                                                int userID2);
 
-    private:
+      private:
         DB::FriendshipsTable* m_dbFriendships;
         DB::UsersTable*       m_dbUsers;
     };

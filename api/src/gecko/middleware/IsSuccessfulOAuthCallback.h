@@ -6,7 +6,7 @@ namespace Gecko::API::Middleware
 {
     class IsSuccessfulOAuthCallback
     {
-    public:
+      public:
         bool operator()(const httplib::Request& req,
                         httplib::Response& res,
                         std::string* outCode,

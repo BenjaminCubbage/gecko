@@ -13,7 +13,7 @@ namespace Gecko::Embedded
 {
     class MQTTConn
     {
-    public:
+      public:
         enum class Status
         {
             Uninitialized, NotConnected, Connecting, Connected, Error
@@ -159,7 +159,7 @@ namespace Gecko::Embedded
             return s_connection.status;
         }
 
-    private:
+      private:
         static const char* ConnectionStatusToStr(mqtt_connection_status_t status)
         {
             switch (status)

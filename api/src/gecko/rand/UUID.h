@@ -9,7 +9,7 @@ namespace Gecko::API::Rand
     */
     class UUID
     {
-    public:
+      public:
         /*
             Generate a new V4 UUID.
         */

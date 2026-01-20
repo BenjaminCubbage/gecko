@@ -7,7 +7,7 @@ namespace Gecko::API::Http
 {
     class MultipartFormData
     {
-    public:
+      public:
         template<typename TData>
         struct Field
         {
@@ -35,7 +35,7 @@ namespace Gecko::API::Http
         bool Find(const std::string& fieldName, std::string** outField);
         bool Find(const std::string& fieldName, std::vector<uint8_t>** outField);
 
-    private:
+      private:
         MultipartFormData(std::vector<Field<std::string>> stringFields,
                           std::vector<Field<std::vector<uint8_t>>> vectorFields)
             : m_stringFields(std::move(stringFields)), m_vectorFields(std::move(vectorFields)) {}

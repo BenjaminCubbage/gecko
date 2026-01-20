@@ -8,7 +8,7 @@ namespace Gecko::API::Topics
 {
     class LatestImageTopic
     {
-    public:
+      public:
         LatestImageTopic(MQTT::MQTTClient* mqttClient)
             : m_mqttClient(mqttClient) {}
 
@@ -25,7 +25,7 @@ namespace Gecko::API::Topics
                                 int imageID,
                                 const std::vector<uint8_t>& image);
 
-    private:
+      private:
         void MessageReceivedHandler(std::string_view topic, std::span<uint8_t> payload);
 
         MQTT::MQTTClient* m_mqttClient;

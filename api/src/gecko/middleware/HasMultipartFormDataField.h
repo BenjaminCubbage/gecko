@@ -12,7 +12,7 @@ namespace Gecko::API::Middleware
         std::is_same_v<T, std::vector<uint8_t>>
     class HasMultipartFormDataField
     {
-    public:
+      public:
         HasMultipartFormDataField(std::string fieldName)
             : m_fieldName(std::move(fieldName)) {}
 
@@ -21,7 +21,7 @@ namespace Gecko::API::Middleware
                         Http::MultipartFormData& formData,
                         T** outResult);
 
-    private:
+      private:
         std::string m_fieldName;
     };
 }

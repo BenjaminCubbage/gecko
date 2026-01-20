@@ -11,7 +11,7 @@ namespace Gecko::Embedded
     */
     class FS
     {
-    public:
+      public:
         /*
             Calls f_mount() on the default drive.
         */
@@ -39,7 +39,7 @@ namespace Gecko::Embedded
 
         static const char* FResultToStr(FRESULT result);
 
-    private:
+      private:
         static FATFS s_fs;
     };
 }

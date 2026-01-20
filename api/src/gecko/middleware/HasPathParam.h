@@ -16,7 +16,7 @@ namespace Gecko::API::Middleware
         std::is_same_v<T, std::string_view>
     class HasPathParam<T>
     {
-    public:
+      public:
         HasPathParam(std::string paramName, size_t maxLength)
             : m_paramName(std::move(paramName)), m_maxLength(maxLength) {}
 
@@ -50,7 +50,7 @@ namespace Gecko::API::Middleware
         std::is_integral_v<T>
     class HasPathParam<T>
     {
-    public:
+      public:
         HasPathParam(std::string paramName)
             : m_paramName(std::move(paramName)) {}
 

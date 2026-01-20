@@ -8,14 +8,14 @@ namespace Gecko::API::Controllers
 {
     class SharedImagesController
     {
-    public:
+      public:
         SharedImagesController(Services::SharedImagesService sharedImagesService, std::string pubkey) :
                                m_sharedImagesService(sharedImagesService),
                                m_pubkey(std::move(pubkey)) {}
 
         void Attach(httplib::Server& server);
 
-    private:
+      private:
         void Handle_POST_SharedImages(const httplib::Request& req,
                                       httplib::Response& res,
                                       const httplib::ContentReader& contentReader);

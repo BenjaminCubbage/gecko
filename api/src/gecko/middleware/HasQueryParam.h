@@ -13,7 +13,7 @@ namespace Gecko::API::Middleware
         std::is_same_v<T, std::string>
     class HasQueryParam<T>
     {
-    public:
+      public:
         HasQueryParam(std::string paramName)
             : m_paramName(std::move(paramName)) {}
 
@@ -29,7 +29,7 @@ namespace Gecko::API::Middleware
             return true;
         }
 
-    private:
+      private:
         std::string m_paramName;
     };
 
@@ -37,7 +37,7 @@ namespace Gecko::API::Middleware
         std::is_integral_v<T>
     class HasQueryParam<T>
     {
-    public:
+      public:
         HasQueryParam(std::string paramName, size_t maxLength)
             : m_paramName(std::move(paramName)),
               m_maxLength(maxLength) {}
@@ -61,7 +61,7 @@ namespace Gecko::API::Middleware
             return true;
         }
 
-    private:
+      private:
         std::string m_paramName;
         size_t m_maxLength;
     };

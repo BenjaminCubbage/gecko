@@ -7,7 +7,7 @@ namespace Gecko::API::Logging
 {
     class SilentLogger final : public Logger
     {
-    public:
+      public:
         void operator<<(const std::string& v) override {}
     };
 }

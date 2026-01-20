@@ -8,7 +8,7 @@ namespace Gecko::Compression
 {
 	class CompressedBitonal
 	{
-	public:
+	  public:
 		enum class StorageFormat { GIB /* Gecko Image Binary, in-house format */ };
 
 		CompressedBitonal(BitStream bitstream, size_t width, size_t height)
@@ -35,7 +35,7 @@ namespace Gecko::Compression
 		static std::optional<CompressedBitonal> TryReadFromBuffer(const std::vector<std::uint8_t>& buffer, StorageFormat format);
 
 
-	private:
+	  private:
 		BitStream bitstream;
 		size_t width;
 		size_t height;

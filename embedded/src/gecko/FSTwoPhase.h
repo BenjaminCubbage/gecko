@@ -20,7 +20,7 @@ namespace Gecko::Embedded
     */
     class FSTwoPhase
     {
-    private:
+      private:
 #if FF_USE_LFN > 0
         static constexpr size_t MaxTotalFilenameLength{ FF_LFN_BUF };
 #else
@@ -40,7 +40,7 @@ namespace Gecko::Embedded
         */
         class FilenameScratchpad
         {
-        public:
+          public:
             // Set <filename>
             bool SetFilename(const std::string& filename);
 
@@ -50,12 +50,12 @@ namespace Gecko::Embedded
             // Get <filename><suffix>
             inline const char* FilenameWithSuffix() const { return m_filename; };
 
-        private:
+          private:
             size_t m_preSuffixLen{ 0 };
             char m_filename[MaxTotalFilenameLength + 1];
         };
 
-    public:
+      public:
         /*
             Maximum filename length before appending the A/B suffix
         */
@@ -86,7 +86,7 @@ namespace Gecko::Embedded
                                   char* outBuffer,
                                   unsigned int* outBytesRead);
 
-    private:
+      private:
         static bool CommitFlag_Get(const char* filename, bool* outFlag);
         static bool CommitFlag_Set(const char* filename, bool flag);
     };

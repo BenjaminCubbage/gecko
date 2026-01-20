@@ -6,7 +6,7 @@ namespace Gecko::API::Middleware
 {
     class PathParamEquals
     {
-    public:
+      public:
         PathParamEquals(std::string paramName)
             : m_paramName(std::move(paramName)) {}
         bool operator()(const httplib::Request& req, httplib::Response& res, const std::string& expected);
