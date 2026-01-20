@@ -32,6 +32,12 @@ namespace Gecko::API::Thread
         {
             size_t index;
             size_t ticket;
+
+            inline bool operator==(const TaskHandle& other) 
+            { 
+                return other.index  == index &&
+                       other.ticket == ticket;
+            }
         };
 
     private:
@@ -112,7 +118,7 @@ namespace Gecko::API::Thread
 
         inline bool IsNextDue(const TaskHandle& handle) const noexcept
         {
-            return m_nextDue != nullptr && handle == m_nextDue->handle;
+            return m_nextDue != nullptr && handle.ticket == m_nextDue->handle.ticket;
         }
 
         /*

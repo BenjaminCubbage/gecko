@@ -115,7 +115,7 @@ namespace Gecko::API::DB
 
         --m_acquiredCount;
         session.isAcquired = false;
-        session.lastUsed   = Thread::Scheduler::Now();
+        session.lastUsed   = Thread::Scheduler::TimePoint::clock::now();
 
         m_sessionsCV.notify_one();
 
@@ -144,7 +144,7 @@ namespace Gecko::API::DB
         if (m_sessionTimeoutJobState != SessionTimeoutJobState::Running)
             return false;
 
-        const auto now = Thread::Scheduler::Now();
+        const auto now = Thread::Scheduler::TimePoint::clock::now();
         auto nextWakeup = now + SessionTimeout;
 
         for (auto& s : m_sessions)

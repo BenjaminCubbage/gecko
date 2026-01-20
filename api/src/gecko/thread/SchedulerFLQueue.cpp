@@ -134,7 +134,7 @@ namespace Gecko::API::Thread
         assert(handle.index < m_tasks.size());
         Task* task = &m_tasks[handle.index];
 
-        if (task->handle.ticket != handle.ticket)
+        if (task->handle != handle)
             return false;
 
         if (task->poolHandle && m_threadPool->IsJobCompleted(*task->poolHandle))
