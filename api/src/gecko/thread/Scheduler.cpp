@@ -100,7 +100,7 @@ namespace Gecko::API::Thread
 
         if (poolHandle)
             m_pool->WaitForJobCompletion(*poolHandle);
-        
+
         m_queue.RemoveTask(task);
         return Result::OK;
     }

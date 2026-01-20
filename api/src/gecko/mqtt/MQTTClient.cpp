@@ -232,7 +232,7 @@ namespace Gecko::API::MQTT
         if (!pubSucc && !pubFail)
             /* No need to set callbacks */
             return true;
-        
+
         /*
             note(ben): This is a race condition for the same
             reason as described in SubscribeToTopic
@@ -249,12 +249,12 @@ namespace Gecko::API::MQTT
 
         if (!inserted)
         {
-            Logger::Error() << 
+            Logger::Error() <<
             "[MQTTClient.PublishMessage]: Couldn't insert "
             "inflight message for some reason";
 
-            /* 
-                note(ben): We return false, though we _did_ publish the 
+            /*
+                note(ben): We return false, though we _did_ publish the
                 message, which is strange.
             */
             return false;

@@ -90,7 +90,7 @@ namespace Gecko::Embedded
                 Log_Error("MQTTConn: Tried to connect but already connected or trying to connect\n");
                 goto fail;
             }
-            
+
             if (mqtt_client_connect(
                 s_connection.client,
                 &s_connection.ip,

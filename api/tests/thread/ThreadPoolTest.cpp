@@ -43,14 +43,14 @@ namespace Gecko::API::Test
         pool.Join();
         EXPECT_EQ(a, 4);
     }
-    
+
     TEST(ThreadPool, ThreadsCompleteAllWorkBeforeJoined)
     {
         std::atomic<int> a{ 0 };
 
         ThreadPool pool;
         ThreadPool::JobHandle unused;
-        
+
         pool.Start();
 
         for (int i = 0; i < 50; ++i)

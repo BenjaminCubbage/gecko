@@ -6,8 +6,8 @@ namespace Gecko::API::Topics
     {
         static constexpr const char* HeartbeatTopic{ "devices/+/out/heartbeat" };
 
-        const auto callback_messageReceived = [] (void *c1, void* c2, 
-                                                  std::string_view sv, 
+        const auto callback_messageReceived = [] (void *c1, void* c2,
+                                                  std::string_view sv,
                                                   std::span<uint8_t> data) {
             reinterpret_cast<DevicesHeartbeatTopic*>(c1)->Callback_MessageReceived(c2, sv, data);
         };

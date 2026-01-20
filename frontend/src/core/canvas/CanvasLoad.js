@@ -22,7 +22,7 @@ class CanvasLoad {
         const uncompressedBytes   = uncompressedBitonal.GetBGR();
 
         /*
-         *      BGR to RGBA 
+         *      BGR to RGBA
          */
         const pixelCount = uncompressedBytes.size() / 3;
         const rgba = new Uint8ClampedArray(pixelCount * 4);

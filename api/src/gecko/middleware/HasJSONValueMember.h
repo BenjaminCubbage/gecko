@@ -8,7 +8,7 @@
 
 namespace Gecko::API::Middleware
 {
-    template<typename T> requires 
+    template<typename T> requires
         std::is_same<T, int>::value ||
         std::is_same<T, std::string>::value
     class HasJSONValueMember
@@ -17,8 +17,8 @@ namespace Gecko::API::Middleware
         HasJSONValueMember(std::string memberName)
             : m_memberName(std::move(memberName)) {}
 
-        bool operator()(const httplib::Request& req, 
-                        httplib::Response& res, 
+        bool operator()(const httplib::Request& req,
+                        httplib::Response& res,
                         const Json::Value& body,
                         T* outValue)
         {
@@ -40,7 +40,7 @@ namespace Gecko::API::Middleware
                 Http::RespondWithError::WrongFieldType(res, m_memberName);
                 return false;
             }
-            
+
             if constexpr (std::is_same<T, std::string>::value)
                 *outValue = body[m_memberName].asString();
             else if constexpr (std::is_same<T, int>::value)

@@ -49,10 +49,10 @@ defineProps({
         --google-green: #34A853;
         --google-yellow: #FBBC05;
 
-        background-image: conic-gradient(at 50% 40%, 
-            var(--google-red)    25%, 
-            var(--google-blue)   25%, 
-            var(--google-blue)   50%, 
+        background-image: conic-gradient(at 50% 40%,
+            var(--google-red)    25%,
+            var(--google-blue)   25%,
+            var(--google-blue)   50%,
             var(--google-green)  50%,
             var(--google-green)  65%,
             var(--google-yellow) 65%,

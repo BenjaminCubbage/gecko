@@ -1,10 +1,10 @@
 <template>
     <div class="header-strip">
         <transition name="login-appear" mode="out-in">
-            <AccountWidgetLogInButton 
+            <AccountWidgetLogInButton
                 v-if="!session.activeUser().value"
                 href="/auth/login" />
-            
+
             <div v-else>
                 <div class="badge-section">
                     <AccountWidgetUsernameBadge
@@ -15,11 +15,11 @@
                         @cancel="userBadgeStatus = 'normal'"
                         @submit="changeUsername" />
 
-                    <AccountWidgetLogOutButton 
+                    <AccountWidgetLogOutButton
                         v-show="userBadgeStatus == 'normal'"
                         @click="logout" />
                 </div>
-                
+
                 <AccountWidgetStatusBubble ref="statusBubble" />
             </div>
         </transition>

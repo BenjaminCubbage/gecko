@@ -24,7 +24,7 @@ namespace Gecko::API::Middleware
                 Http::RespondWithError::MissingField(res, m_paramName);
                 return false;
             }
-            
+
             *outResult = req.get_param_value(m_paramName);
             return true;
         }
@@ -33,7 +33,7 @@ namespace Gecko::API::Middleware
         std::string m_paramName;
     };
 
-    template<typename T> requires 
+    template<typename T> requires
         std::is_integral_v<T>
     class HasQueryParam<T>
     {

@@ -96,7 +96,7 @@ namespace Gecko::API::Http
             response.body   = BuildResponseBodyWithHeader("bad_request", "missing_header", headerName);
             response.status = httplib::StatusCode::BadRequest_400;
         }
-        
+
         static inline void SelfFriendNotAllowed(httplib::Response& response)
         {
             response.body = BuildResponseBody("bad_request", "self_friend_not_allowed");

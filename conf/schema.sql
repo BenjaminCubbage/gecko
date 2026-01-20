@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS Friendships
 DELIMITER //
 DROP TRIGGER IF EXISTS upd_friended_date_insert//
 CREATE TRIGGER upd_friended_date_insert BEFORE INSERT ON Friendships
-FOR EACH ROW 
+FOR EACH ROW
 BEGIN
     IF NEW.friendship_status = 'pending' THEN
         SET NEW.accepted_on = NULL;
@@ -75,7 +75,7 @@ DELIMITER ;
 DELIMITER //
 DROP TRIGGER IF EXISTS upd_friended_date_update//
 CREATE TRIGGER upd_friended_date_update BEFORE UPDATE ON Friendships
-FOR EACH ROW 
+FOR EACH ROW
 BEGIN
     IF NEW.friendship_status = 'accepted' AND OLD.friendship_status <> 'accepted' THEN
         SET NEW.accepted_on = COALESCE(NEW.accepted_on, CURDATE());

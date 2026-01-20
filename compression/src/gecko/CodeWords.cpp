@@ -11,9 +11,9 @@ namespace Gecko::Compression
 	/*
 	 *		I really don't like how this works at the moment. Basically, this is a hack to build the lookup
 	 *		tables pre-main(). `CodeWords::BuildIntegralsBlack/WhiteLookup()` has the side effect of also
-	 *		modifying `CodeWords::integralPrefixesWhite/Black`, which is not ideal. 
+	 *		modifying `CodeWords::integralPrefixesWhite/Black`, which is not ideal.
 	 *
-	 *		However, this class is self-contained and not particularly complicated so it's low priority 
+	 *		However, this class is self-contained and not particularly complicated so it's low priority
 	 * 		for now.
 	 */
 	std::vector<CodeWords::IntegralPrefix> CodeWords::integralsBlack = CodeWords::BuildIntegralsBlackLookup();

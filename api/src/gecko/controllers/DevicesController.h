@@ -20,7 +20,7 @@ namespace Gecko::API::Controllers
 
         Services::DevicesService m_devicesService;
         std::string m_pubkey;
-        
+
         static thread_local Json::Reader     s_jsonReader;
         static thread_local Json::FastWriter s_jsonWriter;
     };

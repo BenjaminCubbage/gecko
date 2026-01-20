@@ -36,7 +36,7 @@ class HttpRequest {
 
         let body = null;
 
-        if (this.xhr.responseType === "json" || 
+        if (this.xhr.responseType === "json" ||
             this.xhr.responseType === "text" ||
             this.xhr.responseType === "") {
             try { body = JSON.parse(this.xhr.responseText); }

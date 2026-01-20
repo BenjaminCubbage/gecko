@@ -7,7 +7,7 @@ namespace Gecko::API::Env
 {
     using Logging::Logger;
 
-    std::optional<Env> EnvPopulate::Populate(const std::string& filepath, 
+    std::optional<Env> EnvPopulate::Populate(const std::string& filepath,
                                              const std::optional<std::string>& mosquittoPasswordPathOverride,
                                              const std::optional<std::string>& mysqlPasswordPathOverride)
     {
@@ -42,18 +42,18 @@ namespace Gecko::API::Env
 
         if (!mosquittoPasswordPathOverride)
         {
-            if (!GetKeyValue(keyValues, "GECKO_API_MOSQUITTO_ROOT_PASSWORD_PATH", &env.geckoAPIMosquittoRootPasswordPath)) 
+            if (!GetKeyValue(keyValues, "GECKO_API_MOSQUITTO_ROOT_PASSWORD_PATH", &env.geckoAPIMosquittoRootPasswordPath))
                 return std::nullopt;
         }
-        else 
+        else
             env.geckoAPIMosquittoRootPasswordPath = *mosquittoPasswordPathOverride;
 
         if (!mysqlPasswordPathOverride)
         {
-            if (!GetKeyValue(keyValues, "GECKO_API_MYSQL_ROOT_PASSWORD_PATH", &env.geckoAPIMySQLRootPasswordPath)) 
+            if (!GetKeyValue(keyValues, "GECKO_API_MYSQL_ROOT_PASSWORD_PATH", &env.geckoAPIMySQLRootPasswordPath))
                 return std::nullopt;
         }
-        else 
+        else
             env.geckoAPIMySQLRootPasswordPath = *mysqlPasswordPathOverride;
 
         if (!GetStringFromFilepath(env.mosquittoCertPath,                 &env.mosquittoCert))     return std::nullopt;
@@ -67,7 +67,7 @@ namespace Gecko::API::Env
         return env;
     }
 
-    bool EnvPopulate::GetKeyValue(const std::unordered_map<std::string, std::string>& keyValues, 
+    bool EnvPopulate::GetKeyValue(const std::unordered_map<std::string, std::string>& keyValues,
                                   const std::string& key,
                                   std::string* outValue)
     {
@@ -82,7 +82,7 @@ namespace Gecko::API::Env
         return true;
     }
 
-    bool EnvPopulate::GetKeyValue(const std::unordered_map<std::string, std::string>& keyValues, 
+    bool EnvPopulate::GetKeyValue(const std::unordered_map<std::string, std::string>& keyValues,
                                   const std::string& key,
                                   int *outValue)
     {
@@ -107,8 +107,8 @@ namespace Gecko::API::Env
             return false;
         }
     }
-    
-    bool EnvPopulate::GetStringFromFilepath(const std::string& path, 
+
+    bool EnvPopulate::GetStringFromFilepath(const std::string& path,
                                             std::string* outValue)
     {
         const auto contents = FS::ReadWholeFile(path);

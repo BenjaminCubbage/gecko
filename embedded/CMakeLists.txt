@@ -19,7 +19,7 @@ add_subdirectory(../compression compression)
 FetchContent_Declare(pimoroni_pico
     GIT_REPOSITORY https://github.com/pimoroni/pimoroni-pico
     GIT_TAG        v1.25.0)
-    
+
 FetchContent_MakeAvailable(pimoroni_pico)
 
 add_executable(embedded

@@ -19,7 +19,7 @@ namespace Gecko::API::Middleware
 
         size_t result{ 0 };
 
-        if (!Http::ParseValue::TryParseIntegral<size_t>(contentLength, &result) || 
+        if (!Http::ParseValue::TryParseIntegral<size_t>(contentLength, &result) ||
             result == 0)
         {
             Http::RespondWithError::BadContentLength(res);

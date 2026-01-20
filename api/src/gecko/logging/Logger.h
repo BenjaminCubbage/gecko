@@ -16,21 +16,21 @@ namespace Gecko::API::Logging
         {
             m_infoLogger = std::make_unique<TLogger>(args...);
         }
-        
+
         template<typename TLogger, typename ...TArgs> requires
             std::is_base_of_v<Logger, TLogger>
         static void InitWarn(TArgs... args)
         {
             m_warnLogger = std::make_unique<TLogger>(args...);
         }
-        
+
         template<typename TLogger, typename ...TArgs> requires
             std::is_base_of_v<Logger, TLogger>
         static void InitError(TArgs... args)
         {
             m_errorLogger = std::make_unique<TLogger>(args...);
         }
-        
+
         template<typename TLogger, typename ...TArgs> requires
             std::is_base_of_v<Logger, TLogger>
         static void InitDebug(TArgs... args)

@@ -33,11 +33,11 @@ namespace Gecko::Compression
 		/*
 		 *		Look up CCITT G4 black/white codewords (prefixes) based on the low 13 bits of a uint16_t.
 		 *		All bits except the low 13 are ignored.
-		 * 
-		 *		Example: 
+		 *
+		 *		Example:
 		 *			lookup        : 0b1011101001
 		 *			prefix result : 0b10111xxxxx (prefix length: 5)
-		 * 
+		 *
 		 *		Consumers of the API can then consume then next <prefix length> bits from the stream
 		 *		without losing any data.
 		 */

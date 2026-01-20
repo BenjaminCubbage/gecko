@@ -5,9 +5,9 @@ namespace Http = ::Gecko::API::Http;
 
 namespace Gecko::API::Middleware
 {
-    bool IsSuccessfulOAuthCallback::operator()(const httplib::Request& req, 
-                                               httplib::Response& res, 
-                                               std::string* outCode, 
+    bool IsSuccessfulOAuthCallback::operator()(const httplib::Request& req,
+                                               httplib::Response& res,
+                                               std::string* outCode,
                                                std::string* outState)
     {
         if (req.has_param("error") ||

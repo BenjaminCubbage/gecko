@@ -38,7 +38,7 @@ initapi_init() {
     if promptconfirm "Save your passwords for later?"; then
         promptnonemptysecret "Enter your Mosquitto root user password: " mosquitto_password
         promptnonemptysecret "Enter your MySQL root user password: " mysql_password
-        
+
         printf %s $mosquitto_password | sudo tee "$GECKO_API_MOSQUITTO_ROOT_PASSWORD_PATH" 1> /dev/null && \
         printf %s $mysql_password     | sudo tee "$GECKO_API_MYSQL_ROOT_PASSWORD_PATH"     1> /dev/null || \
         { echo "Failed to save passwords to $GECKO_API_MOSQUITTO_ROOT_PASSWORD_PATH and $GECKO_API_MYSQL_ROOT_PASSWORD_PATH"; return 1; }

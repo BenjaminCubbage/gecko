@@ -16,16 +16,16 @@ namespace Gecko::API::Controllers
         void Attach(httplib::Server& server);
 
     private:
-        void Handle_POST_SharedImages(const httplib::Request& req, 
+        void Handle_POST_SharedImages(const httplib::Request& req,
                                       httplib::Response& res,
                                       const httplib::ContentReader& contentReader);
-                                      
-        void Handle_GET_LatestImageBlob(const httplib::Request& req, 
+
+        void Handle_GET_LatestImageBlob(const httplib::Request& req,
                                         httplib::Response& res);
 
         Services::SharedImagesService m_sharedImagesService;
         std::string m_pubkey;
-        
+
         static thread_local Json::Reader     s_jsonReader;
         static thread_local Json::FastWriter s_jsonWriter;
     };

@@ -11,7 +11,7 @@ defineEmits(['click']);
 <style scoped>
     .button {
         color: var(--text);
-        
+
         font-family: var(--font-heading);
         font-size: 2.2rem;
         padding: 4px 22px;

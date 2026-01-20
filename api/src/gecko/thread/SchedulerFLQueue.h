@@ -12,9 +12,9 @@ namespace Gecko::API::Thread
         intent(SchedulerFLQueue): To act as a free-list data structure
         optimized for fast insertion and removal of scheduled tasks,
         and caching of the next scheduled task.
-        
+
         This implementation is not designed to be used by the Scheduler
-        object. It is not thread-safe and the user is responsible for 
+        object. It is not thread-safe and the user is responsible for
         enforcing mutual exclusion.
     */
     class SchedulerFLQueue

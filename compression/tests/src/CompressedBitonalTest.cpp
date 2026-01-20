@@ -6,7 +6,7 @@
 #include <stdexcept>
 #include <cstring>
 
-namespace Gecko::Compression::Test 
+namespace Gecko::Compression::Test
 {
     TEST(CompressedBitonal, TryWriteToBuffer_InvalidFormat)
     {

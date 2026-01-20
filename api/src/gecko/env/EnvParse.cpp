@@ -14,9 +14,9 @@ namespace Gecko::API::Env
                 continue;
 
             int eqPos = pos;
-            while (eqPos < str.size() && str[eqPos] != '\n' && str[eqPos] != '=') 
+            while (eqPos < str.size() && str[eqPos] != '\n' && str[eqPos] != '=')
                 ++eqPos;
-            
+
             int nlPos = eqPos;
             while (nlPos < str.size() && str[nlPos] != '\n')
                 ++nlPos;

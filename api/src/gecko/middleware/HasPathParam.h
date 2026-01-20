@@ -66,7 +66,7 @@ namespace Gecko::API::Middleware
                 return false;
             }
 
-            if (value->second.size() > std::numeric_limits<T>::digits10 + 1 || 
+            if (value->second.size() > std::numeric_limits<T>::digits10 + 1 ||
                 !Http::ParseValue::TryParseIntegral(value->second, outPathParam))
             {
                 Http::RespondWithError::Unprocessable(res);

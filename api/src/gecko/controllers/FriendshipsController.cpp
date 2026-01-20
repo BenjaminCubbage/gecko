@@ -49,9 +49,9 @@ namespace Gecko::API::Controllers
         //      DELETE /users/{user_id}/friends/
         // is the same as a call to:
         //      DELETE /users/{user_id}/friend-requests/
-        
-        // This is obviously not ideal but does have some advantages. 
-        // Specifically, attempting to delete an outgoing friend request that 
+
+        // This is obviously not ideal but does have some advantages.
+        // Specifically, attempting to delete an outgoing friend request that
         // was just accepted by the other user will always work first try.
 
         server.Delete(
@@ -59,7 +59,7 @@ namespace Gecko::API::Controllers
             [this](const httplib::Request& req, httplib::Response& res) {
                 Handle_DELETE_FriendsOrFriendRequests(req, res);
             });
-            
+
         server.Delete(
             "/api/users/:id/friend-requests",
             [this](const httplib::Request& req, httplib::Response& res) {
@@ -167,7 +167,7 @@ namespace Gecko::API::Controllers
                 return;
         }
     }
-        
+
     void FriendshipsController::Handle_POST_FriendRequests(const httplib::Request& req,
                                                            httplib::Response& res)
     {

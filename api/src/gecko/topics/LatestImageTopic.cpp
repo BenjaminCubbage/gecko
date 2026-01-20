@@ -15,7 +15,7 @@ namespace Gecko::API::Topics
         std::string imageIDStr = std::to_string(imageID);
 
         m_mqttClient->PublishMessage(
-            latestImageIDTopic, std::span<const uint8_t>{ 
+            latestImageIDTopic, std::span<const uint8_t>{
                 reinterpret_cast<const uint8_t*>(imageIDStr.c_str()),
                 imageIDStr.size() },
             true, nullptr, nullptr);

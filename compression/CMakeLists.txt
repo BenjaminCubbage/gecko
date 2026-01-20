@@ -57,7 +57,7 @@ add_custom_command(
         cd ${compression_artifacts_dir} &&
         ${emcc_script_path} --std=c++20 -O3
             -I "${CMAKE_CURRENT_SOURCE_DIR}/src"
-            --bind 
+            --bind
                 ${src_files}
                 "${CMAKE_CURRENT_SOURCE_DIR}/bindings/WasmBindings.cpp"
             -o compression.js

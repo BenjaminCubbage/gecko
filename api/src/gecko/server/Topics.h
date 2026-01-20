@@ -18,7 +18,7 @@ namespace Gecko::API::Server
                   m_env->mosquittoPassword },
               m_devicesHeartbeatTopic{ &m_mqttClient },
               m_latestImageTopic     { &m_mqttClient } {}
-        
+
         Topics           (const Topics&) = delete;
         Topics& operator=(const Topics&) = delete;
         Topics           (Topics&&) = delete;

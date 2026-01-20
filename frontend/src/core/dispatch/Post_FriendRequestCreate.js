@@ -5,7 +5,7 @@ class Post_FriendRequestCreate extends HttpRequest {
         super(
             'POST',
             `/api/users/${userID}/friend-requests`,
-            { 'user_id': otherUserID }, 
+            { 'user_id': otherUserID },
             [ { name: 'X-XSRF-TOKEN', value: xsrfToken } ]
         );
     }

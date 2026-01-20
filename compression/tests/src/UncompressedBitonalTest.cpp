@@ -54,7 +54,7 @@ namespace Gecko::Compression::Test
         EXPECT_TRUE(img.GetPixel(0, 0));
         EXPECT_TRUE(img.GetPixel(2, 2));
     }
-    
+
     TEST(UncompressedBitonal, Constructor_InvalidBGRSize)
     {
         // 2x2 image requires 2*2*3 = 12 bytes, but we give only 10

@@ -7,12 +7,12 @@ startmysql_kill() {
 
     [[ -f "$MYSQL_PID_PATH" ]] && {
         pid=$(sudo cat "$MYSQL_PID_PATH")
-        
+
         echo "[start.sh]: Killing MySQL process with PID $pid"
         sudo kill -9 $(sudo cat "$MYSQL_PID_PATH") 2> /dev/null || {
             echo "Couldn't kill MySQL (Already stopped?)"
         }
-        
+
         sudo rm "$MYSQL_PID_PATH"
         test 1
     } || {
@@ -22,7 +22,7 @@ startmysql_kill() {
 
 startmysql_start() {
     envmysql_loadenv
-    
+
     if [[ -f "$MYSQL_PID_PATH" ]]; then
         echo "[start.sh]: Couldn't start MySQL because it's already running (kill with --kill)"
         exit 0

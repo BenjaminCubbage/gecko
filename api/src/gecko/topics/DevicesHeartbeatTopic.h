@@ -64,8 +64,8 @@ namespace Gecko::API::Topics
             size_t operator()(const std::string& sv) const { return std::hash<std::string_view>{}(sv); }
         };
 
-        void Callback_MessageReceived(void* context, 
-                                      std::string_view topic, 
+        void Callback_MessageReceived(void* context,
+                                      std::string_view topic,
                                       std::span<uint8_t> payload);
 
         MQTT::MQTTClient* m_mqttClient;

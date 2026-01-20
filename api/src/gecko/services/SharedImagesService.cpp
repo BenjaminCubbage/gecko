@@ -5,7 +5,7 @@
 
 namespace Gecko::API::Services
 {
-    SharedImagesService::Result 
+    SharedImagesService::Result
     SharedImagesService::CreateSharedImage(int senderID,
                                            int receiverID,
                                            const std::string& idempotencyKey,
@@ -13,18 +13,18 @@ namespace Gecko::API::Services
     {
         EXPECT(Rand::UUID::IsValidV4UUID(idempotencyKey), Result::BadIdempotencyKey);
         EXPECT(bytes.size() < MaxImageSize, Result::ImageTooLarge);
-        
+
         bool idempotencyKeyExists{};
-        EXPECT(m_dbSharedImages->IdempotencyKeyExists(idempotencyKey, &idempotencyKeyExists) 
+        EXPECT(m_dbSharedImages->IdempotencyKeyExists(idempotencyKey, &idempotencyKeyExists)
                == DB::SharedImagesTable::Result::OK, Result::DatabaseError);
         EXPECT(!idempotencyKeyExists, Result::IdempotencyKeyReplayed);
 
         if (int sharedImageID{};
             m_dbSharedImages->CreateSharedImage(
-                senderID, 
-                receiverID, 
-                idempotencyKey, 
-                bytes, 
+                senderID,
+                receiverID,
+                idempotencyKey,
+                bytes,
                 &sharedImageID) == DB::SharedImagesTable::Result::OK)
         {
             /* Publish to MQTT topic */
@@ -36,14 +36,14 @@ namespace Gecko::API::Services
                     m_latestImageTopic->PublishLatestImage(
                         device.deviceID, sharedImageID, bytes);
             }
-            
+
             return Result::OK;
         }
 
         bool senderExists{};
         EXPECT(m_dbUsers->UserExists(senderID, &senderExists) == DB::UsersTable::Result::OK, Result::DatabaseError);
         EXPECT(senderExists, Result::SenderNotFound);
-        
+
         bool receiverExists{};
         EXPECT(m_dbUsers->UserExists(receiverID, &receiverExists) == DB::UsersTable::Result::OK, Result::DatabaseError);
         EXPECT(receiverExists, Result::ReceiverNotFound);
@@ -51,7 +51,7 @@ namespace Gecko::API::Services
         return Result::DatabaseError;
     }
 
-    SharedImagesService::Result 
+    SharedImagesService::Result
     SharedImagesService::GetLatestReceivedImageBlob(int receiverID,
                                                     std::vector<uint8_t>* outBlob)
     {

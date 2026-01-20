@@ -30,7 +30,7 @@ class Friend {
             } else
                 return String(date);
         }
-            
+
         return null;
     }
 }

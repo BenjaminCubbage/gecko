@@ -34,7 +34,7 @@ namespace Gecko::API::Services
                             DB::SharedImagesTable* dbSharedImages,
                             DB::UsersTable* dbUsers)
             : m_devicesService(devicesService),
-              m_dbSharedImages(dbSharedImages), 
+              m_dbSharedImages(dbSharedImages),
               m_dbUsers(dbUsers),
               m_latestImageTopic(latestImageTopic) {}
 

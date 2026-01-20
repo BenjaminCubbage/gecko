@@ -24,7 +24,7 @@ namespace Gecko::API::Server
               m_dbSharedImages{ &m_dbConnectionPool },
               m_dbDevices     { &m_dbConnectionPool },
               m_dbFriendships { &m_dbConnectionPool } {}
-              
+
         Tables           (const Tables&) = delete;
         Tables& operator=(const Tables&) = delete;
         Tables           (Tables&&) = delete;

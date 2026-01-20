@@ -22,7 +22,7 @@ namespace Gecko::API::Controllers
 
         Services::UsersService m_usersService;
         std::string m_pubkey;
-        
+
         // note(ben): These are reusable but not thread-unsafe.
         static thread_local Json::Reader     s_jsonReader;
         static thread_local Json::FastWriter s_jsonWriter;

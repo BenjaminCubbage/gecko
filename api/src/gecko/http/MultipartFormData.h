@@ -21,7 +21,7 @@ namespace Gecko::API::Http
 
             FieldFinder(std::string fieldName, FieldType fieldType, size_t guessLength)
                 : fieldName(std::move(fieldName)), fieldType(fieldType), guessLength(guessLength) {}
-                
+
             std::string fieldName;
             FieldType fieldType;
             size_t guessLength{ 0 };

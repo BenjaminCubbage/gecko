@@ -51,7 +51,7 @@ namespace Gecko::Embedded
                 Log_Error("MQTTPub: Tried to publish heartbeat but not connected\n");
                 return false;
             }
-            
+
             if (s_heartbeatPubStatus != PubStatus::Ready &&
                 s_heartbeatPubStatus != PubStatus::Published &&
                 s_heartbeatPubStatus != PubStatus::Error)
@@ -71,7 +71,7 @@ namespace Gecko::Embedded
                 &PublishCallback,
                 &s_heartbeatPubStatus);
             s_heartbeatPubStatus = PubStatus::Publishing;
-            
+
             cyw43_arch_lwip_end();
 
             return true;
@@ -92,7 +92,7 @@ namespace Gecko::Embedded
         }
 
     private:
-        static void PublishCallback(void* state, err_t err) 
+        static void PublishCallback(void* state, err_t err)
         {
             PubStatus* status = reinterpret_cast<PubStatus*>(state);
 

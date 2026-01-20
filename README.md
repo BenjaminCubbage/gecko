@@ -49,14 +49,14 @@ cmake --build build --target embedded
 Gecko's backend expects a .env file to specify server configuration. Set up your environment like so:
 
 ```sh
-./scripts/env.sh all 
+./scripts/env.sh all
 ./scripts/init.sh all
 ```
 
 Make sure mosquitto and mysql are running:
 
 ```sh
-./scripts/start.sh mosquitto 
+./scripts/start.sh mosquitto
 ./scripts/start.sh mysql
 ```
 

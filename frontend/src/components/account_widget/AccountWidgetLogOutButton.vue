@@ -1,5 +1,5 @@
 <template>
-    <button 
+    <button
         class="logout-button"
         @click="emit('click')">
         Log Out
@@ -23,11 +23,11 @@ const emit = defineEmits(['click']);
         border: var(--border-small);
         box-shadow: 2px 2px 0 0 black;
         border-radius: 999px;
-        
+
         display: flex;
         justify-content: center;
         align-items: center;
-        
+
         transition: transform 200ms ease;
         transform: scale(1) rotate(0deg);
     }

@@ -7,12 +7,12 @@ startmosquitto_kill() {
 
     [[ -f "$MOSQUITTO_PID_PATH" ]] && {
         pid=$(sudo cat "$MOSQUITTO_PID_PATH")
-        
+
         echo "[start.sh]: Killing Mosquitto process with PID $pid"
         sudo kill -9 $(sudo cat "$MOSQUITTO_PID_PATH") 2> /dev/null || {
             echo "Couldn't kill Mosquitto (Already stopped?)"
         }
-        
+
         sudo rm "$MOSQUITTO_PID_PATH"
         test 1
     } || {
@@ -22,7 +22,7 @@ startmosquitto_kill() {
 
 startmosquitto_start() {
     envmosquitto_loadenv
-    
+
     if [[ -f "$MOSQUITTO_PID_PATH" ]]; then
         echo "[start.sh]: Couldn't start Mosquitto because it's already running (kill with --kill)"
         exit 0

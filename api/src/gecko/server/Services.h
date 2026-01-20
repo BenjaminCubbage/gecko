@@ -32,7 +32,7 @@ namespace Gecko::API::Server
 
     private:
         Env::Env* m_env;
- 
+
         Topics* m_topics;
         Tables* m_tables;
 

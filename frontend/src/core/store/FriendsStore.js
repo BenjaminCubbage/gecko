@@ -134,9 +134,9 @@ class FriendsStore {
     async acceptFriendRequest(session, userID) {
         if (!session?.activeUser().value)
             throw new Error('[FriendsStore]: User not logged in');
-        
+
         const [friend, friendType] = this._getRawFriendInCacheByUserID(userID);
-        
+
         if (!friend || friendType != 'pendingin')
             throw new Error(`[FriendsStore]: User ${userID} has no associate incoming friend request in cache`);
 
@@ -253,9 +253,9 @@ class FriendsStore {
     }
 
     // Note that this function returns null on failure,
-    // not a pair of nulls. 
+    // not a pair of nulls.
 
-    // This signature is designed for convenient chaining 
+    // This signature is designed for convenient chaining
     // (see getFriendInCache*)
     _findInArr(arr, type, predicate) {
         const found = arr.find(predicate);

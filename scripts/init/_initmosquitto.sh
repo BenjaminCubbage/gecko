@@ -34,7 +34,7 @@ initmosquitto_init() {
         echo "Created TLS private key at $MOSQUITTO_PKEY_PATH" || \
         echo "Failed to create TLS private key at $MOSQUITTO_PKEY_PATH"
     fi
-    
+
     if [[ -f "$MOSQUITTO_PKEY_PATH" && ! -f "$MOSQUITTO_CERT_PATH" ]]; then
         sudo mkdir -p "$(dirname "$MOSQUITTO_CERT_PATH")"      && \
         sudo "$OPENSSL_EXE_PATH" req                                  \
@@ -48,7 +48,7 @@ initmosquitto_init() {
         echo "Created TLS certificate at $MOSQUITTO_CERT_PATH" || \
         echo "Failed to create TLS certificate $MOSQUITTO_CERT_PATH from private key $MOSQUITTO_PKEY_PATH"
     fi
-    
+
     if [[ ! -f "$MOSQUITTO_CERT_PATH" ]]; then
         return 1;
     fi

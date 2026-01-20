@@ -9,15 +9,15 @@ namespace Gecko::API::Controllers
     class AuthController
     {
     public:
-        AuthController(Services::UsersService usersService, 
-                       std::string oauthClientID, 
-                       std::string oauthClientSecret, 
-                       std::string pkey, 
-                       std::string pubkey) : 
-            m_usersService(usersService), 
+        AuthController(Services::UsersService usersService,
+                       std::string oauthClientID,
+                       std::string oauthClientSecret,
+                       std::string pkey,
+                       std::string pubkey) :
+            m_usersService(usersService),
             m_oauthClientID(std::move(oauthClientID)),
             m_oauthClientSecret(std::move(oauthClientSecret)),
-            m_pkey(std::move(pkey)), 
+            m_pkey(std::move(pkey)),
             m_pubkey(std::move(pubkey)) {}
 
         void Attach(httplib::Server& server);
@@ -28,7 +28,7 @@ namespace Gecko::API::Controllers
         void Handle_GET_OAuthCallback(const httplib::Request& req, httplib::Response& res);
         void Handle_POST_Refresh(const httplib::Request& req, httplib::Response& res);
         void Handle_GET_XSRF(const httplib::Request& req, httplib::Response& res);
-        
+
         Services::UsersService m_usersService;
 
         const std::string m_oauthClientID;

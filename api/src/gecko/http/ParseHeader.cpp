@@ -10,7 +10,7 @@ namespace Gecko::API::Http
 
         static constexpr const std::string delim{ ";" };
 
-        auto cookie = 
+        auto cookie =
             split(header, delim)
           | transform([](auto&& range) {
                 auto sv = std::string_view(range.begin(), range.end());

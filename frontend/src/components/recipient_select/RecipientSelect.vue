@@ -2,10 +2,10 @@
     <div class="recipient-select">
         <div class="carousels">
             <div class="user-carousel">
-                <RecipientSelectCarousel 
-                    v-model="selectedUser" 
-                    :options="users" 
-                    big 
+                <RecipientSelectCarousel
+                    v-model="selectedUser"
+                    :options="users"
+                    big
                     :mode="userMode">
                     <template #label="{ option }">
                         {{ option['username'] }}

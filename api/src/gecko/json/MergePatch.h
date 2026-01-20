@@ -8,7 +8,7 @@ namespace Gecko::API::JSON
     {
     public:
         // RFC 7386
-        static Json::Value Merge(const Json::Value& target, 
+        static Json::Value Merge(const Json::Value& target,
                                  const Json::Value& patch);
     };
 }

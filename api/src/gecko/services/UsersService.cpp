@@ -43,7 +43,7 @@ namespace Gecko::API::Services
     {
         if (m_dbUsers->GetUserIDByOIDC(oidcIss, oidcSub, outUserID) == DB::UsersTable::Result::OK)
             return Result::OK;
-        
+
         Result oidcValid = ValidateOIDC(oidcIss, oidcSub);
         EXPECT(oidcValid == Result::OK, oidcValid);
 
@@ -69,7 +69,7 @@ namespace Gecko::API::Services
         return Result::DatabaseError;
     }
 
-    UsersService::Result 
+    UsersService::Result
     UsersService::GetUserByUsername(const std::string& username,
                                     Models::User* outUser)
     {
@@ -78,7 +78,7 @@ namespace Gecko::API::Services
         Result usernameValid = ValidateUsername(username);
         EXPECT(usernameValid == Result::OK, usernameValid);
 
-        EXPECT(m_dbUsers->GetUserByUsernameIfExists(username, &exists, outUser) 
+        EXPECT(m_dbUsers->GetUserByUsernameIfExists(username, &exists, outUser)
                == DB::UsersTable::Result::OK,
                Result::DatabaseError);
 
@@ -110,5 +110,5 @@ namespace Gecko::API::Services
         EXPECT(!usernameTaken, Result::UsernameTaken);
 
         return Result::DatabaseError;
-    }    
+    }
 }

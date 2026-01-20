@@ -12,7 +12,7 @@
 
 namespace Gecko::Compression::WasmBindings
 {
-    EMSCRIPTEN_BINDINGS(CompressionModule) 
+    EMSCRIPTEN_BINDINGS(CompressionModule)
     {
         emscripten::register_vector<uint8_t>("VectorUint8");
         emscripten::register_optional<std::vector<uint8_t>>();
@@ -38,7 +38,7 @@ namespace Gecko::Compression::WasmBindings
          */
         emscripten::enum_<CompressedBitonal::StorageFormat>("CompressedBitonal_StorageFormat")
             .value("GIB", CompressedBitonal::StorageFormat::GIB);
-        
+
         emscripten::class_<CompressedBitonal>("CompressedBitonal")
             .class_function("TryWriteToBuffer", &CompressedBitonal::TryWriteToBuffer)
             .class_function("TryReadFromBuffer", &CompressedBitonal::TryReadFromBuffer);

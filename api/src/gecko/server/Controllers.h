@@ -27,7 +27,7 @@ namespace Gecko::API::Server
               m_sharedImagesController{ m_services->SharedImages(), m_env->jwtPublicKey },
               m_devicesController     { m_services->Devices(),      m_env->jwtPublicKey },
               m_friendshipsController { m_services->Friendships(),  m_env->jwtPublicKey } {}
-              
+
         Controllers           (const Controllers&) = delete;
         Controllers& operator=(const Controllers&) = delete;
         Controllers           (Controllers&&) = delete;
@@ -37,7 +37,7 @@ namespace Gecko::API::Server
 
     private:
         Env::Env*     m_env;
-        
+
         Services* m_services;
 
         API::Controllers::AuthController         m_authController;

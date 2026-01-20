@@ -9,8 +9,8 @@ export function useOnResize() {
 
     const entries = [];
 
-    function getEntryByElement(el) { 
-        return entries.find(o => o.el == el); 
+    function getEntryByElement(el) {
+        return entries.find(o => o.el == el);
     }
 
     function handleObserverEvent(el) {
@@ -22,7 +22,7 @@ export function useOnResize() {
 
         if ((entry = getEntryByElement(el)) == null) {
             entries.push(entry = new Entry({
-                el: el, 
+                el: el,
                 observer: new ResizeObserver((e) => handleObserverEvent(el)),
                 handlers: [cb]
             }));

@@ -9,7 +9,7 @@
                 <div class="status-bubble-caret">
                 </div>
             </div>
-        </div>        
+        </div>
     </Transition>
 </template>
 
@@ -22,7 +22,7 @@ const isShowingMessage = ref(0);
 function showMessage(message, milliseconds = 3000) {
     currentMessage.value = message;
     ++isShowingMessage.value;
-        
+
     setTimeout(() => {
         --isShowingMessage.value;
     }, milliseconds);
@@ -63,15 +63,15 @@ defineExpose({ showMessage });
         content: "";
         width: 16px;
         height: 16px;
-        
+
         position: absolute;
         top: -7.5px;
         left: 24.5px;
-        
+
         border: 2.5px solid black;
         border-right: 0;
         border-bottom: 0;
-        border-top-left-radius: 3px; 
+        border-top-left-radius: 3px;
 
         background: hsl(0, 100%, 71%);
         transform: rotate(45deg);

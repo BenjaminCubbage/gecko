@@ -3,9 +3,9 @@ import { HttpRequest } from './HttpRequest.js';
 class Patch_ChangeUsername extends HttpRequest {
     constructor(userID, xsrfToken, newUsername) {
         super(
-            'PATCH', 
+            'PATCH',
             `/api/users/${userID}`,
-            { 'username': newUsername }, 
+            { 'username': newUsername },
             [ { name: 'X-XSRF-TOKEN', value: xsrfToken } ]
         );
     }

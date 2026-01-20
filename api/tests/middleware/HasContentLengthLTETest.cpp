@@ -9,7 +9,7 @@ using ::Gecko::API::Middleware::HasContentLengthLTE;
 
 namespace Gecko::API::Test
 {
-    namespace 
+    namespace
     {
         void ExpectErrorJson(const httplib::Response& res)
         {
@@ -135,7 +135,7 @@ namespace Gecko::API::Test
         httplib::Response res{};
         res.status = httplib::StatusCode::OK_200;
         res.body.clear();
-        
+
         req.set_header("Content-Length", "9999998");
 
         size_t out = 0;
@@ -155,7 +155,7 @@ namespace Gecko::API::Test
         httplib::Response res{};
         res.status = httplib::StatusCode::OK_200;
         res.body.clear();
-        
+
         req.set_header("Content-Length", "9999999");
 
         size_t out = 0;
@@ -175,7 +175,7 @@ namespace Gecko::API::Test
         httplib::Response res{};
         res.status = httplib::StatusCode::OK_200;
         res.body.clear();
-        
+
         req.set_header("Content-Length", "9999999");
 
         size_t out = 0;

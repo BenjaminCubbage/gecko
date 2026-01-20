@@ -118,7 +118,7 @@ namespace Gecko::API::Controllers
                 return;
         }
     }
-    
+
     void UsersController::Handle_GET_UserQuery(const httplib::Request& req, httplib::Response& res)
     {
         using Services::UsersService;
@@ -153,7 +153,7 @@ namespace Gecko::API::Controllers
 
             case UsersService::Result::UsernameTooShort:
                 Http::RespondWithError::UsernameTooShort(res);
-                return; 
+                return;
 
             case UsersService::Result::UsernameContainsInvalidCharacters:
                 Http::RespondWithError::UsernameContainsInvalidCharacters(res);

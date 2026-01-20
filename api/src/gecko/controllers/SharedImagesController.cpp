@@ -16,7 +16,7 @@ namespace Gecko::API::Controllers
 {
     thread_local Json::Reader     SharedImagesController::s_jsonReader{};
     thread_local Json::FastWriter SharedImagesController::s_jsonWriter{};
-    
+
     using ::Gecko::API::Http::Constants::Headers;
 
     void SharedImagesController::Attach(httplib::Server& server)
@@ -26,7 +26,7 @@ namespace Gecko::API::Controllers
                                                             const httplib::ContentReader& contentReader) {
             Handle_POST_SharedImages(req, res, contentReader);
         });
-        
+
         server.Get("/api/users/:id/latest-image", [this] (const httplib::Request& req,
                                                           httplib::Response& res) {
             Handle_GET_LatestImageBlob(req, res);
@@ -95,8 +95,8 @@ namespace Gecko::API::Controllers
                 return;
         }
     }
-    
-    void SharedImagesController::Handle_GET_LatestImageBlob(const httplib::Request& req, 
+
+    void SharedImagesController::Handle_GET_LatestImageBlob(const httplib::Request& req,
                                                             httplib::Response& res)
     {
         using Services::SharedImagesService;
@@ -112,8 +112,8 @@ namespace Gecko::API::Controllers
         {
             case SharedImagesService::Result::OK:
                 res.set_content(
-                    reinterpret_cast<char*>(bytes.data()), 
-                    bytes.size(), 
+                    reinterpret_cast<char*>(bytes.data()),
+                    bytes.size(),
                     "application/octet-stream");
                 return;
 

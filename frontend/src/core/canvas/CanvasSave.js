@@ -19,7 +19,7 @@ class CanvasSave {
         bgr.resize(pixelCount * 3);
 
         for (let i = 0; i < pixelCount; ++i) {
-            const pixelBecomesWhite = 
+            const pixelBecomesWhite =
                 canvasBGR.data[i * 4 + 0] > 240 ||
                 canvasBGR.data[i * 4 + 1] > 240 ||
                 canvasBGR.data[i * 4 + 2] > 240;

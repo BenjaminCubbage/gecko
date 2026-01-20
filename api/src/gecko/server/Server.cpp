@@ -27,7 +27,7 @@ namespace Gecko::API::Server
             Logger::Error() << "[Server.Start]: Failed to start server; See previous output";
             return false;
         }
-        
+
         if (!m_httpServer.is_valid())
         {
             Logger::Error() << "[Server.Start]: HTTPS server was DOA";

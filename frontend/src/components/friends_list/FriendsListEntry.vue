@@ -1,6 +1,6 @@
 <template>
-    <div 
-        class="friends-list-entry" 
+    <div
+        class="friends-list-entry"
         :class="{
             'selectable': !isSearchResult && (isActive || isPendingOut),
             'selected':   !isSearchResult && (isActive || isPendingOut) && isFocused
@@ -27,7 +27,7 @@
 
             <div class="buttons-section">
                 <button class="shiny-button shiny-button--send-req"
-                    v-if="isNotFriends" 
+                    v-if="isNotFriends"
                     @focus="isFocused = true"
                     @blur="isFocused = false"
                     @click="emit('sendRequest', user)">
@@ -35,7 +35,7 @@
                 </button>
 
                 <button class="shiny-button shiny-button--accept-req"
-                    v-if="isPendingIn" 
+                    v-if="isPendingIn"
                     @click="emit('acceptRequest', user)">
                     ACCEPT
                 </button>
@@ -89,7 +89,7 @@ const isMe         = computed(() => props.entryType == 'me');
 
         padding: 12px 24px 12px 18px;
         letter-spacing: 0.04em;
-        
+
         color: black;
     }
 
@@ -98,7 +98,7 @@ const isMe         = computed(() => props.entryType == 'me');
 
         grid-template-columns: auto 1fr;
         grid-auto-rows: auto;
-        grid-template-areas: 
+        grid-template-areas:
             "icon name       buttons"
             "icon subheading-section buttons";
 

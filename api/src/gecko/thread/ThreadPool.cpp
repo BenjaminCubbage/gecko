@@ -154,7 +154,7 @@ namespace Gecko::API::Thread
             }
 
             /*
-                Publish join completion first (prevents Start() from seeing 
+                Publish join completion first (prevents Start() from seeing
                 Stopped early)
             */
             m_joinState.store(JoinState::Joined, std::memory_order_release);

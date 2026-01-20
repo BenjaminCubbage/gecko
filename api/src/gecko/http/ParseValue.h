@@ -7,7 +7,7 @@ namespace Gecko::API::Http
     class ParseValue
     {
     public:
-        // Safely parse a string comprised of digits to an integral, 
+        // Safely parse a string comprised of digits to an integral,
         // up to a value of std::numeric_limits<T>::max()
         // Leading hyphen / signage not supported
         // Leading zeroes are OK but parsing will fail if the string's size

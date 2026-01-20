@@ -16,7 +16,7 @@ envmosquitto_create() {
     if [[ $accept_defaults -eq 0 ]]; then
         [[ "$mosquitto_port" ]]        || read -p "Mosquitto port to listen on (press Enter for default: 3002): "                                             mosquitto_port
         [[ "$mosquitto_runtime_dir" ]] || read -p "Path to store mosquitto runtime / configuration data (press Enter for default: /var/lib/gecko/mosquitto):" mosquitto_runtime_dir
-        
+
         read -p "Path to the mosquitto executable (press Enter to search filesystem): "                                     mosquitto_exe_path
         read -p "Path to the mosquitto_ctrl executable (press Enter to search filesystem): "                                mosquitto_ctrl_exe_path
         read -p "Path to the mosquitto_dynamic_security shared library (press Enter to search filesystem): "                mosquitto_dynsec_lib_path

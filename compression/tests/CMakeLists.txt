@@ -20,7 +20,7 @@ add_executable(compression_tests
     ${SRC_DIR}/UncompressedBitonalTest.cpp
 )
 
-target_link_libraries(compression_tests PRIVATE 
+target_link_libraries(compression_tests PRIVATE
     compression_lib
     gtest_main
 )
@@ -41,7 +41,7 @@ add_custom_command(
         "$<TARGET_FILE_DIR:compression_tests>/assets"
 )
 
-add_test(NAME compression_tests 
+add_test(NAME compression_tests
     COMMAND "$<TARGET_FILE:compression_tests>"
     WORKING_DIRECTORY "$<TARGET_FILE_DIR:compression_tests>"
 )

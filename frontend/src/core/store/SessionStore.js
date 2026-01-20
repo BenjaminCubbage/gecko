@@ -11,7 +11,7 @@ class SessionStore {
     constructor(activeUser = null, xsrfCookie = null) {
         this._activeUser = ref(activeUser);
         this._xsrfCookie = xsrfCookie;
-        
+
         this._state = ref('uninitialized');
         this._mutex = new ResourceMutex();
     }
@@ -108,9 +108,9 @@ class SessionStore {
                     .onHttpError((_, status) => reject(new HttpError(status)))
                     .onNetworkError(()       => reject(new NetworkError()));
             });
-            
+
             this._xsrfCookie = getXSRFCookie();
-            
+
             if (!this._xsrfCookie)
                 throw new Error(`[SessionStore]: Server didn't set the XSRF cookie`);
         }

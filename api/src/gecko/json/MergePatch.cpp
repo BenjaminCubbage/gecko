@@ -22,16 +22,16 @@ namespace Gecko::API::JSON
     //          return Target
     //      else:
     //          return Patch
-    Json::Value MergePatch::Merge(const Json::Value& target, 
+    Json::Value MergePatch::Merge(const Json::Value& target,
                                   const Json::Value& patch)
     {
         if (!patch.isObject())
             return patch;
 
-        Json::Value result = target.isObject() 
+        Json::Value result = target.isObject()
             ? target
             : Json::Value{};
-            
+
         for (const auto& member : patch.getMemberNames())
         {
             if (patch[member].isNull())

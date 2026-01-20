@@ -109,7 +109,7 @@ namespace Gecko::Embedded
         if (!CommitFlag_Get(scratch.FilenameWithSuffix(), &bCommitted))
             Log_Warn("FSTwoPhase: Could not get commit flag at %s\n", scratch.FilenameWithSuffix());
 
-        if (!aCommitted && !bCommitted) 
+        if (!aCommitted && !bCommitted)
             return false;
 
         if (aCommitted && bCommitted)

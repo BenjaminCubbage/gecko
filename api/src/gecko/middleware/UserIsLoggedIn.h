@@ -14,7 +14,7 @@ namespace Gecko::API::Middleware
     class UserIsLoggedIn
     {
     public:
-        UserIsLoggedIn(std::string pubkey) 
+        UserIsLoggedIn(std::string pubkey)
             : m_pubkey(std::move(pubkey)) {}
 
         bool operator()(const httplib::Request& req, httplib::Response& res, int* outUserID)
@@ -38,9 +38,9 @@ namespace Gecko::API::Middleware
 
             try
             {
-                const auto decodedAuthCookie 
+                const auto decodedAuthCookie
                     = jwt::decode<jwt::traits::open_source_parsers_jsoncpp>(*cookieValue);
-                    
+
                 if (!Http::ParseValue::TryParseIntegral<int>(decodedAuthCookie.get_subject(), outUserID))
                 {
                     Http::RespondWithError::AuthInvalid(res);

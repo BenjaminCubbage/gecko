@@ -2,7 +2,7 @@
 
 script_dir="$(cd "$(dirname "$0")" && pwd)"
 env_dir="$(realpath "$script_dir/../env")"
-conf_dir="$(realpath "$script_dir/../conf")" 
+conf_dir="$(realpath "$script_dir/../conf")"
 
 source "$script_dir/init/_initmosquitto.sh"
 source "$script_dir/init/_initmysql.sh"

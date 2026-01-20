@@ -26,9 +26,9 @@ namespace Gecko::API::Thread
         if (!m_freeHead)
         {
             /*
-                note(ben): It is 3AM and I just need to get this done, so 
+                note(ben): It is 3AM and I just need to get this done, so
                 this is a super naive "good enough" implementation.
-                
+
                 Find all jobs that are completed but not yet marked as
                 free and mark them as free.
             */
@@ -72,7 +72,7 @@ namespace Gecko::API::Thread
     {
         Task* task = &m_tasks[handle.index];
         assert(handle.index < m_tasks.size());
-        
+
         if (task->isFree || handle.ticket != task->handle.ticket)
             return false;
 
@@ -195,7 +195,7 @@ namespace Gecko::API::Thread
         {
             if (m_tasks[i].isFree)
                 continue;
-            
+
             m_end = i + 1;
 
             if (!m_tasks[i].due)

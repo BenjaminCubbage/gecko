@@ -7,12 +7,12 @@ initmysql_kill() {
     envmysql_loadenv
     [[ -f "$MYSQL_PID_PATH" ]] && {
         pid=$(sudo cat "$MYSQL_PID_PATH")
-        
+
         echo "[start.sh]: Killing MySQL process with PID $pid"
         sudo kill -9 $(sudo cat "$MYSQL_PID_PATH") 2> /dev/null || {
             echo "Couldn't kill MySQL (Already stopped?)"
         }
-        
+
         sudo rm "$MYSQL_PID_PATH"
         test 1
     } || {
@@ -31,7 +31,7 @@ initmysql_clean() {
         echo "[init.sh]: Nothing to clean for MySQL"
         return 0
     }
-    
+
     # Safety check: refuse to delete if MYSQL_DATA_DIR is empty, "/", or too short
     if [[ -z "$MYSQL_DATA_DIR" ]] || ((${#MYSQL_DATA_DIR} < 6)); then
         echo "[init.sh]: Refusing to force delete directory "$MYSQL_DATA_DIR" because it's suspiscious"

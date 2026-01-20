@@ -98,7 +98,7 @@ namespace Gecko::API::Test
 
             res.status = httplib::StatusCode::OK_200;
             req.body = R"({"third":3})";
-            
+
             ASSERT_TRUE(hasJSONBody(req, res, &parsed));
             EXPECT_EQ(res.status, httplib::StatusCode::OK_200);
             EXPECT_TRUE(res.body.empty());

@@ -4,7 +4,7 @@ script_dir="$(cd "$(dirname "$0")" && pwd)"
 env_dir="$(realpath "$script_dir/../env")"
 conf_dir="$(realpath "$script_dir/../conf")"
 
-[[ -d "$env_dir" ]] || { 
+[[ -d "$env_dir" ]] || {
     echo "[env.sh]: Couldn't find directory $env_dir"
     exit 1
 }
@@ -59,19 +59,19 @@ while true; do
 done
 
 case $1 in
-    all|mosquitto) 
+    all|mosquitto)
         (( $clean != 0 )) && sudo rm "$env_dir/mosquitto/.env.local" 2> /dev/null
-        (( $clean == 0 )) && envmosquitto_create 
+        (( $clean == 0 )) && envmosquitto_create
         ;;&
-    all|mysql)     
+    all|mysql)
         (( $clean != 0 )) && sudo rm "$env_dir/mysql/.env.local" 2> /dev/null
-        (( $clean == 0 )) && envmysql_create 
+        (( $clean == 0 )) && envmysql_create
         ;;&
-    all|api)       
+    all|api)
         (( $clean != 0 )) && sudo rm "$env_dir/api/.env.local" 2> /dev/null
-        (( $clean == 0 )) && envapi_create 
+        (( $clean == 0 )) && envapi_create
         ;;&
 
     all|mosquitto|mysql|api) ;;
-    *) usage; exit 1;; 
+    *) usage; exit 1;;
 esac

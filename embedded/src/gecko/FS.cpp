@@ -15,7 +15,7 @@ namespace Gecko::Embedded
             Log_Error("FS: Could not mount SD card: %s\n", FResultToStr(r));
             return false;
         }
-        
+
         Log_Info("FS: Successfully mounted\n");
         return true;
     }
@@ -62,7 +62,7 @@ namespace Gecko::Embedded
         f_close(&fp);
         return true;
     }
-    
+
     const char* FS::FResultToStr(FRESULT result)
     {
         switch (result)

@@ -29,9 +29,9 @@ namespace Gecko::Embedded
         /*
             Writes data to the supplied file.
 
-            If writeOverExisting is true, the file is opened with the 
+            If writeOverExisting is true, the file is opened with the
             FA_OPEN_ALWAYS flag, otherwise FA_CREATE_ALWAYS is used.
-            
+
             Returns true if the data was successfully written.
             Otherwise, false.
         */

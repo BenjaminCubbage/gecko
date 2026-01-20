@@ -20,7 +20,7 @@ namespace Gecko::API::DB
         Result DeviceExists(int deviceID,
                             bool *outExists,
                             int *outOwnerID);
-                            
+
         Result GetDevicesByOwnerID(int ownerID,
                                    std::vector<Models::Device>* outDevices);
 

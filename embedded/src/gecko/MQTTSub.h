@@ -254,7 +254,7 @@ namespace Gecko::Embedded
 
             if (s_incoming->status != SubStatus::Subscribed)
                 return;
-            
+
             Log_Debug("MQTTSub: Incoming publish to topic %s "
                       "(total length: %d)\n", topic, totLen);
 
@@ -278,11 +278,11 @@ namespace Gecko::Embedded
 
         static void Callback_IncomingData(void*, const uint8_t* incData, uint16_t len, uint8_t flags)
         {
-            if (s_incoming == nullptr || 
+            if (s_incoming == nullptr ||
                 s_incoming->status != SubStatus::Receiving)
             {
                 Log_Error("MQTTSub: Got incoming data but s_incoming was null or not receiving.\n");
-                return;   
+                return;
             }
 
             if (s_incoming->messageLen + len > s_incoming->capacity)

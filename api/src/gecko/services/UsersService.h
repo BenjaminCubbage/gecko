@@ -63,12 +63,12 @@ namespace Gecko::API::Services
             // length
             if (username.size() < MinUsernameLength) return Result::UsernameTooShort;
             if (username.size() > MaxUsernameLength) return Result::UsernameTooShort;
-            
+
             // alphanumeric or underscore
             for (char c : username)
             {
-                if (c != '_' && (c < '0' || c > '9') && 
-                                (c < 'a' || c > 'z') && 
+                if (c != '_' && (c < '0' || c > '9') &&
+                                (c < 'a' || c > 'z') &&
                                 (c < 'A' || c > 'Z'))
                 {
                     return Result::UsernameContainsInvalidCharacters;
