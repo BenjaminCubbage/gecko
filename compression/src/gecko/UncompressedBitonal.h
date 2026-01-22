@@ -5,7 +5,6 @@
 #include <stdexcept>
 #include <vector>
 
-
 namespace Gecko::Compression
 {
 	class UncompressedBitonal

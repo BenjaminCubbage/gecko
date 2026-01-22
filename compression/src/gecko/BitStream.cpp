@@ -5,19 +5,16 @@
 
 namespace Gecko::Compression
 {
-
 	void BitStream::SeekStart()
 	{
 		readerPos.byte = 0;
 		readerPos.bit = 0;
 	}
 
-
 	void BitStream::StepForward(size_t by)
 	{
 		ProgressReaderPos(by);
 	}
-
 
 	uint32_t BitStream::Peek(size_t numBits) const
 	{
@@ -61,7 +58,6 @@ namespace Gecko::Compression
 		return hi | lo;
 	}
 
-
 	void BitStream::PushBack(uint32_t value, size_t numBits)
 	{
 		/*
@@ -98,7 +94,6 @@ namespace Gecko::Compression
 		ProgressWriterPos(numBits);
 		EnsureAdequateEOFWiggleRoom();
 	}
-
 
 	std::span<const uint8_t> BitStream::GetBytes() const
 	{

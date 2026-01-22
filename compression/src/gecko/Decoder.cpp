@@ -4,7 +4,6 @@
 #include <assert.h>
 #include <iostream>
 
-
 namespace Gecko::Compression
 {
 	bool Decoder::TryDecompressBitonal(CompressedBitonal compressed, const Drawer& drawer)

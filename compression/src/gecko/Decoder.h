@@ -3,7 +3,6 @@
 #include "UncompressedBitonal.h"
 #include "BitStream.h"
 
-
 namespace Gecko::Compression
 {
 	class Decoder

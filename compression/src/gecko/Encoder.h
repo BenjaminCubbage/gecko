@@ -3,15 +3,8 @@
 #include "gecko/UncompressedBitonal.h"
 #include "gecko/BitStream.h"
 
-
 namespace Gecko::Compression
 {
-	/*
-	 A `vPixel` here refers to a virtual pixel, which is a coordinate which may or may not map
-	 to a real point on the bitmap. If it does not map to a real point, the coordinate is
-	 always considered white.
-	 */
-
 	class Encoder
 	{
 	  public:

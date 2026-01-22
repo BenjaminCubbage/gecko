@@ -6,7 +6,6 @@
 #include <iostream>
 #include "BitOperations.h"
 
-
 namespace Gecko::Compression
 {
 	class BitStream

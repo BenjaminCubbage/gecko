@@ -22,30 +22,25 @@ namespace Gecko::Compression
 	std::map<CodeWords::ModePrefixType, CodeWords::ModePrefix> CodeWords::modePrefixes = std::map<CodeWords::ModePrefixType, ModePrefix>{};
 	std::vector<CodeWords::ModePrefixType> CodeWords::modes = CodeWords::BuildModesLookup();
 
-
 	CodeWords::IntegralPrefix& CodeWords::LookupBlackIntegralPrefixFromLow13(uint16_t low13)
 	{
 		return integralsBlack[low13 & ((1 << 13) - 1)];
 	}
-
 
 	CodeWords::IntegralPrefix& CodeWords::LookupWhiteIntegralPrefixFromLow13(uint16_t low13)
 	{
 		return integralsWhite[low13 & ((1 << 13) - 1)];
 	}
 
-
 	CodeWords::IntegralPrefix& CodeWords::GetNextBlackIntegralPrefix(uint16_t integralValue)
 	{
 		return GetNextIntegralPrefix(integralPrefixesBlack, integralValue);
 	}
 
-
 	CodeWords::IntegralPrefix& CodeWords::GetNextWhiteIntegralPrefix(uint16_t integralValue)
 	{
 		return GetNextIntegralPrefix(integralPrefixesWhite, integralValue);
 	}
-
 
 	CodeWords::IntegralPrefix& CodeWords::GetNextIntegralPrefix(std::map<int, IntegralPrefix&>& prefixes, uint16_t integralValue)
 	{
@@ -54,18 +49,15 @@ namespace Gecko::Compression
 		return it->second;
 	}
 
-
 	CodeWords::ModePrefix& CodeWords::LookupModePrefixFromLow7(uint16_t low7)
 	{
 		return modePrefixes.at(modes[low7]);
 	}
 
-
 	CodeWords::ModePrefix& CodeWords::LookupModePrefixFromType(ModePrefixType type)
 	{
 		return modePrefixes.at(type);
 	}
-
 
 	std::vector<CodeWords::IntegralPrefix> CodeWords::BuildIntegralsBlackLookup()
 	{
@@ -181,7 +173,6 @@ namespace Gecko::Compression
 		return lookup;
 	}
 
-
 	std::vector<CodeWords::IntegralPrefix> CodeWords::BuildIntegralsWhiteLookup()
 	{
 		std::vector<IntegralPrefix> lookup(1 << 13);
@@ -296,7 +287,6 @@ namespace Gecko::Compression
 		return lookup;
 	}
 
-
 	std::vector<CodeWords::ModePrefixType> CodeWords::BuildModesLookup()
 	{
 		std::vector<CodeWords::ModePrefixType> lookup(1 << 7);
@@ -311,7 +301,6 @@ namespace Gecko::Compression
 		StoreModeEncoding(lookup, modePrefixes, 0b0000010, 7, ModePrefixType::VerticalL3);
 		return lookup;
 	}
-
 
 	void CodeWords::StoreIntegralEncoding(std::vector<CodeWords::IntegralPrefix>& lookup, std::map<int, IntegralPrefix&>& prefixMap, uint16_t prefix, uint16_t prefixLengthBits, uint16_t integral, IntegralPrefixType type)
 	{
@@ -332,7 +321,6 @@ namespace Gecko::Compression
 			prefixMap.insert_or_assign(integral, lookup[shiftedPrefix + i]);
 		}
 	}
-
 
 	void CodeWords::StoreModeEncoding(std::vector<ModePrefixType>& lookup, std::map<ModePrefixType, ModePrefix>& prefixMap, uint16_t prefix, uint16_t prefixLengthBits, CodeWords::ModePrefixType type)
 	{

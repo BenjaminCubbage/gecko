@@ -1,7 +1,6 @@
 #include "gecko/CompressedBitonal.h"
 #include "gecko/BitStream.h"
 
-
 namespace Gecko::Compression
 {
 	std::optional<std::vector<uint8_t>> CompressedBitonal::TryWriteToBuffer(const CompressedBitonal& compressed, StorageFormat format)
@@ -48,7 +47,6 @@ namespace Gecko::Compression
 		std::copy(bytes.begin(), bytes.end(), buffer.data() + HeaderSize);
 		return buffer;
 	}
-
 
 	std::optional<CompressedBitonal> CompressedBitonal::TryReadFromBuffer(const std::vector<uint8_t>& buffer, StorageFormat format)
 	{

@@ -3,7 +3,6 @@
 #include <map>
 #include <cstdint>
 
-
 namespace Gecko::Compression
 {
 	/*

@@ -4,7 +4,6 @@
 #include <span>
 #include <stdexcept>
 
-
 namespace Gecko::Compression
 {
 	std::optional<std::vector<uint8_t>> UncompressedBitonal::TryWriteToBuffer(const UncompressedBitonal& uncompressed, StorageFormat format)
@@ -29,12 +28,12 @@ namespace Gecko::Compression
 			headerBytes[offset + 1] = static_cast<uint8_t>((v >> 8) & 0xFF);
 			headerBytes[offset + 2] = static_cast<uint8_t>((v >> 16) & 0xFF);
 			headerBytes[offset + 3] = static_cast<uint8_t>((v >> 24) & 0xFF);
-			};
+		};
 
 		auto w16 = [&](size_t offset, uint16_t v) {
 			headerBytes[offset + 0] = static_cast<uint8_t>(v & 0xFF);
 			headerBytes[offset + 1] = static_cast<uint8_t>((v >> 8) & 0xFF);
-			};
+		};
 
 		buffer[0] = uint8_t('B');
 		buffer[1] = uint8_t('M');
@@ -73,7 +72,6 @@ namespace Gecko::Compression
 			headerSize = BitOperations::SwapEndianness32(headerSize);
 		if (headerSize != 40) return std::nullopt;
 
-
 		uint32_t w{ 0 };
 		uint32_t h{ 0 };
 		memcpy(&w, headerBytes.data() + 18, 4);
@@ -85,19 +83,16 @@ namespace Gecko::Compression
 			h = BitOperations::SwapEndianness32(h);
 		}
 
-
 		uint16_t bpp = 0;
 		memcpy(&bpp, headerBytes.data() + 28, 2);
 		if constexpr (std::endian::native == std::endian::big)
 			bpp = BitOperations::SwapEndianness16(bpp);
 		if (bpp != 24) return std::nullopt;
 
-
 		// Row widths are end-padded to 4 bytes
 		int rowBytesLen = (w * 3 + 3) & ~3;
 		if (static_cast<size_t>(rowBytesLen) * h > pixelsBytes.size())
 			return std::nullopt;
-
 
 		std::vector<uint8_t> bgr(w * h * 3);
 

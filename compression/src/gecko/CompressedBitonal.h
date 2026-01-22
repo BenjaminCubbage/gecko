@@ -3,7 +3,6 @@
 #include <vector>
 #include <optional>
 
-
 namespace Gecko::Compression
 {
 	class CompressedBitonal
