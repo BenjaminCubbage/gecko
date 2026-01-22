@@ -1,5 +1,6 @@
 class CanvasToGIB {
     static readBlob(canvas) {
+        console.time("total");
         const ctx = canvas?.getContext('2d');
         const bgr = new Module.VectorUint8();
 
@@ -12,23 +13,15 @@ class CanvasToGIB {
         const height = canvas.height;
         const canvasBGR = ctx.getImageData(0, 0, width, height);
 
-        // 4-channel RGBA to 3-channel BGR
-        const pixelCount = canvasBGR.data.length / 4;
-        bgr.resize(pixelCount * 3);
+        const cb = Module.addFunction((pixelX, pixelY) => {
+            const pos = pixelY * width + pixelX;
+            return canvasBGR.data[pos * 4 + 0] > 240 ||
+                   canvasBGR.data[pos * 4 + 1] > 240 ||
+                   canvasBGR.data[pos * 4 + 2] > 240;
+        }, "iii");
 
-        for (let i = 0; i < pixelCount; ++i) {
-            const pixelBecomesWhite =
-                canvasBGR.data[i * 4 + 0] > 240 ||
-                canvasBGR.data[i * 4 + 1] > 240 ||
-                canvasBGR.data[i * 4 + 2] > 240;
-            bgr.set(i * 3 + 0, pixelBecomesWhite * 255);
-            bgr.set(i * 3 + 1, pixelBecomesWhite * 255);
-            bgr.set(i * 3 + 2, pixelBecomesWhite * 255);
-        }
-
-        const uncompressedBitonal = new Module.UncompressedBitonal(bgr, width, height);
-        const compressedBitonal   = Module.Encoder.TryCompressBitonal(uncompressedBitonal);
-        const compressedBytes     = Module.CompressedBitonal.TryWriteToBuffer(
+        const compressedBitonal = Module.Encoder.TryCompress(cb, width, height);
+        const compressedBytes = Module.CompressedBitonal.TryWriteToBuffer(
             compressedBitonal,
             Module.CompressedBitonal_StorageFormat.GIB
         );
@@ -40,9 +33,7 @@ class CanvasToGIB {
 
         compressedBytes.delete();
         compressedBitonal.delete();
-        uncompressedBitonal.delete();
         bgr.delete();
-
         return new Blob([copy]);
     }
 };

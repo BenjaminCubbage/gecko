@@ -53,32 +53,42 @@ namespace Gecko::Compression::WasmBindings
          *  Decoder
          */
 
-        emscripten::class_<Decoder>("Decoder")
-            .class_function("TryDecompressBitonal",
-                (void (*)(CompressedBitonal, int)) [] (CompressedBitonal compressed, int cbIntPtr) {
-                    auto cb = reinterpret_cast<void (*)(int, int, int, int)>(cbIntPtr);
+        using ImageWriter = decltype([] (
+                void* context, 
+                void*, 
+                size_t pixelY, 
+                size_t pixelXStart, 
+                size_t pixelXEnd, 
+                bool white) {
+            reinterpret_cast<void (*)(int, int, int, int)>(context)(
+                (int)pixelY,
+                (int)pixelXStart,
+                (int)pixelXEnd,
+                white);
+        });
 
-                    auto cbWrapper = [] (void* cbContext, 
-                                         void*,
-                                         size_t pixelY,
-                                         size_t pixelXStart,
-                                         size_t pixelXEnd,
-                                         bool white) {
-                        ((decltype(cb))cbContext)(pixelY, pixelXStart, pixelXEnd, white);
-                    };
-
-                    Decoder::TryDecompressBitonal(compressed, Decoder::Drawer{
-                        .handler  = cbWrapper,
-                        .context1 = (void*)cb,
-                        .context2 = nullptr
-                    });
+        emscripten::class_<Decoder<ImageWriter>>("Decoder")
+            .class_function("TryDecompress",
+                (bool (*)(CompressedBitonal, int)) [] (CompressedBitonal compressed, int cbIntPtr) {
+                    return Decoder<ImageWriter>::TryDecompress(compressed, (void*)cbIntPtr);
                 });
 
         /*
          *  Encoder
          */
 
-        emscripten::class_<Encoder>("Encoder")
-            .class_function("TryCompressBitonal", &Encoder::TryCompressBitonal);
+        using ImageReader = decltype([] (void* context, void*, size_t px, size_t py) -> bool {
+            return reinterpret_cast<int (*)(int, int)>(context)(px, py);
+        });
+
+        emscripten::class_<Encoder<ImageReader>>("Encoder")
+            .class_function("TryCompress",
+                (std::optional<CompressedBitonal> (*)(int, int, int))
+                [] (int cbIntPtr, int width, int height) {
+                    return Encoder<ImageReader>::TryCompress(
+                        (size_t)width,
+                        (size_t)height,
+                        (void*)cbIntPtr);
+                });
     }
 }

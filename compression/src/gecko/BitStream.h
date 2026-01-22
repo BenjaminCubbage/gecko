@@ -78,7 +78,6 @@ namespace Gecko::Compression
 		BitStream& operator=(const BitStream& other) = default;
 		~BitStream() = default;
 
-
 		void SeekStart();
 		void StepForward(size_t by);
 		uint32_t Peek(size_t numBits) const;

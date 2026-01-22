@@ -32,7 +32,7 @@ class GIBToCanvas {
             }
         }, "viiii");
 
-        Module.Decoder.TryDecompressBitonal(compressedBitonal, cb);
+        Module.Decoder.TryDecompress(compressedBitonal, cb);
         Module.removeFunction(cb);
 
 
