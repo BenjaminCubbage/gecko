@@ -6,7 +6,11 @@ namespace Gecko::Compression
 	class BitOperations
 	{
 	  public:
-		static inline uint32_t SwapEndianness32(uint32_t value)
+		/*
+			Polyfills for std::byteswap
+		*/
+		
+		static inline uint32_t ByteSwap(uint32_t value)
 		{
 			return ((value << 24) & 0xFF000000) |
 				((value << 8) & 0x00FF0000) |
@@ -14,7 +18,7 @@ namespace Gecko::Compression
 				((value >> 24) & 0x000000FF);
 		}
 
-		static inline uint16_t SwapEndianness16(uint16_t value)
+		static inline uint16_t ByteSwap(uint16_t value)
 		{
 			return (value << 8) | (value >> 8);
 		}

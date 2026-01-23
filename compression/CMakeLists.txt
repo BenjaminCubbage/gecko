@@ -10,22 +10,14 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG   "${GECKO_ARTIFACTS_DIR}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE "${GECKO_ARTIFACTS_DIR}/bin")
 
 set(src_files
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/BitOperations.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/BitStream.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/CodeWords.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/CompressedBitonal.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/Decoder.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/Encoder.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/UncompressedBitonal.cpp")
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/CodeWords.cpp")
 
 set(inc_files
     "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/BitOperations.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/BitStream.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/CodeWords.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/CompressedBitonal.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/Decoder.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/Encoder.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/UncompressedBitonal.h")
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/Decode.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/Encode.h")
     
 set(compression_wasm_bindings_src 
     "${CMAKE_CURRENT_SOURCE_DIR}/bindings/WasmBindings.cpp")

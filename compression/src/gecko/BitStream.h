@@ -1,9 +1,7 @@
 #pragma once
-#include <vector>
-#include <span>
-#include <bitset>
-#include <stdexcept>
+#include <assert.h>
 #include <iostream>
+#include <vector>
 #include "BitOperations.h"
 
 namespace Gecko::Compression
@@ -13,75 +11,176 @@ namespace Gecko::Compression
 	  private:
 		struct BitPosition
 		{
-			size_t byte = 0;
-			size_t bit = 0;
+			size_t byte{};
+			size_t bit{};
 		};
 
-		std::vector<uint8_t> bytes;
+	  public:
+		BitStream(std::vector<uint8_t> bytes)
+			: bytes{ std::move(bytes) }
+			, readerPos{ BitPosition{ .byte = 0, 			.bit = 0 } }
+			, writerPos{ BitPosition{ .byte = bytes.size(), .bit = 0 } }
+		{
+			EnsureAdequateEOFWiggleRoom();
+		}
+
+		BitStream()
+			: BitStream{std::vector<uint8_t>{} } {}
+
+		BitStream			(const BitStream& other) = delete;
+		BitStream& operator=(const BitStream& other) = delete;
+		BitStream			(BitStream&& other) noexcept = default;
+		BitStream& operator=(BitStream&& other) noexcept = default;
+
+		~BitStream() = default;
 
 		/*
-		*		`readerPos` and `writerPos` are used to track the current location of the reader/writer.
-		*	Currently, `writerPos` is analogous to a stream EOF.
-		*
-		*		`readerPos` is allowed to extend past `writerPos`, in which case all extra bits read will
-		*	be zero.
-		*
-		*		Because `writerPos` is analogous to EOF, it should never be moved backwards. If this
-		*	functionality is needed in the future, a seperate EOF member field should be created to
-		*	keep track of the stream's EOF location. For now, this system is good enough for our
-		*	purposes.
+			Move reader back to start.
 		*/
-		BitPosition readerPos;
-		BitPosition writerPos;
+		void SeekStart()
+		{
+			readerPos.byte = 0;
+			readerPos.bit  = 0;
+		}
 
+		/*
+			Read the next n bits.
+			
+			The result is "right-aligned" so that the LSB stores the
+			last bit read.
+		*/
+		uint32_t Read(size_t numBits)
+		{
+			const uint32_t result = Peek(numBits);
+			ProgressReaderPos(numBits);
+			return result;
+		}
+
+		/*
+			Peak the next n bits.
+
+			The result is "right-aligned" so that the LSB stores the
+			last bit read.
+		*/
+		uint32_t Peek(size_t numBits) const
+		{
+			assert(numBits > 0 && numBits <= 32);
+			assert(bytes.size() >= writerPos.byte + 6);
+
+			/*
+				Make sure we don't read past the vector. Since `Peek()`
+				reads 5 bytes, and the last 5 bytes of `bytes` is always all
+				zeroes, we can clamp `clampedReaderPos.byte` to be a maximum
+				of `writerPos.byte + 1`
+			*/
+
+			BitPosition clampedReaderPos
+			{
+				.byte = std::min(readerPos.byte, writerPos.byte + 1),
+				.bit = readerPos.bit
+			};
+
+			uint32_t hi = 0;
+			uint8_t  lo = 0;
+			memcpy(&hi, bytes.data() + clampedReaderPos.byte, sizeof(hi));
+			memcpy(&lo, bytes.data() + clampedReaderPos.byte + 4, sizeof(lo));
+
+			if constexpr (std::endian::native == std::endian::little)
+				hi = BitOperations::ByteSwap(hi);
+
+			hi <<= clampedReaderPos.bit;
+			hi >>= 32 - numBits;
+
+			lo >>= std::min(40 - clampedReaderPos.bit - numBits, static_cast<size_t>(7));
+			lo >>= static_cast<unsigned int>((40 - clampedReaderPos.bit - numBits) >= 8);
+
+			return hi | lo;
+		}
+
+		/*
+			Advance reader by n bits.
+		*/
+		void Advance(size_t by)
+		{
+			ProgressReaderPos(by);
+		}
+
+		/*
+			Write the least significants of value to the bit stream.
+		*/
+		void PushBack(uint32_t value, size_t numBits)
+		{
+			assert(bytes.size() >= writerPos.byte + 6);
+
+			uint32_t hi = value;
+			uint8_t  lo = value;
+
+			hi <<= 32 - numBits;
+			hi >>= writerPos.bit;
+
+			int bitsLost = std::max(static_cast<signed>(writerPos.bit) - (32 - static_cast<signed>(numBits)), 0);
+			int shiftAmt = std::clamp(8 - bitsLost, 0, 8);
+
+			lo <<= std::min(shiftAmt, 7);
+			lo <<= static_cast<uint8_t>(shiftAmt == 8);
+
+			if constexpr (std::endian::native == std::endian::little)
+				hi = BitOperations::ByteSwap(hi);
+
+			uint32_t oldHi = 0;
+			memcpy(&oldHi, &bytes[writerPos.byte], 4);
+
+			hi |= oldHi;
+			memcpy(&bytes[writerPos.byte],     &hi, 4);
+			memcpy(&bytes[writerPos.byte + 4], &lo, 1);
+
+			ProgressWriterPos(numBits);
+			EnsureAdequateEOFWiggleRoom();
+		}
+
+		/*
+			Move the buffer out of this bit stream, invalidating this
+			object in the process.
+		*/
+		std::vector<uint8_t> Release()
+		{
+			bytes.resize(
+				writerPos.bit == 0
+					? writerPos.byte
+					: writerPos.byte + 1);
+
+			return std::move(bytes);
+		}
+
+	  private:
 		void ProgressReaderPos(size_t by) { readerPos.bit += by; readerPos.byte += readerPos.bit / 8; readerPos.bit %= 8; }
 		void ProgressWriterPos(size_t by) { writerPos.bit += by; writerPos.byte += writerPos.bit / 8; writerPos.bit %= 8; }
 
 		/*
-		*		If we don't have an extra six zeroed bytes at the end of our `bytes` vector, we can't read
-		*	all zeroes in the event the `readerPos` extends beyond the `writerPos`. `writerPos` also
-		*	depends on this when writing--it should always be ensured there is enough end-padding to
-		*	write to without extending beyond the bounds of the vector.
-		*
-		*		Call this whenever `writerPos` changes--on construction and `PushBack()`. We don't call
-		*	this on `Peek()` because it's a `const` function. I also don't call this in
-		*	`ProgressWriterPos` for decoupling and complexity reasons, but this might be a mistake.
+			We need enough spare bytes at the end to read "all zeroes"
+			when the reader has fully surpassed the writer.
+
+			Call this after moving the writer.
 		*/
 		void EnsureAdequateEOFWiggleRoom()
 		{
 			/*
-			 *		Add +24 instead of +6 so we don't need to resize the vector on every small write.
-			 *	This may be space-inefficient with many `BitStream`s, but for now I'm prioritizing
-			 *	speed over space efficiency.
+				Make sure the last five bytes of the array are all zeroes.
 			*/
 			if (bytes.size() < writerPos.byte + 6)
 				bytes.resize(bytes.size() + 24);
 		}
 
-	  public:
-		BitStream(std::vector<uint8_t> bytes)
-			: bytes(bytes), readerPos(BitPosition{ .byte = 0, .bit = 0 }), writerPos(BitPosition{ .byte = bytes.size(), .bit = 0 })
-		{
-			EnsureAdequateEOFWiggleRoom();
-		}
+		/*
+			readerPos can extend beyond writerPos, where all extra bits
+			should be read as zero.
 
-		BitStream() : BitStream(std::vector<uint8_t>{ }) {};
+			writerPos is treated as EOF here, so it shouldn't move
+			backwards.
+		*/
+		BitPosition readerPos;
+		BitPosition writerPos;
 
-		BitStream(const BitStream& other)
-			: bytes(other.bytes), readerPos(other.readerPos), writerPos(other.writerPos) {
-		}
-
-		BitStream(BitStream&& other) noexcept
-			: bytes(std::move(other.bytes)), readerPos(other.readerPos), writerPos(other.writerPos) {
-		}
-
-		BitStream& operator=(const BitStream& other) = default;
-		~BitStream() = default;
-
-		void SeekStart();
-		void StepForward(size_t by);
-		uint32_t Peek(size_t numBits) const;
-		void PushBack(uint32_t value, size_t numBits);
-		std::span<const uint8_t> GetBytes() const;
+		std::vector<uint8_t> bytes;
 	};
 }
