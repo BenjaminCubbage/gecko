@@ -13,10 +13,6 @@ namespace Gecko::Compression
 		size_t height;
 	};
 
-	/*
-		Template Constraints
-	*/
-
     template<typename HeaderWriter>
 	concept IsHeaderWriter = requires (
 			HeaderWriter writer,
@@ -47,47 +43,6 @@ namespace Gecko::Compression
 				white)
 		};
     };
-
-	/*
-		Forward Declarations
-	*/
-
-	template<typename HeaderWriter>
-		requires
-			IsHeaderWriter<HeaderWriter>
-	class DecodeHeader;
-
-	template<typename ImageWriter>
-		requires
-			IsImageWriter<ImageWriter>
-	class DecodeBody;
-
-	template<typename HeaderWriter, typename ImageWriter>
-		requires
-			IsHeaderWriter<HeaderWriter> &&
-			IsImageWriter<ImageWriter>
-	class Decode
-	{
-	  public:
-		static bool TryDecompress(
-				BitStream& bs,
-				void* context1 = nullptr,
-				void* context2 = nullptr)
-		{
-			auto header = DecodeHeader<HeaderWriter>::TryRead(
-				bs,
-				context1,
-				context2);
-
-			return
-				header &&
-				DecodeBody<ImageWriter>::TryDecompress(
-					bs,
-					*header,
-					context1,
-					context2);
-		}
-	};
 
 	template<typename HeaderWriter>
 		requires
@@ -415,5 +370,32 @@ namespace Gecko::Compression
                 std::clamp(vPixelXEnd,   0, (int)header.width - 1),
                 white);
         }
+	};
+
+	template<typename HeaderWriter, typename ImageWriter>
+		requires
+			IsHeaderWriter<HeaderWriter> &&
+			IsImageWriter<ImageWriter>
+	class Decode
+	{
+	  public:
+		static bool TryDecompress(
+				BitStream& bs,
+				void* context1 = nullptr,
+				void* context2 = nullptr)
+		{
+			auto header = DecodeHeader<HeaderWriter>::TryRead(
+				bs,
+				context1,
+				context2);
+
+			return
+				header &&
+				DecodeBody<ImageWriter>::TryDecompress(
+					bs,
+					*header,
+					context1,
+					context2);
+		}
 	};
 }

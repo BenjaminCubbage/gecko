@@ -8,10 +8,6 @@
 
 namespace Gecko::Compression
 {
-    /*
-        Template Constraints
-    */
-
 	template<typename ImageReader>
 	concept IsImageReader = requires (
 			ImageReader reader,
@@ -21,45 +17,6 @@ namespace Gecko::Compression
 			size_t posY)
 	{
 		bool{ reader(context1, context2, posX, posY) };
-	};
-    
-    /*
-        Foward Declarations
-    */
-
-    template<typename ImageReader>
-	class EncodeHeader;
-    
-	template<typename ImageReader>
-		requires
-			IsImageReader<ImageReader>
-	class EncodeBody;
-
-	template<typename ImageReader>
-		requires
-			IsImageReader<ImageReader>
-	class Encode
-	{
-	  public:
-		static std::optional<BitStream> TryCompress(
-				size_t width,
-				size_t height,
-				void* context1 = nullptr,
-				void* context2 = nullptr)
-		{
-            BitStream bs;
-
-            if (!EncodeHeader<ImageReader>::TryWrite(bs, width, height) ||
-                !EncodeBody<ImageReader>::TryCompress(
-                    bs,
-                    width,
-                    height,
-                    context1,
-                    context2))
-                return std::nullopt;
-
-            return std::move(bs);
-		}
 	};
 
     template<typename ImageReader>
@@ -271,6 +228,33 @@ namespace Gecko::Compression
 				return true;
 
 			return ImageReader{}(readerc.context1, readerc.context2, vPixelX, vPixelY);
+		}
+	};
+
+	template<typename ImageReader>
+		requires
+			IsImageReader<ImageReader>
+	class Encode
+	{
+	  public:
+		static std::optional<BitStream> TryCompress(
+				size_t width,
+				size_t height,
+				void* context1 = nullptr,
+				void* context2 = nullptr)
+		{
+            BitStream bs;
+
+            if (!EncodeHeader<ImageReader>::TryWrite(bs, width, height) ||
+                !EncodeBody<ImageReader>::TryCompress(
+                    bs,
+                    width,
+                    height,
+                    context1,
+                    context2))
+                return std::nullopt;
+
+            return std::move(bs);
 		}
 	};
 }
