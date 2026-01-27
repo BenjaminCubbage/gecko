@@ -21,8 +21,7 @@ const draggingState = {
 }
 
 onMounted(() => {
-    if (!ctx.value)
-    {
+    if (!ctx.value) {
         console.error('Could not get canvas context on mount.');
         return;
     }
@@ -107,8 +106,7 @@ function stopDragging() {
 }
 
 function clear() {
-    if (!ctx.value)
-    {
+    if (!ctx.value) {
         console.warn('Could not clear canvas because ctx is missing.');
         return;
     }

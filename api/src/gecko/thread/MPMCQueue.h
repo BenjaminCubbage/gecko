@@ -17,7 +17,7 @@ namespace Gecko::API::Thread
     class MPMCQueue
     {
       private:
-        static_assert((Capacity > 1) & !(Capacity & (Capacity - 1)), "Capacity must be a power of two.");
+        static_assert((Capacity > 1) && !(Capacity & (Capacity - 1)), "Capacity must be a power of two.");
 
         struct Cell
         {
