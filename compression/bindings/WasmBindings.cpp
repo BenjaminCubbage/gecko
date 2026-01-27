@@ -1,7 +1,3 @@
-#ifndef DEBUG_TRACE
-#define DEBUG_TRACE
-#endif
-
 #include "gecko/BitStream.h"
 #include "gecko/CodeWords.h"
 #include "gecko/Decode.h"
@@ -11,7 +7,6 @@
 #include <optional>
 #include <cstdint>
 #include <vector>
-
 
 namespace Gecko::Compression::WasmBindings
 {

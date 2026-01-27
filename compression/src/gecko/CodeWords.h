@@ -72,7 +72,7 @@ class IntegralPrefixTable
                 return m_final5White[first.continuationIndex][lo5];
         }
 
-        static inline const IntegralCode& EncodeBlack(size_t value)
+        static const IntegralCode& EncodeBlack(size_t value)
         {
                 static constexpr std::array<IntegralCode, 64> terminating =
                 {
@@ -195,7 +195,7 @@ class IntegralPrefixTable
                 return makeup[idx];
         }
 
-        static inline const IntegralCode& EncodeWhite(size_t value)
+        static const IntegralCode& EncodeWhite(size_t value)
         {
                 static constexpr std::array<IntegralCode, 64> terminating =
                 {
@@ -643,27 +643,27 @@ class CodeWords
                 uint16_t numBits;
         };
 
-        static inline const IntegralPrefix& DecodeBlack13(size_t bits13)
+        static const IntegralPrefix& DecodeBlack13(size_t bits13)
         {
                 return PrefixTable().DecodeBlack13(bits13);
         }
 
-        static inline const IntegralPrefix& DecodeWhite13(size_t bits13)
+        static const IntegralPrefix& DecodeWhite13(size_t bits13)
         {
                 return PrefixTable().DecodeWhite13(bits13);
         }
 
-        static inline const IntegralCode& EncodeBlack(size_t value)
+        static const IntegralCode& EncodeBlack(size_t value)
         {
                 return IntegralPrefixTable::EncodeBlack(value);
         }
 
-        static inline const IntegralCode& EncodeWhite(size_t value)
+        static const IntegralCode& EncodeWhite(size_t value)
         {
                 return IntegralPrefixTable::EncodeWhite(value);
         }
 
-        static inline const ModePrefix& DecodeMode7(size_t bits7)
+        static const ModePrefix& DecodeMode7(size_t bits7)
         {
                 static constexpr ModePrefix verticalL3{ Mode::VerticalL3, 7 };
                 static constexpr ModePrefix verticalL2{ Mode::VerticalL2, 6 };
@@ -760,7 +760,7 @@ class CodeWords
                 return vertical0;
         }
 
-        static inline const ModeCode& EncodeMode(Mode mode)
+        static const ModeCode& EncodeMode(Mode mode)
         {
                 static constexpr std::array<ModeCode, 10> codes
                 {
@@ -786,7 +786,7 @@ class CodeWords
         }
 
     private:
-        static inline const IntegralPrefixTable& PrefixTable()
+        static const IntegralPrefixTable& PrefixTable()
         {
                 static IntegralPrefixTable p{};
                 return p;

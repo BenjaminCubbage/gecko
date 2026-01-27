@@ -2,10 +2,8 @@
 #include "gecko/Bit.h"
 #include "gecko/BitStream.h"
 #include "gecko/CodeWords.h"
-#include <bit>
 #include <cstdint>
 #include <limits>
-#include <unordered_map>
 
 /*
         See: https://www.itu.int/rec/T-REC-T.6/en
@@ -226,8 +224,7 @@ class EncodeBody
 }; /* class EncodeBody */
 
 template<typename ImageReader>
-    requires
-        IsImageReader<ImageReader>
+    requires IsImageReader<ImageReader>
 class Encode
 {
     public:
