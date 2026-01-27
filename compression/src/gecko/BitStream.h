@@ -1,8 +1,9 @@
 #pragma once
+#include "gecko/Bit.h"
 #include <algorithm>
 #include <assert.h>
+#include <cstdint>
 #include <vector>
-#include "Bit.h"
 
 namespace Gecko::Compression
 {

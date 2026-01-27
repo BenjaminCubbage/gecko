@@ -3,6 +3,7 @@
 #include "gecko/BitStream.h"
 #include "gecko/CodeWords.h"
 #include <bit>
+#include <cstdint>
 #include <limits>
 #include <unordered_map>
 

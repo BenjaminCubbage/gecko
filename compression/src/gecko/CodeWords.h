@@ -1,9 +1,10 @@
 #pragma once
-#include <iostream>
 #include <algorithm>
 #include <array>
 #include <assert.h>
 #include <bit>
+#include <cstdint>
+#include <iostream>
 #include <optional>
 
 /*

@@ -5,6 +5,7 @@
 #include "gecko/CodeWords.h"
 #include <algorithm>
 #include <assert.h>
+#include <cstdint>
 
 /*
         See: https://www.itu.int/rec/T-REC-T.6/en
