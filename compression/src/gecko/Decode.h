@@ -1,401 +1,416 @@
 #pragma once
-#include "gecko/BitOperations.h"
+#include "gecko/Bit.h"
 #include "gecko/BitStream.h"
+#include "gecko/CodeWords.h"
 #include "gecko/CodeWords.h"
 #include <algorithm>
 #include <assert.h>
 
+/*
+        See: https://www.itu.int/rec/T-REC-T.6/en
+*/
+
 namespace Gecko::Compression
 {
-	struct Header
-	{
-		size_t width;
-		size_t height;
-	};
 
-    template<typename HeaderWriter>
-	concept IsHeaderWriter = requires (
-			HeaderWriter writer,
-			void* context1,
-			void* context2,
-			const Header& header)
-	{
-		bool { writer(context1, context2, header) };
-	};
+struct Header
+{
+        size_t width;
+        size_t height;
+};
 
-    template<typename ImageWriter>
-    concept IsImageWriter = requires (
-        	ImageWriter writer,
-        	void* context1,
-        	void* context2,
-        	size_t pixelY,
-        	size_t pixelXStart,
-        	size_t pixelXEnd,
-        	bool white)
-    {
-		bool {
-			writer(
-				context1,
-				context2,
-				pixelY,
-				pixelXStart,
-				pixelXEnd,
-				white)
-		};
-    };
+template<typename HeaderWriter>
+concept IsHeaderWriter = requires (
+        HeaderWriter writer,
+        void* context1,
+        void* context2,
+        const Header& header)
+{
+        bool { writer(context1, context2, header) };
+};
 
-	template<typename HeaderWriter>
-		requires
-			IsHeaderWriter<HeaderWriter>
-	class DecodeHeader
-	{
-  	  public:
-		static std::optional<Header> TryRead(
-				BitStream& bs,
-				void* context1,
-				void* context2)
-		{
-			constexpr size_t MinimumHeaderSize{ 2 + 4 + 4 + 4 };
-			constexpr size_t MaximumHeaderSize{ 2 + 4 + 4 + 4 };
-			size_t bytesRead{};
+template<typename ImageWriter>
+concept IsImageWriter = requires (
+        ImageWriter writer,
+        void* context1,
+        void* context2,
+        size_t pixelY,
+        size_t pixelXStart,
+        size_t pixelXEnd,
+        bool white)
+{
+        bool {
+                writer(
+                        context1,
+                        context2,
+                        pixelY,
+                        pixelXStart,
+                        pixelXEnd,
+                        white)
+        };
+};
 
-			/*
-				Magic (BC)
-			*/
+template<typename HeaderWriter>
+        requires IsHeaderWriter<HeaderWriter>
+class DecodeHeader
+{
+    public:
+        static std::optional<Header> TryRead(
+                BitStream& bs,
+                void* context1,
+                void* context2)
+        {
+                constexpr size_t MinimumHeaderSize{ 2 + 4 + 4 + 4 };
+                constexpr size_t MaximumHeaderSize{ 2 + 4 + 4 + 4 };
+                size_t bytesRead{};
 
-			uint8_t magicB = static_cast<uint8_t>(bs.Read(8));
-			uint8_t magicC = static_cast<uint8_t>(bs.Read(8));
-			bytesRead += 2;
+                /*
+                        Magic (BC)
+                */
 
-			if (magicB != 'B' || magicC != 'C')
-				return std::nullopt;
+                uint8_t magicB = static_cast<uint8_t>(bs.Read(8));
+                uint8_t magicC = static_cast<uint8_t>(bs.Read(8));
+                bytesRead += 2;
 
-			/*
-				Header Size
-			*/
+                if (magicB != 'B' || magicC != 'C')
+                        return std::nullopt;
 
-			uint32_t headerSize = static_cast<uint8_t>(bs.Read(32));
-			bytesRead += 4;
+                /*
+                        Header Size
+                */
 
-			if constexpr (std::endian::native == std::endian::big)
-				headerSize = BitOperations::ByteSwap(headerSize);
+                uint32_t headerSize = static_cast<uint32_t>(bs.Read(32));
+                bytesRead += 4;
 
-			if (headerSize < MinimumHeaderSize ||
-				headerSize > MaximumHeaderSize)
-				return std::nullopt;
+                if constexpr (std::endian::native == std::endian::little)
+                        headerSize = Bit::ByteSwap(headerSize);
 
-			/*
-				Width / Height
-			*/
+                if (headerSize < MinimumHeaderSize ||
+                    headerSize > MaximumHeaderSize)
+                        return std::nullopt;
 
-			uint32_t width  = static_cast<uint8_t>(bs.Read(32));
-			uint32_t height = static_cast<uint8_t>(bs.Read(32));
-			bytesRead += 8;
+                /*
+                        Width / Height
+                */
 
-			if constexpr (std::endian::native == std::endian::big)
-			{
-				width  = BitOperations::ByteSwap(width);
-				height = BitOperations::ByteSwap(height);
-			}
+                uint32_t width  = static_cast<uint32_t>(bs.Read(32));
+                uint32_t height = static_cast<uint32_t>(bs.Read(32));
+                bytesRead += 8;
 
-			if (width == 0 || height == 0)
-				return std::nullopt;
+                if constexpr (std::endian::native == std::endian::little)
+                {
+                        width  = Bit::ByteSwap(width);
+                        height = Bit::ByteSwap(height);
+                }
 
-			/* Advance to end of header */
-			assert(bytesRead <= headerSize);
-			bs.Advance(headerSize - bytesRead);
+                if (width == 0 || height == 0)
+                        return std::nullopt;
 
-			Header header{
-				.width  = width,
-				.height = height
-			};
+                /* Advance to end of header */
+                assert(bytesRead <= headerSize);
+                bs.Advance(headerSize - bytesRead);
 
-			return HeaderWriter{}(context1, context2, header)
-				? std::optional{ header }
-				: std::nullopt;
-		}
-	};
+                Header header{
+                        .width  = width,
+                        .height = height
+                };
 
-	template<typename ImageWriter>
-		requires IsImageWriter<ImageWriter>
-	class DecodeBody
-	{
-	  private:
-		struct WriterContext
-		{
-			void* context1;
-			void* context2;
-		};
+                return HeaderWriter{}(context1, context2, header)
+                        ? std::optional{ header }
+                        : std::nullopt;
+        }
+}; /* class DecodeHeader */
+
+template<typename ImageWriter>
+        requires IsImageWriter<ImageWriter>
+class DecodeBody
+{
+    private:
+        struct WriterContext
+        {
+                void* context1;
+                void* context2;
+        };
 
         struct Row
         {
-            int pixelY;
-            std::vector<bool> pixels;
+                int pixelY;
+                std::vector<bool> pixels;
         };
 
-	  public:
-		static bool TryDecompress(
-				BitStream& bs,
-				const Header& header,
-				void* context1 = nullptr,
-				void* context2 = nullptr)
-		{
-			assert(header.width > 0 && header.height > 0);
+    public:
+        static bool TryDecompress(
+                BitStream& bs,
+                const Header& header,
+                void* context1 = nullptr,
+                void* context2 = nullptr)
+        {
+                assert(header.width > 0 && header.height > 0);
 
-			WriterContext writerc{
-				.context1 = context1,
-				.context2 = context2
-			};
+                WriterContext writerc{
+                        .context1 = context1,
+                        .context2 = context2
+                };
 
-			std::optional<Row> row1{ Row{} };
-			std::optional<Row> row2{ Row{} };
+                std::optional<Row> row1{ Row{} };
+                std::optional<Row> row2{ Row{} };
 
-			row1->pixels.resize(header.width, true);
-			row2->pixels.resize(header.width, true);
+                row1->pixels.resize(header.width, true);
+                row2->pixels.resize(header.width, true);
 
-			for (size_t i = 0; i < header.height; ++i)
-			{
-				std::optional<Row>& curr = i % 2 ? row1 : row2;
-				std::optional<Row>& prev = i % 2 ? row2 : row1;
+                for (size_t i = 0; i < header.height; ++i)
+                {
+                        std::optional<Row>& curr = i % 2 ? row1 : row2;
+                        std::optional<Row>& prev = i % 2 ? row2 : row1;
 
-				prev->pixelY = (int)i - 1;
-				curr->pixelY = (int)i;
+                        prev->pixelY = (int)i - 1;
+                        curr->pixelY = (int)i;
 
-				if (!DecodeRow(bs, header, writerc, i != 0 ? prev : std::nullopt, *curr))
-					return false;
-			}
+                        if (!DecodeRow(bs, header, writerc, i != 0 ? prev : std::nullopt, *curr))
+                                return false;
+                }
 
-			return true;
-		}
+                return true;
+        }
 
-	  private:
-		static bool DecodeRow(
-				BitStream& bs,
-				const Header& header,
-				const WriterContext& writerc,
-				const std::optional<Row>& previousRow,
-				Row& currentRow)
-		{
-			int a0{ -1 };
-			int a1{ -1 };
-			int a2{ -1 };
-			bool a0IsWhite{ true };
+    private:
+        static bool DecodeRow(
+                BitStream& bs,
+                const Header& header,
+                const WriterContext& writerc,
+                const std::optional<Row>& previousRow,
+                Row& currentRow)
+        {
+                int a0{ -1 };
+                int a1{ -1 };
+                int a2{ -1 };
+                bool a0IsWhite{ true };
 
-			while (a0 < static_cast<int>(header.width))
-			{
-				CodeWords::ModePrefix& prefix = CodeWords::LookupModePrefixFromLow7(bs.Peek(7));
+                while (a0 < static_cast<int>(header.width))
+                {
+                        auto& prefix = CodeWords::DecodeMode7(bs.Peek(7));
 
-				if (!prefix.prefixLengthBits)
-					/* Prefix not found */
-					return false;
+                        if (prefix.mode == CodeWords::Mode::Invalid)
+                                /* Prefix not found */
+                                return false;
 
-				bs.Advance(prefix.prefixLengthBits);
+                        bs.Advance(prefix.numBits);
 
-				int b1{};
-				int b2{};
+                        int b1{};
+                        int b2{};
 
-				if (previousRow)
-				{
-					b1 = FindNextChangedInRowOfColor(bs, header, *previousRow, a0, !a0IsWhite);
-					b2 = FindNextChangedInRow		(bs, header, *previousRow, b1);
-				}
-				else
-					b1 = b2 = (int)header.width;
+                        if (previousRow)
+                        {
+                                b1 = FindNextChangedInRowOfColor(bs, header, *previousRow, a0, !a0IsWhite);
+                                b2 = FindNextChangedInRow       (bs, header, *previousRow, b1);
+                        }
+                        else
+                                b1 = b2 = (int)header.width;
 
-				switch (prefix.type)
-				{
-				case CodeWords::ModePrefixType::Pass:
-					if (!WritePixelSpan(bs, header, writerc, currentRow, a0, b2 - 1, a0IsWhite))
-						return false;
-					a0 = b2;
-					break;
+                        switch (prefix.mode)
+                        {
+                        case CodeWords::Mode::Pass:
+                                if (!WritePixelSpan(bs, header, writerc, currentRow, a0, b2 - 1, a0IsWhite))
+                                        return false;
 
-				case CodeWords::ModePrefixType::Horizontal:
-				{
-					int a1Delta = 0;
-					int a2Delta = 0;
+                                a0 = b2;
+                                break;
 
-					if (!DecodeHorizontalIntegrals(bs, header, a0IsWhite, &a1Delta, &a2Delta))
-						/* Invalid horizontal integrals */
-						return false;
+                        case CodeWords::Mode::Horizontal:
+                        {
+                                int a1Delta = 0;
+                                int a2Delta = 0;
 
-					a1 = a0 + a1Delta;
-					a2 = a1 + a2Delta;
+                                if (!DecodeHorizontalIntegrals(bs, header, a0IsWhite, &a1Delta, &a2Delta))
+                                        /* Invalid horizontal integrals */
+                                        return false;
 
-					bool r{ true };
-					if (a1 > a0) r = r && WritePixelSpan(bs, header, writerc, currentRow, a0, a1 - 1, a0IsWhite);
-					if (a2 > a1) r = r && WritePixelSpan(bs, header, writerc, currentRow, a1, a2 - 1, !a0IsWhite);
-					if (!r) return false;
+                                a1 = a0 + a1Delta;
+                                a2 = a1 + a2Delta;
 
-					a0 = a2;
-				}
-				break;
+                                bool r{ true };
+                                if (r && a1 > a0) r = r && WritePixelSpan(bs, header, writerc, currentRow, a0, a1 - 1,  a0IsWhite);
+                                if (r && a2 > a1) r = r && WritePixelSpan(bs, header, writerc, currentRow, a1, a2 - 1, !a0IsWhite);
 
-				case CodeWords::ModePrefixType::Vertical0:
-				case CodeWords::ModePrefixType::VerticalR1:
-				case CodeWords::ModePrefixType::VerticalR2:
-				case CodeWords::ModePrefixType::VerticalR3:
-				case CodeWords::ModePrefixType::VerticalL1:
-				case CodeWords::ModePrefixType::VerticalL2:
-				case CodeWords::ModePrefixType::VerticalL3:
-					a1 = b1 + CodeWords::IntegralDifferenceFromVerticalModePrefixType(prefix.type);
-					a2 = a1;
+                                if (!r)
+                                        return false;
 
-					if (a1 > a0)
-					{
-						if (!WritePixelSpan(bs, header, writerc, currentRow, a0, a1 - 1, a0IsWhite))
-							return false;
-					}
+                                a0 = a2;
+                        }
+                        break;
 
-					a0 = a1;
-					a0IsWhite = !a0IsWhite;
-					break;
-				}
-			}
+                        case CodeWords::Mode::Vertical0:
+                        case CodeWords::Mode::VerticalR1:
+                        case CodeWords::Mode::VerticalR2:
+                        case CodeWords::Mode::VerticalR3:
+                        case CodeWords::Mode::VerticalL1:
+                        case CodeWords::Mode::VerticalL2:
+                        case CodeWords::Mode::VerticalL3:
+                                a1 = b1 + static_cast<int8_t>(prefix.mode);
+                                a2 = a1;
 
-			return true;
-		}
+                                if (a1 > a0)
+                                {
+                                        if (!WritePixelSpan(bs, header, writerc, currentRow, a0, a1 - 1, a0IsWhite))
+                                                return false;
+                                }
+
+                                a0 = a1;
+                                a0IsWhite = !a0IsWhite;
+                                break;
+
+                        default:
+                                return false;
+                        }
+                }
+
+                return true;
+        }
 
         static bool DecodeHorizontalIntegrals(
-				BitStream& bs,
-				const Header& header,
+                BitStream& bs,
+                const Header& header,
                 bool a0IsWhite,
                 int* outA1Delta,
                 int* outA2Delta)
         {
-            auto getPrefix   = a0IsWhite ? &CodeWords::LookupWhiteIntegralPrefixFromLow13 : &CodeWords::LookupBlackIntegralPrefixFromLow13;
-            auto getOpposite = a0IsWhite ? &CodeWords::LookupBlackIntegralPrefixFromLow13 : &CodeWords::LookupWhiteIntegralPrefixFromLow13;
+                auto getPrefix   = a0IsWhite ? &CodeWords::DecodeWhite13 : &CodeWords::DecodeBlack13;
+                auto getOpposite = a0IsWhite ? &CodeWords::DecodeBlack13 : &CodeWords::DecodeWhite13;
 
-            *outA1Delta = 0;
-            *outA2Delta = 0;
+                *outA1Delta = 0;
+                *outA2Delta = 0;
 
-            for (int safety = 0; safety < 100; ++safety)
-            {
-                auto& prefix = getPrefix(bs.Peek(13));
-                if (prefix.prefixLengthBits == 0)
-                    /* Bad horizontal mode prefix */
-                    return false;
+                for (int safety = 0; safety < 100; ++safety)
+                {
+                        auto& prefix = getPrefix(bs.Peek(13));
 
-                bs.Advance(prefix.prefixLengthBits);
-                *outA1Delta += prefix.integral;
+                        if (!prefix.live)
+                                /* Bad a0-a1 prefix */
+                                return false;
 
-                if (prefix.type == CodeWords::IntegralPrefixType::Terminating)
-                    break;
-            }
+                        bs.Advance(prefix.numBits);
+                        *outA1Delta += prefix.value;
 
-            for (int safety = 0; safety < 100; ++safety)
-            {
-                auto& prefix = getOpposite(bs.Peek(13));
-                if (prefix.prefixLengthBits == 0)
-                    /* Bad horizontal mode prefix */
-                    return false;
+                        if (!prefix.makeup)
+                                break;
+                }
 
-                bs.Advance(prefix.prefixLengthBits);
-                *outA2Delta += prefix.integral;
+                for (int safety = 0; safety < 100; ++safety)
+                {
+                        auto& prefix = getOpposite(bs.Peek(13));
 
-                if (prefix.type == CodeWords::IntegralPrefixType::Terminating)
-                    break;
-            }
+                        if (!prefix.live)
+                                /* Bad a1-a2 prefix */
+                                return false;
 
-            return true;
+                        bs.Advance(prefix.numBits);
+                        *outA2Delta += prefix.value;
+
+                        if (!prefix.makeup)
+                                break;
+                }
+
+                return true;
         }
 
         static int FindNextChangedInRowOfColor(
-				BitStream& bs,
-				const Header& header,
+                BitStream& bs,
+                const Header& header,
                 const Row& row,
                 int vPixelX,
                 bool white)
         {
-            int changedX = FindNextChangedInRow(bs, header, row, vPixelX);
+                int changedX = FindNextChangedInRow(bs, header, row, vPixelX);
 
-            return IsPixelConsideredWhite(bs, header, row, changedX) == white
-                ? changedX
-                : FindNextChangedInRow(bs, header, row, changedX);
+                return IsPixelConsideredWhite(bs, header, row, changedX) == white
+                        ? changedX
+                        : FindNextChangedInRow(bs, header, row, changedX);
         }
 
         static int FindNextChangedInRow(
-				BitStream& bs,
-				const Header& header,
+                BitStream& bs,
+                const Header& header,
                 const Row& row,
                 int vPixelX)
         {
-            bool originalIsWhite = IsPixelConsideredWhite(bs, header, row, vPixelX);
+                bool originalIsWhite = IsPixelConsideredWhite(bs, header, row, vPixelX);
 
-            for (int i = vPixelX + 1; i < (int)header.width; ++i)
-                if (IsPixelConsideredWhite(bs, header, row, i) != originalIsWhite)
-                    return i;
+                for (int i = vPixelX + 1; i < (int)header.width; ++i)
+                        if (IsPixelConsideredWhite(bs, header, row, i) != originalIsWhite)
+                                return i;
 
-            return (int)header.width;
+                return (int)header.width;
         }
 
         static bool IsPixelConsideredWhite(
-				BitStream& bs,
-				const Header& header,
+                BitStream& bs,
+                const Header& header,
                 const Row& row,
                 int vPixelX)
         {
-            /* Out of bounds = white */
-            return vPixelX < 0 || vPixelX >= (int)header.width || row.pixels[vPixelX];
+                /* Out of bounds = white */
+                return vPixelX < 0 || vPixelX >= (int)header.width || row.pixels[vPixelX];
         }
 
         static bool WritePixelSpan(
-				BitStream& bs,
-				const Header& header,
+                BitStream& bs,
+                const Header& header,
                 const WriterContext& writerc,
                 Row& row,
                 int vPixelXStart,
                 int vPixelXEnd,
                 bool white)
         {
-            assert(vPixelXStart <= vPixelXEnd);
+                assert(vPixelXStart <= vPixelXEnd);
 
-            if (vPixelXEnd < 0 ||
-                vPixelXStart >= (int)header.width)
-                return true;
+                if (vPixelXEnd < 0 ||
+                    vPixelXStart >= (int)header.width)
+                        return true;
 
-            for (int i = vPixelXStart; i <= vPixelXEnd; ++i)
-            {
-                if (i < 0) continue;
-                if (i >= (int)header.width) break;
+                for (int i = vPixelXStart; i <= vPixelXEnd; ++i)
+                {
+                        if (i < 0)
+                                continue;
 
-                row.pixels[i] = white;
-            }
+                        if (i >= (int)header.width)
+                                break;
 
-            return ImageWriter{}(
-                writerc.context1,
-                writerc.context2,
-                row.pixelY,
-                std::clamp(vPixelXStart, 0, (int)header.width - 1),
-                std::clamp(vPixelXEnd,   0, (int)header.width - 1),
-                white);
+                        row.pixels[i] = white;
+                }
+
+                return ImageWriter{}(
+                        writerc.context1,
+                        writerc.context2,
+                        row.pixelY,
+                        std::clamp(vPixelXStart, 0, (int)header.width - 1),
+                        std::clamp(vPixelXEnd,   0, (int)header.width - 1),
+                        white);
         }
-	};
+}; /* class DecodeBody */
 
-	template<typename HeaderWriter, typename ImageWriter>
-		requires
-			IsHeaderWriter<HeaderWriter> &&
-			IsImageWriter<ImageWriter>
-	class Decode
-	{
-	  public:
-		static bool TryDecompress(
-				BitStream& bs,
-				void* context1 = nullptr,
-				void* context2 = nullptr)
-		{
-			auto header = DecodeHeader<HeaderWriter>::TryRead(
-				bs,
-				context1,
-				context2);
+template<typename HeaderWriter, typename ImageWriter>
+    requires
+        IsHeaderWriter<HeaderWriter> &&
+        IsImageWriter<ImageWriter>
+class Decode
+{
+    public:
+        static bool TryDecompress(
+                BitStream& bs,
+                void* context1 = nullptr,
+                void* context2 = nullptr)
+        {
+                auto header = DecodeHeader<HeaderWriter>::TryRead(
+                        bs,
+                        context1,
+                        context2);
 
-			return
-				header &&
-				DecodeBody<ImageWriter>::TryDecompress(
-					bs,
-					*header,
-					context1,
-					context2);
-		}
-	};
-}
+                return header && DecodeBody<ImageWriter>::TryDecompress(
+                        bs,
+                        *header,
+                        context1,
+                        context2);
+        }
+}; /* class Decode */
+
+} /* namespace Gecko::Compression */

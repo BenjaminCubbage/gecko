@@ -1,8 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 project(gecko_superbuild LANGUAGES CXX)
-set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/external)
 set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
 cmake_policy(SET CMP0114 NEW)
 
@@ -74,7 +73,7 @@ ExternalProject_Add_Step(api build_tests
 ExternalProject_Add_StepTargets(api build_project build_tests)
 
 #
-# Compression WASM
+# Compression
 #
 
 ExternalProject_Add(compression-build_wasm
@@ -86,6 +85,19 @@ ExternalProject_Add(compression-build_wasm
         -DGECKO_ROOT_DIR=${GECKO_ROOT_DIR}
         -DGECKO_ARTIFACTS_DIR=${GECKO_ROOT_DIR}/build/artifacts
     BUILD_COMMAND cmake --build . --target compression_wasm
+    INSTALL_COMMAND ""
+    BUILD_ALWAYS 1
+)
+
+ExternalProject_Add(compression-build_tests
+    DEPENDS emsdk
+    PREFIX compression_wasm
+    SOURCE_DIR ../compression
+    CMAKE_ARGS
+        -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+        -DGECKO_ROOT_DIR=${GECKO_ROOT_DIR}
+        -DGECKO_ARTIFACTS_DIR=${GECKO_ROOT_DIR}/build/artifacts
+    BUILD_COMMAND cmake --build . --target compression_tests
     INSTALL_COMMAND ""
     BUILD_ALWAYS 1
 )

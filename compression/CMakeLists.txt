@@ -1,4 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 project(gecko_compression)
 
 include(FetchContent)
@@ -9,20 +11,18 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY         "${GECKO_ARTIFACTS_DIR}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG   "${GECKO_ARTIFACTS_DIR}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE "${GECKO_ARTIFACTS_DIR}/bin")
 
-set(src_files
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/CodeWords.cpp")
-
 set(inc_files
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/BitOperations.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/Bit.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/BitStream.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/CodeWords.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/Decode.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/Encode.h")
-    
-set(compression_wasm_bindings_src 
+
+set(compression_wasm_bindings_src
     "${CMAKE_CURRENT_SOURCE_DIR}/bindings/WasmBindings.cpp")
 
 add_library(compression_lib STATIC)
+set_target_properties(compression_lib PROPERTIES LINKER_LANGUAGE CXX)
 target_sources(compression_lib PRIVATE ${src_files} ${inc_files})
 target_include_directories(compression_lib PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
@@ -31,8 +31,9 @@ target_include_directories(compression_lib PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/s
 
 # Eventually, this might be broken into its own CMake module, but for now the
 # logic is relatively straightfoward so I'm okay with doing it this way. Since
-# this project is a superbuild pattern, we can guarantee that the emsdk dependency
-# has been installed by the time this project is configured
+# this project is a superbuild, we know the emsdk dependency has been installed
+# by the time this code runs
+
 set(emsdk_root "${GECKO_ROOT_DIR}/build/emsdk/src/emsdk")
 set(emcc_script_path "${emsdk_root}/upstream/emscripten/emcc")
 set(compression_artifacts_dir "${GECKO_ARTIFACTS_DIR}/wasm")

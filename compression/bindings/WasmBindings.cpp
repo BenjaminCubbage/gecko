@@ -1,10 +1,14 @@
+#ifndef DEBUG_TRACE
+#define DEBUG_TRACE
+#endif
+
 #include "gecko/BitStream.h"
+#include "gecko/CodeWords.h"
 #include "gecko/Decode.h"
 #include "gecko/Encode.h"
 #include <emscripten/val.h>
 #include <emscripten/bind.h>
 #include <optional>
-#include <cstddef>
 #include <cstdint>
 #include <vector>
 
@@ -21,20 +25,22 @@ namespace Gecko::Compression::WasmBindings
          */
 
         using HeaderWriter = decltype([] (
-                void*,
-                void*,
-                const Header&) {
-            return true;
+                void* cbHeader,
+                void* cbWriter,
+                const Header& header) {
+            return reinterpret_cast<int (*)(int, int)>(cbHeader)(
+                header.width,
+                header.height) != 0;
         });
 
         using ImageWriter = decltype([] (
-                void* context,
-                void*,
+                void* cbHeader,
+                void* cbWriter,
                 size_t pixelY,
                 size_t pixelXStart,
                 size_t pixelXEnd,
                 bool white) {
-            reinterpret_cast<void (*)(int, int, int, int)>(context)(
+            reinterpret_cast<void (*)(int, int, int, int)>(cbWriter)(
                 (int)pixelY,
                 (int)pixelXStart,
                 (int)pixelXEnd,
@@ -45,11 +51,15 @@ namespace Gecko::Compression::WasmBindings
 
         emscripten::class_<Decode<HeaderWriter, ImageWriter>>("Decode")
             .class_function("TryDecompress",
-                (bool (*)(std::vector<uint8_t>, int)) [] (
+                (bool (*)(std::vector<uint8_t>, int, int)) [] (
                         std::vector<uint8_t> buffer,
-                        int cbIntPtr) {
+                        int cbHeaderIntPtr,
+                        int cbWriterIntPtr) {
                     BitStream bs{ buffer };
-                    return Decode<HeaderWriter, ImageWriter>::TryDecompress(bs, (void*)cbIntPtr);
+                    return Decode<HeaderWriter, ImageWriter>::TryDecompress(
+                        bs,
+                        (void*)cbHeaderIntPtr,
+                        (void*)cbWriterIntPtr);
                 });
 
         /*

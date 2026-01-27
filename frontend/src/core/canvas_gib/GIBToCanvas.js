@@ -12,16 +12,21 @@ class GIBToCanvas {
         for (let i = 0; i < buffer.length; ++i)
             compressedBytes.set(i, buffer[i]);
 
-        const compressedBitonal = Module.CompressedBitonal.TryReadFromBuffer(
-            compressedBytes,
-            Module.CompressedBitonal_StorageFormat.GIB
-        );
+        let width  = 0;
+        let height = 0;
+        let rgba = null;
 
-        const rgba = new Uint8ClampedArray(compressedBitonal.GetWidth() *
-                                           compressedBitonal.GetHeight() * 4);
+        /* Called first */
+        const cbHeader = Module.addFunction((w, h) => {
+            width  = w;
+            height = h;
+            rgba = new Uint8ClampedArray(w * h * 4);
+            return true;
+        }, "iii");
 
-        const cb = Module.addFunction((y, xStart, xEnd, white) => {
-            let start = compressedBitonal.GetWidth() * y + xStart;
+        /* Called for every decoded pixel */
+        const cbWriter = Module.addFunction((y, xStart, xEnd, white) => {
+            let start = width * y + xStart;
             let end   = start + xEnd - xStart;
 
             for (let i = start; i <= end; ++i) {
@@ -32,19 +37,19 @@ class GIBToCanvas {
             }
         }, "viiii");
 
-        Module.Decoder.TryDecompress(compressedBitonal, cb);
-        Module.removeFunction(cb);
+        const success = Module.Decode.TryDecompress(compressedBytes, cbHeader, cbWriter);
 
-
-        const width     = compressedBitonal.GetWidth();
-        const height    = compressedBitonal.GetHeight();
-
-        const imageData = new ImageData(rgba, width, height);
-
-        ctx.putImageData(imageData, 0, 0);
-
-        compressedBitonal.delete();
+        Module.removeFunction(cbWriter);
+        Module.removeFunction(cbHeader);
         compressedBytes.delete();
+
+        if (!success) {
+            console.warn(`Failed to decompress an image.`);
+            return false;
+        }
+
+        ctx.putImageData(new ImageData(rgba, width, height), 0, 0);
+        return true;
     }
 };
 

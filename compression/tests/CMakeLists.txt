@@ -29,9 +29,8 @@ target_include_directories(compression_tests PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/include"
 )
 
-set_target_properties(compression_tests PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests/$<CONFIG>"
-)
+# target_compile_definitions(compression_tests PUBLIC -DNDEBUG)
+# set(CMAKE_CXX_FLAGS -O3)
 
 add_custom_command(
     TARGET compression_tests POST_BUILD

@@ -1,6 +1,4 @@
-#include "gecko/UncompressedBitonal.h"
-#include "gecko/CompressedBitonal.h"
-#include "gecko/Decoder.h"
+#include "gecko/Decode.h"
 
 #include "gecko/FS.h"
 #include "gecko/FSCert.h"
@@ -13,9 +11,11 @@
 
 #include "libraries/inky_frame_7/inky_frame_7.hpp"
 
-pimoroni::InkyFrame inky;
+#define XSTR(x) STR(x)
+#define STR(x) #x
 
-inline constexpr size_t MQTTConnectRetryAttempts{ 4 };
+static constexpr int WakeUpFreqMinutes{ 1 };
+pimoroni::InkyFrame inky;
 
 inline constexpr uint16_t RGB_Red = 0b011;
 inline constexpr uint16_t RGB_Gre = 0b110;
@@ -24,11 +24,10 @@ inline constexpr uint16_t RGB_Yel = 0b010;
 inline constexpr uint16_t RGB_Whi = 0b111;
 inline constexpr uint16_t RGB_Bla = 0b000;
 
-int WakeUpIn(int minutes)
+[[noreturn]] int DeepSleep()
 {
-    sleep_ms(50);
-    inky.sleep(minutes);
-    return 0;
+    inky.sleep(WakeUpFreqMinutes);
+    for (;;);
 }
 
 int main()
@@ -38,6 +37,7 @@ int main()
 
     inky.init();
     stdio_init_all();
+    inky.rtc.reset();
 
     std::string_view cert;
 
@@ -57,10 +57,12 @@ int main()
         !MQTTConn::ConnectSync() ||
         !MQTTSub::Init(deviceID) ||
         !MQTTPub::Init(deviceID))
-        return WakeUpIn(5);
+    {
+        DeepSleep();
+    }
 
     char oldLatestImageID[101]{};
-    const char* newLatestImageID;
+    const char* newLatestImageID{};
     unsigned int oldLatestImageIDLen{};
     unsigned int newLatestImageIDLen{};
 
@@ -71,7 +73,7 @@ int main()
         &oldLatestImageIDLen);
 
     if (!MQTTSub::GetLatestImageIDSync(10, &newLatestImageID, &newLatestImageIDLen))
-        return WakeUpIn(5);
+        DeepSleep();
 
     MQTTPub::PublishHeartbeatSync();
 
@@ -79,8 +81,7 @@ int main()
     Log_Info("Main: New image ID: %s\n", newLatestImageID);
 
     if (std::strcmp(oldLatestImageID, newLatestImageID) == 0)
-        /* No new image. */
-        return WakeUpIn(5);
+        DeepSleep();
 
     const char* imageBuffer;
     unsigned int imageSize;
@@ -88,29 +89,30 @@ int main()
     if (!MQTTSub::GetLatestImageSync(10, &imageBuffer, &imageSize) || !imageSize)
     {
         Log_Error("Main: Waited for image but it never arrived\n");
-        return WakeUpIn(5);
+        DeepSleep();
     }
 
     std::vector<uint8_t> compressed(imageSize);
     std::memcpy(compressed.data(), imageBuffer, imageSize);
 
-    auto compressedBitonal = CompressedBitonal::TryReadFromBuffer(
-        compressed, CompressedBitonal::StorageFormat::GIB);
-
-    if (!compressedBitonal)
+    using CBImageHeader = decltype([] (
+            void* c1, void* c2,
+            const Gecko::Compression::Header& header)
     {
-        Log_Error("Main: Could't initialize CompressedBitonal object\n");
-        return WakeUpIn(5);
-    }
+        *reinterpret_cast<size_t*>(c1) = header.width;
+        *reinterpret_cast<size_t*>(c2) = header.height;
+        return true;
+    });
 
-    auto writeSpan = [] (void* c1, void* c2,
-                         size_t y,
-                         size_t xStart,
-                         size_t xEnd,
-                         bool white)
+    using CBImageWriter = decltype([] (
+            void* c1, void* c2,
+            size_t y,
+            size_t xStart,
+            size_t xEnd,
+            bool white)
     {
-        const size_t w = (size_t)c1;
-        const size_t h = (size_t)c2;
+        const size_t w = *reinterpret_cast<size_t*>(c1);
+        const size_t h = *reinterpret_cast<size_t*>(c2);
 
         const size_t y0 =  y      * inky.bounds.h / h;
         const size_t y1 = (y + 1) * inky.bounds.h / h;
@@ -126,19 +128,24 @@ int main()
             for (size_t px = x0; px < x1; ++px)
                 inky.set_pixel({ int(px), int(py) });
         }
-    };
 
-    auto decompressed = Decoder::TryDecompressBitonal(
-        *compressedBitonal, {
-            writeSpan,
-            (void*)compressedBitonal->GetWidth(),
-            (void*)compressedBitonal->GetHeight()
-        });
+        return true;
+    });
+
+    size_t w{};
+    size_t h{};
+    BitStream bs{ std::move(compressed) };
+
+    auto decompressed =
+        Decode<CBImageHeader, CBImageWriter>::TryDecompress(
+            bs,
+            (void*)&w,
+            (void*)&h);
 
     if (!decompressed)
     {
         Log_Error("Main: Failed to decompress bitonal\n");
-        return WakeUpIn(5);
+        DeepSleep();
     }
 
     inky.update(true);
@@ -149,5 +156,5 @@ int main()
         newLatestImageIDLen + 1,
         true);
 
-    return WakeUpIn(5);
+    DeepSleep();
 }

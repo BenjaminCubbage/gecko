@@ -1,8 +1,6 @@
 class CanvasToGIB {
     static readBlob(canvas) {
-        console.time("total");
         const ctx = canvas?.getContext('2d');
-        const bgr = new Module.VectorUint8();
 
         if (!ctx) {
             console.warn('`canvas?.getContext("2d")` was null or undefined.');
@@ -20,11 +18,7 @@ class CanvasToGIB {
                    canvasBGR.data[pos * 4 + 2] > 240;
         }, "iii");
 
-        const compressedBitonal = Module.Encoder.TryCompress(cb, width, height);
-        const compressedBytes = Module.CompressedBitonal.TryWriteToBuffer(
-            compressedBitonal,
-            Module.CompressedBitonal_StorageFormat.GIB
-        );
+        const compressedBytes = Module.Encode.TryCompress(cb, width, height);
 
         const size = compressedBytes.size();
         const copy = new Uint8Array(size);
@@ -32,8 +26,6 @@ class CanvasToGIB {
             copy[i] = compressedBytes.get(i);
 
         compressedBytes.delete();
-        compressedBitonal.delete();
-        bgr.delete();
         return new Blob([copy]);
     }
 };
