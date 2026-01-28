@@ -16,7 +16,7 @@
 
 .border-outer {
     background: linear-gradient(-22deg,
-        #a3eb5b 25%,
+        #9adf55 25%,
         #b3e87d 25% 50%,
         #a6ed5e 50% 75%,
         #ccebad 75%

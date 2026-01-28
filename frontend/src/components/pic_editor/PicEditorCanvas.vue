@@ -30,8 +30,9 @@ const lineWidth = computed(() => {
     return 5;
 });
 
-watch(lineWidth, () => {
-    ctx.value.lineWidth = lineWidth.value;
+watch([ lineWidth, ctx ], () => {
+    if (ctx.value)
+        ctx.value.lineWidth = lineWidth.value;
 });
 
 const draggingState = {
@@ -47,7 +48,6 @@ onMounted(() => {
 
     ctx.value.fillStyle             = 'white';
     ctx.value.lineCap               = 'round';
-    ctx.value.lineWidth             = 4;
     ctx.value.imageSmoothingEnabled = false;
     clear();
 });

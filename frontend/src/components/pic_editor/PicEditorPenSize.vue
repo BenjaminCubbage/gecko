@@ -50,25 +50,17 @@ const selectedPenSize = defineModel({ default: 'small' });
     border-radius: 3px;
     border: var(--border-small);
 
-    box-shadow: inset 0 2.5px 0 #ffcc00,
-                var(--border-shadow-small);
+    box-shadow: 2px 2px 0 black;
 
-    background-color: #ffc400;
+    background: linear-gradient(-30deg,
+        #ffb35a 25%,
+        #ffd8a3 25% 50%,
+        #ffbf73 50% 75%,
+        #fff1df 75%
+    );
 
-
-    --dot-color: #ecad1b;
-    background-image: radial-gradient(circle at top,    var(--dot-color) 2px, transparent 2px),
-                        radial-gradient(circle at bottom, var(--dot-color) 2px, transparent 2px),
-                        radial-gradient(circle at right,  var(--dot-color) 2px, transparent 2px),
-                        radial-gradient(circle at left,   var(--dot-color) 2px, transparent 2px);
-
-    background-size: 18px 18px;
-    background-repeat: repeat;
-    background-position-x: 50%;
-    background-position-y: 50%;
-
-    transition: transform 100ms ease,
-                box-shadow 100ms ease;
+    transition: transform 50ms linear,
+                box-shadow 50ms linear;
 }
 
 .dot {
@@ -87,20 +79,22 @@ const selectedPenSize = defineModel({ default: 'small' });
 
     border-radius: 999px;
     background: black;
-    border: 2px solid #ffc400;
+    box-shadow: 0 0 0 3px white;
 }
 
-.pen-size--small  { --dot-size: 12px; border-top-left-radius: 18px; border-bottom-left-radius: 18px; padding-left: 12px; }
-.pen-size--medium { --dot-size: 18px; }
-.pen-size--large  { --dot-size: 24px; border-top-right-radius: 18px; border-bottom-right-radius: 18px; padding-right: 12px; }
+.pen-size--small  { --dot-size: 10px; border-top-left-radius: 18px; border-bottom-left-radius: 18px; padding-left: 10px; }
+.pen-size--medium { --dot-size: 16px; }
+.pen-size--large  { --dot-size: 20px; border-top-right-radius: 18px; border-bottom-right-radius: 18px; padding-right: 10px; }
 
 .pen-size:hover:not(.pen-size--selected) {
     background-color: #ffd13b;
+    box-shadow: 1px 1px 0 black;
+    transform: translate(1px, 1px);
 }
 
 .pen-size--selected {
     background-color: #ffd13b;
-    box-shadow: inset 0 2.5px 0 #ffdd00;
+    box-shadow: 0 0 0 2px white;
     transform: translate(2px, 2px);
 }
 </style>
