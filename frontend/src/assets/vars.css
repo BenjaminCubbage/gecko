@@ -11,6 +11,7 @@
     --border-large: 3.5px solid var(--fg);
     --border-radius-small: 4px;
     --border-radius-large: 6px;
-    --border-shadow-small: 2px 2px 0 var(--fg);
-    --border-shadow-large: 5px 5px 0 var(--fg);
+    --border-shadow-xsmall: 1px 1px 0 var(--fg);
+    --border-shadow-small:  2px  2px 0 var(--fg);
+    --border-shadow-large:  5px  5px 0 var(--fg);
 }

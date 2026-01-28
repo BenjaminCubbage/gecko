@@ -5,15 +5,34 @@
 </template>
 
 <script setup>
-import { computed, onMounted, useTemplateRef } from 'vue';
+import { watch, computed, onMounted, useTemplateRef } from 'vue';
 import { CanvasUtils } from '@/core/canvas/CanvasUtils.js';
 import { CanvasToGIB } from '@/core/canvas_gib/CanvasToGIB.js';
 import { GIBToCanvas } from '@/core/canvas_gib/GIBToCanvas.js';
 
+const props = defineProps({
+    /* 'small' | 'medium' | 'large' */
+    penSize: { type: String, default: 'medium' }
+});
+
+const emit = defineEmits([ 'canvasChanged' ]);
+
 const canvas = useTemplateRef('canvas');
 const ctx    = computed(() => canvas.value?.getContext('2d', { willReadFrequently: true }));
 
-const emit = defineEmits([ 'canvasChanged' ]);
+const lineWidth = computed(() => {
+    switch (props.penSize) {
+        case 'small':  return 3;
+        case 'medium': return 5;
+        case 'large':  return 8;
+    }
+
+    return 5;
+});
+
+watch(lineWidth, () => {
+    ctx.value.lineWidth = lineWidth.value;
+});
 
 const draggingState = {
     isDragging: false,
@@ -137,7 +156,7 @@ defineExpose({
 
         border: var(--border-large);
         border-radius: var(--border-radius-large);
-        box-shadow: var(--border-shadow-large);
+        box-shadow: var(--border-shadow-small);
     }
 
     .canvas {
