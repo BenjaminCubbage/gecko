@@ -1,100 +1,133 @@
 <template>
     <div class="pic-editor-pen-size">
-        <div class="buttons">
+        <div class="paper-sheet"></div>
+        <div class="options">
+            <!-- Small -->
             <button
-                class="pen-size pen-size--small"
-                :class="{ 'pen-size--selected': modelValue == 'small' }"
+                class="option"
+                :class="{ 'selected': selectedPenSize == 'small' }"
                 @click="selectedPenSize = 'small'">
-                <div class="dot"></div>
+                <div class="icon" style="--size: 10px">
+                    <div class="ink"></div>
+                    <div class="nib">
+                        <StrokedText strokeColor="black" strokeThickness="5px" allowOverflow>
+                            <i class="icon-text hn hn-pen-nib-solid"></i>
+                        </StrokedText>
+                    </div>
+                </div>
             </button>
+
+            <!-- Medium -->
             <button
-                class="pen-size pen-size--medium"
-                :class="{ 'pen-size--selected': modelValue == 'medium' }"
+                class="option"
+                :class="{ 'selected': selectedPenSize == 'medium' }"
                 @click="selectedPenSize = 'medium'">
-                <div class="dot"></div>
+                <div class="icon" style="--size: 13px">
+                    <div class="ink"></div>
+                    <div class="nib">
+                        <StrokedText strokeColor="black" strokeThickness="5px" allowOverflow>
+                            <i class="icon-text hn hn-pen-nib-solid"></i>
+                        </StrokedText>
+                    </div>
+                </div>
             </button>
+
+            <!-- Large -->
             <button
-                class="pen-size pen-size--large"
-                :class="{ 'pen-size--selected': modelValue == 'large' }"
+                class="option"
+                :class="{ 'selected': selectedPenSize == 'large' }"
                 @click="selectedPenSize = 'large'">
-                <div class="dot"></div>
+                <div class="icon" style="--size: 18px">
+                    <div class="ink"></div>
+                    <div class="nib">
+                        <StrokedText strokeColor="black" strokeThickness="5px" allowOverflow>
+                            <i class="icon-text hn hn-pen-nib-solid"></i>
+                        </StrokedText>
+                    </div>
+                </div>
             </button>
         </div>
     </div>
 </template>
 
 <script setup>
+import StrokedText from '@/components/stroked_text/StrokedText.vue';
+
 const selectedPenSize = defineModel({ default: 'small' });
 </script>
 
 <style scoped>
 .pic-editor-pen-size {
-    align-self: start;
-    width: auto;
+    display: grid;
+    z-index: 0;
 }
 
-.buttons {
-    border-radius: 999px;
-    display: flex;
-    gap: 4px;
+.paper-sheet, .options {
+    grid-area: 1 / 1;
 }
 
-.pen-size {
-    height: 36px;
-    color: black;
-    padding: 0 6px;
+.paper-sheet {
+    align-self: end;
 
-    line-height: 0;
-    background: white;
-
-    border-radius: 3px;
+    width: 140px;
+    height: 27px;
     border: var(--border-small);
+    border-radius: var(--border-radius-small);
+    box-shadow: inset 0 2px 0 white,
+                var(--border-shadow-small);
 
-    box-shadow: 2px 2px 0 black;
+    background: rgb(242, 242, 245);
 
-    background: linear-gradient(-30deg,
-        #ffb35a 25%,
-        #ffd8a3 25% 50%,
-        #ffbf73 50% 75%,
-        #fff1df 75%
-    );
-
-    transition: transform 50ms linear,
-                box-shadow 50ms linear;
+    transform: perspective(500px) rotateX(30deg) translate(0, 0.3px);
+    z-index: 0;
 }
 
-.dot {
-    position: relative;
-    width: 36px;
+.options {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-evenly;
+
+    z-index: 1;
 }
 
-.dot::after {
-    content: "";
-    position: absolute;
+.option {
+    align-self: stretch;
+    height: 100%;
+    display: flex;
+}
 
-    width: var(--dot-size);
-    height: var(--dot-size);
-    left: calc(50% - var(--dot-size) / 2);
-    top: calc(50% - var(--dot-size) / 2);
+.icon {
+    display: grid;
 
-    border-radius: 999px;
+    font-size: 2.7rem;
+    line-height: 0;
+}
+
+.nib, .ink {
+    grid-area: 1 / 1;
+}
+
+.nib {
+    transform: translate(11px, -3px);
+}
+
+.ink {
     background: black;
-    box-shadow: 0 0 0 3px #fff1df;
+    width: var(--size);
+    height: calc(var(--size) * 0.8);
+    place-self: center;
+
+    border-radius: 50%;
+    transform: translate(0, 5px);
 }
 
-.pen-size--small  { --dot-size: 10px; border-top-left-radius: 18px; border-bottom-left-radius: 18px; padding-left: 10px; }
-.pen-size--medium { --dot-size: 16px; }
-.pen-size--large  { --dot-size: 20px; border-top-right-radius: 18px; border-bottom-right-radius: 18px; padding-right: 10px; }
-
-.pen-size:hover:not(.pen-size--selected) {
-    background-color: #ffd13b;
-    box-shadow: 1px 1px 0 black;
-    transform: translate(1px, 1px);
+.icon-text {
+    color: transparent;
+    background: linear-gradient(45deg, white 63%, black 63% 70%, rgb(240, 131, 6) 70%);
+    background-clip: text;
 }
 
-.pen-size--selected {
-    background-color: #ffd13b;
-    box-shadow: 0 0 0 2px white;
-    transform: translate(2px, 2px);
+.option:not(.selected) .nib {
+    opacity: 0;
 }
 </style>

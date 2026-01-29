@@ -28,7 +28,7 @@
                         v-if="signal(modelValue) != null"
                         :status="signal(modelValue)" />
 
-                    <StrokedText>
+                    <StrokedText ellipses>
                         <slot name="label" :option="option"></slot>
                     </StrokedText>
                 </div>
@@ -43,7 +43,7 @@
             <div style="display: grid; align-items: center;">
                 <transition name="loaded" mode="out-in">
                     <div v-if="mode == 'ready'">
-                        <StrokedText style="margin-bottom: -4px">
+                        <StrokedText style="margin-bottom: -4px" ellipses>
                             <slot name="label" :option="modelValue"></slot>
                         </StrokedText>
 
@@ -53,7 +53,7 @@
                     </div>
 
                     <div v-else class="loading">
-                        <StrokedText>
+                        <StrokedText ellipses>
                             Loading...
                         </StrokedText>
                     </div>
