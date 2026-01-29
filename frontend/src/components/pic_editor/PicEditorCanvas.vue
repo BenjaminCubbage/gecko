@@ -113,10 +113,10 @@ function drag(x, y) {
     ctx.value.lineTo(x, y + 0.5); // +0.5 to fix subpixel rendering issues
     ctx.value.stroke();
 
-    const changedX = Math.min(draggingState.previousDragPosition.x, x) - ctx.value.lineWidth - 5;
-    const changedY = Math.min(draggingState.previousDragPosition.y, y) - ctx.value.lineWidth - 5;
-    const changedWidth = Math.abs(draggingState.previousDragPosition.x - x) + ctx.value.lineWidth + 10;
-    const changedHeight = Math.abs(draggingState.previousDragPosition.y - y) + ctx.value.lineWidth + 10;
+    const changedX = Math.min(draggingState.previousDragPosition.x, x) - ctx.value.lineWidth - 10;
+    const changedY = Math.min(draggingState.previousDragPosition.y, y) - ctx.value.lineWidth - 10;
+    const changedWidth = Math.abs(draggingState.previousDragPosition.x - x) + ctx.value.lineWidth + 20;
+    const changedHeight = Math.abs(draggingState.previousDragPosition.y - y) + ctx.value.lineWidth + 20;
 
     /*
          * Prevent anti-aliasing by snapping to pure bitonal in the changed area
