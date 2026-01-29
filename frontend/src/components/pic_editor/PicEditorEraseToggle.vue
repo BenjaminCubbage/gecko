@@ -64,9 +64,10 @@ const isToggled = defineModel({ default: true });
     height: 22px;
     paint-order: stroke;
     stroke: black;
-    stroke-width: 140px;
-    stroke-linejoin: round;
+    stroke-width: 150px;
     transform: scale(1.6) translate(0, -6px);
+
+    stroke-linejoin: miter;
 }
 
 .st0{ fill: white; }
@@ -91,5 +92,19 @@ const isToggled = defineModel({ default: true });
             drop-shadow(calc(var(--s) * -0.8) calc(var(--s) * -0.8) 0px white) 
             drop-shadow(calc(var(--s) *  0.0) calc(var(--s) * -0.8) 0px white) 
             drop-shadow(calc(var(--s) *  1.0) calc(var(--s) * -0.8) 0px white);
+}
+
+/*
+    Firefox uses rounded linejoins for the stroked text 
+    property, and there's no way to change this.
+
+    Set stroke-linejoin to round on FF to make the SVG
+    visually consistent with text-based icons that have
+    strokes set using the property.
+*/
+@supports (-moz-appearance:none) {
+    .icon {
+        stroke-linejoin: round;
+    }
 }
 </style>
