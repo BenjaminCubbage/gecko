@@ -79,7 +79,7 @@ const selectedPenSize = defineModel({ default: 'small' });
 
     border-radius: 999px;
     background: black;
-    box-shadow: 0 0 0 3px white;
+    box-shadow: 0 0 0 3px #fff1df;
 }
 
 .pen-size--small  { --dot-size: 10px; border-top-left-radius: 18px; border-bottom-left-radius: 18px; padding-left: 10px; }

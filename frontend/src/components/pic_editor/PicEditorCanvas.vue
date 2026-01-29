@@ -12,7 +12,8 @@ import { GIBToCanvas } from '@/core/canvas_gib/GIBToCanvas.js';
 
 const props = defineProps({
     /* 'small' | 'medium' | 'large' */
-    penSize: { type: String, default: 'medium' }
+    penSize: { type: String, default: 'small' },
+    isErasing: { type: Boolean, default: false }
 });
 
 const emit = defineEmits([ 'canvasChanged' ]);
@@ -21,18 +22,28 @@ const canvas = useTemplateRef('canvas');
 const ctx    = computed(() => canvas.value?.getContext('2d', { willReadFrequently: true }));
 
 const lineWidth = computed(() => {
-    switch (props.penSize) {
-        case 'small':  return 3;
-        case 'medium': return 5;
-        case 'large':  return 8;
-    }
+    const baseWidth = {
+        'small':  3,
+        'medium': 5,
+        'large':  8
+    }[props.penSize] ?? 5;
 
-    return 5;
+    return baseWidth * (props.isErasing ? 2 : 1);
 });
+
+const penColor = computed(() => 
+    props.isErasing
+        ? 'white'
+        : 'black');
 
 watch([ lineWidth, ctx ], () => {
     if (ctx.value)
         ctx.value.lineWidth = lineWidth.value;
+});
+
+watch([ penColor, ctx], () => {
+    if (ctx.value)
+        ctx.value.strokeStyle = penColor.value;
 });
 
 const draggingState = {
@@ -100,7 +111,6 @@ function drag(x, y) {
     ctx.value.beginPath();
     ctx.value.moveTo(draggingState.previousDragPosition.x, draggingState.previousDragPosition.y);
     ctx.value.lineTo(x, y + 0.5); // +0.5 to fix subpixel rendering issues
-    ctx.value.strokeStyle = 'black';
     ctx.value.stroke();
 
     const changedX = Math.min(draggingState.previousDragPosition.x, x) - ctx.value.lineWidth - 5;

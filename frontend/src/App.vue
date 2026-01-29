@@ -49,7 +49,7 @@ watch(session.state(), (newState, oldState) => {
 
 <style scoped>
     :global(body), .bg {
-        background: #4d7cfc;
+        background: #7298ff;
     }
 
     .bg {
@@ -58,7 +58,7 @@ watch(session.state(), (newState, oldState) => {
     }
 
     .dotted {
-        --dot-color: #3557b0;
+        --dot-color: #486ac1;
         background-image: radial-gradient(circle at top,    var(--dot-color) 2px, transparent 2px),
                           radial-gradient(circle at bottom, var(--dot-color) 2px, transparent 2px),
                           radial-gradient(circle at right,  var(--dot-color) 2px, transparent 2px),

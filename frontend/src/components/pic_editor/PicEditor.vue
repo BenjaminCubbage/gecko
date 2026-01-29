@@ -4,15 +4,15 @@
             <PicEditorCanvas 
                 ref="picEditorCanvas" 
                 :penSize="selectedPenSize"
+                :isErasing="isErasing"
                 @canvasChanged="canvasChanged" />
+        </PicEditorBorder>
 
-            <PicEditorPenSize v-model="selectedPenSize" />
-
-            <!-- <div class="buttons">
-                <PicEditorButton @click="send">SEND</PicEditorButton>
-                <PicEditorButton @click="getLatest">GET LATEST</PicEditorButton>
-                <PicEditorButton @click="clear">CLEAR</PicEditorButton>
-            </div> -->
+        <PicEditorBorder>
+            <div class="toolbar">
+                <PicEditorPenSize v-model="selectedPenSize" />
+                <PicEditorEraseToggle v-model="isErasing" />
+            </div>
         </PicEditorBorder>
     </div>
 </template>
@@ -20,14 +20,15 @@
 <script setup>
 import { ref, useTemplateRef, inject } from 'vue';
 import PicEditorBorder from './PicEditorBorder.vue';
-import PicEditorButton from './PicEditorButton.vue';
 import PicEditorPenSize from './PicEditorPenSize.vue';
+import PicEditorEraseToggle from './PicEditorEraseToggle.vue';
 import PicEditorCanvas from './PicEditorCanvas.vue';
 import { Dispatch } from '@/core/dispatch/Dispatch.js';
 import { Keys } from '@/core/store/Keys.js';
 
 const picEditorCanvas = useTemplateRef('picEditorCanvas');
-const selectedPenSize = ref('medium');
+const selectedPenSize = ref('small');
+const isErasing       = ref(false);
 
 const session = inject(Keys.SessionStore);
 let idempotencyKey = crypto.randomUUID();
@@ -69,11 +70,17 @@ function canvasChanged() {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 12px;
+        gap: 8px;
     }
 
     .buttons {
         display: flex;
         gap: 16px;
+    }
+
+    .toolbar {
+        display: flex;
+        flex-direction: row wrap;
+        gap: 12px;
     }
 </style>
