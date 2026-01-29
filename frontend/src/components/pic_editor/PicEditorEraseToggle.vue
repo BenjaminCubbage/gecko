@@ -56,8 +56,8 @@ const isToggled = defineModel({ default: true });
     );
 
     transform: translate(-1px, -1px);
-    transition: transform 50ms linear,
-                box-shadow 50ms linear;
+    transition: transform 50ms ease,
+                box-shadow 50ms ease;
 }
 
 .icon {
