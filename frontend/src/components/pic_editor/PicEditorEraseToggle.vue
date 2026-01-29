@@ -66,8 +66,6 @@ const isToggled = defineModel({ default: true });
     stroke: black;
     stroke-width: 150px;
     transform: scale(1.6) translate(0, -6px);
-
-    stroke-linejoin: miter;
 }
 
 .st0{ fill: white; }
@@ -95,7 +93,7 @@ const isToggled = defineModel({ default: true });
 }
 
 /*
-    Firefox uses rounded linejoins for the stroked text 
+    Firefox uses rounded linejoins for the stroked-text 
     property, and there's no way to change this.
 
     Set stroke-linejoin to round on FF to make the SVG
@@ -105,6 +103,7 @@ const isToggled = defineModel({ default: true });
 @supports (-moz-appearance:none) {
     .icon {
         stroke-linejoin: round;
+        stroke-linecap: round;
     }
 }
 </style>
