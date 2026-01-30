@@ -23,7 +23,7 @@ export function useOnResize() {
         if ((entry = getEntryByElement(el)) == null) {
             entries.push(entry = new Entry({
                 el: el,
-                observer: new ResizeObserver((e) => handleObserverEvent(el)),
+                observer: new ResizeObserver(() => handleObserverEvent(el)),
                 handlers: [cb]
             }));
 
@@ -38,13 +38,13 @@ export function useOnResize() {
     }
 
     function removeResizeHandler(el, cb) {
-        let entry = getEntryByElement(el);
+        const entry = getEntryByElement(el);
 
         if (!entry)
             return;
 
         if (entry.handlers?.length)
-            handlers.splice(entry.handlers.indexOf(cb), 1);
+            entry.handlers.splice(entry.handlers.indexOf(cb), 1);
 
         if (!entry.handlers?.length) {
             entry.observer.unobserve(el);

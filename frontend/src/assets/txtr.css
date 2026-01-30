@@ -1,0 +1,99 @@
+/*
+    diag
+*/
+
+.txtr-diag {
+    --grad-deg: -30deg;
+
+    background: linear-gradient(var(--grad-deg),
+        var(--grad-c1) 25%,
+        var(--grad-c2) 25% 50%,
+        var(--grad-c3) 50% 75%,
+        var(--grad-c4) 75%
+    );
+}
+
+.txtr-diag--red {
+    --grad-c1: var(--col-red-4);
+    --grad-c2: var(--col-red-2);
+    --grad-c3: var(--col-red-3);
+    --grad-c4: var(--col-red-1);
+}
+
+.txtr-diag--green {
+    --grad-c1: var(--col-green-4);
+    --grad-c2: var(--col-green-2);
+    --grad-c3: var(--col-green-3);
+    --grad-c4: var(--col-green-1);
+}
+
+.txtr-diag--orange {
+    --grad-c1: var(--col-orange-4);
+    --grad-c2: var(--col-orange-2);
+    --grad-c3: var(--col-orange-3);
+    --grad-c4: var(--col-orange-1);
+}
+
+.txtr-diag--magenta {
+    --grad-c1: var(--col-magenta-4);
+    --grad-c2: var(--col-magenta-2);
+    --grad-c3: var(--col-magenta-3);
+    --grad-c4: var(--col-magenta-1);
+}
+
+/*
+    dots
+*/
+
+.txtr-dots {
+    --dots-spacing-x: 32px;
+    --dots-spacing-y: 32px;
+
+    background-image: radial-gradient(circle at top,    var(--dots-col) 2px, transparent 2px),
+                      radial-gradient(circle at bottom, var(--dots-col) 2px, transparent 2px),
+                      radial-gradient(circle at right,  var(--dots-col) 2px, transparent 2px),
+                      radial-gradient(circle at left,   var(--dots-col) 2px, transparent 2px);
+
+    background-size: var(--dots-spacing-x) var(--dots-spacing-y);
+    background-repeat: repeat;
+    background-position-x: 50%;
+    background-position-y: 4px;
+}
+
+.txtr-dots--blue {
+    --dots-bg:  var(--col-blue-1);
+    --dots-col: var(--col-blue-2);
+}
+
+/*
+    spiky
+*/
+
+.txtr-spiky {
+    --spiky-deg:       30deg;
+    --spiky-spikiness: 25%;
+
+    background: linear-gradient(var(--spiky-deg),
+        var(--spiky-c1) 25%,
+        var(--spiky-c2) 25% 50%,
+        var(--spiky-c3) 50% 75%,
+        var(--spiky-c4) 75%
+    );
+
+    background-size: var(--spiky-spikiness) 100%;
+    background-repeat: repeat;
+}
+
+.txtr-spiky--green {
+    --spiky-c1: var(--col-green-4);
+    --spiky-c2: var(--col-green-2);
+    --spiky-c3: var(--col-green-3);
+    --spiky-c4: var(--col-green-1);
+}
+
+.txtr-spiky--orange {
+    --spiky-c1: var(--col-orange-4);
+    --spiky-c2: var(--col-orange-2);
+    --spiky-c3: var(--col-orange-3);
+    --spiky-c4: var(--col-orange-1);
+}

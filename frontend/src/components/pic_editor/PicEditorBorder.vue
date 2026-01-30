@@ -1,35 +1,24 @@
 <template>
     <div class="pic-editor-border">
-        <div class="border-outer">
-            <slot />
-        </div>
+        <slot />
     </div>
 </template>
 
 <style scoped>
 .pic-editor-border {
-    z-index: 0;
-    display: grid;
-    font-family: var(--font-heading);
-}
-
-.border-outer {
-    background: linear-gradient(
-        #ccebad 50%,
-        #9adf55 50%
-    );
-
     padding: 10px;
-    border: var(--border-small);
-    border-radius: var(--border-radius-large);
-    corner-shape: bevel;
 
-    box-shadow: var(--border-shadow-large),
-                inset 0 3px 0 #ebf6de;
+    background:
+        linear-gradient(
+            var(--col-green-1) 50%,
+            var(--col-green-4) 50%);
 
-    display: flex;
-    flex-flow: column nowrap;
+    box-shadow:
+        var(--shadow-l),
+        inset 0 3px 0 var(--col-green-0);
 
-    gap: 8px;
+    border-radius: var(--radius-s);
+    border:        var(--border-s);
+    corner-shape:  notch;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <div class="active-user-strip">
+    <div class="account-widget-username-badge">
         <i class="user-icon hn hn-user-solid"></i>
 
         <div class="username-section">
@@ -72,6 +72,7 @@
 import {
     toRefs, ref, useTemplateRef,
     nextTick, watch, computed } from 'vue';
+
 import UsernameInput from '@/components/username_input/UsernameInput.vue';
 import LoadingSpinner from '@/components/loading_spinner/LoadingSpinner.vue';
 
@@ -129,52 +130,50 @@ watch (isEditing, () => {
 </script>
 
 <style scoped>
-.active-user-strip {
-    color: var(--text);
-
-    display: flex;
-    flex-flow: row nowrap;
+.account-widget-username-badge {
+    display:     flex;
+    flex-flow:   row nowrap;
     align-items: center;
-    gap: 12px;
+    gap:         12px;
+    padding:     9px 9px 9px 16px;
 
-    font-family: var(--font-heading);
-    font-size: 2.4rem;
-    padding: 9px 9px 9px 16px;
+    color:          var(--text);
+    font-family:    var(--font-heading);
+    font-size:      2.6rem;
     letter-spacing: 0.06em;
+    line-height:    1;
 
-    background: var(--bg);
-    border: var(--border-small);
-    border-radius: var(--border-radius-small);
-    box-shadow: var(--border-shadow-small);
-    transition: transform 100ms linear;
-
+    background:    white;
+    border:        var(--border-s);
     border-radius: 1000px;
-    pointer-events: all;
-    font-size: 26px;
-    line-height: 1;
+    box-shadow:    var(--shadow-s);
+
+    transition: transform 100ms linear;
 }
 
 .user-icon {
-    font-size: 26px;
+    font-size:   26px;
     line-height: 1;
 
-    color: transparent;
-    background: black;
+    background:      black;
     background-clip: text;
+
+    color: transparent;
 }
 
 .username {
-    position: relative;
-    display: grid;
-    justify-items: start;
+    display:        grid;
+    justify-items:  start;
+    position:       relative;
 }
 
-.username-button, .username-editor {
+.username-button,
+.username-editor {
     grid-area: 1/1;
 }
 
 .username-button {
-    cursor: none;
+    cursor:        none;
     padding-right: 16px;
 }
 
@@ -187,90 +186,98 @@ watch (isEditing, () => {
 }
 
 .username-text {
-    --red:    #EA4335;
-    --blue:   #4285F4;
-    --green:  #34A853;
-    --yellow: #FBBC05;
-
+    --blue:            #4285F4;
+    --green:           #34A853;
+    --red:             #EA4335;
+    --yellow:          #FBBC05;
     --rotate-gradient: 0deg;
 
-    animation: rotate-gradient 2s linear infinite;
+    color: transparent;
+
     background-image: conic-gradient(in oklch from var(--rotate-gradient) at 50% 100%,
         var(--red)    0%,
         var(--blue)   25%,
         var(--green)  50%,
         var(--yellow) 75%,
         var(--red)    100%);
-    color: transparent;
     background-clip: text;
+
+    animation: rotate-gradient 2s linear infinite;
 }
 
 .username-editor {
-    display: flex;
+    display:   flex;
     flex-flow: row nowrap;
 }
 
 .at-symbol {
+    cursor:       default;
     margin-right: -1.5px;
-    cursor: default;
+    color:        black;
 }
 
 .username-text-input {
-    box-sizing: border-box;
-    font-family: inherit;
-    padding: 0;
-    margin: 0;
-    border: 0;
-    font-size: inherit;
-    appearance: none;
+    width:      200px;
+    height:     1em;
+    margin:     0;
+    padding:    0;
+    border:     0;
+
+    appearance:         none;
     -webkit-appearance: none;
-    line-height: 10px;
-    outline: none !important;
-    width: 200px;
-    height: 1em;
-    background: transparent;
-    color: black;
+    box-sizing:         border-box;
+
+    background:   transparent;
+    color:        black;
+    font-family:  inherit;
+    font-size:    inherit;
+    line-height:  10px;
+    outline:      none !important;
 }
 
 .submit-button {
-    font-size: 2.4rem;
-    padding: 2px 30px;
-    margin: -6px;
-    background: hsl(113, 68%, 58%);
-    border: var(--border-small);
-    border: 2.5px solid black;
-    box-shadow: 1px 1px 0 0 black;
-    width: 40px;
-    border-radius: 999px;
-    display: flex;
+    display:         flex;
+    align-items:     center;
     justify-content: center;
-    align-items: center;
+    width:           40px;
+    margin:          -6px;
+    padding:         2px 30px;
+
+    color:     black;
+    font-size: 2.4rem;
+
+    background:    hsl(113, 68%, 58%);
+    border:        var(--border-s); /*???*/
+    border:        2.5px solid black;
+    border-radius: 999px;
+    box-shadow:    1px 1px 0 0 black;
 
     transition: transform 200ms ease;
+
     transform: scale(1) rotate(0deg);
 }
 
 .submit-button:hover:not(.invalid) {
-    transform: scale(1.02) rotate(-1deg);
     box-shadow: 2px 2px 0 0 black;
+    transform:  scale(1.02) rotate(-1deg);
 }
 
 .submit-button:active:not(.invalid) {
-    background: hsl(113, 56%, 53%);
-    transform: scale(0.98) rotate(0deg);
     box-shadow: 1px 1px 0 0 black;
+    background: hsl(113, 56%, 53%);
+    transform:  scale(0.98) rotate(0deg);
 }
 
 .submit-button.invalid {
+    cursor:  not-allowed;
     opacity: 0.5;
-    cursor: not-allowed;
 }
 
 .submit-icon {
     font-size: 2.3rem;
-    position: relative;
-    top: 1px;
-    left: 1px;
+    left:      1px;
+    position:  relative;
+    top:       1px;
 }
 
 .loading-icon {
@@ -278,20 +285,22 @@ watch (isEditing, () => {
 }
 
 .pencil-icon-container {
-    animation: bob-pencil 2s infinite;
-
-    display: grid;
+    display:     grid;
+    left:        0;
     place-items: center;
-    position: absolute;
-    left: 0;
-    top: 0;
+    position:    absolute;
+    top:         0;
+
+    animation: bob-pencil 2s infinite;
 }
 
 .pencil-icon {
-    --pencil-tip:     black;
-    --pencil-wood:    #f2d198;
-    --pencil-wrapper: #ff9c08;
-    --pencil-eraser:  #ff899a;
+    --pencil-eraser:   #ff899a;
+    --pencil-tip:      black;
+    --pencil-wood:     #f2d198;
+    --pencil-wrapper:  #ff9c08;
+
+    grid-area: 1/1;
 
     background: linear-gradient(42deg,
         var(--pencil-tip)     20%,
@@ -299,30 +308,26 @@ watch (isEditing, () => {
         var(--pencil-wrapper) 34% 63%,
         var(--pencil-eraser)  63%);
     background-clip: text;
-    color: transparent;
+
+    color:       transparent;
     line-height: 1.5;
-    grid-area: 1/1;
 }
 
 .pencil-icon-stroke {
-    -webkit-text-stroke: 4px white;
-    line-height: 1.5;
     grid-area: 1/1;
+
+    -webkit-text-stroke: 4px white;
+    line-height:         1.5;
 }
 
 .username-section:not(:hover) .pencil-icon-container {
     display: none;
 }
 
-.username-section:hover .username-text {
-    text-decoration: underline;
-    text-decoration-thickness: 3px;
-}
-
 @property --rotate-gradient {
-    syntax: '<angle>';
+    inherits:      false;
     initial-value: 0deg;
-    inherits: false;
+    syntax:        '<angle>';
 }
 
 @keyframes rotate-gradient {
@@ -332,14 +337,14 @@ watch (isEditing, () => {
 
 @keyframes bob-pencil {
     0%   { transform: rotate(-6deg) scale(1.04); }
-    25%  { transform: rotate(6deg) scale(0.99);  }
+    25%  { transform: rotate( 6deg) scale(0.99); }
     50%  { transform: rotate(-6deg) scale(1.04); }
-    75%  { transform: rotate(6deg) scale(0.99);  }
+    75%  { transform: rotate( 6deg) scale(0.99); }
     100% { transform: rotate(-6deg) scale(1.04); }
 }
 
 @keyframes rotate-loading {
     from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    to   { transform: rotate(360deg); }
 }
 </style>

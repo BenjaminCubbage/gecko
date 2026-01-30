@@ -74,7 +74,7 @@
 </template>
 
 <script setup>
-import { ref, inject, watch, nextTick, triggerRef } from 'vue';
+import { ref, inject, watch } from 'vue';
 import { Dispatch } from '@/core/dispatch/Dispatch.js';
 import { equalsIgnoreCase } from '@/core/string/EqualsIgnoreCase.js';
 import { Keys } from '@/core/store/Keys.js';
@@ -112,48 +112,49 @@ watch(session.state(), state => {
     }
 }, { immediate: true });
 
-watch([ friends.state(),
-        friends.pendingIncoming(),
-        friends.pendingOutgoing(),
-        friends.activeFriends()
-    ], () => {
+watch([ 
+    friends.state(),
+    friends.pendingIncoming(),
+    friends.pendingOutgoing(),
+    friends.activeFriends()
+], () => {
     switch (friends.state().value) {
-        case 'loading':
-        case 'uninitialized':
-            friendsPlaceholderVariant.value = 'loading';
-            friendsPlaceholderMessage.value = 'Loading Friends';
-            break;
+    case 'loading':
+    case 'uninitialized':
+        friendsPlaceholderVariant.value = 'loading';
+        friendsPlaceholderMessage.value = 'Loading Friends';
+        break;
 
-        case 'loggedout':
-            friendsPlaceholderVariant.value = 'info';
-            friendsPlaceholderMessage.value = `Log in to have friends`;
+    case 'loggedout':
+        friendsPlaceholderVariant.value = 'info';
+        friendsPlaceholderMessage.value = `Log in to have friends`;
 
-            searchResultPlaceholderVariant.value = 'info';
-            searchResultPlaceholderMessage.value = `Log in to have friends`;
-            break;
+        searchResultPlaceholderVariant.value = 'info';
+        searchResultPlaceholderMessage.value = `Log in to have friends`;
+        break;
 
-        case 'error':
-            friendsPlaceholderVariant.value = 'error';
-            friendsPlaceholderMessage.value = `Couldn't Load Friends`;
+    case 'error':
+        friendsPlaceholderVariant.value = 'error';
+        friendsPlaceholderMessage.value = `Couldn't Load Friends`;
 
-            if (searchResult.value == null) {
-                searchResultPlaceholderVariant.value = 'error';
-                searchResultPlaceholderMessage.value = `Couldn't Load Friends`;
+        if (searchResult.value == null) {
+            searchResultPlaceholderVariant.value = 'error';
+            searchResultPlaceholderMessage.value = `Couldn't Load Friends`;
+        }
+        break;
+
+    case 'ready':
+        if (friends.pendingOutgoing() != null &&
+            friends.activeFriends() != null) {
+            if (!friends.activeFriends().length &&
+                !friends.pendingOutgoing().length) {
+                friendsPlaceholderVariant.value = 'info';
+                friendsPlaceholderMessage.value = 'No Friends (how sad)';
+            } else {
+                friendsPlaceholderVariant.value = null;
             }
-            break;
-
-        case 'ready':
-            if (friends.pendingOutgoing() != null &&
-                friends.activeFriends() != null) {
-                if (!friends.activeFriends().length &&
-                    !friends.pendingOutgoing().length) {
-                    friendsPlaceholderVariant.value = 'info';
-                    friendsPlaceholderMessage.value = 'No Friends (how sad)';
-                } else {
-                    friendsPlaceholderVariant.value = null;
-                }
-            }
-            break;
+        }
+        break;
     }
 }, { immediate: true, deep: true });
 
@@ -180,7 +181,7 @@ async function deleteFriendOrRequest(user) {
 
 function search() {
     if (!session.activeUser().value)
-        return false;
+        return;
 
     if (tryFillSearchResultFromCache(searchText.value))
         return;
@@ -250,13 +251,13 @@ function tryFillSearchResultFromCache(username) {
         searchResultPlaceholderVariant.value = null;
 
         switch (type) {
-            case 'active':     searchResult.value.type = 'active';     return true;
-            case 'pendingin':  searchResult.value.type = 'pendingin';  return true;
-            case 'pendingout': searchResult.value.type = 'pendingout'; return true;
-            default:
-                searchResultPlaceholderVariant.value = 'error';
-                searchResultPlaceholderMessage.value = `Uhhh... that shouldn't happen`;
-                throw new Error('[FriendsList]: Unknown friendship type when getting friend from cache');
+        case 'active':     searchResult.value.type = 'active';     return true;
+        case 'pendingin':  searchResult.value.type = 'pendingin';  return true;
+        case 'pendingout': searchResult.value.type = 'pendingout'; return true;
+        default:
+            searchResultPlaceholderVariant.value = 'error';
+            searchResultPlaceholderMessage.value = `Uhhh... that shouldn't happen`;
+            throw new Error('[FriendsList]: Unknown friendship type when getting friend from cache');
         }
     }
 
@@ -266,13 +267,6 @@ function tryFillSearchResultFromCache(username) {
 
 <style scoped>
 .friends-list {
-    container: c / inline-size;
-
-    display: grid;
     width: 600px;
-    gap: 0px;
-    margin-bottom: 12px;
-
-    z-index: 0;
 }
 </style>

@@ -52,10 +52,10 @@ add_custom_command(
     COMMAND ${CMAKE_COMMAND} -E make_directory ${compression_artifacts_dir}
     COMMAND
         cd ${compression_artifacts_dir} &&
-        ${emcc_script_path} --std=c++20 
+        ${emcc_script_path} --std=c++20
             -Os
             -flto
-            -sASSERTIONS=0 
+            -sASSERTIONS=0
             -sSAFE_HEAP=0
             -sALLOW_TABLE_GROWTH=1
             -sEXPORTED_RUNTIME_METHODS=addFunction,removeFunction

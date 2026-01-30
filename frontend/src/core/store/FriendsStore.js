@@ -172,27 +172,29 @@ class FriendsStore {
         try {
             if (friendType === 'active')
                 await new Promise((resolve, reject) => {
-                    Dispatch.Delete_Friend(session.activeUserID(),
-                                           session.xsrfCookie(),
-                                           userID)
+                    Dispatch.Delete_Friend(
+                        session.activeUserID(),
+                        session.xsrfCookie(),
+                        userID)
                         .onSuccess     (()             => resolve())
                         .onHttpError   ((body, status) => reject(new HttpError(status, body)))
                         .onNetworkError(()             => reject(new NetworkError()));
                 });
             else
                 await new Promise((resolve, reject) => {
-                    Dispatch.Delete_FriendRequest(session.activeUserID(),
-                                                  session.xsrfCookie(),
-                                                  userID)
+                    Dispatch.Delete_FriendRequest(
+                        session.activeUserID(),
+                        session.xsrfCookie(),
+                        userID)
                         .onSuccess     (()             => resolve())
                         .onHttpError   ((body, status) => reject(new HttpError(status, body)))
                         .onNetworkError(()             => reject(new NetworkError()));
                 });
 
             switch (friendType) {
-                case 'active':     this._removeFromArr(this._active,     friend); break;
-                case 'pendingin':  this._removeFromArr(this._pendingIn,  friend); break;
-                case 'pendingout': this._removeFromArr(this._pendingOut, friend); break;
+            case 'active':     this._removeFromArr(this._active,     friend); break;
+            case 'pendingin':  this._removeFromArr(this._pendingIn,  friend); break;
+            case 'pendingout': this._removeFromArr(this._pendingOut, friend); break;
             }
         } finally {
             this._mutex.unlock(userID);
@@ -245,7 +247,7 @@ class FriendsStore {
     }
 
     _removeFromArr(arr, friend) {
-        let index = arr.indexOf(friend);
+        const index = arr.indexOf(friend);
         if (index === -1)
             return false;
         arr.splice(index, 1);

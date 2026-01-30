@@ -1,17 +1,41 @@
 :root {
     --font-heading: 'Jersey 15', sans-serif;
 
-    --bg: white;
-    --fg: black;
-    --fg: black;
-    --text: black;
-    --subtle: #f4e1f7;
+    --col-blue-1: #7298ff;
+    --col-blue-2: #486ac1;
 
-    --border-small: 3px solid var(--fg);
-    --border-large: 3.5px solid var(--fg);
-    --border-radius-small: 4px;
-    --border-radius-large: 6px;
-    --border-shadow-xsmall: 1px 1px 0 var(--fg);
-    --border-shadow-small:  2px  2px 0 var(--fg);
-    --border-shadow-large:  5px  5px 0 var(--fg);
+    --col-red-1: #ffdfdf;
+    --col-red-2: #ffb0b0;
+    --col-red-3: #ff7373;
+    --col-red-4: #ff5a5a;
+
+    --col-green-0: #e8f4dd;
+    --col-green-1: #ccebad;
+    --col-green-2: #b3e87d;
+    --col-green-3: #a6ed5e;
+    --col-green-4: #91df43;
+
+    --col-orange-1: #ffebd0;
+    --col-orange-2: #ffd8a3;
+    --col-orange-3: #ffbf73;
+    --col-orange-4: #ffb35a;
+
+    --col-magenta-1: #ffdffc;
+    --col-magenta-2: #feb0ff;
+    --col-magenta-3: #e573ff;
+    --col-magenta-4: #fc5aff;
+
+    --border-s: 3.0px solid black;
+    --border-l: 3.5px solid black;
+
+    --radius-s: 3px;
+    --radius-l: 6px;
+
+    --shadow-dist-s: 2px;
+    --shadow-dist-l: 5px;
+
+    --shadow-s: var(--shadow-dist-s) var(--shadow-dist-s) 0 black;
+    --shadow-l: var(--shadow-dist-l) var(--shadow-dist-l) 0 black;
+
+    --shadow-aura: 0 0 0 2px white;
 }

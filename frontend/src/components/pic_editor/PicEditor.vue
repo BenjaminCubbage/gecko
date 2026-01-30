@@ -1,8 +1,8 @@
 <template>
     <div class="canvas-editor">
         <PicEditorBorder>
-            <PicEditorCanvas 
-                ref="picEditorCanvas" 
+            <PicEditorCanvas
+                ref="picEditorCanvas"
                 :penSize="selectedPenSize"
                 :isErasing="isErasing"
                 @canvasChanged="canvasChanged" />
@@ -10,8 +10,9 @@
 
         <PicEditorBorder>
             <div class="toolbar">
-                <PicEditorPenSize v-model="selectedPenSize" />
-                <PicEditorEraseToggle v-model="isErasing" />
+                <ToolbarChipPenSize v-model="selectedPenSize" />
+                <ToolbarChipEraser v-model="isErasing" />
+                <ToolbarChipClear @click="clear" />
             </div>
         </PicEditorBorder>
     </div>
@@ -19,9 +20,11 @@
 
 <script setup>
 import { ref, useTemplateRef, inject } from 'vue';
+import ToolbarChipPenSize from '@/components/toolbar_chips/ToolbarChipPenSize.vue';
+import ToolbarChipEraser  from '@/components/toolbar_chips/ToolbarChipEraser.vue';
+import ToolbarChipClear   from '@/components/toolbar_chips/ToolbarChipClear.vue';
+
 import PicEditorBorder from './PicEditorBorder.vue';
-import PicEditorPenSize from './PicEditorPenSize.vue';
-import PicEditorEraseToggle from './PicEditorEraseToggle.vue';
 import PicEditorCanvas from './PicEditorCanvas.vue';
 import { Dispatch } from '@/core/dispatch/Dispatch.js';
 import { Keys } from '@/core/store/Keys.js';
@@ -33,6 +36,7 @@ const isErasing       = ref(false);
 const session = inject(Keys.SessionStore);
 let idempotencyKey = crypto.randomUUID();
 
+void send;
 function send() {
     if (!picEditorCanvas.value)
         throw new Error('Could not resolve templated ref');
@@ -45,6 +49,7 @@ function send() {
         picEditorCanvas.value.readGIBBlob());
 }
 
+void getLatest;
 function getLatest() {
     Dispatch.Get_LatestImage(session.activeUserID(), session.xsrfCookie())
         .onSuccess(async body => {
@@ -66,21 +71,20 @@ function canvasChanged() {
 </script>
 
 <style>
-    .canvas-editor {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 8px;
-    }
+.canvas-editor {
+    align-items:    center;
+    display:        flex;
+    flex-direction: column;
+    gap:            8px;
+}
 
-    .buttons {
-        display: flex;
-        gap: 16px;
-    }
+.buttons {
+    display: flex;
+    gap:     16px;
+}
 
-    .toolbar {
-        display: flex;
-        flex-direction: row wrap;
-        gap: 12px;
-    }
+.toolbar {
+    display: flex;
+    gap:     12px;
+}
 </style>

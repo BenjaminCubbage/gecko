@@ -3,7 +3,7 @@ import { User } from './User.js';
 class Friend {
     static fromJSON(json) {
         const friend = new Friend();
-        friend.acceptedOn = String(json['accepted_on']) ?? null;
+        friend.acceptedOn = json['accepted_on'] ?? null;
         friend.user       = User.fromJSON(json['user']);
         return friend;
     }
@@ -22,9 +22,9 @@ class Friend {
     static _stringifyDate(date) {
         if (date) {
             if (date instanceof Date) {
-                let mm   = String(date.getMonth() + 1).padStart(2, '0');
-                let dd   = String(date.getDate()).padStart(2, '0');
-                let yyyy = date.getFullYear();
+                const mm   = String(date.getMonth() + 1).padStart(2, '0');
+                const dd   = String(date.getDate()).padStart(2, '0');
+                const yyyy = date.getFullYear();
 
                 return `${mm}/${dd}/${yyyy}`;
             } else

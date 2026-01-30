@@ -5,7 +5,7 @@
             'font-size': big ? '1.4rem' : '0.95rem'
         }">
         <button
-            class="arrow arrow-left"
+            class="arrow arrow-left txtr-spiky txtr-spiky--green"
             @click="carouselPrev"
             :disabled="mode != 'ready' || !hasPrev">
             &lt;
@@ -19,20 +19,21 @@
             }">
             <!-- Measuring only (pos absolute, for width anim) -->
             <div class="measure-options">
-                <div
-                    v-if="mode == 'ready'"
-                    v-for="option in options"
-                    ref="measureOptionsEls"
-                    style="display: grid; align-items: center;">
-                    <RecipientSelectDeviceSignal
-                        v-if="signal(modelValue) != null"
-                        :status="signal(modelValue)" />
+                <template v-if="mode == 'ready'">
+                    <div
+                        v-for="option in options"
+                        ref="measureOptionsEls"
+                        style="display: grid; align-items: center;"
+                        :key="optionID(option)">
+                        <RecipientSelectDeviceSignal
+                            v-if="signal(modelValue) != null"
+                            :status="signal(modelValue)" />
 
-                    <StrokedText ellipses>
-                        <slot name="label" :option="option"></slot>
-                    </StrokedText>
-                </div>
-
+                        <StrokedText ellipses>
+                            <slot name="label" :option="option"></slot>
+                        </StrokedText>
+                    </div>
+                </template>
                 <div v-else
                     class="loading"
                     ref="measureLoadingEl">
@@ -62,7 +63,7 @@
         </div>
 
         <button
-            class="arrow arrow-right"
+            class="arrow arrow-right txtr-spiky txtr-spiky--green"
             @click="carouselNext"
             :disabled="mode != 'ready' || !hasNext">
             &gt;
@@ -72,7 +73,7 @@
 
 <script setup>
 import { computed, nextTick, onMounted, ref,
-         useTemplateRef, watch } from 'vue';
+    useTemplateRef, watch } from 'vue';
 
 import RecipientSelectDeviceSignal from './RecipientSelectDeviceSignal.vue';
 import StrokedText from '@/components/stroked_text/StrokedText.vue';
@@ -85,18 +86,19 @@ const measureLoadingEl = useTemplateRef('measureLoadingEl');
 
 watch(measureOptionsEls, (newEls, oldEls) => {
     if (!oldEls) {
-        for (let v of newEls)
+        for (const v of newEls)
             addResizeHandler(v, updateMinMaxWidthForAnim);
     } else {
-            for (let v of oldEls) if (!newEls.includes(i)) removeResizeHandler(v, updateMinMaxWidthForAnim);
-            for (let v of newEls) if (!oldEls.includes(i)) addResizeHandler(v, updateMinMaxWidthForAnim);
+        for (const v of oldEls) if (!newEls.includes(v)) removeResizeHandler(v, updateMinMaxWidthForAnim);
+        for (const v of newEls) if (!oldEls.includes(v)) addResizeHandler(v, updateMinMaxWidthForAnim);
     }
 });
 
 const props = defineProps({
     modelValue: { type: null, required: true },
-    options: { type: Array, required: true },
-    big: { type: Boolean, default: false },
+    options:    { type: Array, required: true },
+    optionID:   { type: Function, required: true },
+    big:        { type: Boolean, default: false },
 
     // devices only
     // () => 'online'  -> device is online
@@ -134,7 +136,7 @@ watch(props, updateMinMaxWidthForAnim);
 function updateMinMaxWidthForAnim() {
     // Give option elements a chance to be loaded into the DOM
     nextTick(() => {
-        let element = props.mode == 'loading'
+        const element = props.mode == 'loading'
             ? measureLoadingEl?.value
             : measureOptionsEls.value[curSelectionIndex.value];
 
@@ -162,64 +164,49 @@ function tryMoveSelection(by) {
 
 <style scoped>
 .recipient-select-carousel {
-    font-size: 1rem;
-
-    display: grid;
+    align-items:           center;
+    display:               grid;
+    gap:                   12px;
     grid-template-columns: auto 1fr auto;
+    height:                36px;
+
     font-family: var(--font-heading);
-
-    align-items: center;
-    gap: 12px;
-
-    height: 36px;
-}
-
-.loading {
-    line-height: 1;
+    font-size:   1rem;
 }
 
 .measure-options {
-    position: absolute;
-    visibility: hidden;
-    display: grid;
+    display:       grid;
     justify-items: center;
+    position:      absolute;
+    visibility:    hidden;
 }
 
 .selected-option {
-    display: inline-block;
-
+    display:     inline-block;
     margin-left: 1.5px;
+    padding:     0 3px;
+
+    font-size:   2.4em;
     line-height: 1;
-    font-size: 2.4em;
-    padding: 0 3px;
-
+    text-align:  center;
     user-select: none;
-    text-align: center;
 
-    transition: max-width 500ms cubic-bezier(.78,-0.01,.32,1),
-                min-width 500ms cubic-bezier(.78,-0.01,.32,1);
+    transition:
+        max-width 500ms cubic-bezier(.78,-0.01,.32,1),
+        min-width 500ms cubic-bezier(.78,-0.01,.32,1);
 }
 
 .arrow {
-    width: 1.35em;
     height: 1.35em;
+    width:  1.35em;
 
-    font-size: 2.3rem;
+    color:     black;
+    font-size:   2.3rem;
     line-height: 0;
 
-    border: 2.5px solid black;
-    box-shadow: 2px 2px 0 black;
-
-    border-radius: 2px;
-    color: black;
-
-    background: linear-gradient(30deg,
-        #91df43 25%,
-        #b3e87d 25% 50%,
-        #a6ed5e 50% 75%,
-        #ccebad 75%);
-    background-size: 25% 100%;
-    background-repeat: repeat;
+    border-radius: var(--radius-s);
+    border:        2.5px solid black;
+    box-shadow:    var(--shadow-s);
 
     transition: transform 50ms ease;
 }
@@ -229,7 +216,7 @@ function tryMoveSelection(by) {
 }
 
 .arrow:disabled {
-    cursor: default;
+    cursor:  default;
     opacity: 0.5;
 }
 
@@ -242,8 +229,8 @@ function tryMoveSelection(by) {
 }
 
 .arrow:active:not(:disabled) {
-    transform: scale(0.97);
     box-shadow: none;
+    transform:  scale(0.97);
 }
 
 .loaded-enter-active,

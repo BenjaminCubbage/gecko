@@ -9,7 +9,7 @@ namespace Gecko::Compression
                 /*
                         Polyfills for std::byteswap
                 */
-                
+
                 static uint32_t ByteSwap(uint32_t value)
                 {
                         return ((value << 24) & 0xFF000000) |

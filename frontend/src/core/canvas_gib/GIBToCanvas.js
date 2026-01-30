@@ -26,8 +26,8 @@ class GIBToCanvas {
 
         /* Called for every decoded pixel */
         const cbWriter = Module.addFunction((y, xStart, xEnd, white) => {
-            let start = width * y + xStart;
-            let end   = start + xEnd - xStart;
+            const start = width * y + xStart;
+            const end   = start + xEnd - xStart;
 
             for (let i = start; i <= end; ++i) {
                 rgba[i * 4 + 0] = white ? 255 : 0;

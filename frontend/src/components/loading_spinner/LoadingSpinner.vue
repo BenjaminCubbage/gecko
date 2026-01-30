@@ -7,15 +7,14 @@
 
 <style scoped>
 .spinner {
-    display: inline-block;
-
+    display:   inline-block;
+    color:     black;
     font-size: 2.3rem;
-    color: black;
     animation: rotate 700ms infinite steps(8, end);
 }
 
 @keyframes rotate {
-    from { transform: rotate(0deg); }
+    from { transform: rotate(0deg);   }
     to   { transform: rotate(360deg); }
 }
 </style>

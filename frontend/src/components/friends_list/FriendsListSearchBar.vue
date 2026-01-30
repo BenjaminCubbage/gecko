@@ -32,7 +32,7 @@ import { ref } from 'vue';
 import UsernameInput from '@/components/username_input/UsernameInput.vue';
 import LoadingSpinner from '@/components/loading_spinner/LoadingSpinner.vue';
 
-const props = defineProps({
+defineProps({
     // 'normal' | 'loading'
     mode: { type: String, default: 'normal' },
     disabled: { type: Boolean, default: false }
@@ -57,49 +57,53 @@ function submit() {
 }
 
 .border {
-    border: var(--border-small);
-    border-radius: 999px;
-    box-shadow: inset var(--border-shadow-small);
-    display: grid;
+    display:               grid;
     grid-template-columns: 1fr auto;
+
+    border:        var(--border-s);
+    border-radius: 999px;
+    box-shadow:    inset var(--shadow-s);
 }
 
 .search-input {
     grid-column: 1;
-    width: 100%;
+    margin:      0;
+    padding:     5px 24px 4px 24px;
+    width:       100%;
 
-    font-size: 2.2rem;
-    font-family: inherit;
-    padding: 5px 24px 4px 24px;
-    margin: 0;
-    border: 0;
-    appearance: none;
+    appearance:         none;
     -webkit-appearance: none;
-    outline: none;
-    background: transparent;
-    color: black;
+
+    background:     transparent;
+    border:         0;
+    color:          black;
+    font-family:    inherit;
+    font-size:      2.2rem;
     letter-spacing: 0.02em;
+    outline:        none;
 }
 
 .search-button {
     grid-column: 2;
-    background: #91df43;
-    width: 70px;
-    border-top-right-radius: 999px;
+    width:       70px;
+
+    background:                 #91df43;
+    border-left:                var(--border-s);
+    border-top-right-radius:    999px;
     border-bottom-right-radius: 999px;
-    border-left: var(--border-small);
-    box-shadow: inset 0 3px 0 #adf467;
+    box-shadow:                 inset 0 3px 0 #adf467;
 }
 
 .search-icon {
     position: relative;
-    color: black;
+
+    color:     black;
     font-size: 2.2rem;
 }
 
 .search-button:active,
 .search-button.pressed-down {
-    box-shadow: inset 0  2px 0 black;
+    box-shadow: inset 0 2px 0 black;
 }
 
 .search-button:active .search-icon,
@@ -108,13 +112,13 @@ function submit() {
 }
 
 .friends-list-search-bar.disabled {
+    opacity:        0.5;
     pointer-events: none;
-    opacity: 0.5;
 }
 
 .search-input:disabled {
+    opacity:        0;
     pointer-events: none;
-    opacity: 0;
 }
 
 .search-button:disabled {

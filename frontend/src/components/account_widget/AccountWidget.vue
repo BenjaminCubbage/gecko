@@ -67,28 +67,24 @@ async function logout() {
 </script>
 
 <style>
-    .header-strip {
-        place-self: start;
+.header-strip {
+    display:    grid;
+    padding:    24px;
+    place-self: start;
+}
 
-        display: grid;
-        place-items: start;
-        place-content: start;
+.badge-section {
+    display:   flex;
+    flex-flow: row nowrap;
+    gap:       12px;
+}
 
-        padding: 24px;
-    }
+.login-appear-enter-active {
+    transition: transform 100ms ease;
+}
 
-    .badge-section {
-        display: flex;
-        flex-flow: row nowrap;
-        gap: 12px;
-    }
-
-    .login-appear-enter-active {
-        transition: transform 100ms ease;
-    }
-
-    .login-appear-enter-from,
-    .login-appear-leave-to {
-        transform: scale(0.9);
-    }
+.login-appear-enter-from,
+.login-appear-leave-to {
+    transform: scale(0.9);
+}
 </style>

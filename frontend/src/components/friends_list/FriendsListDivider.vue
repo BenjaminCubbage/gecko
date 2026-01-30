@@ -11,21 +11,22 @@
 
 <style scoped>
     .friends-list-divider {
-        margin: 8px 4px;
-        background: black;
-        height: 3px;
+        display:       flex;
+        height:        3px;
+        margin:        8px 4px;
+        place-content: center;
+        place-items:   center;
+
         text-align: center;
 
-        display: flex;
-        place-items: center;
-        place-content: center;
+        background: black;
     }
 
     .label {
-        padding: 0 4px;
-        color: black;
-        background: white;
-        font-size: 1.9rem;
+        padding:     0 4px;
+        color:       black;
+        font-size:   1.9rem;
         line-height: 0.9;
+        background:  white;
     }
 </style>

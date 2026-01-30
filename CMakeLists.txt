@@ -54,7 +54,7 @@ ExternalProject_Add_Step(api configure_project
 
 ExternalProject_Add_Step(api build_project
     DEPENDEES configure_project
-    COMMAND ${CMAKE_COMMAND} 
+    COMMAND ${CMAKE_COMMAND}
         --build ${BINARY_DIR}
         --config $<CONFIG>
         --target api
@@ -63,7 +63,7 @@ ExternalProject_Add_Step(api build_project
 
 ExternalProject_Add_Step(api build_tests
     DEPENDEES configure_project
-    COMMAND ${CMAKE_COMMAND} 
+    COMMAND ${CMAKE_COMMAND}
         --build ${BINARY_DIR}
         --config $<CONFIG>
         --target api_tests
@@ -136,7 +136,7 @@ ExternalProject_Add_Step(embedded configure_project
 
 ExternalProject_Add_Step(embedded build_project
     DEPENDEES configure_project
-    COMMAND ${CMAKE_COMMAND} 
+    COMMAND ${CMAKE_COMMAND}
         --build ${BINARY_DIR}
         --config $<CONFIG>
         --target embedded

@@ -32,64 +32,63 @@ defineExpose({ showMessage });
 </script>
 
 <style scoped>
-    .status-bubble-container {
-        position: relative;
-        animation: throb 2000ms ease infinite;
-    }
+.status-bubble-container {
+    position:  relative;
+    animation: throb 2000ms ease infinite;
+}
 
-    .status-bubble {
-        position: absolute;
-        width: 400px;
-        top: 14px;
-    }
+.status-bubble {
+    position: absolute;
+    top:      14px;
+    width:    400px;
+}
 
-    .status-bubble-box {
-        display: inline-block;
-        min-width: 60px;
+.status-bubble-box {
+    display:    inline-block;
+    min-width:  60px;
+    padding:    8px 16px;
 
-        border-radius: 4px;
-        font-family: var(--font-heading);
-        font-size: 2.2rem;
-        color: black;
-        line-height: 0.9;
+    color:       black;
+    font-family: var(--font-heading);
+    font-size:   2.2rem;
+    line-height: 0.9;
 
-        padding: 8px 16px;
-        border: 2.5px solid black;
-        background: hsl(0, 100%, 71%);
-        box-shadow: 4px 4px 0 black;
-    }
+    background:    hsl(0, 100%, 71%);
+    border:        2.5px solid black;
+    border-radius: 4px;
+    box-shadow:    4px 4px 0 black;
+}
 
-    .status-bubble-caret {
-        content: "";
-        width: 16px;
-        height: 16px;
+.status-bubble-caret {
+    content: "";
 
-        position: absolute;
-        top: -7.5px;
-        left: 24.5px;
+    height:   16px;
+    width:    16px;
+    left:     24.5px;
+    position: absolute;
+    top:      -7.5px;
 
-        border: 2.5px solid black;
-        border-right: 0;
-        border-bottom: 0;
-        border-top-left-radius: 3px;
+    background:             hsl(0, 100%, 71%);
+    border:                 2.5px solid black;
+    border-bottom:          0;
+    border-right:           0;
+    border-top-left-radius: 3px;
+    transform:              rotate(45deg);
+}
 
-        background: hsl(0, 100%, 71%);
-        transform: rotate(45deg);
-    }
+.bubble-enter-active,
+.bubble-leave-active {
+    transition: opacity 200ms ease;
+}
 
-    .bubble-enter-active,
-    .bubble-leave-active {
-        transition: opacity 200ms ease;
-    }
+.bubble-enter-from,
+.bubble-leave-to {
+    opacity: 0;
+}
 
-    .bubble-enter-from,
-    .bubble-leave-to {
-        opacity: 0;
-    }
-
-    @keyframes throb {
-        0%   { transform: scale(0.98); }
-        50%  { transform: scale(1.00); }
-        100% { transform: scale(0.98); }
-    }
+@keyframes throb {
+    0%   { transform: scale(0.98); }
+    50%  { transform: scale(1.00); }
+    100% { transform: scale(0.98); }
+}
 </style>

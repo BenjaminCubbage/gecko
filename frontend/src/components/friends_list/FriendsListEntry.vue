@@ -80,159 +80,149 @@ const isMe         = computed(() => props.entryType == 'me');
 </script>
 
 <style scoped>
-    .friends-list-entry {
-        height: 68px;
+.friends-list-entry {
+    height:  68px;
+    padding: 12px 24px 12px 18px;
 
-        font-family: var(--font-heading);
-        font-size: 2.2rem;
-        line-height: 1;
+    color:          black;
+    font-family:    var(--font-heading);
+    font-size:      2.2rem;
+    letter-spacing: 0.04em;
+    line-height:    1;
+}
 
-        padding: 12px 24px 12px 18px;
-        letter-spacing: 0.04em;
+.sections {
+    grid-template-areas:
+        "icon name               buttons"
+        "icon subheading-section buttons";
 
-        color: black;
-    }
+    display:               grid;
+    grid-template-columns: auto 1fr;
+}
 
-    .sections {
-        display: grid;
+.icon-section {
+    grid-area:    icon;
+    line-height:  0.87;
+    margin-right: 12px;
+    place-self:   center;
+    text-align:   center;
 
-        grid-template-columns: auto 1fr;
-        grid-auto-rows: auto;
-        grid-template-areas:
-            "icon name       buttons"
-            "icon subheading-section buttons";
+    font-size: 2.4rem;
 
-        gap: 0;
-    }
+    background:    rgb(255, 170, 105);
+    border:        var(--border-s);
+    border-radius: 5px;
+    box-shadow:    var(--shadow-s), inset 0 3px 0 rgb(255, 202, 162);
+    padding:       6px;
+}
 
-    .icon-section {
-        grid-area: icon;
-        text-align: center;
-        border-radius: 5px;
-        line-height: 0.87;
+.name-section {
+    grid-area: name;
+    height:    100%; /*???*/
+}
 
-        font-size: 2.4rem;
+.subheading-section {
+    grid-area: subheading-section;
+}
 
-        place-self: center;
-        margin-right: 12px;
+.buttons-section {
+    display:    flex;
+    flex-flow:  row nowrap;
+    gap:        8px;
+    grid-area:  buttons;
+    place-self: center;
+}
 
-        background: rgb(255, 170, 105);
-        box-shadow: var(--border-shadow-small), inset 0 3px 0 rgb(255, 202, 162);
-        border: var(--border-small);
-        padding: 6px;
-    }
+.shiny-button {
+    height: 32px;
 
-    .name-section {
-        grid-area: name;
-        height: 100%;
-    }
+    /* Set these */
+    --shiny-button-background:  white;
+    --shiny-button-top-shadow:  white;
 
-    .subheading-section {
-        grid-area: subheading-section;
-    }
+    color:          black;
+    font-size:      2rem;
+    text-transform: uppercase;
 
-    .buttons-section {
-        grid-area: buttons;
-        place-self: center;
-        display: flex;
-        flex-flow: row nowrap;
-        gap: 8px;
-    }
+    background:    var(--shiny-button-background);
+    border:        var(--border-s);
+    border-radius: var(--radius-s);
+    box-shadow:    var(--shadow-s), inset 0 2px 0 var(--shiny-button-top-shadow);
+    padding:       4px 12px;
 
-    .shiny-button {
-        height: 32px;
+    transition: transform 80ms ease;
+}
 
-        /* Set these */
-        --shiny-button-background: white;
-        --shiny-button-top-shadow: white;
+.shiny-button--remove {
+    /* Set these */
+    --shiny-button-background:  #ff826c;
+    --shiny-button-top-shadow:  #ffb6aa;
 
-        font-size: 2rem;
-        color: black;
-        text-transform: uppercase;
+    opacity:        0;
+    pointer-events: none;
 
-        background: var(--shiny-button-background);
-        padding: 4px 12px;
-        border: var(--border-small);
-        border-radius: var(--border-radius-small);
-        box-shadow: var(--border-shadow-small), inset 0 2px 0 var(--shiny-button-top-shadow);
+    font-size: 1.8rem;
 
-        transition: transform 80ms ease;
-    }
+    /* No extra side padding */
+    padding: 4px;
+}
 
-    .shiny-button--remove {
-        --shiny-button-background: #ff826c;
-        --shiny-button-top-shadow: #ffb6aa;
+.shiny-button--send-req {
+    /* Set these */
+    --shiny-button-background:  #8dacff;
+    --shiny-button-top-shadow:  #afc4ff;
+}
 
-        font-size: 1.8rem;
-        opacity: 0;
-        pointer-events: none;
+.shiny-button--accept-req {
+    /* Set these */
+    --shiny-button-background:  #91df43;
+    --shiny-button-top-shadow:  #adf467;
+}
 
-        /* No extra side padding */
-        padding: 4px;
-    }
+.subh-label {
+    color: #1e6d33;
 
-    .shiny-button--send-req {
-        --shiny-button-background: #8dacff;
-        --shiny-button-top-shadow: #afc4ff;
-    }
+    font-size: 0.8em;
+}
 
-    .shiny-button--accept-req {
-        --shiny-button-background: #91df43;
-        --shiny-button-top-shadow: #adf467;
-    }
+.subh-label--joined      { color: #1e6d33; }
+.subh-label--me          { color: #175bba; }
+.subh-label--not-friends { color: #ba173b; }
+.subh-label--pending-in  { color: #1e6d33; }
+.subh-label--pending-out { color: #3d2888; }
 
-    .subh-label {
-        font-size: 0.8em;
-        color: #1e6d33;
-    }
+.friends-list-entry.selectable {
+    cursor: pointer;
+}
 
-    .subh-label--joined      { color: #1e6d33; }
-    .subh-label--pending-in  { color: #1e6d33; }
-    .subh-label--pending-out { color: #3d2888; }
-    .subh-label--not-friends { color: #ba173b; }
-    .subh-label--me          { color: #175bba; }
+.friends-list-entry.selectable:hover {
+    background: #e2ebff;
+}
 
-    .friends-list-entry.selectable {
-        cursor: pointer;
-    }
+.friends-list-entry.selectable.selected {
+    background: #cbdcff;
+}
 
-    .friends-list-entry.selectable:hover {
-        background: #e2ebff;
-    }
+.friends-list-entry.selected .shiny-button--remove,
+.friends-list-entry:not(.selectable) .shiny-button--remove {
+    opacity:        1;
+    pointer-events: all;
+}
 
-    .friends-list-entry.selectable.selected {
-        background: #cbdcff;
-    }
+.shiny-button:hover {
+    transform: scale(1.02);
+}
 
-    .shiny-button:hover {
-        transform: scale(1.02);
-    }
+.shiny-button:active {
+    box-shadow: none;
+    transform:  scale(0.98);
+}
 
-    .shiny-button:active {
-        transform: scale(0.98);
-        box-shadow: none;
-    }
+.shiny-button--send-req:hover {
+    transform: scale(1.015);
+}
 
-    .shiny-button--send-req:hover {
-        transform: scale(1.015);
-    }
-
-    .shiny-button--send-req:active {
-        transform: scale(0.985);
-    }
-
-    .friends-list-entry.selected .shiny-button--remove,
-    .friends-list-entry:not(.selectable) .shiny-button--remove {
-        opacity: 1;
-        pointer-events: all;
-    }
-
-    .button-send-request:hover {
-        transform: scale(1.02);
-    }
-
-    .button-send-request:active {
-        transform: scale(1);
-        box-shadow: none;
-    }
+.shiny-button--send-req:active {
+    transform: scale(0.985);
+}
 </style>

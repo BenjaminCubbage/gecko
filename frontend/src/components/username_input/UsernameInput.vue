@@ -11,14 +11,14 @@
 </template>
 
 <script setup>
-import { computed, ref, watch, useTemplateRef, nextTick } from 'vue';
+import { computed, watch, useTemplateRef, nextTick } from 'vue';
 import { characterIsAlphaNumeric } from '@/core/string/CharacterIsAlphaNumeric.js';
 
 const inputEl = useTemplateRef('inputEl');
 const inputText = defineModel({ required: true });
 
 const props = defineProps({
-    forbiddenUsernames: { type: Array, default: [] }
+    forbiddenUsernames: { type: Array, default: () => [] }
 });
 
 const emit = defineEmits([
@@ -44,7 +44,9 @@ watch(isValid, (newValue, oldValue) => {
 }, { immediate: true });
 
 function inputChanged() {
-    // note(ben): nextTick seems to be needed on Firefox
+    /* 
+        note(ben): nextTick seems to be needed on Firefox
+    */
     nextTick(() => {
         inputText.value = inputText.value.split('')
             .filter(isValidUsernameChar)
@@ -63,6 +65,3 @@ defineExpose({
     }
 });
 </script>
-
-<style scoped>
-</style>

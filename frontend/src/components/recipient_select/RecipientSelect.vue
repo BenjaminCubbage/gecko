@@ -5,6 +5,7 @@
                 <RecipientSelectCarousel
                     v-model="selectedUser"
                     :options="users"
+                    :optionID="u => u.userID"
                     big
                     :mode="userMode">
                     <template #label="{ option }">
@@ -17,6 +18,7 @@
                 <RecipientSelectCarousel
                     v-model="selectedDevice"
                     :options="devices"
+                    :optionID="d => d.deviceID"
                     :signal="m => m.signalStatus"
                     :mode="deviceMode">
                     <template #label="{ option }">
@@ -67,7 +69,7 @@ watch(session.activeUser(), user => {
             selectedDevice.value = devices.value[0];
             deviceMode.value = 'ready';
 
-            for (let d of devices.value)
+            for (const d of devices.value)
                 Dispatch.Get_DevicesStatus(d.deviceID)
                     .onSuccess(body => {
                         d.signalStatus = body['status'];
@@ -77,11 +79,10 @@ watch(session.activeUser(), user => {
 </script>
 
 <style scoped>
-    .carousels {
-        display: flex;
-        flex-flow: column nowrap;
-        gap: 6px;
-
-        align-items: center;
-    }
+.carousels {
+    align-items: center;
+    display:     flex;
+    flex-flow:   column nowrap;
+    gap:         6px;
+}
 </style>

@@ -13,7 +13,7 @@
 <script setup>
 import LoadingSpinner from '@/components/loading_spinner/LoadingSpinner.vue';
 
-const props = defineProps({
+defineProps({
     // 'loading' | 'info' | 'error'
     variant: { type: String, default: 'info' },
 
@@ -24,15 +24,14 @@ const props = defineProps({
 
 <style scoped>
 .friends-list-placeholder-message {
-    height: 68px;
+    display:        grid;
+    height:         68px;
+    place-content:  center;
 
-    text-align: center;
-    font-family: var(--font-heading);
-    font-size: 2.1rem;
-    color: black;
-
-    display: grid;
-    place-content: center;
+    color:          black;
+    font-family:    var(--font-heading);
+    font-size:      2.1rem;
+    text-align:     center;
 }
 
 .info {

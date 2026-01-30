@@ -1,11 +1,23 @@
 <template>
-    <div class="canvas-frame" @pointerdown="dragMouse" @pointermove="dragMouse" @touchmove="dragTouch" @mouseleave="stopDragging" @touchend="stopDragging" @mouseup="stopDragging">
+    <div
+        class="canvas-frame"
+        :style="{
+            'pointer-events': isClearing ? 'none' : 'all'
+        }"
+        @pointerdown="dragMouse"
+        @pointermove="dragMouse"
+        @touchmove="dragTouch"
+        @mouseleave="stopDragging"
+        @touchend="stopDragging"
+        @mouseup="stopDragging">
         <canvas ref="canvas" class="canvas" width="480" height="288"></canvas>
     </div>
 </template>
 
 <script setup>
-import { watch, computed, onMounted, useTemplateRef } from 'vue';
+import { ref, watch, computed, onMounted, useTemplateRef } from 'vue';
+import { delay }       from '@/core/async/Delay.js';
+import { CanvasClear } from '@/core/canvas/CanvasClear.js';
 import { CanvasUtils } from '@/core/canvas/CanvasUtils.js';
 import { CanvasToGIB } from '@/core/canvas_gib/CanvasToGIB.js';
 import { GIBToCanvas } from '@/core/canvas_gib/GIBToCanvas.js';
@@ -21,6 +33,9 @@ const emit = defineEmits([ 'canvasChanged' ]);
 const canvas = useTemplateRef('canvas');
 const ctx    = computed(() => canvas.value?.getContext('2d', { willReadFrequently: true }));
 
+const isClearing = ref(false);
+const isBlank    = ref(true);
+
 const lineWidth = computed(() => {
     const baseWidth = {
         'small':  3,
@@ -31,7 +46,7 @@ const lineWidth = computed(() => {
     return baseWidth * (props.isErasing ? 2 : 1);
 });
 
-const penColor = computed(() => 
+const penColor = computed(() =>
     props.isErasing
         ? 'white'
         : 'black');
@@ -108,6 +123,8 @@ function drag(x, y) {
         draggingState.previousDragPosition.y = y;
     }
 
+    isBlank.value = false;
+
     ctx.value.beginPath();
     ctx.value.moveTo(draggingState.previousDragPosition.x, draggingState.previousDragPosition.y);
     ctx.value.lineTo(x, y + 0.5); // +0.5 to fix subpixel rendering issues
@@ -134,16 +151,17 @@ function stopDragging() {
     draggingState.isDragging = false;
 }
 
-function clear() {
-    if (!ctx.value) {
-        console.warn('Could not clear canvas because ctx is missing.');
+async function clear() {
+    if (!ctx.value)
         return;
-    }
 
-    ctx.value.save();
-    ctx.value.fillStyle = 'white';
-    ctx.value.fillRect(0, 0, canvas.value.width, canvas.value.height);
-    ctx.value.restore();
+    isClearing.value = true;
+    CanvasClear.clear1(canvas.value);
+    await delay(50);
+    CanvasClear.clear2(canvas.value);
+    await delay(50);
+    CanvasClear.clear3(canvas.value);
+    isClearing.value = false;
 }
 
 defineExpose({
@@ -151,27 +169,26 @@ defineExpose({
     getCanvasElement: () => canvas.value,
     clear,
     readGIBBlob:  () => CanvasToGIB.readBlob(canvas.value),
-    writeGIBBlob: blob => GIBToCanvas.writeBlob(canvas.value, blob)
+    writeGIBBlob: blob => GIBToCanvas.writeBlob(canvas.value, blob),
+    isBlank
 });
 </script>
 
-<style>
-    .canvas-frame {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 12px;
-        overflow: hidden;
-        box-shadow: 6px 6px;
+<style scoped>
+.canvas-frame {
+    align-items:    center;
+    display:        flex;
+    flex-direction: column;
+    gap:            12px;
+    overflow:       hidden;
 
-        border: var(--border-large);
-        border-radius: var(--border-radius-large);
-        box-shadow: var(--border-shadow-small);
-    }
+    border-radius: var(--radius-l);
+    border:        var(--border-l);
+    box-shadow:    var(--shadow-s);
+}
 
-    .canvas {
-        background: white;
-        image-rendering: pixelated;
-        image-rendering: crisp-edges;
-    }
+.canvas {
+    background:      white;
+    image-rendering: pixelated;
+}
 </style>

@@ -7,26 +7,25 @@
 
 <script setup>
 import AccountWidget from '@/components/account_widget/AccountWidget.vue';
-import NavbarTabs from './NavbarTabs.vue';
+import NavbarTabs    from './NavbarTabs.vue';
 
 const selectedTab = defineModel('selectedTab');
 </script>
 
 <style scoped>
-    .navbar {
-        display: grid;
-        align-items: center;
-        height: 96px;
-    }
+.navbar {
+    align-items: center;
+    display:     grid;
+    height:      96px;
+}
 
-    .account, .pill { grid-area: 1/1; }
+.account,
+.pill {
+    grid-area: 1 / 1;
+}
 
-    .account {
-        justify-self: left;
-    }
-
-    .pill {
-        justify-self: center;
-        align-self:center
-    }
+.pill {
+    align-self:   center;
+    justify-self: center;
+}
 </style>

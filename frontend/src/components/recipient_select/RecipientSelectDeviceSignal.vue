@@ -14,7 +14,7 @@
                     <div class="status-text--pending"></div>
                 </template>
 
-                <template v-else>
+                <template v-else-if="statusLoading">
                     <div class="status-text--loading"></div>
                 </template>
             </transition>
@@ -37,56 +37,58 @@ const props = defineProps({
 const statusOn      = computed(() => props.status == 'online');
 const statusOff     = computed(() => props.status == 'offline');
 const statusPending = computed(() => props.status == 'pending');
-const statusLoading = computed(() => !statusOn && !statusOff && !statusPending);
+const statusLoading = computed(() => props.status == 'loading');
 </script>
 
 <style scoped>
-    .recipient-select-device-signal {
-        font-size: 1.3rem;
-        line-height: 1.3;
-        position: relative;
-        top: 1px;
-        height: 17px;
-    }
+.recipient-select-device-signal {
+    height:      17px;
+    position:    relative;
+    top:         1px;
+    font-size:   1.3rem;
+    line-height: 1.3;
+}
 
-    .status-text--on::after {
-        color: green;
-        content: 'ONLINE';
-    }
+.status-text--on::after {
+    content: 'ONLINE';
+    color:   green;
+}
 
-    .status-text--off::after {
-        color: crimson;
-        content: 'OFFLINE';
-    }
+.status-text--off::after {
+    content: 'OFFLINE';
+    color:   crimson;
+}
 
-    .status-text--pending::after {
-        color: dodgerblue;
-        content: 'STATUS PENDING';
-    }
+.status-text--pending::after {
+    content: 'STATUS PENDING';
+    color:   dodgerblue;
+}
 
-    .status-text--loading::after {
-        color: dodgerblue;
-        content: '...';
-        animation: loading 300ms steps(3) infinite;
-        font-size: 1.5em;
-        line-height: 0;
-        position: relative;
-        top: -2px;
-    }
+.status-text--loading::after {
+    content:  '...';
+    position: relative;
+    top:      -2px;
 
-    .transition-enter-active,
-    .transition-leave-active {
-        transition: transform 50ms ease;
-    }
+    color:       dodgerblue;
+    font-size:   1.5em;
+    line-height: 0;
 
-    .transition-enter-from,
-    .transition-leave-to {
-        transform: scale(0.9);
-    }
+    animation: loading 300ms steps(3) infinite;
+}
 
-    @keyframes loading {
-        0%  { content: '...'; }
-        33% { content: '.'; }
-        66% { content: '..'; }
-    }
+.transition-enter-active,
+.transition-leave-active {
+    transition: transform 50ms ease;
+}
+
+.transition-enter-from,
+.transition-leave-to {
+    transform: scale(0.9);
+}
+
+@keyframes loading {
+    0%  { content: '...'; }
+    33% { content: '.';   }
+    66% { content: '..';  }
+}
 </style>
