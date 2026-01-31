@@ -53,20 +53,19 @@ watch(session.state(), (newState, oldState) => {
     }
 
     .bg {
-        height: 100dvh;
-        display: flex;
-        flex-flow: column nowrap;
-        align-content: center;
-
+        align-content:    center;
+        display:          flex;
+        flex-flow:        column nowrap;
+        height:           100dvh;
+        overflow-y:       auto;
         scrollbar-gutter: stable both-edges;
-        overflow-y: auto;
     }
 
     .front-and-center {
-        display: flex;
-        flex-flow: column nowrap;
-        gap: 4px;
+        display:       flex;
+        flex-flow:     column nowrap;
+        gap:           4px;
         place-content: center;
-        place-items: center;
+        place-items:   center;
     }
 </style>

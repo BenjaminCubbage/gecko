@@ -25,8 +25,11 @@
     --col-magenta-3: #e573ff;
     --col-magenta-4: #fc5aff;
 
-    --border-s: 3.0px solid black;
-    --border-l: 3.5px solid black;
+    --border-thickness-s: 3.0px;
+    --border-thickness-l: 3.5px;
+
+    --border-s: var(--border-thickness-s) solid black;
+    --border-l: var(--border-thickness-l) solid black;
 
     --radius-s: 3px;
     --radius-l: 6px;

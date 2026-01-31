@@ -4,9 +4,7 @@
             <StrokedText>{{ title }}</StrokedText>
         </div>
 
-        <div
-            class="border-outer txtr-spiky txtr-spiky--orange"
-            style="--spiky-spikiness: 5%">
+        <div class="border-outer">
             <div class="border-inner">
                 <slot />
             </div>
@@ -26,7 +24,6 @@ defineProps({
 .friends-list-border {
     align-self:  start;
     display:     grid;
-    z-index:     0;
     font-family: var(--font-heading);
 }
 
@@ -42,40 +39,49 @@ defineProps({
     text-transform: uppercase;
 
     border-radius:
-        var(--radius-l)
-        var(--radius-l)
+        var(--radius-s)
+        var(--radius-s)
         0 0;
+
+    box-shadow:
+        inset 0 2px 0 white,
+        var(--shadow-s);
 
     background:    var(--col-orange-1);
     border:        var(--border-s);
     border-bottom: 0;
-    box-shadow:    inset 0 2px 0 white;
-    corner-shape:  bevel;
+    corner-shape:  notch;
 }
 
 /*
-    Shadow
+    Make tab seamless
 */
 .tab::before {
     content: "";
 
-    inset:    -3px;
+    bottom:   -1px;
+    height:   calc(var(--border-thickness-s) + 2px);
+    left:     0;
     position: absolute;
-    z-index:  -1;
+    right:    0;
+    z-index:  10;
 
-    background:    black;
-    border-radius: var(--radius-l);
-    border:        var(--border-s);
-    box-shadow:    var(--shadow-s);
-    corner-shape:  bevel;
+    background: var(--col-orange-1);
 }
 
 .border-outer {
-    padding:       10px;
-    border-radius: var(--radius-l);
+    padding: 10px;
+    z-index: 1;
+
+    background: 
+        linear-gradient(to bottom,
+            var(--col-orange-1) 50%,
+            var(--col-orange-4) 50%);
+
+    border-radius: var(--radius-s);
     border:        var(--border-s);
     box-shadow:    var(--shadow-l);
-    corner-shape:  bevel;
+    corner-shape:  notch;
 }
 
 .border-inner {
@@ -87,6 +93,6 @@ defineProps({
     border-radius: var(--radius-s);
     border:        var(--border-s);
     box-shadow:    var(--shadow-s);
-    corner-shape:  bevel;
+    corner-shape:  notch;
 }
 </style>
