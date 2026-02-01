@@ -44,10 +44,10 @@ defineProps({
         0 0;
 
     box-shadow:
-        inset 0 2px 0 white,
+        inset 0 3px 0 var(--col-orange-0),
         var(--shadow-s);
 
-    background:    var(--col-orange-1);
+    background:    var(--col-orange-2);
     border:        var(--border-s);
     border-bottom: 0;
     corner-shape:  notch;
@@ -59,28 +59,31 @@ defineProps({
 .tab::before {
     content: "";
 
-    bottom:   -1px;
-    height:   calc(var(--border-thickness-s) + 2px);
+    bottom:   -3px;
+    height:   calc(var(--border-thickness-s) + 6px);
     left:     0;
     position: absolute;
     right:    0;
     z-index:  10;
 
-    background: var(--col-orange-1);
+    background: var(--col-orange-2);
 }
 
 .border-outer {
     padding: 10px;
     z-index: 1;
 
-    background: 
+    background:
         linear-gradient(to bottom,
-            var(--col-orange-1) 50%,
+            var(--col-orange-2) 50%,
             var(--col-orange-4) 50%);
+
+    box-shadow:
+        inset 0 3px 0 var(--col-orange-0),
+        var(--shadow-l);
 
     border-radius: var(--radius-s);
     border:        var(--border-s);
-    box-shadow:    var(--shadow-l);
     corner-shape:  notch;
 }
 

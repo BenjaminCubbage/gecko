@@ -7,9 +7,7 @@
         </template>
 
         <template #icons>
-            <button
-                class="icon"
-                @click="click">
+            <button class="icon" @click="click">
                 <div
                     class="icon-text"
                     :style="`--animation-duration: ${animationDuration}ms`">
@@ -77,13 +75,13 @@ function click() {
 }
 
 .icon {
-    padding:     0 8px;
+    padding:     0 10px;
     line-height: 0;
 }
 
 .icon-text {
     -webkit-text-stroke: 4px white;
-    color:               crimson;
+    color:               var(--col-red-5);
     font-family:         var(--font-heading);
     font-size:           3rem;
     letter-spacing:      0.02em;
@@ -116,8 +114,7 @@ function click() {
 */
 
 .letter {
-    display: inline-block;
-
+    display:   inline-block;
     transform: translateY(calc(var(--letter-jump-arc) * -1));
 }
 

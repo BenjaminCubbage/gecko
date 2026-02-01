@@ -1,6 +1,12 @@
 :root {
     --font-heading: 'Jersey 15', sans-serif;
 
+    --col-gray-0: white;
+    --col-gray-1: #eff3f7;
+    --col-gray-2: #cbd4de;
+    --col-gray-3: #b0b9cc;
+    --col-gray-4: #8e94ac;
+
     --col-blue-1: #7298ff;
     --col-blue-2: #486ac1;
 
@@ -8,13 +14,18 @@
     --col-red-2: #ffb0b0;
     --col-red-3: #ff7373;
     --col-red-4: #ff5a5a;
+    --col-red-5: #dc143c;
 
-    --col-green-0: #e8f4dd;
+    --col-green-0: #f3f9ee;
     --col-green-1: #ccebad;
     --col-green-2: #b3e87d;
     --col-green-3: #a6ed5e;
     --col-green-4: #91df43;
+    --col-green-5: #7ebd3e;
+    --col-green-6: #629f25;
+    --col-green-7: #4d8119;
 
+    --col-orange-0: #fff8ef;
     --col-orange-1: #ffebd0;
     --col-orange-2: #ffd8a3;
     --col-orange-3: #ffbf73;

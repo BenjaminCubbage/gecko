@@ -12,8 +12,7 @@
                 @click="isToggled = !isToggled">
                 <svg
                     class="icon-svg"
-                    version="1.1" id="Layer_1"
-                    xmlns:svgjs="http://svgjs.dev/svgjs"
+                    version="1.1"
                     viewBox="-80 -80 980 980">
                     <polygon style="fill: var(--eraser-col-head)" points="740,500 740,460 700,460 700,420 660,420 660,380 620,380 620,420 580,420 580,460 540,460 540,500
                         500,500 500,540 460,540 460,580 420,580 420,620 380,620 380,660 420,660 420,700 460,700 460,740 500,740 500,780 540,780

@@ -176,15 +176,16 @@ defineExpose({
 
 <style scoped>
 .canvas-frame {
-    align-items:    center;
+    align-self:     center;
     display:        flex;
     flex-direction: column;
     gap:            12px;
     overflow:       hidden;
 
-    border-radius: var(--radius-l);
+    border-radius: var(--radius-s);
     border:        var(--border-l);
     box-shadow:    var(--shadow-s);
+    corner-shape:  notch;
 }
 
 .canvas {

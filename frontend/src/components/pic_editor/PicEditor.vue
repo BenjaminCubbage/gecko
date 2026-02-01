@@ -1,19 +1,20 @@
 <template>
     <div class="canvas-editor">
-        <PicEditorBorder>
+        <PicEditorBorder variant="outer">
             <PicEditorCanvas
                 ref="picEditorCanvas"
                 :penSize="selectedPenSize"
                 :isErasing="isErasing"
                 @canvasChanged="canvasChanged" />
-        </PicEditorBorder>
-
-        <PicEditorBorder>
-            <div class="toolbar">
-                <ToolbarChipPenSize v-model="selectedPenSize" />
-                <ToolbarChipEraser v-model="isErasing" />
-                <ToolbarChipClear @click="clear" />
-            </div>
+            
+            <PicEditorBorder variant="inner">
+                <div class="toolbar">
+                    <ToolbarChipPenSize v-model="selectedPenSize" />
+                    <ToolbarChipEraser v-model="isErasing" />
+                    <ToolbarChipClear @click="clear" />
+                    <ToolbarChipSend @click="send" />
+                </div>
+            </PicEditorBorder>
         </PicEditorBorder>
     </div>
 </template>
@@ -23,6 +24,7 @@ import { ref, useTemplateRef, inject } from 'vue';
 import ToolbarChipPenSize from '@/components/toolbar_chips/ToolbarChipPenSize.vue';
 import ToolbarChipEraser  from '@/components/toolbar_chips/ToolbarChipEraser.vue';
 import ToolbarChipClear   from '@/components/toolbar_chips/ToolbarChipClear.vue';
+import ToolbarChipSend    from '@/components/toolbar_chips/ToolbarChipSend.vue';
 
 import PicEditorBorder from './PicEditorBorder.vue';
 import PicEditorCanvas from './PicEditorCanvas.vue';
@@ -84,7 +86,9 @@ function canvasChanged() {
 }
 
 .toolbar {
-    display: flex;
-    gap:     12px;
+    display:         flex;
+    gap:             12px;
+    justify-content: space-evenly;
+    padding-top:     2px;
 }
 </style>

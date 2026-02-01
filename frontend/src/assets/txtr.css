@@ -27,6 +27,13 @@
     --grad-c4: var(--col-green-1);
 }
 
+.txtr-diag--dk-green {
+    --grad-c1: var(--col-green-5);
+    --grad-c2: var(--col-green-3);
+    --grad-c3: var(--col-green-4);
+    --grad-c4: var(--col-green-2);
+}
+
 .txtr-diag--orange {
     --grad-c1: var(--col-orange-4);
     --grad-c2: var(--col-orange-2);
@@ -92,8 +99,8 @@
 }
 
 .txtr-spiky--orange {
-    --spiky-c1: var(--col-orange-4);
-    --spiky-c2: var(--col-orange-2);
-    --spiky-c3: var(--col-orange-3);
-    --spiky-c4: var(--col-orange-1);
+    --spiky-c1: var(--col-green-4);
+    --spiky-c2: var(--col-green-2);
+    --spiky-c3: var(--col-green-3);
+    --spiky-c4: var(--col-green-1);
 }
