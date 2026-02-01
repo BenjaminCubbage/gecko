@@ -49,7 +49,7 @@ const lineWidth = computed(() => {
 const penColor = computed(() =>
     props.isErasing
         ? 'white'
-        : 'black');
+        : 'blue');
 
 watch([ lineWidth, ctx ], () => {
     if (ctx.value)

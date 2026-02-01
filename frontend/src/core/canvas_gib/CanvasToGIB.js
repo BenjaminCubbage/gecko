@@ -13,6 +13,7 @@ class CanvasToGIB {
 
         const cb = Module.addFunction((pixelX, pixelY) => {
             const pos = pixelY * width + pixelX;
+
             return canvasBGR.data[pos * 4 + 0] > 240 ||
                    canvasBGR.data[pos * 4 + 1] > 240 ||
                    canvasBGR.data[pos * 4 + 2] > 240;

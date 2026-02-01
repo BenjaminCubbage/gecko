@@ -22,10 +22,10 @@ namespace Gecko::Compression::WasmBindings
         using HeaderWriter = decltype([] (
                 void* cbHeader,
                 void* cbWriter,
-                const Header& header) {
+                const Header& header) -> bool {
             return reinterpret_cast<int (*)(int, int)>(cbHeader)(
                 header.width,
-                header.height) != 0;
+                header.height);
         });
 
         using ImageWriter = decltype([] (

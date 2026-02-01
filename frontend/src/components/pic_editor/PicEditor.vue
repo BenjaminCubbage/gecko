@@ -38,7 +38,6 @@ const isErasing       = ref(false);
 const session = inject(Keys.SessionStore);
 let idempotencyKey = crypto.randomUUID();
 
-void send;
 function send() {
     if (!picEditorCanvas.value)
         throw new Error('Could not resolve templated ref');

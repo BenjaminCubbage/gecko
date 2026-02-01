@@ -33,6 +33,7 @@ class CanvasClear {
                 imageData[(y * width + x) * 4 + 0] = 255;
                 imageData[(y * width + x) * 4 + 1] = 255;
                 imageData[(y * width + x) * 4 + 2] = 255;
+                imageData[(y * width + x) * 4 + 3] = 255;
             }
         }
 
