@@ -158,18 +158,18 @@ function animationCancelled() {
         translateY(-1px)
         scale(1.2);
 
-    grid-area:   1 / 1;
-    height:      36px;
-    z-index:     1;
+    grid-area: 1 / 1;
+    height:    36px;
+    z-index:   1;
 }
 
 .rocket-svg-flame {
-    grid-area: 1 / 1;
-
     transform:
         translateY(24px)
         rotate(var(--flame-rotation));
 
+    grid-area:   1 / 1;
+    opacity:     var(--flame-opacity);
     will-change: transform;
 }
 
@@ -267,13 +267,20 @@ function animationCancelled() {
 }
 
 @property --flame-rotation {
-    inherits:      false;
+    inherits:      true;
     initial-value: 0deg;
-    syntax:        "<degree>";
+    syntax:        "<angle>";
+}
+
+@property --flame-opacity {
+    inherits: true;
+    initial-value: 0%;
+    syntax: "<percentage>";
 }
 
 @keyframes flame-bob {
     0% {
+        --flame-opacity:  100%;
         --flame-rotation: 5deg;
     }
 
@@ -282,6 +289,7 @@ function animationCancelled() {
     }
 
     100% {
+        --flame-opacity:  100%;
         --flame-rotation: 5deg;
     }
 }
@@ -289,7 +297,7 @@ function animationCancelled() {
 @property --rocket-rotation {
     inherits:      false;
     initial-value: 0deg;
-    syntax:        "<degree>";
+    syntax:        "<angle>";
 }
 
 @property --rocket-offset-y {
@@ -306,15 +314,15 @@ function animationCancelled() {
 
 @keyframes rocket-bob {
     0% {
-        --rocket-rotation: 1deg;
+        --rocket-rotation: 1.5deg;
     }
 
     50% {
-        --rocket-rotation: -1deg;
+        --rocket-rotation: -1.5deg;
     }
 
     100% {
-        --rocket-rotation: 1deg;
+        --rocket-rotation: 1.5deg;
     }
 }
 
