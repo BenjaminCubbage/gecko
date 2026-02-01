@@ -88,7 +88,7 @@ function canvasChanged() {
 .toolbar {
     display:         flex;
     gap:             12px;
-    justify-content: space-evenly;
+    justify-content: center;
     padding-top:     2px;
 }
 </style>

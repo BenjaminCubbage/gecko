@@ -62,15 +62,12 @@ import ToolbarChipLayout from './ToolbarChipLayout.vue';
 
 const emit = defineEmits(['click']);
 
-const isPressed          = ref(false);
-let activeTimeout        = null;
-let activeTimeoutStarted = null;
+const isPressed   = ref(false);
+let activeTimeout = null;
 
 function click() {
     if (!isPressed.value) {
         isPressed.value = true;
-
-        activeTimeoutStarted = Date.now();
         activeTimeout = setTimeout(() => {
             isPressed.value = false;
             activeTimeout   = null;
@@ -146,10 +143,13 @@ function animationCancelled() {
 */
 
 .rocket-svgs {
+    transform: 
+        translateY(var(--rocket-offset-y))
+        rotate(var(--rocket-rotation));
+
     display:     grid;
     z-index:     0;
     opacity:     var(--rocket-opacity);
-    transform:   translateY(var(--rocket-offset-y));
     will-change: transform;
 }
 
@@ -185,13 +185,14 @@ function animationCancelled() {
 }
 
 .toolbar-chip-send--pressed :where(.rocket-svg-flame) {
-    animation: flame-bob 200ms steps(3) 24;
+    animation: flame-bob 200ms steps(5) 24;
 }
 
 .toolbar-chip-send--pressed :where(.rocket-svgs) {
     animation:
-        fly-away      5000ms cubic-bezier(.68,.01,.62,1) 1 500ms,
-        rocket-return 200ms  ease                        1 5500ms;
+        rocket-bob    200ms  steps(2)                    infinite 0ms,
+        fly-away      5000ms cubic-bezier(.68,.01,.62,1) 1        500ms,
+        rocket-return 200ms  ease                        1        5500ms;
 
     pointer-events: none;
 }
@@ -267,7 +268,7 @@ function animationCancelled() {
 
 @property --flame-rotation {
     inherits:      false;
-    initial-value: 100%;
+    initial-value: 0deg;
     syntax:        "<degree>";
 }
 
@@ -285,6 +286,12 @@ function animationCancelled() {
     }
 }
 
+@property --rocket-rotation {
+    inherits:      false;
+    initial-value: 0deg;
+    syntax:        "<degree>";
+}
+
 @property --rocket-offset-y {
     inherits: false;
     initial-value: 0px;
@@ -295,6 +302,20 @@ function animationCancelled() {
     inherits: false;
     initial-value: 100%;
     syntax: "<percentage>";
+}
+
+@keyframes rocket-bob {
+    0% {
+        --rocket-rotation: 1deg;
+    }
+
+    50% {
+        --rocket-rotation: -1deg;
+    }
+
+    100% {
+        --rocket-rotation: 1deg;
+    }
 }
 
 @keyframes fly-away {
