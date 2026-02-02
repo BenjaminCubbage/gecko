@@ -27,9 +27,9 @@ class CanvasClear {
 
         for (let y = 0; y < height; ++y) {
             for (let x = (iteration - 1 - y % iterationCount); x < width; x += iterationCount) {
-                if (x < 0) 
+                if (x < 0)
                     continue;
-                
+
                 imageData[(y * width + x) * 4 + 0] = 255;
                 imageData[(y * width + x) * 4 + 1] = 255;
                 imageData[(y * width + x) * 4 + 2] = 255;

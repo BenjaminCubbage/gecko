@@ -98,7 +98,7 @@ namespace Gecko::API::Controllers
             case SharedImagesService::Result::SenderNotFound:
                 Http::RespondWithError::UserNotFound(res);
                 return;
-                
+
             case SharedImagesService::Result::ReceiverNotFound:
                 Http::RespondWithError::DeviceNotFound(res);
                 return;

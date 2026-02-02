@@ -4,7 +4,7 @@
 
         <div class="front-and-center">
             <div v-show="selectedTab == 'canvas'">
-                <RecipientSelect 
+                <RecipientSelect
                     style="margin-bottom: 12px;"
                     @selectionChanged="d => selectedDevice = d" />
                 <PicEditor :recipientDevice="selectedDevice" />

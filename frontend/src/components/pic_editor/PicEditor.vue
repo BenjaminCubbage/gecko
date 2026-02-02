@@ -6,7 +6,7 @@
                 :penSize="selectedPenSize"
                 :isErasing="isErasing"
                 @canvasChanged="canvasChanged" />
-            
+
             <PicEditorBorder variant="inner">
                 <div class="toolbar">
                     <ToolbarChipPenSize v-model="selectedPenSize" />

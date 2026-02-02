@@ -56,21 +56,21 @@ class DevicesStore {
             this._clearMap(this._usersDevices);
             for (let i = 0; i < inflight.length; ++i)
                 this._usersDevices.set(
-                    userIDs[i], 
+                    userIDs[i],
                     responses[i]['devices'].map(json => Device.fromJSON(json, DeviceStatus.loading())));
-                    
+
             this._state.value = 'loadingstatuses';
             inflight = [];
 
             for (const arr of this._usersDevices.values())
                 for (const device of arr) {
-                    inflight.push({ 
-                        device, 
+                    inflight.push({
+                        device,
                         promise: new Promise((resolve, reject) => {
                             Dispatch.Get_DevicesStatus(device.deviceID)
                                 .onSuccess(body => resolve(body))
                                 .onError(() => reject());
-                        }) 
+                        })
                     });
                 }
 

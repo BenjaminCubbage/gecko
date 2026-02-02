@@ -4,7 +4,7 @@ class CanvasUtils {
         y = Math.max(0, y);
 
         const data = ctx.getImageData(x, y, width, height, {
-            colorSpace: 'srgb', 
+            colorSpace: 'srgb',
             pixelFormat: 'rgba-unorm8'});
 
         for (let i = 0; i < data.data.length; i += 4) {

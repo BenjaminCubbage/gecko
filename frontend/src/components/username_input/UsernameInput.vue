@@ -44,7 +44,7 @@ watch(isValid, (newValue, oldValue) => {
 }, { immediate: true });
 
 function inputChanged() {
-    /* 
+    /*
         note(ben): nextTick seems to be needed on Firefox
     */
     nextTick(() => {

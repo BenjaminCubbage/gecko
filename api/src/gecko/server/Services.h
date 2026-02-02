@@ -18,11 +18,11 @@ namespace Gecko::API::Server
               m_usersService       { &tables->Users() },
               m_devicesService     { &topics->Heartbeat(), &tables->Devices(), &tables->Users() },
               m_friendshipsService { &tables->Friendships(), &tables->Users() },
-              m_sharedImagesService{ 
-                  &m_devicesService, 
-                  &m_friendshipsService, 
-                  &topics->LatestImage(), 
-                  &tables->SharedImages(), 
+              m_sharedImagesService{
+                  &m_devicesService,
+                  &m_friendshipsService,
+                  &topics->LatestImage(),
+                  &tables->SharedImages(),
                   &tables->Users() } {}
 
         Services           (const Services&) = delete;

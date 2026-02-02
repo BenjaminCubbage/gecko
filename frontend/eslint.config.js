@@ -9,7 +9,7 @@ export default defineConfig([
         files: ['**/*.{js,vue}'],
         plugins: { js, vue },
         extends: [
-            'js/recommended', 
+            'js/recommended',
             'vue/flat/essential'
         ],
         languageOptions: {
@@ -22,7 +22,7 @@ export default defineConfig([
             'prefer-const': 'error',
             'indent': ['error', 4],
             'vue/multi-word-component-names': 'off',
-            
+
             'no-unused-vars': ['error', {
                 'varsIgnorePattern': '^_'
             }]

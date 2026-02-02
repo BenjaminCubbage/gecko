@@ -46,7 +46,7 @@ defineProps({
     color:       transparent;
     font-size:   26px;
     line-height: 1;
-    
+
     --google-blue:   #4285F4;
     --google-green:  #34A853;
     --google-red:    #EA4335;

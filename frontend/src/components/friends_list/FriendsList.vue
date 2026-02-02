@@ -112,7 +112,7 @@ watch(session.state(), state => {
     }
 }, { immediate: true });
 
-watch([ 
+watch([
     friends.state(),
     friends.pendingIncoming(),
     friends.pendingOutgoing(),

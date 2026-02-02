@@ -127,7 +127,7 @@ const hasPrev = computed(() => curSelectionIndex.value > 0);
     Manually setting starting max is a cheap hack to get it
     to smoothly transition on initial render from the loading
     state. I tried only setting the transition after the actual
-    element loaded but found that was a race condition. 
+    element loaded but found that was a race condition.
 */
 const animMaxWidth   = ref(props.big ? '200px' : '200px');
 const animMinWidth   = ref('0px');
@@ -137,7 +137,7 @@ onMounted(updateMinMaxWidthForAnim);
 watch(props, updateMinMaxWidthForAnim);
 
 function updateMinMaxWidthForAnim() {
-    /* 
+    /*
         Give option elements a chance to be loaded into the DOM.
     */
     nextTick(() => {
@@ -147,7 +147,7 @@ function updateMinMaxWidthForAnim() {
         */
         const element = props.mode == 'loading'
             ? measureLoadingEl?.value
-            : measureOptionsEls.value?.toSorted((el1, el2) => 
+            : measureOptionsEls.value?.toSorted((el1, el2) =>
                 el1.compareDocumentPosition(el2) & 4 ? -1 : 1)[curSelectionIndex.value];
 
         if (element && element.offsetWidth) {

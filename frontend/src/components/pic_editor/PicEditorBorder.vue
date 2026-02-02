@@ -1,8 +1,8 @@
 <template>
-    <div 
+    <div
         class="pic-editor-border"
         :class="[
-            variant === 'outer' 
+            variant === 'outer'
                 ? 'pic-editor-border--outer'
                 : 'pic-editor-border--inner']">
         <slot />

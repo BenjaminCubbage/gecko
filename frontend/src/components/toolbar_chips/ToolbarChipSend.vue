@@ -1,7 +1,7 @@
 <template>
     <ToolbarChipLayout
         class="toolbar-chip-send"
-        :class="{ 
+        :class="{
             'toolbar-chip-send--pressed':  isPressed,
             'toolbar-chip-send--disabled': disabled
         }">
@@ -148,7 +148,7 @@ function animationCancelled() {
 */
 
 .rocket-svgs {
-    transform: 
+    transform:
         translateY(var(--rocket-offset-y))
         rotate(var(--rocket-rotation));
 

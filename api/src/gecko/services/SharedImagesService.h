@@ -28,7 +28,7 @@ namespace Gecko::API::Services
             NotFriends,
             ReceiverNotFound,
             SenderNotFound,
-            
+
             /* Fallthrough cases */
             DatabaseError,
             DeviceServiceError,

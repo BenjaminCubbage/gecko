@@ -36,8 +36,8 @@ namespace Gecko::API::Services
         bool deviceExists{};
         int recipientUserID{};
         switch (m_devicesService->GetDeviceExists(
-            recipientDeviceID, 
-            &deviceExists, 
+            recipientDeviceID,
+            &deviceExists,
             &recipientUserID))
         {
             case DevicesService::Result::OK:
@@ -58,8 +58,8 @@ namespace Gecko::API::Services
         {
             bool areFriends{};
             switch(m_friendshipsService->FriendshipExists(
-                senderUserID, 
-                recipientUserID, 
+                senderUserID,
+                recipientUserID,
                 &areFriends))
             {
                 case FriendshipsService::Result::OK:

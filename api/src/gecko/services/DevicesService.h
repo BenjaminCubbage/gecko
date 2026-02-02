@@ -38,8 +38,8 @@ namespace Gecko::API::Services
               m_dbDevices(devicesTable),
               m_dbUsers(usersTable) {}
 
-        Result GetDeviceExists(int deviceID, 
-                               bool* outExists, 
+        Result GetDeviceExists(int deviceID,
+                               bool* outExists,
                                int* outOwnerID);
 
         Result GetDeviceStatus(int deviceID,
