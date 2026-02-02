@@ -5,7 +5,7 @@
             'font-size': big ? '1.4rem' : '0.95rem'
         }">
         <button
-            class="arrow arrow-left txtr-spiky txtr-spiky--green"
+            class="arrow arrow-left txtr-diag txtr-diag--green"
             @click="carouselPrev"
             :disabled="mode != 'ready' || !hasPrev">
             &lt;
@@ -30,7 +30,7 @@
                             :status="signal(selectedOption)" />
 
                         <StrokedText ellipses>
-                            <slot name="label" :option="option"></slot>
+                            <slot v-if="selectedOption" name="label" :option="option"></slot>
                         </StrokedText>
                     </div>
                 </template>
@@ -45,7 +45,7 @@
                 <transition name="loaded" mode="out-in">
                     <div v-if="mode == 'ready'">
                         <StrokedText style="margin-bottom: -4px" ellipses>
-                            <slot name="label" :option="selectedOption"></slot>
+                            <slot v-if="selectedOption" name="label" :option="selectedOption"></slot>
                         </StrokedText>
 
                         <RecipientSelectDeviceSignal
@@ -63,7 +63,7 @@
         </div>
 
         <button
-            class="arrow arrow-right txtr-spiky txtr-spiky--green"
+            class="arrow arrow-right txtr-diag txtr-diag--green"
             @click="carouselNext"
             :disabled="mode != 'ready' || !hasNext">
             &gt;
@@ -73,7 +73,7 @@
 
 <script setup>
 import { computed, nextTick, onMounted, ref,
-    useTemplateRef, watch, watchEffect } from 'vue';
+    useTemplateRef, watch, watchEffect, onUnmounted } from 'vue';
 
 import RecipientSelectDeviceSignal from './RecipientSelectDeviceSignal.vue';
 import StrokedText from '@/components/stroked_text/StrokedText.vue';
@@ -98,14 +98,16 @@ const props = defineProps({
 });
 
 const selectedOption = defineModel({ required: true });
-
 const { addResizeHandler, removeResizeHandler } = useOnResize();
-
 const measureOptionsEls = useTemplateRef('measureOptionsEls');
 const measureLoadingEl = useTemplateRef('measureLoadingEl');
 
+
 watchEffect(() => {
-    if (props.options?.length > 0 && !props.options.includes(selectedOption.value))
+    if (props.options?.length == 0)
+        selectedOption.value = null;
+
+    if (!props.options?.includes(selectedOption.value) ?? false)
         selectedOption.value = props.options[0];
 });
 
@@ -133,6 +135,7 @@ const animMaxWidth   = ref(props.big ? '200px' : '200px');
 const animMinWidth   = ref('0px');
 
 onMounted(updateMinMaxWidthForAnim);
+onUnmounted(() => selectedOption.value = null);
 
 watch(props, updateMinMaxWidthForAnim);
 
@@ -214,11 +217,22 @@ function tryMoveSelection(by) {
     font-size:   2.3rem;
     line-height: 0;
 
+    --arrow-offset: 0px;
+
+    box-shadow: 
+        calc(var(--shadow-dist-s) - var(--arrow-offset))
+        calc(var(--shadow-dist-s) - var(--arrow-offset))
+        0 
+        black;
+
     border-radius: var(--radius-s);
     border:        2.5px solid black;
-    box-shadow:    var(--shadow-s);
 
-    transition: transform 50ms ease;
+    transform: translate(
+        var(--arrow-offset),
+        var(--arrow-offset));
+
+    transition: transform 80ms ease;
 }
 
 .arrow-right {
@@ -230,17 +244,12 @@ function tryMoveSelection(by) {
     opacity: 0.5;
 }
 
-.arrow-right:hover:not(:disabled) {
-    transform: scale(1.06);
-}
-
-.arrow-left:hover:not(:disabled) {
-    transform: scale(1.06);
+.arrow:hover:not(:disabled) {
+    --arrow-offset: calc(var(--shadow-dist-s) / 2);
 }
 
 .arrow:active:not(:disabled) {
-    box-shadow: none;
-    transform:  scale(0.97);
+    --arrow-offset: var(--shadow-dist-s);
 }
 
 .loaded-enter-active,

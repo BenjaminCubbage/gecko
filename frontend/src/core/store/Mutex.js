@@ -20,36 +20,50 @@ class ResourceMutex {
 
 class MultiResourceMutex {
     constructor() {
-        this._inFlight   = {};
+        this._inflight   = {};
         this._globalLock = false;
     }
 
     tryLock(id) {
-        if (this._globalLock || this._inFlight[id])
+        if (this._globalLock || this._inflight[id])
             return false;
-        this._inFlight[id] = true;
+        this._inflight[id] = true;
         return true;
     }
 
     unlock(id) {
-        if (!this._inFlight[id])
+        if (!this._inflight[id])
             return false;
-        this._inFlight[id] = false;
+        this._inflight[id] = false;
         return true;
     }
 
+    tryLockMany(ids) {
+        for (const id of ids)
+            if (this._inflight[id])
+                return false;
+        for (const id of ids)
+            this._inflight[id] = true;
+        return true;
+    }
+
+    unlockMany(ids) {
+        for (const id of ids)
+            this._inflight[id] = false;
+    }
+
     tryLockAll() {
-        if (Object.values(this._inFlight).some(v => v))
+        if (Object.values(this._inflight).some(v => v))
             return false;
         this._globalLock = true;
         return true;
     }
 
     unlockAll() {
-        if (!this._globalLock && !this._inFlight.some(v => v))
+        if (!this._globalLock && !this._inflight.some(v => v))
             return false;
         this._globalLock = false;
-        this._inFlight   = [];
+        this._inflight   = [];
         return true;
     }
 }

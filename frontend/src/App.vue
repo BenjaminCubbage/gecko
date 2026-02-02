@@ -4,9 +4,7 @@
 
         <div class="front-and-center">
             <div v-show="selectedTab == 'canvas'">
-                <RecipientSelect
-                    style="margin-bottom: 12px;"
-                    @selectionChanged="d => selectedDevice = d" />
+                <RecipientSelect @selectionChanged="d => selectedDevice = d" />
                 <PicEditor :recipientDevice="selectedDevice" />
             </div>
 
@@ -49,8 +47,14 @@ provide(Keys.FriendsStore, friends);
 watch(session.state(), (newState, oldState) => {
     if ((newState === 'loggedout' && oldState === 'ready') ||
         (oldState === 'loggedout' && newState === 'ready')) {
-        friends.resync();
+        friends.resync(session);
+        devices.resync(session, friends);
     }
+});
+
+watch(friends.activeFriends(), newFriends => {
+    if (devices.state().value === 'ready')
+        devices.updateFriends(session, newFriends);
 });
 </script>
 
