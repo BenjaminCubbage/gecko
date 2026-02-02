@@ -1,4 +1,5 @@
 export const Keys = {
-    SessionStore: 'session',
-    FriendsStore: 'friends'
+    DevicesStore: Symbol('devices'),
+    FriendsStore: Symbol('friends'),
+    SessionStore: Symbol('session')
 };

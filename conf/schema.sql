@@ -18,23 +18,6 @@ CREATE TABLE IF NOT EXISTS SharedImageBlobs
     bytes           MEDIUMBLOB NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS SharedImages
-(
-    image_id      INT PRIMARY KEY AUTO_INCREMENT,
-    image_blob_id INT NOT NULL,
-    sender_id     INT NOT NULL,
-    receiver_id   INT NOT NULL,
-    FOREIGN KEY (image_blob_id)
-        REFERENCES SharedImageBlobs(image_blob_id)
-        ON DELETE CASCADE,
-    FOREIGN KEY (sender_id)
-        REFERENCES Users(user_id)
-        ON DELETE CASCADE,
-    FOREIGN KEY (receiver_id)
-        REFERENCES Users(user_id)
-        ON DELETE CASCADE
-);
-
 CREATE TABLE IF NOT EXISTS Devices
 (
     device_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -42,6 +25,23 @@ CREATE TABLE IF NOT EXISTS Devices
     `name`    INT NOT NULL,
     FOREIGN KEY (owner_id)
         REFERENCES Users(user_id)
+);
+
+CREATE TABLE IF NOT EXISTS SharedImages
+(
+    image_id            INT PRIMARY KEY AUTO_INCREMENT,
+    image_blob_id       INT NOT NULL,
+    sender_user_id      INT NOT NULL,
+    recipient_device_id INT NOT NULL,
+    FOREIGN KEY (image_blob_id)
+        REFERENCES SharedImageBlobs(image_blob_id)
+        ON DELETE CASCADE,
+    FOREIGN KEY (sender_user_id)
+        REFERENCES Users(user_id)
+        ON DELETE CASCADE,
+    FOREIGN KEY (recipient_device_id)
+        REFERENCES Devices(device_id)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Friendships

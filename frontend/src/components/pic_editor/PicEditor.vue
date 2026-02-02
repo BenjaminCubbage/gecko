@@ -12,7 +12,7 @@
                     <ToolbarChipPenSize v-model="selectedPenSize" />
                     <ToolbarChipEraser v-model="isErasing" />
                     <ToolbarChipClear @click="clear" />
-                    <ToolbarChipSend @click="send" />
+                    <ToolbarChipSend :disabled="recipientDevice == null" @click="send" />
                 </div>
             </PicEditorBorder>
         </PicEditorBorder>
@@ -31,6 +31,10 @@ import PicEditorCanvas from './PicEditorCanvas.vue';
 import { Dispatch } from '@/core/dispatch/Dispatch.js';
 import { Keys } from '@/core/store/Keys.js';
 
+const props = defineProps({
+    recipientDevice: { required: true }
+});
+
 const picEditorCanvas = useTemplateRef('picEditorCanvas');
 const selectedPenSize = ref('small');
 const isErasing       = ref(false);
@@ -42,12 +46,14 @@ function send() {
     if (!picEditorCanvas.value)
         throw new Error('Could not resolve templated ref');
 
-    Dispatch.Post_SharedImage(
-        session.activeUserID(),
-        session.xsrfCookie(),
-        idempotencyKey,
-        session.activeUserID(),
-        picEditorCanvas.value.readGIBBlob());
+    if (props.recipientDevice != null) {
+        Dispatch.Post_SharedImage(
+            session.activeUserID(),
+            session.xsrfCookie(),
+            idempotencyKey,
+            props.recipientDevice.deviceID,
+            picEditorCanvas.value.readGIBBlob());
+    }
 }
 
 void getLatest;

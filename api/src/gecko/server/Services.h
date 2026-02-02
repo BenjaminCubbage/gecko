@@ -17,8 +17,13 @@ namespace Gecko::API::Server
               m_tables{ tables },
               m_usersService       { &tables->Users() },
               m_devicesService     { &topics->Heartbeat(), &tables->Devices(), &tables->Users() },
-              m_sharedImagesService{ &m_devicesService, &topics->LatestImage(), &tables->SharedImages(), &tables->Users() },
-              m_friendshipsService { &tables->Friendships(), &tables->Users() } {}
+              m_friendshipsService { &tables->Friendships(), &tables->Users() },
+              m_sharedImagesService{ 
+                  &m_devicesService, 
+                  &m_friendshipsService, 
+                  &topics->LatestImage(), 
+                  &tables->SharedImages(), 
+                  &tables->Users() } {}
 
         Services           (const Services&) = delete;
         Services& operator=(const Services&) = delete;
@@ -26,9 +31,9 @@ namespace Gecko::API::Server
         Services& operator=(Services&&) = delete;
 
         inline API::Services::UsersService&        Users()        { return m_usersService; }
-        inline API::Services::SharedImagesService& SharedImages() { return m_sharedImagesService; }
         inline API::Services::DevicesService&      Devices()      { return m_devicesService; }
         inline API::Services::FriendshipsService&  Friendships()  { return m_friendshipsService; }
+        inline API::Services::SharedImagesService& SharedImages() { return m_sharedImagesService; }
 
       private:
         Env::Env* m_env;
@@ -38,7 +43,7 @@ namespace Gecko::API::Server
 
         API::Services::UsersService        m_usersService;
         API::Services::DevicesService      m_devicesService;
-        API::Services::SharedImagesService m_sharedImagesService;
         API::Services::FriendshipsService  m_friendshipsService;
+        API::Services::SharedImagesService m_sharedImagesService;
     };
 }

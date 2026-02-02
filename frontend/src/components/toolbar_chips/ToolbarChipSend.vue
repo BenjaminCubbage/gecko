@@ -2,14 +2,15 @@
     <ToolbarChipLayout
         class="toolbar-chip-send"
         :class="{ 
-            'toolbar-chip-send--pressed': isPressed
+            'toolbar-chip-send--pressed':  isPressed,
+            'toolbar-chip-send--disabled': disabled
         }">
         <template #pad>
             <div class="pad txtr-diag txtr-diag--dk-green"></div>
         </template>
 
         <template #icons>
-            <button class="icon" @click="click">
+            <button class="icon" @click="click" :disabled="disabled">
                 <div class="icon-text">
                     <span class="letter letter--1">S</span>
                     <span class="letter letter--2">E</span>
@@ -59,6 +60,10 @@
 <script setup>
 import { ref } from 'vue';
 import ToolbarChipLayout from './ToolbarChipLayout.vue';
+
+defineProps({
+    disabled: { type: Boolean, default: false }
+});
 
 const emit = defineEmits(['click']);
 
@@ -184,6 +189,12 @@ function animationCancelled() {
     stroke:       black;
 }
 
+.toolbar-chip-send--disabled {
+    pointer-events: none;
+    filter:         grayscale();
+    opacity:        0.5;
+}
+
 .toolbar-chip-send--pressed :where(.rocket-svg-flame) {
     animation: flame-bob 200ms steps(5) 24;
 }
@@ -198,7 +209,7 @@ function animationCancelled() {
 }
 
 /*
-    Letters / transitions
+    Letters
 */
 
 .letter {

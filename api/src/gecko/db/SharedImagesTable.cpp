@@ -3,8 +3,8 @@
 namespace Gecko::API::DB
 {
     SharedImagesTable::Result
-    SharedImagesTable::CreateSharedImage(int senderID,
-                                         int receiverID,
+    SharedImagesTable::CreateSharedImage(int senderUserID,
+                                         int recipientDeviceID,
                                          const std::string& idempotencyKey,
                                          const std::vector<uint8_t>& bytes,
                                          int* outSharedImageID)
@@ -23,7 +23,8 @@ namespace Gecko::API::DB
             const mysqlx::bytes span{ reinterpret_cast<const mysqlx::byte*>(bytes.data()), bytes.size() };
 
             auto insertBlobResult =
-                connection.value()->sql("INSERT INTO SharedImageBlobs (idempotency_key, bytes) VALUES (?, ?)")
+                connection.value()->sql("INSERT INTO SharedImageBlobs (idempotency_key, bytes) "
+                                        "VALUES (?, ?)")
                     .bind(idempotencyKey, span)
                     .execute();
 
@@ -48,13 +49,14 @@ namespace Gecko::API::DB
                 note(ben): Potential for orphaned blob if this fails.
                 In general this... isn't a good way of doing things. I
                 really shouldn't have gone with a library that doesn't
-                support error codes, of all things :^p
+                even support error codes :^p
             */
 
             auto insertSharedImageResult =
-                connection.value()->sql("INSERT INTO SharedImages (image_blob_id, sender_id, receiver_id) "
-                                "VALUES (?, ?, ?)")
-                    .bind(blobID, senderID, receiverID)
+                connection.value()->sql("INSERT INTO SharedImages "
+                                            "(image_blob_id, sender_user_id, recipient_device_id) "
+                                        "VALUES (?, ?, ?)")
+                    .bind(blobID, senderUserID, recipientDeviceID)
                     .execute();
 
             if (insertSharedImageResult.getAffectedItemsCount() <= 0)
@@ -89,7 +91,7 @@ namespace Gecko::API::DB
 
             auto result =
                 connection.value()->sql("SELECT 1 FROM SharedImageBlobs "
-                                "WHERE idempotency_key = ?")
+                                        "WHERE idempotency_key = ?")
                     .bind(idempotencyKey)
                     .execute();
 
@@ -103,7 +105,7 @@ namespace Gecko::API::DB
     }
 
     SharedImagesTable::Result
-    SharedImagesTable::GetLatestReceivedImageBlob(int receiverID,
+    SharedImagesTable::GetLatestReceivedImageBlob(int recipientUserID,
                                                   std::vector<uint8_t>* outBlob)
     {
         try
@@ -114,12 +116,13 @@ namespace Gecko::API::DB
                 return Result::Failure;
 
             auto result =
-                connection.value()->sql("SELECT ib.bytes FROM SharedImages si "
-                                    "LEFT JOIN SharedImageBlobs ib "
-                                    "ON si.image_blob_id=ib.image_blob_id "
-                                "WHERE receiver_id=? "
-                                "ORDER BY image_id DESC LIMIT 1")
-                    .bind(receiverID)
+                connection.value()->sql("SELECT sib.bytes FROM SharedImageBlobs sib "
+                                            "JOIN SharedImages si ON sib.image_blob_id = si.image_blob_id "
+                                            "JOIN Devices d ON d.device_id = si.recipient_device_id "
+                                        "WHERE d.owner_id = ? "
+                                        "ORDER BY si.image_id DESC "
+                                        "LIMIT 1")
+                    .bind(recipientUserID)
                     .execute();
 
             if (!result.hasData() || result.count() != 1)

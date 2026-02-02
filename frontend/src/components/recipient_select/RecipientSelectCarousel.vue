@@ -26,8 +26,8 @@
                         style="display: grid; align-items: center;"
                         :key="optionID(option)">
                         <RecipientSelectDeviceSignal
-                            v-if="signal(modelValue) != null"
-                            :status="signal(modelValue)" />
+                            v-if="selectedOption != null && signal(selectedOption) != null"
+                            :status="signal(selectedOption)" />
 
                         <StrokedText ellipses>
                             <slot name="label" :option="option"></slot>
@@ -45,12 +45,12 @@
                 <transition name="loaded" mode="out-in">
                     <div v-if="mode == 'ready'">
                         <StrokedText style="margin-bottom: -4px" ellipses>
-                            <slot name="label" :option="modelValue"></slot>
+                            <slot name="label" :option="selectedOption"></slot>
                         </StrokedText>
 
                         <RecipientSelectDeviceSignal
-                            v-if="signal(modelValue) != null"
-                            :status="signal(modelValue)" />
+                            v-if="selectedOption != null && signal(selectedOption) != null"
+                            :status="signal(selectedOption)" />
                     </div>
 
                     <div v-else class="loading">
@@ -73,29 +73,13 @@
 
 <script setup>
 import { computed, nextTick, onMounted, ref,
-    useTemplateRef, watch } from 'vue';
+    useTemplateRef, watch, watchEffect } from 'vue';
 
 import RecipientSelectDeviceSignal from './RecipientSelectDeviceSignal.vue';
 import StrokedText from '@/components/stroked_text/StrokedText.vue';
 import { useOnResize } from '@/composables/UseOnResize';
 
-const { addResizeHandler, removeResizeHandler } = useOnResize();
-
-const measureOptionsEls = useTemplateRef('measureOptionsEls');
-const measureLoadingEl = useTemplateRef('measureLoadingEl');
-
-watch(measureOptionsEls, (newEls, oldEls) => {
-    if (!oldEls) {
-        for (const v of newEls)
-            addResizeHandler(v, updateMinMaxWidthForAnim);
-    } else {
-        for (const v of oldEls) if (!newEls.includes(v)) removeResizeHandler(v, updateMinMaxWidthForAnim);
-        for (const v of newEls) if (!oldEls.includes(v)) addResizeHandler(v, updateMinMaxWidthForAnim);
-    }
-});
-
 const props = defineProps({
-    modelValue: { type: null, required: true },
     options:    { type: Array, required: true },
     optionID:   { type: Function, required: true },
     big:        { type: Boolean, default: false },
@@ -107,26 +91,45 @@ const props = defineProps({
     // () => null      -> don't show a status
     signal: { type: Function, default: () => null },
 
-    // FSM
     // 'loading' -> loading screen shown
     // 'ready'  -> recipients are loaded and should be displayed
     // 'error'   -> error shown
     mode: { type: String, default: 'loading' }
 });
 
-const emit = defineEmits([
-    'update:modelValue'
-]);
+const selectedOption = defineModel({ required: true });
 
-const curSelectionIndex = computed(() => props.options?.indexOf(props.modelValue) ?? -1);
+const { addResizeHandler, removeResizeHandler } = useOnResize();
+
+const measureOptionsEls = useTemplateRef('measureOptionsEls');
+const measureLoadingEl = useTemplateRef('measureLoadingEl');
+
+watchEffect(() => {
+    if (props.options?.length > 0 && !props.options.includes(selectedOption.value))
+        selectedOption.value = props.options[0];
+});
+
+watch(measureOptionsEls, (newEls, oldEls) => {
+    if (!oldEls) {
+        for (const v of newEls)
+            addResizeHandler(v, updateMinMaxWidthForAnim);
+    } else {
+        for (const v of oldEls) if (!newEls.includes(v)) removeResizeHandler(v, updateMinMaxWidthForAnim);
+        for (const v of newEls) if (!oldEls.includes(v)) addResizeHandler(v, updateMinMaxWidthForAnim);
+    }
+});
+
+const curSelectionIndex = computed(() => props.options?.indexOf(selectedOption.value) ?? -1);
 const hasNext = computed(() => curSelectionIndex.value + 1 < props.options.length);
 const hasPrev = computed(() => curSelectionIndex.value > 0);
 
-// Manually setting starting max is a cheap hack to get it
-// to smoothly transition on initial render from the loading
-// state. I tried only setting the transition after the actual
-// element loaded but found that was a race condition.
-const animMaxWidth   = ref(props.big ? '124px' : '80px');
+/*
+    Manually setting starting max is a cheap hack to get it
+    to smoothly transition on initial render from the loading
+    state. I tried only setting the transition after the actual
+    element loaded but found that was a race condition. 
+*/
+const animMaxWidth   = ref(props.big ? '200px' : '200px');
 const animMinWidth   = ref('0px');
 
 onMounted(updateMinMaxWidthForAnim);
@@ -134,11 +137,18 @@ onMounted(updateMinMaxWidthForAnim);
 watch(props, updateMinMaxWidthForAnim);
 
 function updateMinMaxWidthForAnim() {
-    // Give option elements a chance to be loaded into the DOM
+    /* 
+        Give option elements a chance to be loaded into the DOM.
+    */
     nextTick(() => {
+        /*
+            Vue does not gaurantee order of v-for ref arrays, so we must
+            use compareDocumentPosition to get true ordering.
+        */
         const element = props.mode == 'loading'
             ? measureLoadingEl?.value
-            : measureOptionsEls.value[curSelectionIndex.value];
+            : measureOptionsEls.value?.toSorted((el1, el2) => 
+                el1.compareDocumentPosition(el2) & 4 ? -1 : 1)[curSelectionIndex.value];
 
         if (element && element.offsetWidth) {
             animMaxWidth.value = `${element.offsetWidth + 12}px`;
@@ -158,7 +168,7 @@ function carouselNext() {
 function tryMoveSelection(by) {
     const newSel = curSelectionIndex.value + by;
     if (newSel >= 0 && newSel < props.options.length)
-        emit('update:modelValue', props.options[newSel]);
+        selectedOption.value = props.options[newSel];
 }
 </script>
 

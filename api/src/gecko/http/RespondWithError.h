@@ -163,6 +163,12 @@ namespace Gecko::API::Http
             response.status = httplib::StatusCode::Forbidden_403;
         }
 
+        static inline void ForbiddenNotFriends(httplib::Response& response)
+        {
+            response.body   = BuildResponseBody("forbidden", "not_friends");
+            response.status = httplib::StatusCode::Forbidden_403;
+        }
+
         static inline void Unprocessable(httplib::Response& response)
         {
             response.body   = BuildResponseBody("unprocessable", "malformed_request");

@@ -6,6 +6,17 @@
 namespace Gecko::API::Services
 {
     DevicesService::Result
+    DevicesService::GetDeviceExists(int deviceID,
+                                    bool* outExists,
+                                    int* outOwnerID)
+    {
+        EXPECT(m_dbDevices->DeviceExists(deviceID, outExists, outOwnerID)
+            == DB::DevicesTable::Result::OK, Result::DatabaseError);
+
+        return Result::OK;
+    }
+
+    DevicesService::Result
     DevicesService::GetDeviceStatus(int deviceID,
                                     DeviceStatus *outStatus)
     {

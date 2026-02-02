@@ -31,10 +31,7 @@ namespace Gecko::API::Controllers
 
         size_t deviceID;
         if (!Middleware::HasPathParam<size_t>{ "device_id" }(req, res, &deviceID))
-        {
-            std::cout << "blocked invalid request" << std::endl;
             return;
-        }
 
         DevicesService::DeviceStatus status{};
         switch (m_devicesService.GetDeviceStatus(deviceID, &status))

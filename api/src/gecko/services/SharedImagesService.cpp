@@ -1,4 +1,9 @@
 #include "gecko/services/SharedImagesService.h"
+#include <algorithm>
+#include "gecko/models/Device.h"
+#include "gecko/models/FriendshipMetadata.h"
+#include "gecko/models/SharedImage.h"
+#include "gecko/models/User.h"
 #include "gecko/rand/UUID.h"
 
 #define EXPECT(cond, failResult) do { if (!(cond)) return failResult; } while(0)
@@ -6,60 +11,104 @@
 namespace Gecko::API::Services
 {
     SharedImagesService::Result
-    SharedImagesService::CreateSharedImage(int senderID,
-                                           int receiverID,
+    SharedImagesService::CreateSharedImage(int senderUserID,
+                                           int recipientDeviceID,
                                            const std::string& idempotencyKey,
                                            const std::vector<uint8_t>& bytes)
     {
+        /*
+            Sanity checks
+        */
         EXPECT(Rand::UUID::IsValidV4UUID(idempotencyKey), Result::BadIdempotencyKey);
         EXPECT(bytes.size() < MaxImageSize, Result::ImageTooLarge);
 
+        /*
+            Idempotency key not already played?
+        */
         bool idempotencyKeyExists{};
         EXPECT(m_dbSharedImages->IdempotencyKeyExists(idempotencyKey, &idempotencyKeyExists)
                == DB::SharedImagesTable::Result::OK, Result::DatabaseError);
         EXPECT(!idempotencyKeyExists, Result::IdempotencyKeyReplayed);
 
+        /*
+            Device exists?
+        */
+        bool deviceExists{};
+        int recipientUserID{};
+        switch (m_devicesService->GetDeviceExists(
+            recipientDeviceID, 
+            &deviceExists, 
+            &recipientUserID))
+        {
+            case DevicesService::Result::OK:
+                break;
+
+            case DevicesService::Result::DatabaseError:
+                return Result::DatabaseError;
+
+            default:
+                return Result::DeviceServiceError;
+        }
+        EXPECT(deviceExists, Result::ReceiverNotFound);
+
+        /*
+            Sender and recipient friends?
+        */
+        if (senderUserID != recipientUserID)
+        {
+            bool areFriends{};
+            switch(m_friendshipsService->FriendshipExists(
+                senderUserID, 
+                recipientUserID, 
+                &areFriends))
+            {
+                case FriendshipsService::Result::OK:
+                case FriendshipsService::Result::SelfFriendNotAllowed:
+                    break;
+
+                case FriendshipsService::Result::User1NotFound:
+                    return Result::SenderNotFound;
+
+                case FriendshipsService::Result::User2NotFound:
+                    return Result::ReceiverNotFound;
+
+                default:
+                    return Result::FriendshipsServiceError;
+            }
+            EXPECT(areFriends, Result::NotFriends);
+        }
+
+        /*
+            Send image
+        */
         if (int sharedImageID{};
             m_dbSharedImages->CreateSharedImage(
-                senderID,
-                receiverID,
+                senderUserID,
+                recipientDeviceID,
                 idempotencyKey,
                 bytes,
                 &sharedImageID) == DB::SharedImagesTable::Result::OK)
         {
-            /* Publish to MQTT topic */
-
-            std::vector<Models::Device> devices;
-            if (m_devicesService->GetUsersDevices(receiverID, &devices) == DevicesService::Result::OK)
-            {
-                for (auto& device : devices)
-                    m_latestImageTopic->PublishLatestImage(
-                        device.deviceID, sharedImageID, bytes);
-            }
+            m_latestImageTopic->PublishLatestImage(
+                recipientDeviceID,
+                sharedImageID,
+                bytes);
 
             return Result::OK;
         }
-
-        bool senderExists{};
-        EXPECT(m_dbUsers->UserExists(senderID, &senderExists) == DB::UsersTable::Result::OK, Result::DatabaseError);
-        EXPECT(senderExists, Result::SenderNotFound);
-
-        bool receiverExists{};
-        EXPECT(m_dbUsers->UserExists(receiverID, &receiverExists) == DB::UsersTable::Result::OK, Result::DatabaseError);
-        EXPECT(receiverExists, Result::ReceiverNotFound);
 
         return Result::DatabaseError;
     }
 
     SharedImagesService::Result
-    SharedImagesService::GetLatestReceivedImageBlob(int receiverID,
+    SharedImagesService::GetLatestReceivedImageBlob(int recipientUserID,
                                                     std::vector<uint8_t>* outBlob)
     {
-        if (m_dbSharedImages->GetLatestReceivedImageBlob(receiverID, outBlob) == DB::SharedImagesTable::Result::OK)
+        if (m_dbSharedImages->GetLatestReceivedImageBlob(recipientUserID, outBlob) == DB::SharedImagesTable::Result::OK)
             return Result::OK;
 
         bool receiverExists{};
-        EXPECT(m_dbUsers->UserExists(receiverID, &receiverExists) == DB::UsersTable::Result::OK, Result::DatabaseError);
+        EXPECT(m_dbUsers->UserExists(recipientUserID, &receiverExists) == DB::UsersTable::Result::OK, Result::DatabaseError);
         EXPECT(receiverExists, Result::ReceiverNotFound);
 
         return Result::DatabaseError;

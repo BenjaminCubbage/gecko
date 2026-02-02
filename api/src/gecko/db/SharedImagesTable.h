@@ -16,8 +16,8 @@ namespace Gecko::API::DB
         SharedImagesTable(ConnectionPool* connectionPool)
             : m_connectionPool(connectionPool) {}
 
-        Result CreateSharedImage(int senderID,
-                                 int receiverID,
+        Result CreateSharedImage(int senderUserID,
+                                 int recipientDeviceID,
                                  const std::string& idempotencyKey,
                                  const std::vector<uint8_t>& bytes,
                                  int* outSharedImageID);
@@ -25,7 +25,7 @@ namespace Gecko::API::DB
         Result IdempotencyKeyExists(const std::string& idempotencyKey,
                                     bool *outExists);
 
-        Result GetLatestReceivedImageBlob(int receiverID,
+        Result GetLatestReceivedImageBlob(int recipientUserID,
                                           std::vector<uint8_t>* outBlob);
 
       private:

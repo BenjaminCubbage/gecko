@@ -7,9 +7,9 @@
                     :options="users"
                     :optionID="u => u.userID"
                     big
-                    :mode="userMode">
+                    :mode="usersMode">
                     <template #label="{ option }">
-                        {{ option['username'] }}
+                        {{ option.username }}
                     </template>
                 </RecipientSelectCarousel>
             </div>
@@ -17,12 +17,12 @@
             <div class="device-carousel">
                 <RecipientSelectCarousel
                     v-model="selectedDevice"
-                    :options="devices"
+                    :options="userDevices"
                     :optionID="d => d.deviceID"
-                    :signal="m => m.signalStatus"
-                    :mode="deviceMode">
+                    :signal="d => d.status"
+                    :mode="devicesMode">
                     <template #label="{ option }">
-                        {{ option.name }}
+                        {{ option?.name }}
                     </template>
                 </RecipientSelectCarousel>
             </div>
@@ -31,51 +31,51 @@
 </template>
 
 <script setup>
-import { inject, ref, watch } from 'vue';
-import RecipientSelectCarousel from './RecipientSelectCarousel.vue';
-import { Dispatch } from '../../core/dispatch/Dispatch';
-import { Keys } from '@/core/store/Keys.js';
+import { computed, inject, ref, watch }   from 'vue';
+import RecipientSelectCarousel  from './RecipientSelectCarousel.vue';
+import { Keys }                 from '@/core/store/Keys.js';
 
 const session = inject(Keys.SessionStore);
-const userMode   = ref('loading');
-const deviceMode = ref('loading');
+const friends = inject(Keys.FriendsStore);
+const devices = inject(Keys.DevicesStore);
 
-const users = ref([]);
-const devices = ref([]);
-
-const selectedDevice = ref(null);
 const selectedUser   = ref(null);
+const selectedDevice = ref(null);
 
-watch(session.activeUser(), user => {
-    if (!user)
-        return;
+const emit = defineEmits([ 'selectionChanged' ]);
 
-    users.value[0]     = user;
-    selectedUser.value = user;
-    userMode.value = 'ready';
+watch(selectedDevice, newValue => emit('selectionChanged', newValue));
 
-    // note(ben): Cheap hack for now.
-    if (devices.value.length)
-        return;
+const usersMode = computed(() => {
+    return {
+        'uninitialized':   'loading',
+        'loading':         'loading',
+        'error':           'error',
+        'ready':           'ready'
+    }[friends.state().value];
+});
 
-    Dispatch.Get_UsersDevices(session.activeUserID())
-        .onSuccess(body => {
-            devices.value = body.devices.map(d => ({
-                deviceID:     d['device_id'],
-                name:         d['name'],
-                signalStatus: 'loading'
-            }));
+const devicesMode = computed(() => {
+    return {
+        'uninitialized':   'loading',
+        'loading':         'loading',
+        'error':           'error',
+        'loadingstatuses': 'ready',
+        'ready':           'ready'
+    }[devices.state().value];
+});
 
-            selectedDevice.value = devices.value[0];
-            deviceMode.value = 'ready';
+const users = computed(() => {
+    return friends.state().value === 'ready'
+        ? [session.activeUser().value, ...friends.activeFriends().map(f => f.user)]
+        : [];
+});
 
-            for (const d of devices.value)
-                Dispatch.Get_DevicesStatus(d.deviceID)
-                    .onSuccess(body => {
-                        d.signalStatus = body['status'];
-                    });
-        });
-}, { immediate: true });
+const userDevices = computed(() => {
+    return devices.state().value === 'ready'
+        ? devices.usersDevices().get(selectedUser.value.userID)
+        : [];
+});
 </script>
 
 <style scoped>

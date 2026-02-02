@@ -1,11 +1,14 @@
 #include <iostream>
 #include "gecko/controllers/SharedImagesController.h"
+#include "json/json.h"
 #include "jwt-cpp/jwt.h"
 #include "jwt-cpp/traits/open-source-parsers-jsoncpp/traits.h"
 #include "gecko/http/Constants.h"
 #include "gecko/middleware/HasAnyMultipartFormData.h"
 #include "gecko/middleware/HasContentLengthLTE.h"
 #include "gecko/middleware/HasHeader.h"
+#include "gecko/middleware/HasJSONBody.h"
+#include "gecko/middleware/HasJSONValueMember.h"
 #include "gecko/middleware/HasMultipartFormDataField.h"
 #include "gecko/middleware/PathParamEquals.h"
 #include "gecko/middleware/UserIsLoggedIn.h"
@@ -14,9 +17,6 @@
 
 namespace Gecko::API::Controllers
 {
-    thread_local Json::Reader     SharedImagesController::s_jsonReader{};
-    thread_local Json::FastWriter SharedImagesController::s_jsonWriter{};
-
     using ::Gecko::API::Http::Constants::Headers;
 
     void SharedImagesController::Attach(httplib::Server& server)
@@ -40,6 +40,10 @@ namespace Gecko::API::Controllers
         using Services::SharedImagesService;
         using FieldFinder = Http::MultipartFormData::FieldFinder;
 
+        /*
+            note(ben): The order matters here because we're referencing
+            mfdFinders[0] later on.
+        */
         thread_local std::vector<FieldFinder> mfdFinders{
             { "content",  FieldFinder::FieldType::Vector, 1000 },
             { "metadata", FieldFinder::FieldType::String, 32 }
@@ -56,22 +60,28 @@ namespace Gecko::API::Controllers
             return;
         }
 
-        // Avoid copies by estimating the blob's size.
-        // Always at least 100 bytes in the payload that aren't the blob.
+        /*
+            Estimate upper bound of image size to avoid a copy.
+        */
         mfdFinders[0].guessLength = std::max(contentLength, std::size_t{ 100 }) - 100;
 
         Http::MultipartFormData formData;
         std::string *fdMetadata;
         std::vector<uint8_t> *fdContent;
 
+        Json::Value metadata;
+        int recipientDeviceID;
+
         if (!Middleware::HasAnyMultipartFormData{}(req, res, contentReader, mfdFinders, &formData) ||
             !Middleware::HasMultipartFormDataField<std::string>{ "metadata" }(req, res, formData, &fdMetadata) ||
-            !Middleware::HasMultipartFormDataField<std::vector<uint8_t>>{ "content" }(req, res, formData, &fdContent))
+            !Middleware::HasMultipartFormDataField<std::vector<uint8_t>>{ "content" }(req, res, formData, &fdContent) ||
+            !Middleware::HasJSONBody{}(req, res, *fdMetadata, &metadata) ||
+            !Middleware::HasJSONValueMember<int>{ "recipient_device_id" }(req, res, metadata, &recipientDeviceID))
         {
             return;
         }
 
-        switch (m_sharedImagesService.CreateSharedImage(userID, userID, idempotencyKey, *fdContent))
+        switch (m_sharedImagesService.CreateSharedImage(userID, recipientDeviceID, idempotencyKey, *fdContent))
         {
             case SharedImagesService::Result::OK:
                 res.status = httplib::StatusCode::Created_201;
@@ -86,8 +96,15 @@ namespace Gecko::API::Controllers
                 return;
 
             case SharedImagesService::Result::SenderNotFound:
-            case SharedImagesService::Result::ReceiverNotFound:
                 Http::RespondWithError::UserNotFound(res);
+                return;
+                
+            case SharedImagesService::Result::ReceiverNotFound:
+                Http::RespondWithError::DeviceNotFound(res);
+                return;
+
+            case SharedImagesService::Result::NotFriends:
+                Http::RespondWithError::ForbiddenNotFriends(res);
                 return;
 
             default:
@@ -106,7 +123,6 @@ namespace Gecko::API::Controllers
             !Middleware::PathParamEquals{ "id" }(req, res, std::to_string(userID)))
             return;
 
-        // note(ben): We call std::string template overload to avoid a copy into res.body
         std::vector<uint8_t> bytes;
         switch (m_sharedImagesService.GetLatestReceivedImageBlob(userID, &bytes))
         {

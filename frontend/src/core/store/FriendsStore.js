@@ -28,7 +28,6 @@ class FriendsStore {
         this._stateRO      = readonly(this._state);
     }
 
-    // Current FSM state of the store
     // 'uninitialized' | 'loggedout' | 'error' | 'loading' | 'ready'
     state() {
         return this._stateRO;

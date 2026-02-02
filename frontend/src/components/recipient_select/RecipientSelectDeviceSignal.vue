@@ -2,20 +2,24 @@
     <div class="recipient-select-device-signal">
         <StrokedText>
             <transition name="transition" mode="out-in">
-                <template v-if="statusOn">
+                <template v-if="status.isOnline()">
                     <div class="status-text--on"></div>
                 </template>
 
-                <template v-else-if="statusOff">
+                <template v-else-if="status.isOffline()">
                     <div class="status-text--off"></div>
                 </template>
 
-                <template v-else-if="statusPending">
+                <template v-else-if="status.isPending()">
                     <div class="status-text--pending"></div>
                 </template>
 
-                <template v-else-if="statusLoading">
+                <template v-else-if="status.isLoading()">
                     <div class="status-text--loading"></div>
+                </template>
+
+                <template v-else>
+                    <div class="status-text--error"></div>
                 </template>
             </transition>
         </StrokedText>
@@ -23,21 +27,10 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
 import StrokedText from '@/components/stroked_text/StrokedText.vue';
-
-const props = defineProps({
-    // 'online'  -> device is online
-    // 'offline' -> device is offline
-    // 'pending' -> connection status not yet known by server
-    // 'loading' -> connection status not yet known by client
-    status: { type: String, required: true }
+defineProps({
+    status: { type: Object, required: true }
 });
-
-const statusOn      = computed(() => props.status == 'online');
-const statusOff     = computed(() => props.status == 'offline');
-const statusPending = computed(() => props.status == 'pending');
-const statusLoading = computed(() => props.status == 'loading');
 </script>
 
 <style scoped>
@@ -74,6 +67,11 @@ const statusLoading = computed(() => props.status == 'loading');
     line-height: 0;
 
     animation: loading 300ms steps(3) infinite;
+}
+
+.status-text--error::after {
+    content: 'COULDN\'T GET STATUS';
+    color:   crimson;
 }
 
 .transition-enter-active,

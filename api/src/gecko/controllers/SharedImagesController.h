@@ -1,7 +1,6 @@
 #pragma once
 #include <string>
 #include "httplib.h"
-#include "json/json.h"
 #include "gecko/services/SharedImagesService.h"
 
 namespace Gecko::API::Controllers
@@ -25,8 +24,5 @@ namespace Gecko::API::Controllers
 
         Services::SharedImagesService m_sharedImagesService;
         std::string m_pubkey;
-
-        static thread_local Json::Reader     s_jsonReader;
-        static thread_local Json::FastWriter s_jsonWriter;
     };
 }

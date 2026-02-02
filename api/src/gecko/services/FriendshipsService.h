@@ -40,6 +40,7 @@ namespace Gecko::API::Services
         Result GetFriendships(int userID,
                               std::vector<std::pair<Models::User, Models::FriendshipMetadata>>* outFriends);
 
+        // Checks for an active friendship between the users
         Result FriendshipExists(int userID1,
                                 int userID2,
                                 bool* outExists);

@@ -33,7 +33,7 @@ namespace Gecko::API::Thread
             size_t index;
             size_t ticket;
 
-            inline bool operator==(const TaskHandle& other)
+            inline bool operator==(const TaskHandle& other) const
             {
                 return other.index  == index &&
                        other.ticket == ticket;
