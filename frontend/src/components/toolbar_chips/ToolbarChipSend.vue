@@ -160,8 +160,7 @@ function animationCancelled() {
 
 .rocket-svg-rocket {
     transform:
-        translateY(-1px)
-        scale(1.2);
+        scale(1.15);
 
     grid-area: 1 / 1;
     height:    36px;
