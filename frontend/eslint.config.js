@@ -21,8 +21,6 @@ export default defineConfig([
         rules: {
             'prefer-const': 'error',
             'indent': ['error', 4],
-            'vue/multi-word-component-names': 'off',
-
             'no-unused-vars': ['error', {
                 'varsIgnorePattern': '^_'
             }]

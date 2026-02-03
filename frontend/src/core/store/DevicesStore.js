@@ -89,7 +89,7 @@ class DevicesStore {
     }
 
     async _resyncUsersDevices(userIDs) {
-        let responses = await Promise.all(userIDs.map(id => this._fetchDevices(id)));
+        const responses = await Promise.all(userIDs.map(id => this._fetchDevices(id)));
 
         for (let i = 0; i < responses.length; ++i) {
             const devices = responses[i]['devices'];
@@ -120,14 +120,14 @@ class DevicesStore {
 
         for (let i = 0; i < inflight.length; ++i)
             switch (responses[i].status) {
-                case 'fulfilled':
-                    inflight[i].device.updateStatus(
-                        DeviceStatus.fromJSON(responses[i].value['status']));
-                    break;
+            case 'fulfilled':
+                inflight[i].device.updateStatus(
+                    DeviceStatus.fromJSON(responses[i].value['status']));
+                break;
 
-                case 'rejected':
-                    inflight[i].device.updateStatus(DeviceStatus.error());
-                    break;
+            case 'rejected':
+                inflight[i].device.updateStatus(DeviceStatus.error());
+                break;
             }
     }
 

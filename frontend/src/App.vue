@@ -1,6 +1,6 @@
 <template>
     <div class="bg txtr-dots txtr-dots--blue">
-        <Navbar class="navigation-bar" v-model:selectedTab="selectedTab" />
+        <NavigationBar class="navigation-bar" v-model:selectedTab="selectedTab" />
 
         <div class="front-and-center">
             <div v-show="selectedTab == 'canvas'">
@@ -19,7 +19,7 @@
 import { ref, provide, watch } from 'vue';
 
 import FriendsList     from './components/friends_list/FriendsList.vue'
-import Navbar          from './components/navbar/Navbar.vue';
+import NavigationBar   from './components/navigation_bar/NavigationBar.vue';
 import PicEditor       from './components/pic_editor/PicEditor.vue';
 import RecipientSelect from './components/recipient_select/RecipientSelect.vue';
 

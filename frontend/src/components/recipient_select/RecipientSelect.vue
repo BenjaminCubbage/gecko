@@ -105,6 +105,8 @@ const calloutText = computed(() => {
 
     if (!devices.anyDevices().value)
         return 'No friends with any devices';
+
+    return "";
 });
 </script>
 

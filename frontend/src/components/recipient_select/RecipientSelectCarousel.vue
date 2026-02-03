@@ -107,7 +107,7 @@ watchEffect(() => {
     if (props.options?.length == 0)
         selectedOption.value = null;
 
-    if (!props.options?.includes(selectedOption.value) ?? false)
+    if (!(props.options?.includes(selectedOption.value) ?? true))
         selectedOption.value = props.options[0];
 });
 
