@@ -4,9 +4,6 @@
     </div>
 </template>
 
-<script setup>
-</script>
-
 <style scoped>
 .recipient-select-callout {
     padding:     0 36px;

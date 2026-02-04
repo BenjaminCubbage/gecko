@@ -20,16 +20,22 @@
 </template>
 
 <script setup>
-import { ref, useTemplateRef, inject } from 'vue';
-import ToolbarChipPenSize from '@/components/toolbar_chips/ToolbarChipPenSize.vue';
-import ToolbarChipEraser  from '@/components/toolbar_chips/ToolbarChipEraser.vue';
+import {
+    inject,
+    ref,
+    useTemplateRef
+} from 'vue';
+
 import ToolbarChipClear   from '@/components/toolbar_chips/ToolbarChipClear.vue';
+import ToolbarChipEraser  from '@/components/toolbar_chips/ToolbarChipEraser.vue';
+import ToolbarChipPenSize from '@/components/toolbar_chips/ToolbarChipPenSize.vue';
 import ToolbarChipSend    from '@/components/toolbar_chips/ToolbarChipSend.vue';
 
 import PicEditorBorder from './PicEditorBorder.vue';
 import PicEditorCanvas from './PicEditorCanvas.vue';
+
 import { Dispatch } from '@/core/dispatch/Dispatch.js';
-import { Keys } from '@/core/store/Keys.js';
+import { Keys }     from '@/core/di/Keys.js';
 
 const props = defineProps({
     recipientDevice: { required: true }
@@ -48,8 +54,8 @@ function send() {
 
     if (props.recipientDevice != null) {
         Dispatch.Post_SharedImage(
-            session.activeUserID(),
-            session.xsrfCookie(),
+            session.activeUserID,
+            session.xsrfCookie,
             idempotencyKey,
             props.recipientDevice.deviceID,
             picEditorCanvas.value.readGIBBlob());
@@ -58,7 +64,7 @@ function send() {
 
 void getLatest;
 function getLatest() {
-    Dispatch.Get_LatestImage(session.activeUserID(), session.xsrfCookie())
+    Dispatch.Get_LatestImage(session.activeUserID, session.xsrfCookie)
         .onSuccess(async body => {
             const arr = new Uint8Array(await body.arrayBuffer());
             picEditorCanvas.value.writeGIBBlob(arr);

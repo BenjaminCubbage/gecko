@@ -6,9 +6,6 @@
     </div>
 </template>
 
-<script setup>
-</script>
-
 <style scoped>
     .friends-list-divider {
         display:       flex;

@@ -15,12 +15,19 @@
 </template>
 
 <script setup>
-import { ref, watch, computed, onMounted, useTemplateRef } from 'vue';
-import { delay }       from '@/core/async/Delay.js';
+import {
+    computed,
+    onMounted,
+    ref,
+    useTemplateRef,
+    watch
+} from 'vue';
+
 import { CanvasClear } from '@/core/canvas/CanvasClear.js';
 import { CanvasUtils } from '@/core/canvas/CanvasUtils.js';
 import { CanvasToGIB } from '@/core/canvas_gib/CanvasToGIB.js';
 import { GIBToCanvas } from '@/core/canvas_gib/GIBToCanvas.js';
+import { delay }       from '@/core/async/Delay.js';
 
 const props = defineProps({
     /* 'small' | 'medium' | 'large' */

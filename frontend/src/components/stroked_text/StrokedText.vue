@@ -17,9 +17,9 @@
 
 <script setup>
 defineProps({
-    strokeColor: { type: String, default: 'white' },
-    strokeThickness: { type: String, default: '4px' },
-    ellipses: { type: Boolean, default: false }
+    strokeColor:     { type: String,  default: 'white' },
+    strokeThickness: { type: String,  default: '4px'   },
+    ellipses:        { type: Boolean, default: false   }
 });
 </script>
 

@@ -1,9 +1,5 @@
 <template>
-    <div
-        class="recipient-select-carousel"
-        :style="{
-            'font-size': big ? '1.4rem' : '0.95rem'
-        }">
+    <div class="recipient-select-carousel">
         <button
             class="arrow arrow-left txtr-diag txtr-diag--green"
             @click="carouselPrev"
@@ -17,39 +13,44 @@
                 'max-width': animMaxWidth,
                 'min-width': animMinWidth
             }">
-            <!-- Measuring only (pos absolute, for width anim) -->
-            <div class="measure-options">
-                <template v-if="mode == 'ready'">
-                    <div
-                        v-for="option in options"
-                        ref="measureOptionsEls"
-                        style="display: grid; align-items: center;"
-                        :key="optionID(option)">
-                        <RecipientSelectDeviceSignal
-                            v-if="selectedOption != null && signal(selectedOption) != null"
-                            :status="signal(selectedOption)" />
+            <!-- Measuring only (for width anim) -->
+            <teleport to="body">
+                <div class="measure-options">
+                    <template v-if="mode == 'ready'">
+                        <div
+                            v-for="option in options"
+                            ref="measureOptionsEls"
+                            :style="`font-size: ${fontSize}`"
+                            :key="optionID(option)">
+                            <RecipientSelectDeviceSignal
+                                v-if="selectedOption != null && signal != null"
+                                :status="signal(selectedOption)" />
 
-                        <StrokedText ellipses>
-                            <slot v-if="selectedOption" name="label" :option="option"></slot>
-                        </StrokedText>
+                            <StrokedText ellipses>
+                                <slot v-if="selectedOption" name="label" :option="option"></slot>
+                            </StrokedText>
+                        </div>
+                    </template>
+                    <div v-else
+                        class="loading"
+                        ref="measureLoadingEl">
+                        Loading...
                     </div>
-                </template>
-                <div v-else
-                    class="loading"
-                    ref="measureLoadingEl">
-                    Loading...
                 </div>
-            </div>
+            </teleport>
 
             <div style="display: grid; align-items: center;">
                 <transition name="loaded" mode="out-in">
                     <div v-if="mode == 'ready'">
-                        <StrokedText style="margin-bottom: -4px" ellipses>
+                        <StrokedText
+                            style="margin-bottom: -4px;"
+                            :style="`font-size: ${fontSize}`"
+                            ellipses>
                             <slot v-if="selectedOption" name="label" :option="selectedOption"></slot>
                         </StrokedText>
 
                         <RecipientSelectDeviceSignal
-                            v-if="selectedOption != null && signal(selectedOption) != null"
+                            v-if="selectedOption != null && signal != null"
                             :status="signal(selectedOption)" />
                     </div>
 
@@ -72,8 +73,16 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onMounted, ref,
-    useTemplateRef, watch, watchEffect, onUnmounted } from 'vue';
+import {
+    computed,
+    nextTick,
+    onMounted,
+    onUnmounted,
+    ref,
+    useTemplateRef,
+    watch,
+    watchEffect
+} from 'vue';
 
 import RecipientSelectDeviceSignal from './RecipientSelectDeviceSignal.vue';
 import StrokedText from '@/components/stroked_text/StrokedText.vue';
@@ -88,8 +97,8 @@ const props = defineProps({
     // () => 'online'  -> device is online
     // () => 'offline' -> device is offline
     // () => 'pending' -> connection status not yet known
-    // () => null      -> don't show a status
-    signal: { type: Function, default: () => null },
+    // () => null      -> status is loading
+    signal: { type: Function, default: null },
 
     // 'loading' -> loading screen shown
     // 'ready'  -> recipients are loaded and should be displayed
@@ -102,6 +111,12 @@ const { addResizeHandler, removeResizeHandler } = useOnResize();
 const measureOptionsEls = useTemplateRef('measureOptionsEls');
 const measureLoadingEl = useTemplateRef('measureLoadingEl');
 
+const fontSize = computed(() => props.big ? '3.2rem' : '2.2rem');
+
+watch(props, updateMinMaxWidthForAnim);
+watch(selectedOption, () => {
+    updateMinMaxWidthForAnim();
+});
 
 watchEffect(() => {
     if (props.options?.length == 0)
@@ -136,8 +151,6 @@ const animMinWidth   = ref('0px');
 
 onMounted(updateMinMaxWidthForAnim);
 onUnmounted(() => selectedOption.value = null);
-
-watch(props, updateMinMaxWidthForAnim);
 
 function updateMinMaxWidthForAnim() {
     /*
@@ -184,14 +197,15 @@ function tryMoveSelection(by) {
     height:                36px;
 
     font-family: var(--font-heading);
-    font-size:   1rem;
 }
 
 .measure-options {
-    display:       grid;
-    justify-items: center;
-    position:      absolute;
-    visibility:    hidden;
+    display:     grid;
+    place-items: start;
+    position:    fixed;
+    visibility:  hidden;
+    z-index:     100;
+    font-family: var(--font-heading);
 }
 
 .selected-option {
@@ -199,7 +213,6 @@ function tryMoveSelection(by) {
     margin-left: 1.5px;
     padding:     0 3px;
 
-    font-size:   2.4em;
     line-height: 1;
     text-align:  center;
     user-select: none;
@@ -219,10 +232,10 @@ function tryMoveSelection(by) {
 
     --arrow-offset: 0px;
 
-    box-shadow: 
+    box-shadow:
         calc(var(--shadow-dist-s) - var(--arrow-offset))
         calc(var(--shadow-dist-s) - var(--arrow-offset))
-        0 
+        0
         black;
 
     border-radius: var(--radius-s);

@@ -54,7 +54,10 @@
 </template>
 
 <script setup>
-import { ref, computed, } from 'vue';
+import {
+    computed,
+    ref
+} from 'vue';
 
 const props = defineProps({
     // 'notfriends' | 'pendingin' | 'pendingout' | 'active' | 'me'

@@ -2,13 +2,13 @@
     <div class="header-strip">
         <transition name="login-appear" mode="out-in">
             <AccountWidgetLogInButton
-                v-if="!session.activeUser().value"
+                v-if="!session.activeUser.value"
                 href="/auth/login" />
 
             <div v-else>
                 <div class="badge-section">
                     <AccountWidgetUsernameBadge
-                        :username="session.activeUser().value['username']"
+                        :username="session.activeUser.value['username']"
                         :status="userBadgeStatus"
                         :forbiddenUsernames="forbiddenUsernames"
                         @requestEdit="userBadgeStatus = 'editing'"
@@ -27,15 +27,24 @@
 </template>
 
 <script setup>
-import { inject, ref, useTemplateRef } from 'vue';
-import AccountWidgetLogInButton from './AccountWidgetLogInButton.vue';
-import AccountWidgetLogOutButton from './AccountWidgetLogOutButton.vue';
+import {
+    inject,
+    ref,
+    useTemplateRef
+} from 'vue';
+
+import AccountWidgetLogInButton   from './AccountWidgetLogInButton.vue';
+import AccountWidgetLogOutButton  from './AccountWidgetLogOutButton.vue';
 import AccountWidgetUsernameBadge from './AccountWidgetUsernameBadge.vue';
-import AccountWidgetStatusBubble from './AccountWidgetStatusBubble.vue';
+import AccountWidgetStatusBubble  from './AccountWidgetStatusBubble.vue';
+
+import {
+    HttpError,
+    NetworkError
+} from '@/core/errors/Errors.js';
 
 import { errorResponseToDisplayString } from '@/core/http/ErrorResponseToDisplayString';
-import { Keys } from '@/core/store/Keys.js';
-import { HttpError, NetworkError } from '@/core/store/Errors.js';
+import { Keys }                         from '@/core/di/Keys.js';
 
 const statusBubble = useTemplateRef('statusBubble');
 
@@ -62,7 +71,7 @@ async function changeUsername(newUsername) {
 }
 
 async function logout() {
-    session.logOut();
+    session.requestLogOut();
 }
 </script>
 

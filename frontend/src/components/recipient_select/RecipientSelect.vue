@@ -39,10 +39,16 @@
 </template>
 
 <script setup>
-import { computed, inject, ref, watch }   from 'vue';
-import RecipientSelectCarousel  from './RecipientSelectCarousel.vue';
-import RecipientSelectCallout from './RecipientSelectCallout.vue';
-import { Keys }                 from '@/core/store/Keys.js';
+import {
+    computed,
+    inject,
+    ref,
+    watch
+} from 'vue';
+
+import RecipientSelectCarousel from './RecipientSelectCarousel.vue';
+import RecipientSelectCallout  from './RecipientSelectCallout.vue';
+import { Keys }                from '@/core/di/Keys.js';
 
 const session = inject(Keys.SessionStore);
 const friends = inject(Keys.FriendsStore);
@@ -61,7 +67,7 @@ const usersMode = computed(() => {
         'loading':         'loading',
         'error':           'error',
         'ready':           'ready'
-    }[friends.state().value];
+    }[friends.state.value];
 });
 
 const devicesMode = computed(() => {
@@ -71,39 +77,39 @@ const devicesMode = computed(() => {
         'error':           'error',
         'loadingstatuses': 'ready',
         'ready':           'ready'
-    }[devices.state().value];
+    }[devices.state.value];
 });
 
 const users = computed(() => {
     return usersMode.value === 'ready'
-        ? [session.activeUser().value, ...friends.activeFriends().map(f => f.user)]
-            .filter(user => devices.usersDevices().has(user.userID))
+        ? [session.activeUser.value, ...friends.activeFriends.map(f => f.user)]
+            .filter(user => user.userID in devices.deviceOwners)
         : [];
 });
 
 const userDevices = computed(() => {
-    return devicesMode.value === 'ready' && 
-           selectedUser.value && 
-           devices.usersDevices().has(selectedUser.value.userID)
-        ? devices.usersDevices().get(selectedUser.value.userID)
+    return devicesMode.value === 'ready' &&
+           selectedUser.value &&
+           selectedUser.value.userID in devices.deviceOwners
+        ? devices.deviceOwners[selectedUser.value.userID]
         : [];
 });
 
-const showCallout = computed(() => devices.state().value !== 'ready' || !devices.anyDevices().value);
+const showCallout = computed(() => devices.state.value !== 'ready' || !devices.hasAnyDevices.value);
 const calloutText = computed(() => {
-    if (session.state().value === 'loading')
+    if (session.state.value === 'loading')
         return 'Loading...';
 
-    if (session.state().value === 'loggedout')
+    if (session.state.value === 'loggedout')
         return 'Not logged in';
 
-    if (devices.state().value === 'error')
+    if (devices.state.value === 'error')
         return 'Error loading devices';
 
-    if (devices.state().value !== 'ready')
+    if (devices.state.value !== 'ready')
         return 'Loading...';
 
-    if (!devices.anyDevices().value)
+    if (!devices.hasAnyDevices.value)
         return 'No friends with any devices';
 
     return "";

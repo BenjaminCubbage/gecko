@@ -2,24 +2,20 @@
     <div class="recipient-select-device-signal">
         <StrokedText>
             <transition name="transition" mode="out-in">
-                <template v-if="status.isOnline()">
-                    <div class="status-text--on"></div>
+                <template v-if="status === 'online'">
+                    <div class="status-text--on" key="on"></div>
                 </template>
 
-                <template v-else-if="status.isOffline()">
-                    <div class="status-text--off"></div>
+                <template v-else-if="status === 'offline'">
+                    <div class="status-text--off" key="off"></div>
                 </template>
 
-                <template v-else-if="status.isPending()">
-                    <div class="status-text--pending"></div>
-                </template>
-
-                <template v-else-if="status.isLoading()">
-                    <div class="status-text--loading"></div>
+                <template v-else-if="status === 'pending'">
+                    <div class="status-text--pending" key="pending"></div>
                 </template>
 
                 <template v-else>
-                    <div class="status-text--error"></div>
+                    <div class="status-text--loading" key="loading"></div>
                 </template>
             </transition>
         </StrokedText>
@@ -28,8 +24,9 @@
 
 <script setup>
 import StrokedText from '@/components/stroked_text/StrokedText.vue';
+
 defineProps({
-    status: { type: Object, required: true }
+    status: { required: true }
 });
 </script>
 

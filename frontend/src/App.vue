@@ -23,10 +23,10 @@ import NavigationBar   from './components/navigation_bar/NavigationBar.vue';
 import PicEditor       from './components/pic_editor/PicEditor.vue';
 import RecipientSelect from './components/recipient_select/RecipientSelect.vue';
 
-import { DevicesStore } from './core/store/DevicesStore';
-import { FriendsStore } from '@/core/store/FriendsStore.js';
-import { Keys }         from '@/core/store/Keys.js';
-import { SessionStore } from '@/core/store/SessionStore.js';
+import { DevicesStore } from '@/stores/DevicesStore';
+import { FriendsStore } from '@/stores/FriendsStore.js';
+import { SessionStore } from '@/stores/SessionStore.js';
+import { Keys }         from './core/di/Keys.js';
 
 const selectedTab    = ref('canvas');
 const selectedDevice = ref(null);
@@ -39,22 +39,22 @@ provide(Keys.SessionStore, session);
 provide(Keys.FriendsStore, friends);
 
 (async () => {
-    await session.init();
-    await friends.init(session);
-    await devices.init(session, friends);
+    await session.requestResync();
+    await friends.requestResync(session);
+    await devices.requestResync(session, friends);
 })();
 
-watch(session.state(), (newState, oldState) => {
+watch(session.state, (newState, oldState) => {
     if ((newState === 'loggedout' && oldState === 'ready') ||
         (oldState === 'loggedout' && newState === 'ready')) {
-        friends.resync(session);
-        devices.resync(session, friends);
+        friends.requestResync(session);
+        devices.requestResync(session, friends);
     }
 });
 
-watch(friends.activeFriends(), newFriends => {
-    if (devices.state().value === 'ready')
-        devices.updateFriends(session, newFriends);
+watch(friends.activeFriends, newFriends => {
+    if (devices.state.value === 'ready')
+        devices.requestUpsertUserIDs(newFriends.map(f => f.user.userID));
 });
 </script>
 

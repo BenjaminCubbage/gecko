@@ -70,8 +70,13 @@
 
 <script setup>
 import {
-    toRefs, ref, useTemplateRef,
-    nextTick, watch, computed } from 'vue';
+    computed,
+    nextTick,
+    ref,
+    toRefs,
+    useTemplateRef,
+    watch
+} from 'vue';
 
 import UsernameInput from '@/components/username_input/UsernameInput.vue';
 import LoadingSpinner from '@/components/loading_spinner/LoadingSpinner.vue';

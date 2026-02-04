@@ -4,7 +4,7 @@
             <FriendsListSearchBar
                 v-model="searchText"
                 :mode="searchMode"
-                :disabled="!session.activeUser().value"
+                :disabled="!session.activeUser.value"
                 @submit="search" />
 
             <FriendsListPlaceholderMessage
@@ -24,12 +24,12 @@
                 </template>
             </FriendsListEntry>
 
-            <FriendsListDivider v-if="friends.pendingIncoming().length">
+            <FriendsListDivider v-if="friends.pendingIncoming.length">
                 Incoming Requests
             </FriendsListDivider>
 
             <FriendsListEntry
-                v-for="friend in friends.pendingIncoming()"
+                v-for="friend in friends.pendingIncoming"
                 :user="friend.user"
                 entryType="pendingin"
                 @delete="deleteFriendOrRequest"
@@ -48,7 +48,7 @@
                 :message="friendsPlaceholderMessage" />
 
             <FriendsListEntry
-                v-for="friend in friends.pendingOutgoing()"
+                v-for="friend in friends.pendingOutgoing"
                 :user="friend.user"
                 entryType="pendingout"
                 @delete="deleteFriendOrRequest"
@@ -59,7 +59,7 @@
             </FriendsListEntry>
 
             <FriendsListEntry
-                v-for="friend in friends.activeFriends()"
+                v-for="friend in friends.activeFriends"
                 :user="friend.user"
                 :acceptedOn="friend.acceptedOn"
                 entryType="active"
@@ -74,10 +74,15 @@
 </template>
 
 <script setup>
-import { ref, inject, watch } from 'vue';
+import {
+    ref,
+    inject,
+    watch
+} from 'vue';
+
 import { Dispatch } from '@/core/dispatch/Dispatch.js';
 import { equalsIgnoreCase } from '@/core/string/EqualsIgnoreCase.js';
-import { Keys } from '@/core/store/Keys.js';
+import { Keys } from '@/core/di/Keys.js';
 import { User } from '@/core/models/User.js';
 
 import FriendsListBorder from './FriendsListBorder.vue';
@@ -102,23 +107,23 @@ const searchResultPlaceholderMessage = ref('Loading Results');
 const friendsPlaceholderVariant = ref('loading');
 const friendsPlaceholderMessage = ref('Loading Friends');
 
-watch(session.state(), state => {
-    if (state === 'ready' && session.activeUser().value && !searchResult.value) {
+watch(session.state, state => {
+    if (state === 'ready' && session.activeUser.value && !searchResult.value) {
         searchResultPlaceholderVariant.value = null;
         searchResult.value = {
-            user: session.activeUser().value,
+            user: session.activeUser.value,
             type: 'me'
         };
     }
 }, { immediate: true });
 
 watch([
-    friends.state(),
-    friends.pendingIncoming(),
-    friends.pendingOutgoing(),
-    friends.activeFriends()
+    friends.state,
+    friends.pendingIncoming,
+    friends.pendingOutgoing,
+    friends.activeFriends
 ], () => {
-    switch (friends.state().value) {
+    switch (friends.state.value) {
     case 'loading':
     case 'uninitialized':
         friendsPlaceholderVariant.value = 'loading';
@@ -144,10 +149,10 @@ watch([
         break;
 
     case 'ready':
-        if (friends.pendingOutgoing() != null &&
-            friends.activeFriends() != null) {
-            if (!friends.activeFriends().length &&
-                !friends.pendingOutgoing().length) {
+        if (friends.pendingOutgoing != null &&
+            friends.activeFriends != null) {
+            if (!friends.activeFriends.length &&
+                !friends.pendingOutgoing.length) {
                 friendsPlaceholderVariant.value = 'info';
                 friendsPlaceholderMessage.value = 'No Friends (how sad)';
             } else {
@@ -159,28 +164,28 @@ watch([
 }, { immediate: true, deep: true });
 
 async function sendRequest(user) {
-    await friends.createFriendRequest(session, user);
+    await friends.publishCreateFriendRequest(session, user);
 
     if (searchResult.value.user.userID === user.userID)
         searchResult.value.type = 'pendingout';
 }
 
 async function acceptRequest(user) {
-    await friends.acceptFriendRequest(session, user.userID);
+    await friends.publishAcceptFriendRequest(session, user.userID);
 
     if (searchResult.value.user.userID === user.userID)
         searchResult.value.type = 'active';
 }
 
 async function deleteFriendOrRequest(user) {
-    await friends.deleteFriendOrRequest(session, user.userID);
+    await friends.publishDeleteFriendOrRequest(session, user.userID);
 
     if (searchResult.value.user.userID === user.userID)
         searchResult.value.type = 'notfriends';
 }
 
 function search() {
-    if (!session.activeUser().value)
+    if (!session.activeUser.value)
         return;
 
     if (tryFillSearchResultFromCache(searchText.value))
@@ -231,13 +236,13 @@ function search() {
 }
 
 function tryFillSearchResultFromCache(username) {
-    if (friends.state().value !== 'ready')
+    if (friends.state.value !== 'ready')
         return false;
 
-    if (session.activeUser().value && equalsIgnoreCase(session.activeUser().value.username, username)) {
+    if (session.activeUser.value && equalsIgnoreCase(session.activeUser.value.username, username)) {
         searchResultPlaceholderVariant.value = null;
         searchResult.value = {
-            user: session.activeUser().value,
+            user: session.activeUser.value,
             type: 'me'
         };
 

@@ -11,7 +11,13 @@
 </template>
 
 <script setup>
-import { computed, watch, useTemplateRef, nextTick } from 'vue';
+import {
+    computed,
+    nextTick,
+    useTemplateRef,
+    watch
+} from 'vue';
+
 import { characterIsAlphaNumeric } from '@/core/string/CharacterIsAlphaNumeric.js';
 
 const inputEl = useTemplateRef('inputEl');

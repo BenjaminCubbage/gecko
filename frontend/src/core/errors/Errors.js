@@ -13,10 +13,21 @@ class HttpError extends Error {
     }
 }
 
+class PartialCompletionError extends Error {
+    constructor(cause, message = null, options = null) {
+        super(message, Object.assign({ cause }, options));
+    }
+}
+
 class ResourceLockedError extends Error {
     constructor(message = null, options = null) {
         super(message, options);
     }
 }
 
-export { NetworkError, HttpError, ResourceLockedError };
+export {
+    NetworkError,
+    HttpError,
+    PartialCompletionError,
+    ResourceLockedError
+};

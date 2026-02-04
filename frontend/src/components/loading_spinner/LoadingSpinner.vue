@@ -2,9 +2,6 @@
     <i class="spinner hn hn-spinner-solid"></i>
 </template>
 
-<script setup>
-</script>
-
 <style scoped>
 .spinner {
     display:   inline-block;
