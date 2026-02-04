@@ -48,7 +48,7 @@ import {
 
 import RecipientSelectCarousel from './RecipientSelectCarousel.vue';
 import RecipientSelectCallout  from './RecipientSelectCallout.vue';
-import { Keys }                from '@/core/di/Keys.js';
+import { Keys }                from '@/core/di/keys.js';
 
 const session = inject(Keys.SessionStore);
 const friends = inject(Keys.FriendsStore);

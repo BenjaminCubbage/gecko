@@ -80,16 +80,16 @@ import {
     watch
 } from 'vue';
 
-import { Dispatch } from '@/core/dispatch/Dispatch.js';
-import { equalsIgnoreCase } from '@/core/string/EqualsIgnoreCase.js';
-import { Keys } from '@/core/di/Keys.js';
-import { User } from '@/core/models/User.js';
+import { Dispatch }         from '@/core/dispatch/Dispatch.js';
+import { equalsIgnoreCase } from '@/core/string/equalsIgnoreCase.js';
+import { Keys }             from '@/core/di/keys.js';
+import { User }             from '@//models/user.js';
 
-import FriendsListBorder from './FriendsListBorder.vue';
-import FriendsListEntry from './FriendsListEntry.vue';
-import FriendsListSearchBar from './FriendsListSearchBar.vue';
+import FriendsListBorder             from './FriendsListBorder.vue';
+import FriendsListEntry              from './FriendsListEntry.vue';
+import FriendsListSearchBar          from './FriendsListSearchBar.vue';
 import FriendsListPlaceholderMessage from './FriendsListPlaceholder.vue';
-import FriendsListDivider from './FriendsListDivider.vue';
+import FriendsListDivider            from './FriendsListDivider.vue';
 
 const session = inject(Keys.SessionStore);
 const friends = inject(Keys.FriendsStore);

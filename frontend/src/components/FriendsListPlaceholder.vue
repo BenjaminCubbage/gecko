@@ -11,7 +11,7 @@
 </template>
 
 <script setup>
-import LoadingSpinner from '@/components/loading_spinner/LoadingSpinner.vue';
+import LoadingSpinner from './LoadingSpinner.vue';
 
 defineProps({
     // 'loading' | 'info' | 'error'

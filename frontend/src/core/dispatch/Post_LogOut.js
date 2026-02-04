@@ -1,4 +1,4 @@
-import { HttpRequest } from './HttpRequest.js';
+import { HttpRequest } from '@/core/http/httpRequest.js';
 
 class Post_LogOut extends HttpRequest {
     constructor(xsrfToken) {

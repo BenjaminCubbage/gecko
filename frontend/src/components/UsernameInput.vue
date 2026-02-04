@@ -18,7 +18,7 @@ import {
     watch
 } from 'vue';
 
-import { characterIsAlphaNumeric } from '@/core/string/CharacterIsAlphaNumeric.js';
+import { characterIsAlphaNumeric } from '@/core/string/characterIsAlphaNumeric.js';
 
 const inputEl = useTemplateRef('inputEl');
 const inputText = defineModel({ required: true });

@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import AccountWidget     from '@/components/account_widget/AccountWidget.vue';
+import AccountWidget     from './AccountWidget.vue';
 import NavigationBarTabs from './NavigationBarTabs.vue';
 
 const selectedTab = defineModel('selectedTab');

@@ -13,7 +13,7 @@
 </template>
 
 <script setup>
-import StrokedText from '@/components/stroked_text/StrokedText.vue';
+import StrokedText from './StrokedText.vue';
 
 defineProps({
     title: { type: String, required: true }

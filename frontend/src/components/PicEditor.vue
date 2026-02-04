@@ -26,16 +26,16 @@ import {
     useTemplateRef
 } from 'vue';
 
-import ToolbarChipClear   from '@/components/toolbar_chips/ToolbarChipClear.vue';
-import ToolbarChipEraser  from '@/components/toolbar_chips/ToolbarChipEraser.vue';
-import ToolbarChipPenSize from '@/components/toolbar_chips/ToolbarChipPenSize.vue';
-import ToolbarChipSend    from '@/components/toolbar_chips/ToolbarChipSend.vue';
+import ToolbarChipClear   from './ToolbarChipClear.vue';
+import ToolbarChipEraser  from './ToolbarChipEraser.vue';
+import ToolbarChipPenSize from './ToolbarChipPenSize.vue';
+import ToolbarChipSend    from './ToolbarChipSend.vue';
 
 import PicEditorBorder from './PicEditorBorder.vue';
 import PicEditorCanvas from './PicEditorCanvas.vue';
 
 import { Dispatch } from '@/core/dispatch/Dispatch.js';
-import { Keys }     from '@/core/di/Keys.js';
+import { Keys }     from '@/core/di/keys.js';
 
 const props = defineProps({
     recipientDevice: { required: true }

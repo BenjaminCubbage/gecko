@@ -10,11 +10,11 @@ import {
     HttpError,
     PartialCompletionError,
     ResourceLockedError
-} from '../core/errors/Errors.js';
+} from '../core/errors/errors.js';
 
-import { Device }             from '@/core/models/Device.js';
+import { Device }             from '@//models/device.js';
 import { Dispatch }           from '@/core/dispatch/Dispatch.js';
-import { MultiResourceMutex } from '@/core/async/Mutex.js';
+import { MultiResourceMutex } from '@/core/async/mutex.js';
 
 /*
     Stores owned devices keyed by user ID.

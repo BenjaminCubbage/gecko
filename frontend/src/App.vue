@@ -18,15 +18,15 @@
 <script setup>
 import { ref, provide, watch } from 'vue';
 
-import FriendsList     from './components/friends_list/FriendsList.vue'
-import NavigationBar   from './components/navigation_bar/NavigationBar.vue';
-import PicEditor       from './components/pic_editor/PicEditor.vue';
-import RecipientSelect from './components/recipient_select/RecipientSelect.vue';
+import FriendsList     from './components/FriendsList.vue';
+import NavigationBar   from './components/NavigationBar.vue';
+import PicEditor       from './components/PicEditor.vue';
+import RecipientSelect from './components/RecipientSelect.vue';
 
-import { DevicesStore } from '@/stores/DevicesStore';
-import { FriendsStore } from '@/stores/FriendsStore.js';
-import { SessionStore } from '@/stores/SessionStore.js';
-import { Keys }         from './core/di/Keys.js';
+import { DevicesStore } from './stores/devicesStore.js';
+import { FriendsStore } from './stores/friendsStore.js';
+import { SessionStore } from './stores/sessionStore.js';
+import { Keys }         from './core/di/keys.js';
 
 const selectedTab    = ref('canvas');
 const selectedDevice = ref(null);

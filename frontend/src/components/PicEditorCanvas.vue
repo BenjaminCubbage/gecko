@@ -23,11 +23,11 @@ import {
     watch
 } from 'vue';
 
-import { CanvasClear } from '@/core/canvas/CanvasClear.js';
-import { CanvasUtils } from '@/core/canvas/CanvasUtils.js';
-import { CanvasToGIB } from '@/core/canvas_gib/CanvasToGIB.js';
-import { GIBToCanvas } from '@/core/canvas_gib/GIBToCanvas.js';
-import { delay }       from '@/core/async/Delay.js';
+import { CanvasClear } from '@/core/canvas/canvasClear.js';
+import { CanvasUtils } from '@/core/canvas/canvasUtils.js';
+import { CanvasToGIB } from '@/core/canvas_gib/canvasToGIB.js';
+import { GIBToCanvas } from '@/core/canvas_gib/gibToCanvas.js';
+import { delay }       from '@/core/async/delay.js';
 
 const props = defineProps({
     /* 'small' | 'medium' | 'large' */

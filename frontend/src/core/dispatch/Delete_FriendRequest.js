@@ -1,4 +1,4 @@
-import { HttpRequest } from './HttpRequest.js';
+import { HttpRequest } from '@/core/http/httpRequest.js';
 
 class Delete_FriendRequest extends HttpRequest {
     constructor(userID, xsrfToken, otherUserID) {

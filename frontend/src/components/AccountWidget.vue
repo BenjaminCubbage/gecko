@@ -41,10 +41,10 @@ import AccountWidgetStatusBubble  from './AccountWidgetStatusBubble.vue';
 import {
     HttpError,
     NetworkError
-} from '@/core/errors/Errors.js';
+} from '@/core/errors/errors.js';
 
-import { errorResponseToDisplayString } from '@/core/http/ErrorResponseToDisplayString';
-import { Keys }                         from '@/core/di/Keys.js';
+import { errorResponseToDisplayString } from '@/core/http/errorResponseToDisplayString.js';
+import { Keys }                         from '@/core/di/keys.js';
 
 const statusBubble = useTemplateRef('statusBubble');
 

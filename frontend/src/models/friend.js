@@ -1,4 +1,4 @@
-import { User } from './User.js';
+import { User } from './user.js';
 
 class Friend {
     static fromJSON(json) {

@@ -29,8 +29,8 @@
 
 <script setup>
 import { ref } from 'vue';
-import UsernameInput from '@/components/username_input/UsernameInput.vue';
-import LoadingSpinner from '@/components/loading_spinner/LoadingSpinner.vue';
+import UsernameInput  from './UsernameInput.vue';
+import LoadingSpinner from './LoadingSpinner.vue';
 
 defineProps({
     // 'normal' | 'loading'

@@ -8,12 +8,12 @@ import {
     HttpError,
     NetworkError,
     ResourceLockedError
-} from '@/core/errors/Errors.js';
+} from '@/core/errors/errors.js';
 
 import { Dispatch }           from '@/core/dispatch/Dispatch.js';
-import { equalsIgnoreCase }   from '@/core/string/EqualsIgnoreCase.js';
-import { Friend }             from '@/core/models/Friend.js';
-import { MultiResourceMutex } from '@/core/async/Mutex.js';
+import { equalsIgnoreCase }   from '@/core/string/equalsIgnoreCase.js';
+import { Friend }             from '@//models/friend.js';
+import { MultiResourceMutex } from '@/core/async/mutex.js';
 
 /*
     Stores the friends associated with a session's active user.

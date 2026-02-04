@@ -55,7 +55,7 @@
 
 <script setup>
 import ToolbarChipLayout from './ToolbarChipLayout.vue';
-import StrokedText       from '@/components/stroked_text/StrokedText.vue';
+import StrokedText       from './StrokedText.vue';
 
 const selectedPenSize = defineModel({ default: 'small' });
 </script>

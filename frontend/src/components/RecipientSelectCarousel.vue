@@ -85,8 +85,9 @@ import {
 } from 'vue';
 
 import RecipientSelectDeviceSignal from './RecipientSelectDeviceSignal.vue';
-import StrokedText from '@/components/stroked_text/StrokedText.vue';
-import { useOnResize } from '@/composables/UseOnResize';
+import StrokedText                 from './StrokedText.vue';
+
+import { useOnResize } from '@/composables/useOnResize';
 
 const props = defineProps({
     options:    { type: Array, required: true },

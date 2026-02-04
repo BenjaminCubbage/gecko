@@ -7,12 +7,12 @@ import {
     ResourceLockedError,
     NetworkError,
     HttpError
-} from '@/core/errors/Errors.js';
+} from '@/core/errors/errors.js';
 
-import { Cookies }       from '@/core/storage/Cookies.js';
+import { Cookies }       from '@/core/http/cookies.js';
 import { Dispatch }      from '@/core/dispatch/Dispatch.js';
-import { ResourceMutex } from '@/core/async/Mutex.js';
-import { User }          from '@/core/models/User.js';
+import { ResourceMutex } from '@/core/async/mutex.js';
+import { User }          from '@//models/user.js';
 
 /*
     Stores the current user and XSRF cookie.
@@ -128,7 +128,7 @@ class SessionStore {
     */
     async #retrieveValidXSRF() {
         const cookie = () =>
-            Cookies.byName('__Host-xsrf_token');
+            Cookies.getXSRFToken();
 
         this.#xsrfCookie = cookie();
 

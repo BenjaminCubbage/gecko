@@ -1,4 +1,4 @@
-import { HttpRequest } from './HttpRequest.js';
+import { HttpRequest } from '@/core/http/httpRequest.js';
 
 class Get_UsersDevices extends HttpRequest {
     constructor(userID) {

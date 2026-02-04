@@ -16,7 +16,7 @@
 <script setup>
 import { ref } from 'vue';
 
-const currentMessage = ref(':D');
+const currentMessage   = ref(':D');
 const isShowingMessage = ref(0);
 
 function showMessage(message, milliseconds = 3000) {
