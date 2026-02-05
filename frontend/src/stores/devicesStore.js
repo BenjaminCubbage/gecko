@@ -169,7 +169,7 @@ class DevicesStore {
     }
 
     static #clearMap(object) {
-        for (const key of Object.keys(object))
+        for (const key in object)
             delete object[key];
     }
 
@@ -181,14 +181,14 @@ class DevicesStore {
 
     static #getDevices(deviceOwners) {
         const result = [];
-        for (const userID of Object.keys(deviceOwners))
+        for (const userID in deviceOwners)
             result.push(...deviceOwners[userID]);
 
         return result;
     }
 
     static #getHasAnyDevices(deviceOwners) {
-        for (const userID of Object.keys(deviceOwners))
+        for (const userID in deviceOwners)
             if (deviceOwners[userID].length > 0)
                 return true;
 
