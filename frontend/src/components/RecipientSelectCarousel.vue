@@ -1,72 +1,48 @@
 <template>
+    <!-- Measuring only (for width anim) -->
+    <teleport to="body">
+        <div class="measure-options">
+            <div
+                v-for="option in options"
+                ref="measureOptionsEls"
+                class="text"
+                :style="`font-size: ${fontSize}`"
+                :key="optionID(option)">
+                <RecipientSelectDeviceSignal
+                    v-if="isDevicesVariant"
+                    :status="selectedOption.status" />
+                {{ optionContent(option) }}
+            </div>
+        </div>
+    </teleport>
+
     <div class="recipient-select-carousel">
         <button
             class="arrow arrow-left txtr-diag txtr-diag--green"
             @click="carouselPrev"
-            :disabled="mode != 'ready' || !hasPrev">
+            :disabled="!hasPrev">
             &lt;
         </button>
 
         <div
-            class="selected-option"
+            class="selected-option text text--display"
             :style="{
                 'max-width': animMaxWidth,
-                'min-width': animMinWidth
+                'min-width': animMinWidth,
+                'font-size': fontSize
             }">
-            <!-- Measuring only (for width anim) -->
-            <teleport to="body">
-                <div class="measure-options">
-                    <template v-if="mode == 'ready'">
-                        <div
-                            v-for="option in options"
-                            ref="measureOptionsEls"
-                            :style="`font-size: ${fontSize}`"
-                            :key="optionID(option)">
-                            <RecipientSelectDeviceSignal
-                                v-if="selectedOption != null && signal != null"
-                                :status="signal(selectedOption)" />
 
-                            <StrokedText ellipses>
-                                <slot v-if="selectedOption" name="label" :option="option"></slot>
-                            </StrokedText>
-                        </div>
-                    </template>
-                    <div v-else
-                        class="loading"
-                        ref="measureLoadingEl">
-                        Loading...
-                    </div>
-                </div>
-            </teleport>
+            {{ optionContent(selectedOption) }}
 
-            <div style="display: grid; align-items: center;">
-                <transition name="loaded" mode="out-in">
-                    <div v-if="mode == 'ready'">
-                        <StrokedText
-                            style="margin-bottom: -4px;"
-                            :style="`font-size: ${fontSize}`"
-                            ellipses>
-                            <slot v-if="selectedOption" name="label" :option="selectedOption"></slot>
-                        </StrokedText>
-
-                        <RecipientSelectDeviceSignal
-                            v-if="selectedOption != null && signal != null"
-                            :status="signal(selectedOption)" />
-                    </div>
-
-                    <div v-else class="loading">
-                        <StrokedText ellipses>
-                            Loading...
-                        </StrokedText>
-                    </div>
-                </transition>
-            </div>
+            <RecipientSelectDeviceSignal
+                v-if="isDevicesVariant"
+                :status="selectedOption.status" />
         </div>
 
         <button
             class="arrow arrow-right txtr-diag txtr-diag--green"
             @click="carouselNext"
-            :disabled="mode != 'ready' || !hasNext">
+            :disabled="!hasNext">
             &gt;
         </button>
     </div>
@@ -77,54 +53,82 @@ import {
     computed,
     nextTick,
     onMounted,
-    onUnmounted,
     ref,
     useTemplateRef,
-    watch,
-    watchEffect
+    watch
 } from 'vue';
 
 import RecipientSelectDeviceSignal from './RecipientSelectDeviceSignal.vue';
-import StrokedText                 from './StrokedText.vue';
+
+import { Device } from '@/models/device.js';
+import { User }   from '@/models/user.js';
 
 import { useOnResize } from '@/composables/useOnResize';
 
 const props = defineProps({
-    options:    { type: Array, required: true },
-    optionID:   { type: Function, required: true },
-    big:        { type: Boolean, default: false },
+    variant: {
+        type:      String,
+        required:  true,
+        validator(value) {
+            return [
+                'users',
+                'devices'
+            ].includes(value);
+        }
+    },
 
-    // devices only
-    // () => 'online'  -> device is online
-    // () => 'offline' -> device is offline
-    // () => 'pending' -> connection status not yet known
-    // () => null      -> status is loading
-    signal: { type: Function, default: null },
-
-    // 'loading' -> loading screen shown
-    // 'ready'  -> recipients are loaded and should be displayed
-    // 'error'   -> error shown
-    mode: { type: String, default: 'loading' }
+    options: {
+        type:     Array,
+        required: true,
+        validator(value, props) {
+            return value?.length && value.every(v => {
+                return props.variant === 'users'
+                    ? v instanceof User
+                    : v instanceof Device;
+            });
+        }
+    }
 });
 
-const selectedOption = defineModel({ required: true });
-const { addResizeHandler, removeResizeHandler } = useOnResize();
+const selectedOption = defineModel({
+    validator(value, props) {
+        return props.options.includes(value);
+    }
+});
+
 const measureOptionsEls = useTemplateRef('measureOptionsEls');
-const measureLoadingEl = useTemplateRef('measureLoadingEl');
+const measureLoadingEl  = useTemplateRef('measureLoadingEl');
 
-const fontSize = computed(() => props.big ? '3.2rem' : '2.2rem');
+const {
+    addResizeHandler,
+    removeResizeHandler
+} = useOnResize();
 
-watch(props, updateMinMaxWidthForAnim);
+const isUsersVariant   = computed(() => props.variant === 'users');
+const isDevicesVariant = computed(() => !isUsersVariant.value);
+
+const fontSize = computed(() =>
+    isUsersVariant.value
+        ? '3.2rem'
+        : '2.2rem'
+);
+
+const curSelectionIndex = computed(() => props.options?.indexOf(selectedOption.value) ?? -1);
+const hasNext           = computed(() => curSelectionIndex.value + 1 < props.options.length);
+const hasPrev           = computed(() => curSelectionIndex.value > 0);
+
 watch(selectedOption, () => {
-    updateMinMaxWidthForAnim();
+    if (!props.options.includes(selectedOption.value))
+        selectedOption.value = props.options[0];
+    else
+        updateMinMaxWidthForAnim();
 });
 
-watchEffect(() => {
-    if (props.options?.length == 0)
-        selectedOption.value = null;
-
-    if (!(props.options?.includes(selectedOption.value) ?? true))
+watch(() => props.options, () => {
+    if (!props.options.includes(selectedOption.value))
         selectedOption.value = props.options[0];
+}, {
+    immediate: true
 });
 
 watch(measureOptionsEls, (newEls, oldEls) => {
@@ -133,13 +137,9 @@ watch(measureOptionsEls, (newEls, oldEls) => {
             addResizeHandler(v, updateMinMaxWidthForAnim);
     } else {
         for (const v of oldEls) if (!newEls.includes(v)) removeResizeHandler(v, updateMinMaxWidthForAnim);
-        for (const v of newEls) if (!oldEls.includes(v)) addResizeHandler(v, updateMinMaxWidthForAnim);
+        for (const v of newEls) if (!oldEls.includes(v)) addResizeHandler(v,    updateMinMaxWidthForAnim);
     }
 });
-
-const curSelectionIndex = computed(() => props.options?.indexOf(selectedOption.value) ?? -1);
-const hasNext = computed(() => curSelectionIndex.value + 1 < props.options.length);
-const hasPrev = computed(() => curSelectionIndex.value > 0);
 
 /*
     Manually setting starting max is a cheap hack to get it
@@ -147,11 +147,22 @@ const hasPrev = computed(() => curSelectionIndex.value > 0);
     state. I tried only setting the transition after the actual
     element loaded but found that was a race condition.
 */
-const animMaxWidth   = ref(props.big ? '200px' : '200px');
-const animMinWidth   = ref('0px');
+const animMaxWidth = ref('26px');
+const animMinWidth = ref('26px');
 
 onMounted(updateMinMaxWidthForAnim);
-onUnmounted(() => selectedOption.value = null);
+
+function optionID(option) {
+    return props.variant === 'users'
+        ? option.userID
+        : option.deviceID;
+}
+
+function optionContent(option) {
+    return props.variant === 'users'
+        ? option.username
+        : option.name;
+}
 
 function updateMinMaxWidthForAnim() {
     /*
@@ -196,8 +207,6 @@ function tryMoveSelection(by) {
     gap:                   12px;
     grid-template-columns: auto 1fr auto;
     height:                36px;
-
-    font-family: var(--font-heading);
 }
 
 .measure-options {
@@ -206,17 +215,12 @@ function tryMoveSelection(by) {
     position:    fixed;
     visibility:  hidden;
     z-index:     100;
-    font-family: var(--font-heading);
 }
 
 .selected-option {
-    display:     inline-block;
-    margin-left: 1.5px;
-    padding:     0 3px;
-
-    line-height: 1;
-    text-align:  center;
-    user-select: none;
+    display:       inline-block;
+    justify-items: center;
+    margin-left:   1.5px;
 
     transition:
         max-width 500ms cubic-bezier(.78,-0.01,.32,1),
@@ -227,7 +231,8 @@ function tryMoveSelection(by) {
     height: 1.35em;
     width:  1.35em;
 
-    color:     black;
+    color:       black;
+    font-family: var(--font-heading);
     font-size:   2.3rem;
     line-height: 0;
 
@@ -274,5 +279,31 @@ function tryMoveSelection(by) {
 .loaded-enter-from,
 .loaded-leave-to {
     transform: scale(0.8);
+}
+
+.text {
+    padding:     0 3px;
+    font-family: var(--font-heading);
+}
+
+.text--display {
+    overflow: hidden;
+    width:    100%;
+
+    -webkit-text-stroke: 4px white;
+    color:               black;
+    line-height:         1;
+    text-align:          center;
+    text-overflow:       ellipsis;
+    user-select:         none;
+    white-space:         nowrap;
+
+    paint-order:         stroke;
+}
+
+@supports (text-overflow: "") {
+    .text--display {
+        text-overflow: "";
+    }
 }
 </style>

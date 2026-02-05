@@ -8,31 +8,24 @@
             </div>
 
             <div class="carousels" v-else>
-                <div class="user-carousel">
-                    <RecipientSelectCarousel
-                        v-model="selectedUser"
-                        :options="users"
-                        :optionID="u => u.userID"
-                        big
-                        :mode="usersMode">
-                        <template #label="{ option }">
-                            {{ option.username }}
-                        </template>
-                    </RecipientSelectCarousel>
-                </div>
+                <RecipientSelectCarousel
+                    v-model="selectedUser"
+                    variant="users"
+                    :options="userOptions">
+                    <template #label="{ option }">
+                        {{ option.username }}
+                    </template>
+                </RecipientSelectCarousel>
 
-                <div class="device-carousel">
-                    <RecipientSelectCarousel
-                        v-model="selectedDevice"
-                        :options="userDevices"
-                        :optionID="d => d.deviceID"
-                        :signal="d => d.status"
-                        :mode="devicesMode">
-                        <template #label="{ option }">
-                            {{ option?.name }}
-                        </template>
-                    </RecipientSelectCarousel>
-                </div>
+                <RecipientSelectCarousel
+                    v-if="selectedUser"
+                    v-model="selectedDevice"
+                    variant="devices"
+                    :options="deviceOptions">
+                    <template #label="{ option }">
+                        {{ option?.name }}
+                    </template>
+                </RecipientSelectCarousel>
             </div>
         </transition>
     </div>
@@ -54,66 +47,56 @@ const session = inject(Keys.SessionStore);
 const friends = inject(Keys.FriendsStore);
 const devices = inject(Keys.DevicesStore);
 
-const selectedUser   = ref(null);
-const selectedDevice = ref(null);
+const selectedUser   = ref();
+const selectedDevice = ref();
 
 const emit = defineEmits([ 'selectionChanged' ]);
 
-watch(selectedDevice, newValue => emit('selectionChanged', newValue));
-
-const usersMode = computed(() => {
-    return {
-        'uninitialized':   'loading',
-        'loading':         'loading',
-        'error':           'error',
-        'ready':           'ready'
-    }[friends.state.value];
-});
-
-const devicesMode = computed(() => {
-    return {
-        'uninitialized':   'loading',
-        'loading':         'loading',
-        'error':           'error',
-        'loadingstatuses': 'ready',
-        'ready':           'ready'
-    }[devices.state.value];
-});
-
-const users = computed(() => {
-    return usersMode.value === 'ready'
+const userOptions = computed(() => {
+    return devices.state.value === 'ready'
         ? [session.activeUser.value, ...friends.activeFriends.map(f => f.user)]
             .filter(user => user.userID in devices.deviceOwners)
         : [];
 });
 
-const userDevices = computed(() => {
-    return devicesMode.value === 'ready' &&
-           selectedUser.value &&
-           selectedUser.value.userID in devices.deviceOwners
+const deviceOptions = computed(() => {
+    return selectedUser.value != null
         ? devices.deviceOwners[selectedUser.value.userID]
         : [];
 });
 
-const showCallout = computed(() => devices.state.value !== 'ready' || !devices.hasAnyDevices.value);
-const calloutText = computed(() => {
-    if (session.state.value === 'loading')
-        return 'Loading...';
-
-    if (session.state.value === 'loggedout')
-        return 'Not logged in';
-
-    if (devices.state.value === 'error')
-        return 'Error loading devices';
-
-    if (devices.state.value !== 'ready')
-        return 'Loading...';
-
-    if (!devices.hasAnyDevices.value)
-        return 'No friends with any devices';
-
-    return "";
+watch(userOptions, () => {
+    if (!userOptions.value.includes(selectedUser))
+        selectedUser.value = userOptions.value[0];
 });
+
+watch(deviceOptions, () => {
+    if (!deviceOptions.value.includes(selectedDevice))
+        selectedDevice.value = deviceOptions.value[0];
+});
+
+const showCallout = computed(() => {
+    return selectedDevice.value == null;
+});
+
+const calloutText = computed(() => {
+    switch (devices.state.value) {
+        case 'loggedout':
+            return 'Not logged in';
+
+        case 'error':
+            return 'Error loading devices';
+
+        case 'ready':
+            return devices.hasAnyDevices.value
+                ? 'Loading...'
+                : 'No friends with any devices';
+    }
+
+    return 'Loading...';
+});
+
+watch(selectedDevice, newValue => emit('selectionChanged', newValue));
 </script>
 
 <style scoped>

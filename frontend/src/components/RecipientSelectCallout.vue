@@ -17,12 +17,12 @@
 
     background:
         linear-gradient(
-            var(--col-gray-2) 50%,
-            var(--col-gray-3) 50%);
+            var(--col-green-2) 50%,
+            var(--col-green-4) 50%);
 
     box-shadow:
         var(--shadow-s),
-        inset 0 3px 0 var(--col-gray-1);
+        inset 0 3px 0 var(--col-green-0);
 
     border-radius: var(--radius-s);
     border:        var(--border-s);

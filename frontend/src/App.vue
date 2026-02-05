@@ -4,7 +4,7 @@
 
         <div class="front-and-center">
             <div v-show="selectedTab == 'canvas'">
-                <RecipientSelect @selectionChanged="d => selectedDevice = d" />
+                <RecipientSelect @selectionChanged="selectedDeviceChanged" />
                 <PicEditor :recipientDevice="selectedDevice" />
             </div>
 
@@ -56,6 +56,10 @@ watch(friends.activeFriends, newFriends => {
     if (devices.state.value === 'ready')
         devices.requestUpsertUserIDs(newFriends.map(f => f.user.userID));
 });
+
+function selectedDeviceChanged(value) {
+    selectedDevice.value = value;
+}
 </script>
 
 <style scoped>
