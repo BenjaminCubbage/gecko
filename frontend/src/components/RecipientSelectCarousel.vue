@@ -60,8 +60,6 @@ import {
 
 import RecipientSelectDeviceSignal from './RecipientSelectDeviceSignal.vue';
 
-import { useDetectResize } from '@/composables/useDetectResize';
-
 import { Device } from '@/models/device.js';
 import { User }   from '@/models/user.js';
 
@@ -99,11 +97,6 @@ const selectedOption = defineModel({
 const measureOptionsEls = useTemplateRef('measureOptionsEls');
 const measureLoadingEl  = useTemplateRef('measureLoadingEl');
 
-const {
-    addResizeHandler,
-    removeResizeHandler
-} = useDetectResize();
-
 const isUsersVariant   = computed(() => props.variant === 'users');
 const isDevicesVariant = computed(() => !isUsersVariant.value);
 
@@ -121,7 +114,7 @@ watch(selectedOption, () => {
     if (!props.options.includes(selectedOption.value))
         selectedOption.value = props.options[0];
     else
-        updateMinMaxWidthForAnim();
+        recalculateBoxWidth();
 });
 
 watch(() => props.options, () => {
@@ -131,15 +124,14 @@ watch(() => props.options, () => {
     immediate: true
 });
 
-watch(measureOptionsEls, (newEls, oldEls) => {
-    if (!oldEls) {
-        for (const v of newEls)
-            addResizeHandler(v, updateMinMaxWidthForAnim);
-    } else {
-        for (const v of oldEls) if (!newEls.includes(v)) removeResizeHandler(v, updateMinMaxWidthForAnim);
-        for (const v of newEls) if (!oldEls.includes(v)) addResizeHandler(v,    updateMinMaxWidthForAnim);
+watch(
+    () => isUsersVariant.value
+        ? [selectedOption.value.username]
+        : [selectedOption.value.name, selectedOption.value.status],
+    () => {
+        recalculateBoxWidth();
     }
-});
+);
 
 /*
     Manually setting starting max is a cheap hack to get it
@@ -150,7 +142,7 @@ watch(measureOptionsEls, (newEls, oldEls) => {
 const animMaxWidth = ref('26px');
 const animMinWidth = ref('26px');
 
-onMounted(updateMinMaxWidthForAnim);
+onMounted(recalculateBoxWidth);
 
 function optionID(option) {
     return props.variant === 'users'
@@ -164,14 +156,14 @@ function optionContent(option) {
         : option.name;
 }
 
-function updateMinMaxWidthForAnim() {
+function recalculateBoxWidth() {
     /*
-        Give option elements a chance to be loaded into the DOM.
+        Give elements a chance to render
     */
     nextTick(() => {
         /*
             Vue does not gaurantee order of v-for ref arrays, so we must
-            use compareDocumentPosition to get true ordering.
+            use compareDocumentPosition.
         */
         const element = props.mode == 'loading'
             ? measureLoadingEl?.value
