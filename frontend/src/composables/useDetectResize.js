@@ -1,4 +1,6 @@
-export function useOnResize() {
+import { onUnmounted } from 'vue';
+
+export function useDetectResize() {
     class Entry {
         constructor({ el, observer, handlers }) {
             this.el    = el;
@@ -51,6 +53,12 @@ export function useOnResize() {
             entries.splice(entries.indexOf(entry), 1);
         }
     }
+
+    onUnmounted(() => {
+        for (const entry of entries)
+            entry.observer.unobserve(entry.el);
+        entries.length = 0;
+    });
 
     return {
         addResizeHandler,

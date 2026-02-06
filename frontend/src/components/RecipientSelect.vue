@@ -1,13 +1,17 @@
 <template>
     <div class="recipient-select">
-        <transition name="callout-expand" mode="out-in">
-            <div class="callout" v-if="showCallout">
-                <RecipientSelectCallout>
-                    {{ calloutText }}
-                </RecipientSelectCallout>
-            </div>
+        <transition name="slide-up" mode="out-in">
+            <RecipientSelectCallout
+                v-if="showCallout"
+                class="callout"
+                key="callout">
+                {{ calloutText }}
+            </RecipientSelectCallout>
 
-            <div class="carousels" v-else>
+            <div
+                v-else
+                class="carousels"
+                key="carousels">
                 <RecipientSelectCarousel
                     v-model="selectedUser"
                     variant="users"
@@ -18,7 +22,6 @@
                 </RecipientSelectCarousel>
 
                 <RecipientSelectCarousel
-                    v-if="selectedUser"
                     v-model="selectedDevice"
                     variant="devices"
                     :options="deviceOptions">
@@ -108,7 +111,6 @@ watch(selectedDevice, newValue => emit('selectionChanged', newValue));
 
 .callout {
     grid-area:   1 / 1;
-    will-change: transform;
 }
 
 .carousels {
@@ -117,16 +119,16 @@ watch(selectedDevice, newValue => emit('selectionChanged', newValue));
     flex-flow:   column nowrap;
     gap:         6px;
     grid-area:   1 / 1;
-    will-change: transform;
 }
 
-.callout-expand-enter-active,
-.callout-expand-leave-active {
-    transition: transform 50ms ease;
+.slide-up-enter-active,
+.slide-up-leave-active {
+    transition: 
+        transform 50ms ease-out;
 }
 
-.callout-expand-enter-from,
-.callout-expand-leave-to {
-    transform: scale(0.9);
+.slide-up-enter-from,
+.slide-up-leave-to {
+  transform: scale(0.8);
 }
 </style>

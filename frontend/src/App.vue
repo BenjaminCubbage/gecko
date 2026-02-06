@@ -63,24 +63,24 @@ function selectedDeviceChanged(value) {
 </script>
 
 <style scoped>
-    :global(body) {
-        background: #7298ff;
-    }
+:global(body) {
+    background: #7298ff;
+}
 
-    .bg {
-        align-content:    center;
-        display:          flex;
-        flex-flow:        column nowrap;
-        height:           100dvh;
-        overflow-y:       auto;
-        scrollbar-gutter: stable both-edges;
-    }
+.bg {
+    align-content:    center;
+    display:          flex;
+    flex-flow:        column nowrap;
+    height:           100dvh;
+    overflow-y:       auto;
+    scrollbar-gutter: stable both-edges;
+}
 
-    .front-and-center {
-        display:       flex;
-        flex-flow:     column nowrap;
-        gap:           4px;
-        place-content: center;
-        place-items:   center;
-    }
+.front-and-center {
+    display:       flex;
+    flex-flow:     column nowrap;
+    gap:           4px;
+    place-content: center;
+    place-items:   center;
+}
 </style>

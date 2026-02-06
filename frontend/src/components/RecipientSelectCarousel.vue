@@ -60,10 +60,10 @@ import {
 
 import RecipientSelectDeviceSignal from './RecipientSelectDeviceSignal.vue';
 
+import { useDetectResize } from '@/composables/useDetectResize';
+
 import { Device } from '@/models/device.js';
 import { User }   from '@/models/user.js';
-
-import { useOnResize } from '@/composables/useOnResize';
 
 const props = defineProps({
     variant: {
@@ -102,7 +102,7 @@ const measureLoadingEl  = useTemplateRef('measureLoadingEl');
 const {
     addResizeHandler,
     removeResizeHandler
-} = useOnResize();
+} = useDetectResize();
 
 const isUsersVariant   = computed(() => props.variant === 'users');
 const isDevicesVariant = computed(() => !isUsersVariant.value);
