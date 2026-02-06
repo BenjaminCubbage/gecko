@@ -57,7 +57,7 @@ async function changeUsername(newUsername) {
     userBadgeStatus.value = 'loading';
 
     try {
-        await session.changeUsername(newUsername);
+        await session.requestChangeUsername(newUsername);
 
         userBadgeStatus.value = 'normal';
     } catch (e) {
