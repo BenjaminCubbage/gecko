@@ -5,12 +5,13 @@
 .txtr-diag {
     --grad-deg: -30deg;
 
-    background: linear-gradient(var(--grad-deg),
-        var(--grad-c1) 25%,
-        var(--grad-c2) 25% 50%,
-        var(--grad-c3) 50% 75%,
-        var(--grad-c4) 75%
-    );
+    background: 
+        var(--grad-c4)
+        linear-gradient(var(--grad-deg),
+            var(--grad-c1) 25%,
+            var(--grad-c2) 25% 50%,
+            var(--grad-c3) 50% 75%,
+            var(--grad-c4) 75%);
 }
 
 .txtr-diag--red {
@@ -18,6 +19,13 @@
     --grad-c2: var(--col-red-2);
     --grad-c3: var(--col-red-3);
     --grad-c4: var(--col-red-1);
+}
+
+.txtr-diag--dk-red {
+    --grad-c1: var(--col-red-4);
+    --grad-c2: var(--col-red-3);
+    --grad-c3: var(--col-red-4);
+    --grad-c4: var(--col-red-2);
 }
 
 .txtr-diag--green {
@@ -53,23 +61,29 @@
 */
 
 .txtr-dots {
+    --dots-size:      2px; 
     --dots-spacing-x: 32px;
     --dots-spacing-y: 32px;
 
-    background-image: radial-gradient(circle at top,    var(--dots-col) 2px, transparent 2px),
-                      radial-gradient(circle at bottom, var(--dots-col) 2px, transparent 2px),
-                      radial-gradient(circle at right,  var(--dots-col) 2px, transparent 2px),
-                      radial-gradient(circle at left,   var(--dots-col) 2px, transparent 2px);
+    background-image: radial-gradient(circle at top,    var(--dots-col) var(--dots-size), transparent var(--dots-size)),
+                      radial-gradient(circle at bottom, var(--dots-col) var(--dots-size), transparent var(--dots-size)),
+                      radial-gradient(circle at right,  var(--dots-col) var(--dots-size), transparent var(--dots-size)),
+                      radial-gradient(circle at left,   var(--dots-col) var(--dots-size), transparent var(--dots-size));
 
-    background-size: var(--dots-spacing-x) var(--dots-spacing-y);
-    background-repeat: repeat;
-    background-position-x: 50%;
+    background-color:      var(--dots-bg);
+    background-size:       var(--dots-spacing-x) var(--dots-spacing-y);
+    background-repeat:     repeat;
     background-position-y: 4px;
 }
 
 .txtr-dots--blue {
     --dots-bg:  var(--col-blue-1);
     --dots-col: var(--col-blue-2);
+}
+
+.txtr-dots--green {
+    --dots-bg:      var(--col-green-4);
+    --dots-col:     var(--col-green-6);
 }
 
 /*

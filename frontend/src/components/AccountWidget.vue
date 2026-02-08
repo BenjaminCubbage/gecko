@@ -2,11 +2,13 @@
     <div class="header-strip">
         <transition name="login-appear" mode="out-in">
             <AccountWidgetLogInButton
-                v-if="!session.activeUser.value"
+                v-if="session.state.value !== 'ready'"
                 href="/auth/login" />
 
             <div v-else>
                 <div class="badge-section">
+                    <AccountWidgetProfileButton @logout="logout" /> 
+
                     <AccountWidgetUsernameBadge
                         :username="session.activeUser.value['username']"
                         :status="userBadgeStatus"
@@ -14,13 +16,7 @@
                         @requestEdit="userBadgeStatus = 'editing'"
                         @cancel="userBadgeStatus = 'normal'"
                         @submit="changeUsername" />
-
-                    <AccountWidgetLogOutButton
-                        v-show="userBadgeStatus == 'normal'"
-                        @click="logout" />
                 </div>
-
-                <AccountWidgetStatusBubble ref="statusBubble" />
             </div>
         </transition>
     </div>
@@ -34,9 +30,8 @@ import {
 } from 'vue';
 
 import AccountWidgetLogInButton   from './AccountWidgetLogInButton.vue';
-import AccountWidgetLogOutButton  from './AccountWidgetLogOutButton.vue';
+import AccountWidgetProfileButton from './AccountWidgetProfileButton.vue';
 import AccountWidgetUsernameBadge from './AccountWidgetUsernameBadge.vue';
-import AccountWidgetStatusBubble  from './AccountWidgetStatusBubble.vue';
 
 import {
     HttpError,
@@ -55,19 +50,6 @@ const forbiddenUsernames = ref([]);
 
 async function changeUsername(newUsername) {
     userBadgeStatus.value = 'loading';
-
-    try {
-        await session.requestChangeUsername(newUsername);
-
-        userBadgeStatus.value = 'normal';
-    } catch (e) {
-        if (e instanceof HttpError)
-            statusBubble.value.showMessage(errorResponseToDisplayString(e.body));
-        else if (e instanceof NetworkError)
-            statusBubble.value.showMessage(`Couldn't connect to the server!`);
-
-        userBadgeStatus.value = 'editing';
-    }
 }
 
 async function logout() {
@@ -79,13 +61,15 @@ async function logout() {
 .header-strip {
     display:    grid;
     padding:    24px;
-    place-self: start;
 }
 
 .badge-section {
-    display:   flex;
-    flex-flow: row nowrap;
-    gap:       12px;
+    align-items: stretch;
+    display:     flex;
+    flex-flow:   row nowrap;
+    gap:         4px;
+
+    height: 43px;
 }
 
 .login-appear-enter-active {

@@ -73,8 +73,7 @@ const isToggled = defineModel({ default: true });
 
     paint-order:  stroke;
 
-    transform:        scale(1.6);
-    transform-origin: center;
+    transform: scale(1.6);
 }
 
 .toolbar-chip-eraser:hover {

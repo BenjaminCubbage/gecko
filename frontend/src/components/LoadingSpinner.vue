@@ -5,7 +5,7 @@
 <style scoped>
 .spinner {
     display:   inline-block;
-    color:     black;
+    color:     inherit;
     font-size: 2.3rem;
     animation: rotate 700ms infinite steps(8, end);
 }

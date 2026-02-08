@@ -18,7 +18,7 @@
 
     <div class="recipient-select-carousel">
         <button
-            class="arrow arrow-left txtr-diag txtr-diag--green"
+            class="arrow arrow--left txtr-diag txtr-diag--green"
             @click="carouselPrev"
             :disabled="!hasPrev">
             &lt;
@@ -40,7 +40,7 @@
         </div>
 
         <button
-            class="arrow arrow-right txtr-diag txtr-diag--green"
+            class="arrow arrow--right txtr-diag txtr-diag--green"
             @click="carouselNext"
             :disabled="!hasNext">
             &gt;
@@ -233,8 +233,9 @@ function tryMoveSelection(by) {
     box-shadow:
         calc(var(--shadow-dist-s) - var(--arrow-offset))
         calc(var(--shadow-dist-s) - var(--arrow-offset))
-        0
-        black;
+        0 black,
+        inset 0  3px 0 var(--col-green-0),
+        inset 0 -3px 0 var(--col-green-5);
 
     border-radius: var(--radius-s);
     border:        2.5px solid black;
@@ -246,7 +247,7 @@ function tryMoveSelection(by) {
     transition: transform 80ms ease;
 }
 
-.arrow-right {
+.arrow--right {
     padding-left: 2.5px;
 }
 

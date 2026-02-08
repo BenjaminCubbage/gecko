@@ -92,7 +92,7 @@ function animationCancelled() {
 
 <style scoped>
 .toolbar-chip-send {
-    --chip-aura:   0 0 0 black;
+    --chip-aura:   0 0;
     --chip-offset: 0px;
 }
 
@@ -105,7 +105,8 @@ function animationCancelled() {
     box-shadow:
         var(--chip-aura),
         calc(var(--shadow-dist-s) - var(--chip-offset))
-        calc(var(--shadow-dist-s) - var(--chip-offset)) 0 black;
+        calc(var(--shadow-dist-s) - var(--chip-offset)) 
+        0 black;
 
     transform: translate(
         var(--chip-offset),

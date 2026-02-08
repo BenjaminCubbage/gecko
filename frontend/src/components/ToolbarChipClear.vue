@@ -52,7 +52,7 @@ function click() {
 
 <style scoped>
 .toolbar-chip-clear {
-    --chip-aura:   0 0 0 black;
+    --chip-aura:   0 0;
     --chip-offset: 0px;
 }
 

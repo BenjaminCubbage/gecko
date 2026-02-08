@@ -6,7 +6,6 @@
         type="text"
         @input="inputChanged()"
         @blur="emit('blur', $event)"
-        @keydown.enter="trySubmit()"
         :maxlength="maxUsernameLength" />
 </template>
 
@@ -28,8 +27,6 @@ const props = defineProps({
 });
 
 const emit = defineEmits([
-    'submit',
-    'blur',
     'validityChanged'
 ]);
 
@@ -60,14 +57,7 @@ function inputChanged() {
     });
 }
 
-function trySubmit() {
-    if (isValid.value)
-        emit('submit');
-}
-
 defineExpose({
-    focus() {
-        inputEl.value?.focus()
-    }
+    innerElement: inputEl
 });
 </script>

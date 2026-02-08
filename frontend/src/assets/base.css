@@ -37,8 +37,8 @@ button, a {
 }
 
 ::selection {
-  background-color: black;
-  color: white;
+  background: Highlight;
+  color: black;
 }
 
 @media (prefers-reduced-motion: reduce) {

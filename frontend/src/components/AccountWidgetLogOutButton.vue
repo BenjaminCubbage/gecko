@@ -1,6 +1,6 @@
 <template>
     <button
-        class="logout-button"
+        class="logout-button txtr-diag txtr-diag--red"
         @click="emit('click')">
         Log Out
     </button>
@@ -15,30 +15,45 @@ const emit = defineEmits(['click']);
     align-items:     center;
     display:         flex;
     justify-content: center;
-    margin:          4px 0;
-    padding:         0 12px;
+    line-height:     1em;
+    padding:         4px 18px;
+    position:        relative;
 
-    color:       black;
-    font-family: var(--font-heading);
-    font-size:   2.2rem;
+    -webkit-text-stroke: 4px white;
+    color:               black;
+    font-family:         var(--font-heading);
+    font-size:           2.31rem;
+    letter-spacing:      0.04em;
 
-    background:    hsl(0, 100%, 71%);
-    border:        var(--border-s);
-    border-radius: 999px;
-    box-shadow:    2px 2px 0 0 black;
+    --logout-offset: 0px;
 
-    transform:  scale(1) rotate(0deg);
-    transition: transform 200ms ease;
+    box-shadow:
+        calc(var(--shadow-dist-s) - var(--logout-offset))
+        calc(var(--shadow-dist-s) - var(--logout-offset))
+        0 black,
+        inset 0  3px 0 var(--col-red-1),
+        inset 0 -3px 0 var(--col-red-4);
+
+    border: var(--border-s);
+    border-radius: var(--radius-s);
+
+    paint-order: stroke;
+
+    transform:
+        translate(
+            var(--logout-offset),
+            var(--logout-offset));
+
+    transition:
+        box-shadow 50ms ease,
+        transform  50ms ease;
 }
 
 .logout-button:hover {
-    transform: scale(1.02) rotate(-1deg);
+    --logout-offset: calc(var(--shadow-dist-s) / 2);
 }
 
 .logout-button:active {
-    background: hsl(0, 86%, 67%);
-    box-shadow: 1px 1px 0 0 black;
-
-    transform: scale(0.98) rotate(0deg);
+    --logout-offset: var(--shadow-dist-s);
 }
 </style>

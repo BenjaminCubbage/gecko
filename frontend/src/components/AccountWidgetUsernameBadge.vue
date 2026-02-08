@@ -1,69 +1,53 @@
 <template>
     <div class="account-widget-username-badge">
-        <i class="user-icon hn hn-user-solid"></i>
-
-        <div class="username-section">
-            <div class="username">
-                <div class="username-editor" v-show="isEditing || isLoading">
-                    <div class="at-symbol"
-                        :style="{
-                            'visibility': isLoading ? 'hidden' : 'visible'
-                        }">@</div>
-
-                    <UsernameInput
-                        ref="inputEl"
-                        v-model="inputText"
-                        class="username-text-input"
-                        @blur="editorLostFocus"
-                        @submit="submit"
-                        @validityChanged="v => inputIsValid = v"
-                        :forbiddenUsernames="forbiddenUsernames.concat([username])" />
-
-                    <button
-                        v-show="isEditing || isLoading"
-                        class="submit-button"
-                        :class="{
-                            'invalid': !inputIsValid
-                        }"
-                        ref="submitButtonEl"
-                        @click="submit"
-                        @blur="editorLostFocus">
-                        <LoadingSpinner v-if="isLoading" />
-                        <i v-else class="submit-icon hn hn-check-solid"></i>
-                    </button>
+        <div
+            class="username"
+            :class="{ 'username--pressed': state !== 'normal' }">
+            <div class="username-editor" v-show="state !== 'normal'">
+                <div class="at-symbol">
+                    @
                 </div>
 
-                <button
-                    class="username-button"
-                    :class="{ 'loading': isLoading }"
-                    @click="emit('requestEdit')"
-                    :disabled="isLoading || isEditing"
-                    @mousemove.self="teleportPencilToMouse"
-                    @mouseenter="teleportPencilToMouse"
-                    v-show="!isEditing || isLoading">
-                    <div class="username-text">
-                        <span v-if="!isLoading">
-                            @{{ username }}
-                        </span>
-                        <span v-else>
-                            @{{ inputText }}
-                        </span>
-                    </div>
+                <BaseInput
+                    v-model="inputText"
+                    ref="inputEl"
+                    class="username-text-input"
+                    :disabled="state === 'loading'"
+                    :maxlength="maxUsernameLength"
+                    :charPredicate="isValidUsernameChar"
+                    @blur="blur"
+                    @keydown.enter="submit" />
 
-                    <div
-                        class="pencil-icon-container"
-                        v-show="!isLoading"
-                        :style="{
-                            left:   `${pencilPosition.x}px`,
-                            top:    `${pencilPosition.y}px`,
-                            width:  `${pencilDimensions.x}px`,
-                            height: `${pencilDimensions.y}px`
-                        }">
-                        <i class="pencil-icon-stroke hn hn-pencil-solid"></i>
-                        <i class="pencil-icon hn hn-pencil-solid"></i>
-                    </div>
+                <button
+                    class="submit-button"
+                    :class="{ 'submit-button--pressed': state === 'loading' }"
+                    ref="submitButtonEl"
+                    @blur="blur"
+                    :disabled="!isValidInput || state === 'loading'"
+                    @click="submit">
+                    <LoadingSpinner v-if="state === 'loading'" />
+                    <i v-else class="submit-icon hn hn-check-solid"></i>
                 </button>
             </div>
+
+            <button
+                v-show="state === 'normal'"
+                class="username-button"
+                :disabled="state === 'loading'"
+                @click="edit">
+                <div class="username-text">
+                    <template v-if="state !== 'loading'">
+                        @{{ session.activeUser.value.username }}
+                    </template>
+                    <template v-else>
+                        @{{ inputText }}
+                    </template>
+                </div>
+            </button>
+        </div>
+
+        <div v-show="state !== 'normal'" class="error-message">
+            {{ errorMessage }}
         </div>
     </div>
 </template>
@@ -71,105 +55,159 @@
 <script setup>
 import {
     computed,
+    inject,
     nextTick,
     ref,
-    toRefs,
     useTemplateRef,
     watch
 } from 'vue';
 
-import UsernameInput  from './UsernameInput.vue';
+import BaseInput      from './BaseInput.vue';
 import LoadingSpinner from './LoadingSpinner.vue';
 
-const propsObj = defineProps({
-    username: { type: String, required: true },
-    forbiddenUsernames: { type: Array, default: () => [] },
+import { useAutoHighlightTextInput } from '@/composables/useAutoHighlightTextInput.js';
 
-    // 'normal' | 'editing' | 'loading'
-    status: { type: String, required: true }
-});
+import {
+    HttpError,
+    NetworkError
+} from '@/core/errors/errors.js';
 
-const props = toRefs(propsObj);
+import {
+    isValidUsername,
+    isValidUsernameChar,
+    maxUsernameLength
+} from '@/core/validation/validateUsername.js';
 
-const emit = defineEmits([
-    'requestEdit',
-    'submit',
-    'cancel'
-]);
+import { Keys } from '@/core/di/keys.js';
+
+const session = inject(Keys.SessionStore);
+
+const state        = ref('normal');
+const inputText    = ref('');
+const errorMessage = ref('');
 
 const submitButtonEl = useTemplateRef('submitButtonEl');
 const inputEl        = useTemplateRef('inputEl');
 
-const inputIsValid = ref(false);
+useAutoHighlightTextInput(() => inputEl.value?.innerElement);
 
-const isEditing = computed(() => props.status.value === 'editing');
-const isLoading = computed(() => props.status.value === 'loading');
+const isValidInput = computed(() => {
+    return inputText.value !== session.activeUser.value.username
+        && isValidUsername(inputText.value);
+});
 
-const pencilPosition = ref({ x: 0, y: 0 });
-const inputText = ref(props.username.value);
+watch(() => session.activeUser.value.username, newValue => {
+    inputText.value = newValue;
+}, {
+    immediate: true
+});
 
-const pencilDimensions = ref({ w: 28, h: 40 });
+async function edit() {
+    state.value = 'editing';
 
-function teleportPencilToMouse(e) {
-    pencilPosition.value.x = e.offsetX - pencilDimensions.value.w / 2;
-    pencilPosition.value.y = e.offsetY - pencilDimensions.value.h / 2;
+    await nextTick();
+    inputEl.value.innerElement.focus();
 }
 
-function editorLostFocus(e) {
+function blur(e) {
     if (e.relatedTarget != submitButtonEl.value &&
-        e.relatedTarget != inputEl.value &&
-        isEditing.value) {
-        inputText.value = props.username.value;
-        emit('cancel');
+        e.relatedTarget != inputEl?.value.innerElement &&
+        state.value === 'editing') {
+        state.value = 'normal';
+        inputText.value = session.activeUser.value.username;
+        errorMessage.value = '';
     }
 }
 
-function submit() {
-    emit('submit', inputText.value);
-}
+async function submit() {
+    if (!isValidInput.value)
+        return;
 
-watch (isEditing, () => {
-    if (isEditing.value)
-        nextTick(() => inputEl.value?.focus());
-});
+    state.value = 'loading';
+
+    try {
+        await session.requestChangeUsername(inputText.value);
+        state.value = 'normal';
+    } catch (e) {
+        if (e instanceof HttpError && e.body.error.reason === 'username_taken')
+            errorMessage.value = 'Username is taken';
+        else if (e instanceof NetworkError)
+            errorMessage.value = `Couldn't connect`;
+        else
+            errorMessage.value = `Couldn't set username at this time`;
+
+        edit();
+    }
+}
 </script>
 
 <style scoped>
 .account-widget-username-badge {
+    align-items: stretch;
     display:     flex;
-    flex-flow:   row nowrap;
-    align-items: center;
-    gap:         12px;
-    padding:     9px 9px 9px 16px;
+    position:    relative;
 
     color:          var(--text);
     font-family:    var(--font-heading);
     font-size:      2.6rem;
     letter-spacing: 0.06em;
     line-height:    1;
-
-    background:    white;
-    border:        var(--border-s);
-    border-radius: 1000px;
-    box-shadow:    var(--shadow-s);
-
-    transition: transform 100ms linear;
 }
 
-.user-icon {
-    font-size:   26px;
-    line-height: 1;
+.error-message {
+    bottom:         -24px;
+    left:           12px;
+    pointer-events: none;
+    position:       absolute;
 
-    background:      black;
-    background-clip: text;
-
-    color: transparent;
+    font-size: 1.8rem;
+    color: var(--col-red-5);
+    -webkit-text-stroke: 4px white;
+    paint-order: stroke;
 }
 
 .username {
-    display:        grid;
-    justify-items:  start;
-    position:       relative;
+    display:       grid;
+    justify-items: start;
+
+    --username-aura:   0 0;
+    --username-offset: 0px;
+
+    background:
+        linear-gradient(
+            var(--col-gray-2) 50%,
+            var(--col-gray-3) 50%);
+
+    box-shadow:
+        var(--username-aura),
+        calc(var(--shadow-dist-s) - var(--username-offset))
+        calc(var(--shadow-dist-s) - var(--username-offset))
+        0 black,
+        inset 0  3px 0 var(--col-gray-0),
+        inset 0 -3px 0 var(--col-gray-4);
+
+    border:        var(--border-s);
+    border-radius: var(--radius-s);
+
+    transform:
+        translate(
+            var(--username-offset),
+            var(--username-offset));
+
+    transition:
+        box-shadow 50ms ease,
+        transform  50ms ease;
+}
+
+.username:has(> .username-button:hover) {
+    --username-offset: calc(var(--shadow-dist-s) / 2);
+}
+
+.username:has(> .username-button:active),
+.username--pressed,
+.username--pressed:has(> .username-button:hover) {
+    --username-aura:   var(--shadow-aura);
+    --username-offset: var(--shadow-dist-s);
 }
 
 .username-button,
@@ -178,11 +216,12 @@ watch (isEditing, () => {
 }
 
 .username-button {
-    cursor:        none;
-    padding-right: 16px;
+    cursor:   text;
+    padding:  0 16px;
+    position: relative;
 }
 
-.username-button.loading {
+.username-button:disabled {
     cursor: default;
 }
 
@@ -191,165 +230,99 @@ watch (isEditing, () => {
 }
 
 .username-text {
-    --blue:            #4285F4;
-    --green:           #34A853;
-    --red:             #EA4335;
-    --yellow:          #FBBC05;
-    --rotate-gradient: 0deg;
-
-    color: transparent;
-
-    background-image: conic-gradient(in oklch from var(--rotate-gradient) at 50% 100%,
-        var(--red)    0%,
-        var(--blue)   25%,
-        var(--green)  50%,
-        var(--yellow) 75%,
-        var(--red)    100%);
-    background-clip: text;
-
-    animation: rotate-gradient 2s linear infinite;
+    color:               black;
+    -webkit-text-stroke: 4px white;
+    paint-order:         stroke;
 }
 
 .username-editor {
-    display:   flex;
-    flex-flow: row nowrap;
+    align-self:   stretch;
+    display:      flex;
+    flex-flow:    row nowrap;
+    padding-left: 16px;
 }
 
 .at-symbol {
-    cursor:       default;
-    margin-right: -1.5px;
-    color:        black;
+    align-self: center;
+    cursor:              default;
+    margin-right:        -3.5px;
+    -webkit-text-stroke: 4px white;
+    color:               black;
+    paint-order:         stroke;
 }
 
 .username-text-input {
-    width:      200px;
-    height:     1em;
-    margin:     0;
-    padding:    0;
-    border:     0;
+    width:         200px;
+    margin:        0;
+    padding-right: 16px;
+    border:        0;
 
-    appearance:         none;
-    -webkit-appearance: none;
-    box-sizing:         border-box;
+    -webkit-appearance:  none;
+    -webkit-text-stroke: 4px white;
+    appearance:          none;
+    box-sizing:          border-box;
 
     background:   transparent;
     color:        black;
     font-family:  inherit;
     font-size:    inherit;
-    line-height:  10px;
-    outline:      none !important;
+    outline:      none;
+
+    paint-order: stroke;
 }
 
 .submit-button {
+    align-self:      stretch;
     display:         flex;
-    align-items:     center;
     justify-content: center;
-    width:           40px;
-    margin:          -6px;
-    padding:         2px 30px;
+    width: 55px;
+    padding:         0 13px;
+    place-items:     center;
 
-    color:     black;
+    color: var(--col-green-9);
     font-size: 2.4rem;
 
-    background:    hsl(113, 68%, 58%);
-    border:        var(--border-s); /*???*/
-    border:        2.5px solid black;
-    border-radius: 999px;
-    box-shadow:    1px 1px 0 0 black;
+    background: linear-gradient(
+        var(--col-green-2) 50%,
+        var(--col-green-4) 50%);
 
-    transition: transform 200ms ease;
+    box-shadow:
+        inset 0  3px 0 var(--col-green-0),
+        inset 0 -3px 0 var(--col-green-5);
 
-    transform: scale(1) rotate(0deg);
+    border-left: var(--border-s);
+
+    background: linear-gradient(
+        var(--col-green-2) 50%,
+        var(--col-green-4) 50%);
+
+    paint-order: stroke;
 }
 
-.submit-button:hover:not(.invalid) {
-    box-shadow: 2px 2px 0 0 black;
-    transform:  scale(1.02) rotate(-1deg);
+.submit-button:active,
+.submit-button--pressed {
+    background: linear-gradient(
+        var(--col-green-2) 56%,
+        var(--col-green-4) 56%);
+
+    box-shadow: inset 0 2px 0 black;
 }
 
-.submit-button:active:not(.invalid) {
-    box-shadow: 1px 1px 0 0 black;
-    background: hsl(113, 56%, 53%);
-    transform:  scale(0.98) rotate(0deg);
+.submit-button:active .submit-icon {
+    transform: translateY(2px);
 }
 
-.submit-button.invalid {
-    cursor:  not-allowed;
-    opacity: 0.5;
+.submit-button:disabled {
+    pointer-events: none;
+}
+
+.submit-button:disabled .submit-icon {
+    opacity: 0.3;
 }
 
 .submit-icon {
-    font-size: 2.3rem;
     left:      1px;
-    position:  relative;
     top:       1px;
-}
-
-.loading-icon {
-    animation: rotate-loading 600ms infinite steps(8, end);
-}
-
-.pencil-icon-container {
-    display:     grid;
-    left:        0;
-    place-items: center;
-    position:    absolute;
-    top:         0;
-
-    animation: bob-pencil 2s infinite;
-}
-
-.pencil-icon {
-    --pencil-eraser:   #ff899a;
-    --pencil-tip:      black;
-    --pencil-wood:     #f2d198;
-    --pencil-wrapper:  #ff9c08;
-
-    grid-area: 1/1;
-
-    background: linear-gradient(42deg,
-        var(--pencil-tip)     20%,
-        var(--pencil-wood)    20% 34%,
-        var(--pencil-wrapper) 34% 63%,
-        var(--pencil-eraser)  63%);
-    background-clip: text;
-
-    color:       transparent;
-    line-height: 1.5;
-}
-
-.pencil-icon-stroke {
-    grid-area: 1/1;
-
-    -webkit-text-stroke: 4px white;
-    line-height:         1.5;
-}
-
-.username-section:not(:hover) .pencil-icon-container {
-    display: none;
-}
-
-@property --rotate-gradient {
-    inherits:      false;
-    initial-value: 0deg;
-    syntax:        '<angle>';
-}
-
-@keyframes rotate-gradient {
-    from { --rotate-gradient: 0deg; }
-    to   { --rotate-gradient: 360deg; }
-}
-
-@keyframes bob-pencil {
-    0%   { transform: rotate(-6deg) scale(1.04); }
-    25%  { transform: rotate( 6deg) scale(0.99); }
-    50%  { transform: rotate(-6deg) scale(1.04); }
-    75%  { transform: rotate( 6deg) scale(0.99); }
-    100% { transform: rotate(-6deg) scale(1.04); }
-}
-
-@keyframes rotate-loading {
-    from { transform: rotate(0deg); }
-    to   { transform: rotate(360deg); }
+    position:  relative;
 }
 </style>

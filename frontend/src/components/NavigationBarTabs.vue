@@ -2,7 +2,7 @@
     <div class="navbar-tabs">
         <button
             v-for="tab in tabs"
-            class="tab"
+            class="tab tab--green"
             :class="[
                 { 'tab--active': selectedTab === tab.value },
                 ...tab.texture
@@ -20,8 +20,8 @@ import StrokedText from './StrokedText.vue';
 const selectedTab = defineModel({ default: 'canvas' });
 
 const tabs = [
-    { title: 'CANVAS',  value: 'canvas',  texture: ['txtr-diag', 'txtr-diag--green' ] },
-    { title: 'FRIENDS', value: 'friends', texture: ['txtr-diag', 'txtr-diag--orange'] }
+    { title: 'CANVAS',  value: 'canvas',  texture: ['tab--green',  'txtr-diag', 'txtr-diag--green' ] },
+    { title: 'FRIENDS', value: 'friends', texture: ['tab--orange', 'txtr-diag', 'txtr-diag--orange'] }
 ];
 </script>
 
@@ -39,13 +39,20 @@ const tabs = [
     width:   116px;
 
     --tab-offset: 0px;
+
+    --tab-aura: 0 0;
     --tab-shadow:
         calc(var(--shadow-dist-s) - var(--tab-offset))
         calc(var(--shadow-dist-s) - var(--tab-offset)) 0 black;
 
+    box-shadow:
+        var(--tab-shadow),
+        inset 0  3px 0 var(--tab-inset-col-top),
+        inset 0 -3px 0 var(--tab-inset-col-bottom),
+        var(--tab-aura);
+
     border:        var(--border-s);
     border-radius: 999px;
-    box-shadow:    var(--tab-shadow);
 
     transition:
         transform  100ms ease,
@@ -54,15 +61,23 @@ const tabs = [
     transform: translate(var(--tab-offset), var(--tab-offset));
 }
 
+.tab--green {
+    --tab-inset-col-bottom: var(--col-green-5);
+    --tab-inset-col-top:    var(--col-green-0);
+}
+
+.tab--orange {
+    --tab-inset-col-bottom: var(--col-orange-5);
+    --tab-inset-col-top:    var(--col-orange-0);
+}
+
 .tab:hover {
     --tab-offset: calc(var(--shadow-dist-s) / 2);
 }
 
 .tab--active,
 .tab--active:hover {
+    --tab-aura:   var(--shadow-aura);
     --tab-offset: var(--shadow-dist-s);
-    box-shadow:
-        var(--tab-shadow),
-        var(--shadow-aura);
 }
 </style>
