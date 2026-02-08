@@ -110,12 +110,20 @@ class SessionStore {
         if (this.#activeUser.value == null)
             return false;
 
-        await new Promise((resolve, reject) => {
-            Dispatch.Post_LogOut(this.xsrfCookie)
-                .onSuccess(() => resolve())
-                .onHttpError((body, status) => reject(new HttpError(status, body)))
-                .onNetworkError(() => reject(new NetworkError()));
-        });
+        try {
+            await new Promise((resolve, reject) => {
+                Dispatch.Post_LogOut(this.xsrfCookie)
+                    .onSuccess(() => resolve())
+                    .onHttpError((body, status) => reject(new HttpError(status, body)))
+                    .onNetworkError(() => reject(new NetworkError()));
+            });
+        } catch (e) {
+            /*
+                If we're unauthorized we're already logged out
+            */
+            if (e.status !== 401)
+                throw e;
+        }
 
         this.#state.value      = 'loggedout'
         this.#activeUser.value = null;
@@ -142,9 +150,7 @@ class SessionStore {
 
             this.#xsrfCookie = cookie();
 
-            if (!this.#xsrfCookie) {
-
-            }
+            if (!this.#xsrfCookie)
                 throw new Error(`[SessionStore]: Server didn't set the XSRF cookie`);
         }
     }
