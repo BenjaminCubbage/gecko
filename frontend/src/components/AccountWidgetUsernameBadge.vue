@@ -102,6 +102,11 @@ watch(() => session.activeUser.value.username, newValue => {
     immediate: true
 });
 
+watch(state, () => {
+    if (state.value === 'normal')
+        errorMessage.value = '';
+});
+
 async function edit() {
     state.value = 'editing';
 
@@ -115,7 +120,6 @@ function blur(e) {
         state.value === 'editing') {
         state.value = 'normal';
         inputText.value = session.activeUser.value.username;
-        errorMessage.value = '';
     }
 }
 

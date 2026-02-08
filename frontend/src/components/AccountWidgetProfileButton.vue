@@ -51,8 +51,7 @@ const emit = defineEmits([
 }
 
 .account-widget-profile-button-popover:not(:popover-open) {
-    transform: translateY(-2px);
-    opacity: 0;
+    transform: translateX(-100px);
 }
 
 .inner-button {
@@ -106,7 +105,7 @@ const emit = defineEmits([
 
 @starting-style {
     .account-widget-profile-button-popover {
-        opacity:   0%;
+        transform: translateX(-100px);
     }
 }
 </style>
