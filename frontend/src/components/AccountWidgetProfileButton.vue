@@ -3,7 +3,7 @@
         popover
         id="account-widget-profile-button-popover"
         class="account-widget-profile-button-popover">
-        <AccountWidgetLogOutButton @click="emit('logout')" />
+        <AccountWidgetLogOutButton @click="logOut" />
     </div>
 
     <!-- + Sibling selector -->
@@ -18,11 +18,16 @@
 </template>
 
 <script setup>
-import AccountWidgetLogOutButton from './AccountWidgetLogOutButton.vue';
+import { inject } from 'vue';
 
-const emit = defineEmits([
-    'logout'
-]);
+import AccountWidgetLogOutButton from './AccountWidgetLogOutButton.vue';
+import { Keys }                  from '@/core/di/keys.js';
+
+const session = inject(Keys.SessionStore);
+
+function logOut() {
+    session.requestLogOut();
+}
 </script>
 
 <style scoped>
@@ -99,7 +104,7 @@ const emit = defineEmits([
     font-size:   2.4rem;
     line-height: 1em;
 
-    -webkit-text-stroke: white 4px;
+    -webkit-text-stroke: white 3px;
     paint-order: stroke;
 }
 

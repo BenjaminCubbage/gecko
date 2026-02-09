@@ -135,7 +135,7 @@ function animationCancelled() {
 }
 
 .icon-text {
-    -webkit-text-stroke: 4px white;
+    -webkit-text-stroke: var(--text-stroke-l);
     color:               var(--col-green-5);
     font-family:         var(--font-heading);
     font-size:           3rem;

@@ -19,7 +19,7 @@ const emit = defineEmits(['click']);
     padding:         4px 18px;
     position:        relative;
 
-    -webkit-text-stroke: 4px white;
+    -webkit-text-stroke: var(--text-stroke-s);
     color:               black;
     font-family:         var(--font-heading);
     font-size:           2.31rem;

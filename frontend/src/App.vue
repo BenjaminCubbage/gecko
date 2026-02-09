@@ -1,5 +1,5 @@
 <template>
-    <div class="bg txtr-dots txtr-dots--blue">
+    <div v-show="pageLoaded" class="bg txtr-dots txtr-dots--blue">
         <NavigationBar class="navigation-bar" v-model:selectedTab="selectedTab" />
 
         <div class="front-and-center">
@@ -33,6 +33,12 @@ const selectedDevice = ref(null);
 const session = new SessionStore();
 const friends = new FriendsStore();
 const devices = new DevicesStore();
+
+const pageLoaded = ref(false);
+
+/* Wait for Jersey 15 font */
+document.fonts.load('14px "Jersey 15"')
+    .then(() => pageLoaded.value = true);
 
 provide(Keys.DevicesStore, devices);
 provide(Keys.SessionStore, session);

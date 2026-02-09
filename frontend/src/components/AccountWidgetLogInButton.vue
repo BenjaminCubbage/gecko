@@ -1,56 +1,96 @@
 <template>
-    <a class="log-in-button" :href="href" draggable="false">
-        <i class="google-icon hn hn-google"></i>
-
-        <div class="button-text">
-            Log in
-        </div>
+    <a 
+        class="login-button txtr-diag txtr-diag--lt-gray"
+        :class="{ 'login-button--pressed': isPressed }"
+        href="/auth/login" 
+        draggable="false"
+        @click="press">
+        <StrokedText>
+            <i class="google-icon hn hn-google"></i>
+        </StrokedText>
     </a>
 </template>
 
 <script setup>
-defineProps({
-    href: { type: String, required: true }
+import { ref, onUnmounted } from 'vue';
+
+import StrokedText from './StrokedText.vue';
+
+const isPressed    = ref(false);
+let unpressTimeout = null;
+
+function press() {
+    if (!isPressed.value) {
+        isPressed.value = true;
+
+        unpressTimeout = setTimeout(() => {
+            isPressed.value = false;
+            unpressTimeout  = null;
+        }, 4000);
+    }
+}
+
+onUnmounted(() => {
+    if (unpressTimeout)
+        clearTimeout(unpressTimeout);
 });
 </script>
 
 <style scoped>
-.log-in-button {
-    align-items:  center;
-    display:      flex;
-    gap:          12px;
-    justify-self: start;
-    padding:      5px 22px 5px 12px;
+.login-button {
+    display:       flex;
+    gap:           12px;
+    place-content: center;
+    place-items:   center;
+    width:         48px;
 
     color:           black;
     text-decoration: none;
 
-    background:    white;
+    --login-button-aura:   0 0;
+    --login-button-offset: 0px;
+
+    box-shadow:    
+        var(--login-button-aura),
+        calc(var(--shadow-dist-s) - var(--login-button-offset))
+        calc(var(--shadow-dist-s) - var(--login-button-offset))
+        0 black,
+        inset 0  3px var(--col-lt-gray-0),
+        inset 0 -3px var(--col-lt-gray-4);
+
     border:        var(--border-s);
-    border-radius: 999px;
-    box-shadow:    var(--shadow-l);
+    border-radius: var(--radius-s);
 
-    transition: transform 100ms ease;
+    transform:
+        translate(
+            var(--login-button-offset),
+            var(--login-button-offset));
+
+    transition:
+        box-shadow 80ms ease,
+        transform  80ms ease;
 }
 
-.log-in-button:hover {
-    transform: scale(1.02) rotate(1deg);
+.login-button:hover {
+    --login-button-offset: calc(var(--shadow-dist-s) / 2);
 }
 
-.log-in-button:active {
-    box-shadow: var(--shadow-s);
-    transform:  scale(0.97) rotate(0);
+.login-button:active,
+.login-button--pressed,
+.login-button--pressed:hover {
+    --login-button-aura:   var(--shadow-aura);
+    --login-button-offset: var(--shadow-dist-s);
 }
 
 .google-icon {
     color:       transparent;
     font-size:   26px;
-    line-height: 1;
+    display: inline-block;
 
-    --google-blue:   #4285F4;
-    --google-green:  #34A853;
-    --google-red:    #EA4335;
-    --google-yellow: #FBBC05;
+    --google-blue:   #3179eb;
+    --google-green:  #259643;
+    --google-red:    #de3122;
+    --google-yellow: #fb9905;
 
     background-image: conic-gradient(at 50% 40%,
         var(--google-red)    25%,
@@ -61,7 +101,10 @@ defineProps({
         var(--google-yellow) 65%,
         var(--google-yellow) 90%,
         var(--google-red)    90%);
+
     background-clip: text;
+
+    transform: translate(1px, 1px);
 }
 
 .button-text {

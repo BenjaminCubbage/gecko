@@ -87,6 +87,8 @@ function submit() {
     grid-column: 2;
     width:       70px;
 
+    color: black;
+
     background:                 #91df43;
     border-left:                var(--border-s);
     border-top-right-radius:    999px;

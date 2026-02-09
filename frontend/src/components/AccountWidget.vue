@@ -1,83 +1,56 @@
 <template>
-    <div class="header-strip">
+    <div class="account-widget">
         <transition name="login-appear" mode="out-in">
-            <AccountWidgetLogInButton
-                v-if="session.state.value !== 'ready'"
-                href="/auth/login" />
+            <div 
+                v-if="session.state.value === 'loggedout' || session.state.value === 'error'"
+                class="login-button-wrapper">
+                <AccountWidgetLogInButton />
+            </div>
 
-            <div v-else>
-                <div class="badge-section">
-                    <AccountWidgetProfileButton @logout="logout" /> 
-
-                    <AccountWidgetUsernameBadge
-                        :username="session.activeUser.value['username']"
-                        :status="userBadgeStatus"
-                        :forbiddenUsernames="forbiddenUsernames"
-                        @requestEdit="userBadgeStatus = 'editing'"
-                        @cancel="userBadgeStatus = 'normal'"
-                        @submit="changeUsername" />
-                </div>
+            <div v-else-if="session.state.value === 'ready'" class="badge">
+                <AccountWidgetProfileButton /> 
+                <AccountWidgetUsernameBadge />
             </div>
         </transition>
     </div>
 </template>
 
 <script setup>
-import {
-    inject,
-    ref,
-    useTemplateRef
-} from 'vue';
+import { inject } from 'vue';
 
 import AccountWidgetLogInButton   from './AccountWidgetLogInButton.vue';
 import AccountWidgetProfileButton from './AccountWidgetProfileButton.vue';
 import AccountWidgetUsernameBadge from './AccountWidgetUsernameBadge.vue';
 
-import {
-    HttpError,
-    NetworkError
-} from '@/core/errors/errors.js';
-
-import { errorResponseToDisplayString } from '@/core/http/errorResponseToDisplayString.js';
-import { Keys }                         from '@/core/di/keys.js';
-
-const statusBubble = useTemplateRef('statusBubble');
-
+import { Keys } from '@/core/di/keys.js';
 const session = inject(Keys.SessionStore);
-
-const userBadgeStatus    = ref('normal');
-const forbiddenUsernames = ref([]);
-
-async function changeUsername(newUsername) {
-    userBadgeStatus.value = 'loading';
-}
-
-async function logout() {
-    session.requestLogOut();
-}
 </script>
 
-<style>
-.header-strip {
-    display:    grid;
-    padding:    24px;
+<style scoped>
+.account-widget {
+    padding-left: 24px;
+    display:      flex;
+    height:       44px;
 }
 
-.badge-section {
+.badge {
     align-items: stretch;
     display:     flex;
     flex-flow:   row nowrap;
     gap:         4px;
-
-    height: 43px;
 }
 
-.login-appear-enter-active {
-    transition: transform 100ms ease;
+.login-button-wrapper {
+    display: grid;
+}
+
+.login-appear-enter-active,
+.login-appear-leave-active {
+    transition: transform 100ms 160ms ease, opacity 100ms 160ms ease;
 }
 
 .login-appear-enter-from,
 .login-appear-leave-to {
-    transform: scale(0.9);
+    transform: translateY(-95px);
 }
 </style>

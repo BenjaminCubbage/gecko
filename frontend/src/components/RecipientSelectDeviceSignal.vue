@@ -36,7 +36,7 @@ defineProps({
     position:    relative;
     top:         1px;
     font-size:   1.3rem;
-    line-height: 1.3;
+    line-height: 0.9;
 }
 
 .status-text--on::after {

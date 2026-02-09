@@ -244,7 +244,9 @@ function tryMoveSelection(by) {
         var(--arrow-offset),
         var(--arrow-offset));
 
-    transition: transform 80ms ease;
+    transition: 
+        box-shadow 80ms ease,
+        transform  80ms ease;
 }
 
 .arrow--right {
@@ -283,7 +285,7 @@ function tryMoveSelection(by) {
     overflow: hidden;
     width:    100%;
 
-    -webkit-text-stroke: 4px white;
+    -webkit-text-stroke: var(--text-stroke-l);
     color:               black;
     line-height:         1;
     text-align:          center;

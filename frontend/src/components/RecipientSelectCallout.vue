@@ -9,7 +9,7 @@
     padding:     0 36px;
     user-select: none;
 
-    -webkit-text-stroke: 4px white;
+    -webkit-text-stroke: var(--text-stroke-s);
     color:               black;
     font-family:         var(--font-heading);
     font-size:           2.4rem;

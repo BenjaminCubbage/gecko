@@ -6,6 +6,16 @@
     --col-gray-2: #cbd4de;
     --col-gray-3: #b0b9cc;
     --col-gray-4: #8e94ac;
+    --col-gray-5: #757a8f;
+    --col-gray-6: #656b82;
+    --col-gray-7: #4d5269;
+
+    --col-lt-gray-0: white;
+    --col-lt-gray-1: #f8fafc;
+    --col-lt-gray-2: #edf0f3;
+    --col-lt-gray-3: #eaecf1;
+    --col-lt-gray-4: #dde0e8;
+    --col-lt-gray-5: #c9cfdc;
 
     --col-blue-1: #7298ff;
     --col-blue-2: #486ac1;
@@ -17,7 +27,7 @@
     --col-red-5: #dc143c;
 
     --col-green-0: #f3f9ee;
-    --col-green-1: #ccebad;
+    --col-green-1: #d9f0c1;
     --col-green-2: #b3e87d;
     --col-green-3: #a6ed5e;
     --col-green-4: #91df43;
@@ -39,8 +49,8 @@
     --col-magenta-3: #e573ff;
     --col-magenta-4: #fc5aff;
 
-    --border-thickness-s: 3.0px;
-    --border-thickness-l: 3.5px;
+    --border-thickness-s: 2.5px;
+    --border-thickness-l: 2.5px;
 
     --border-s: var(--border-thickness-s) solid black;
     --border-l: var(--border-thickness-l) solid black;
@@ -55,4 +65,7 @@
     --shadow-l: var(--shadow-dist-l) var(--shadow-dist-l) 0 black;
 
     --shadow-aura: 0 0 0 2px white;
+
+    --text-stroke-s: 3px white;
+    --text-stroke-l: 4px white;
 }

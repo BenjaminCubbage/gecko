@@ -2,17 +2,15 @@
     <div class="account-widget-username-badge">
         <div
             class="username"
-            :class="{ 'username--pressed': state !== 'normal' }">
-            <div class="username-editor" v-show="state !== 'normal'">
-                <div class="at-symbol">
-                    @
-                </div>
+            :class="{ 'username--pressed': isEditing || isLoading }">
+            <div class="username-editor" v-show="isEditing || isLoading">
+                <div class="at-symbol">@</div>
 
                 <BaseInput
                     v-model="inputText"
                     ref="inputEl"
                     class="username-text-input"
-                    :disabled="state === 'loading'"
+                    :disabled="isLoading"
                     :maxlength="maxUsernameLength"
                     :charPredicate="isValidUsernameChar"
                     @blur="blur"
@@ -20,23 +18,25 @@
 
                 <button
                     class="submit-button"
-                    :class="{ 'submit-button--pressed': state === 'loading' }"
+                    :class="{ 'submit-button--pressed': isLoading }"
                     ref="submitButtonEl"
                     @blur="blur"
-                    :disabled="!isValidInput || state === 'loading'"
+                    :disabled="!isValidInput || isLoading"
                     @click="submit">
-                    <LoadingSpinner v-if="state === 'loading'" />
+                    <LoadingSpinner
+                        v-if="isSpinning"
+                        style="position: relative; top: 2px" />
                     <i v-else class="submit-icon hn hn-check-solid"></i>
                 </button>
             </div>
 
             <button
-                v-show="state === 'normal'"
+                v-show="!isEditing && !isLoading"
                 class="username-button"
-                :disabled="state === 'loading'"
+                :disabled="isLoading"
                 @click="edit">
                 <div class="username-text">
-                    <template v-if="state !== 'loading'">
+                    <template v-if="!isLoading">
                         @{{ session.activeUser.value.username }}
                     </template>
                     <template v-else>
@@ -46,7 +46,7 @@
             </button>
         </div>
 
-        <div v-show="state !== 'normal'" class="error-message">
+        <div v-show="isEditing || isLoading" class="error-message">
             {{ errorMessage }}
         </div>
     </div>
@@ -66,6 +66,7 @@ import BaseInput      from './BaseInput.vue';
 import LoadingSpinner from './LoadingSpinner.vue';
 
 import { useAutoHighlightTextInput } from '@/composables/useAutoHighlightTextInput.js';
+import { useLoadingState }           from '@/composables/useLoadingState.js';
 
 import {
     HttpError,
@@ -82,8 +83,8 @@ import { Keys } from '@/core/di/keys.js';
 
 const session = inject(Keys.SessionStore);
 
-const state        = ref('normal');
-const inputText    = ref('');
+const isEditing = ref(false);
+const inputText = ref('');
 const errorMessage = ref('');
 
 const submitButtonEl = useTemplateRef('submitButtonEl');
@@ -91,35 +92,45 @@ const inputEl        = useTemplateRef('inputEl');
 
 useAutoHighlightTextInput(() => inputEl.value?.innerElement);
 
+const {
+    isLoading,
+    isSpinning,
+    startedLoading,
+    stoppedLoading
+} = useLoadingState();
+
 const isValidInput = computed(() => {
     return inputText.value !== session.activeUser.value.username
         && isValidUsername(inputText.value);
 });
 
 watch(() => session.activeUser.value.username, newValue => {
-    inputText.value = newValue;
+    if (!isEditing.value)
+        inputText.value = newValue;
 }, {
     immediate: true
 });
 
-watch(state, () => {
-    if (state.value === 'normal')
+watch(() => isEditing.value || isLoading.value, newValue => {
+    if (!newValue)
+        inputText.value = session.activeUser.value.username;
+});
+
+watch(isEditing, newValue => {
+    if (!newValue)
         errorMessage.value = '';
 });
 
 async function edit() {
-    state.value = 'editing';
-
+    isEditing.value = true;
     await nextTick();
     inputEl.value.innerElement.focus();
 }
 
 function blur(e) {
     if (e.relatedTarget != submitButtonEl.value &&
-        e.relatedTarget != inputEl?.value.innerElement &&
-        state.value === 'editing') {
-        state.value = 'normal';
-        inputText.value = session.activeUser.value.username;
+        e.relatedTarget != inputEl?.value.innerElement) {
+        isEditing.value = false;
     }
 }
 
@@ -127,20 +138,23 @@ async function submit() {
     if (!isValidInput.value)
         return;
 
-    state.value = 'loading';
+    isEditing.value = false;
+    startedLoading();
 
     try {
         await session.requestChangeUsername(inputText.value);
-        state.value = 'normal';
     } catch (e) {
         if (e instanceof HttpError && e.body.error.reason === 'username_taken')
             errorMessage.value = 'Username is taken';
         else if (e instanceof NetworkError)
             errorMessage.value = `Couldn't connect`;
         else
-            errorMessage.value = `Couldn't set username at this time`;
+            errorMessage.value = `Error updating username`;
 
         edit();
+    }
+    finally {
+        stoppedLoading();
     }
 }
 </script>
@@ -164,9 +178,10 @@ async function submit() {
     pointer-events: none;
     position:       absolute;
 
-    font-size: 1.8rem;
-    color: var(--col-red-5);
-    -webkit-text-stroke: 4px white;
+    font-size:           1.8rem;
+    color:               var(--col-red-5);
+    -webkit-text-stroke: var(--text-stroke-s);
+
     paint-order: stroke;
 }
 
@@ -223,6 +238,7 @@ async function submit() {
     cursor:   text;
     padding:  0 16px;
     position: relative;
+    overflow: hidden;
 }
 
 .username-button:disabled {
@@ -234,8 +250,9 @@ async function submit() {
 }
 
 .username-text {
+    -webkit-text-stroke: var(--text-stroke-s);
     color:               black;
-    -webkit-text-stroke: 4px white;
+    letter-spacing:      0.03em;
     paint-order:         stroke;
 }
 
@@ -247,10 +264,11 @@ async function submit() {
 }
 
 .at-symbol {
-    align-self: center;
+    align-self:          center;
     cursor:              default;
-    margin-right:        -3.5px;
-    -webkit-text-stroke: 4px white;
+    margin-right:        -3px;
+
+    -webkit-text-stroke: var(--text-stroke-s);
     color:               black;
     paint-order:         stroke;
 }
@@ -262,15 +280,16 @@ async function submit() {
     border:        0;
 
     -webkit-appearance:  none;
-    -webkit-text-stroke: 4px white;
+    -webkit-text-stroke: var(--text-stroke-s);
     appearance:          none;
     box-sizing:          border-box;
 
-    background:   transparent;
-    color:        black;
-    font-family:  inherit;
-    font-size:    inherit;
-    outline:      none;
+    background:     transparent;
+    color:          black;
+    font-family:    inherit;
+    font-size:      inherit;
+    letter-spacing: 0.03em;
+    outline:        none;
 
     paint-order: stroke;
 }
@@ -279,9 +298,9 @@ async function submit() {
     align-self:      stretch;
     display:         flex;
     justify-content: center;
-    width: 55px;
     padding:         0 13px;
     place-items:     center;
+    width:           55px;
 
     color: var(--col-green-9);
     font-size: 2.4rem;
@@ -328,5 +347,9 @@ async function submit() {
     left:      1px;
     top:       1px;
     position:  relative;
+}
+
+.submit-button--pressed .submit-icon {
+    transform: translateY(2px);
 }
 </style>
