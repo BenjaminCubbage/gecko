@@ -161,7 +161,10 @@ watch([
         }
         break;
     }
-}, { immediate: true, deep: true });
+}, {
+    deep:      true,
+    immediate: true
+});
 
 async function sendRequest(user) {
     await friends.publishCreateFriendRequest(session, user);
@@ -196,15 +199,22 @@ function search() {
         .onSuccess(body => {
             searchMode.value = 'normal';
 
-            const user      = User.fromJSON(body['user']);
-            const duplicate = friends.updateFriendInCacheIfExists(user.userID, {
-                user: user
-            });
+            const user     = User.fromJSON(body['user']);
+            let cachedUser = null;
 
-            if (!duplicate) {
+            if (user.userID === session.activeUserID) {
+                session.updateActiveUserInCache(user);
+                cachedUser = session.activeUser;
+            } else {
+                cachedUser = friends.updateFriendInCacheIfExists(user.userID, {
+                    user: user
+                });
+            }
+
+            if (!cachedUser) {
                 searchResultPlaceholderVariant.value = null;
                 searchResult.value = {
-                    user: duplicate ?? user,
+                    user: user,
                     type: 'notfriends'
                 };
             } else {

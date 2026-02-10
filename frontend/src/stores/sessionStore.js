@@ -54,6 +54,10 @@ export class SessionStore {
         return this.#stateRO;
     }
 
+    updateActiveUserInCache(props) {
+        Object.assign(this.#activeUser.value, props);
+    }
+
     /*
         Sync the active user to the server. Returns whether or not
         the user was logged in.
