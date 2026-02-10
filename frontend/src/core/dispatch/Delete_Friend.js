@@ -1,6 +1,6 @@
 import { HttpRequest } from '@/core/http/httpRequest.js';
 
-class Delete_Friend extends HttpRequest {
+export class Delete_Friend extends HttpRequest {
     constructor(userID, xsrfToken, otherUserID) {
         super(
             'DELETE',
@@ -10,5 +10,3 @@ class Delete_Friend extends HttpRequest {
         );
     }
 }
-
-export { Delete_Friend };

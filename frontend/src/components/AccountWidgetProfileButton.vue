@@ -50,13 +50,12 @@ function logOut() {
     border:     0;
 
     transition:
-        display   120ms allow-discrete,
-        opacity   120ms ease,
-        transform 120ms 20ms ease;
+        display   320ms allow-discrete,
+        transform 220ms ease;
 }
 
 .account-widget-profile-button-popover:not(:popover-open) {
-    transform: translateX(-100px);
+    transform: translateX(-200px);
 }
 
 .inner-button {
@@ -84,7 +83,7 @@ function logOut() {
             var(--inner-button-offset));
 
     transition:
-        box-shadow 50ms  ease,
+        box-shadow 100ms  ease,
         transform  100ms ease;
 }
 
@@ -110,7 +109,7 @@ function logOut() {
 
 @starting-style {
     .account-widget-profile-button-popover {
-        transform: translateX(-100px);
+        transform: translateX(-200px);
     }
 }
 </style>

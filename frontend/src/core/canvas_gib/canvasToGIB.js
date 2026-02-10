@@ -1,4 +1,4 @@
-class CanvasToGIB {
+export class CanvasToGIB {
     static readBlob(canvas) {
         const ctx = canvas?.getContext('2d');
 
@@ -30,5 +30,3 @@ class CanvasToGIB {
         return new Blob([copy]);
     }
 };
-
-export { CanvasToGIB };

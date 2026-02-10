@@ -1,4 +1,4 @@
-class ResourceMutex {
+export class ResourceMutex {
     constructor() {
         this._locked = false;
     }
@@ -18,7 +18,7 @@ class ResourceMutex {
     }
 }
 
-class MultiResourceMutex {
+export class MultiResourceMutex {
     constructor() {
         this._inflight   = Object.create(null);
         this._globalLock = false;
@@ -67,8 +67,3 @@ class MultiResourceMutex {
         return true;
     }
 }
-
-export {
-    ResourceMutex,
-    MultiResourceMutex
-};

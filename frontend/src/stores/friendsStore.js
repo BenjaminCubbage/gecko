@@ -22,7 +22,7 @@ import { MultiResourceMutex } from '@/core/async/mutex.js';
          - pendingIncoming(), and
          - pendingOutgoing()
 */
-class FriendsStore {
+export class FriendsStore {
     #active;
     #pendingIn;
     #pendingOut;
@@ -307,5 +307,3 @@ class FriendsStore {
         return null;
     }
 }
-
-export { FriendsStore };

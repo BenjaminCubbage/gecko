@@ -1,4 +1,4 @@
-class User {
+export class User {
     static fromJSON(json) {
         const user = new User();
         user.userID   = +json['user_id'];
@@ -6,5 +6,3 @@ class User {
         return user;
     }
 }
-
-export { User }

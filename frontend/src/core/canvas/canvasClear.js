@@ -3,7 +3,7 @@
 
     Call all 3 functions to clear the whole screen
 */
-class CanvasClear {
+export class CanvasClear {
     static clear1(canvas) { this._clear(canvas, 3, 1); }
     static clear2(canvas) { this._clear(canvas, 3, 2); }
     static clear3(canvas) { this._clear(canvas, 3, 3); }
@@ -40,5 +40,3 @@ class CanvasClear {
         ctx.putImageData(new ImageData(imageData, width, height), 0, 0);
     }
 };
-
-export { CanvasClear };

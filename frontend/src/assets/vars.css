@@ -1,5 +1,5 @@
 :root {
-    --font-heading: 'Jersey 15', sans-serif;
+    --font-heading: 'Jersey 15';
 
     --col-gray-0: white;
     --col-gray-1: #eff3f7;
@@ -19,6 +19,7 @@
 
     --col-blue-1: #7298ff;
     --col-blue-2: #486ac1;
+    --col-blue-3: #2c4a95;
 
     --col-red-1: #ffdfdf;
     --col-red-2: #ffb0b0;

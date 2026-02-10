@@ -1,15 +1,12 @@
 <template>
     <div class="recipient-select">
         <transition name="slide-up" mode="out-in">
-            <RecipientSelectCallout
-                v-if="showCallout"
-                class="callout"
-                key="callout">
-                {{ calloutText }}
-            </RecipientSelectCallout>
+            <RecipientSelectLogInButton
+                v-if="session.state.value === 'loggedout'"
+                key="login" />
 
             <div
-                v-else
+                v-else-if="session.state.value === 'ready' && selectedDevice != null"
                 class="carousels"
                 key="carousels">
                 <RecipientSelectCarousel
@@ -42,9 +39,9 @@ import {
     watch
 } from 'vue';
 
-import RecipientSelectCarousel from './RecipientSelectCarousel.vue';
-import RecipientSelectCallout  from './RecipientSelectCallout.vue';
-import { Keys }                from '@/core/di/keys.js';
+import RecipientSelectCarousel    from './RecipientSelectCarousel.vue';
+import RecipientSelectLogInButton from './RecipientSelectLogInButton.vue';
+import { Keys }                   from '@/core/di/keys.js';
 
 const session = inject(Keys.SessionStore);
 const friends = inject(Keys.FriendsStore);
@@ -78,27 +75,6 @@ watch(deviceOptions, () => {
         selectedDevice.value = deviceOptions.value[0];
 });
 
-const showCallout = computed(() => {
-    return selectedDevice.value == null;
-});
-
-const calloutText = computed(() => {
-    switch (devices.state.value) {
-        case 'loggedout':
-            return 'Not logged in';
-
-        case 'error':
-            return 'Error loading devices';
-
-        case 'ready':
-            return devices.hasAnyDevices.value
-                ? 'Loading...'
-                : 'No friends with any devices';
-    }
-
-    return 'Loading...';
-});
-
 watch(selectedDevice, newValue => emit('selectionChanged', newValue));
 </script>
 
@@ -109,26 +85,21 @@ watch(selectedDevice, newValue => emit('selectionChanged', newValue));
     place-items: center;
 }
 
-.callout {
-    grid-area:   1 / 1;
-}
-
 .carousels {
     align-items: center;
     display:     flex;
     flex-flow:   column nowrap;
     gap:         6px;
-    grid-area:   1 / 1;
 }
 
 .slide-up-enter-active,
 .slide-up-leave-active {
     transition: 
-        transform 50ms ease-out;
+        transform 200ms ease;
 }
 
 .slide-up-enter-from,
 .slide-up-leave-to {
-  transform: scale(0.8);
+  transform: translateY(100px);
 }
 </style>

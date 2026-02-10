@@ -17,7 +17,7 @@ import { User }          from '@//models/user.js';
 /*
     Stores the current user and XSRF cookie.
 */
-class SessionStore {
+export class SessionStore {
     #activeUser;
     #xsrfCookie;
 
@@ -111,6 +111,9 @@ class SessionStore {
             return false;
 
         try {
+            this.#state.value      = 'loggedout'
+            this.#activeUser.value = null;
+
             await new Promise((resolve, reject) => {
                 Dispatch.Post_LogOut(this.xsrfCookie)
                     .onSuccess(() => resolve())
@@ -125,8 +128,6 @@ class SessionStore {
                 throw e;
         }
 
-        this.#state.value      = 'loggedout'
-        this.#activeUser.value = null;
         return true;
     }
 
@@ -181,5 +182,3 @@ class SessionStore {
         return false;
     }
 };
-
-export { SessionStore };

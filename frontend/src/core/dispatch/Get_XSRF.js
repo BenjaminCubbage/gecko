@@ -1,6 +1,6 @@
 import { HttpRequest } from '@/core/http/httpRequest.js';
 
-class Get_XSRF extends HttpRequest {
+export class Get_XSRF extends HttpRequest {
     // Asks the server for an XSRF token
     //
     // Response is not in the response body--it's
@@ -12,5 +12,3 @@ class Get_XSRF extends HttpRequest {
         super('GET', '/auth/xsrf');
     }
 }
-
-export { Get_XSRF };

@@ -1,9 +1,7 @@
 import { HttpRequest } from '@/core/http/httpRequest.js';
 
-class Get_UsersMe extends HttpRequest {
+export class Get_UsersMe extends HttpRequest {
     constructor() {
         super('GET', '/api/users/me');
     }
 }
-
-export { Get_UsersMe };

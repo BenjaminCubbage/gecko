@@ -39,7 +39,6 @@ onUnmounted(() => {
 <style scoped>
 .login-button {
     display:       flex;
-    gap:           12px;
     place-content: center;
     place-items:   center;
     width:         48px;
@@ -105,12 +104,5 @@ onUnmounted(() => {
     background-clip: text;
 
     transform: translate(1px, 1px);
-}
-
-.button-text {
-    user-select:    none;
-    font-family:    var(--font-heading);
-    font-size:      2.4rem;
-    letter-spacing: 0.04em;
 }
 </style>

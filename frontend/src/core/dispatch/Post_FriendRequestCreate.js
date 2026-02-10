@@ -1,6 +1,6 @@
 import { HttpRequest } from '@/core/http/httpRequest.js';
 
-class Post_FriendRequestCreate extends HttpRequest {
+export class Post_FriendRequestCreate extends HttpRequest {
     constructor(userID, xsrfToken, otherUserID) {
         super(
             'POST',
@@ -10,5 +10,3 @@ class Post_FriendRequestCreate extends HttpRequest {
         );
     }
 }
-
-export { Post_FriendRequestCreate };

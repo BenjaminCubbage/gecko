@@ -1,6 +1,6 @@
 import { User } from './user.js';
 
-class Friend {
+export class Friend {
     static fromJSON(json) {
         const friend = new Friend();
         friend.acceptedOn = json['accepted_on'] ?? null;
@@ -34,5 +34,3 @@ class Friend {
         return null;
     }
 }
-
-export { Friend }

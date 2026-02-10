@@ -1,4 +1,4 @@
-class CanvasUtils {
+export class CanvasUtils {
     static snapToPureBitonal(ctx, x, y, width, height) {
         x = Math.max(0, x);
         y = Math.max(0, y);
@@ -24,5 +24,3 @@ class CanvasUtils {
         ctx.putImageData(data, x, y);
     }
 };
-
-export { CanvasUtils };

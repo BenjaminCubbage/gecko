@@ -1,4 +1,4 @@
-class Device {
+export class Device {
     static fromJSON(json) {
         const device = new Device();
         device.deviceID = json['device_id'];
@@ -23,5 +23,3 @@ class Device {
         this.status = deviceStatus;
     }
 }
-
-export { Device };

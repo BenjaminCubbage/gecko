@@ -1,6 +1,6 @@
 import { HttpRequest } from '@/core/http/httpRequest.js';
 
-class Patch_ChangeUsername extends HttpRequest {
+export class Patch_ChangeUsername extends HttpRequest {
     constructor(userID, xsrfToken, newUsername) {
         super(
             'PATCH',
@@ -10,5 +10,3 @@ class Patch_ChangeUsername extends HttpRequest {
         );
     }
 }
-
-export { Patch_ChangeUsername };

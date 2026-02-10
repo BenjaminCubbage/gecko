@@ -1,6 +1,6 @@
 import { HttpRequest } from '@/core/http/httpRequest.js';
 
-class Post_SharedImage extends HttpRequest {
+export class Post_SharedImage extends HttpRequest {
     constructor(userID, xsrfToken, idempotencyKey, receiver, gibBlob) {
         const formData = new FormData();
         formData.append('metadata', JSON.stringify({ recipient_device_id: receiver }));
@@ -12,5 +12,3 @@ class Post_SharedImage extends HttpRequest {
         ]);
     }
 };
-
-export { Post_SharedImage };

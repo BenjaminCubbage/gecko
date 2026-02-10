@@ -1,6 +1,6 @@
 import { HttpRequest } from '@/core/http/httpRequest.js';
 
-class Post_LogOut extends HttpRequest {
+export class Post_LogOut extends HttpRequest {
     constructor(xsrfToken) {
         const url = '/auth/logout';
         super('POST', url, null, [
@@ -8,5 +8,3 @@ class Post_LogOut extends HttpRequest {
         ]);
     }
 }
-
-export { Post_LogOut };

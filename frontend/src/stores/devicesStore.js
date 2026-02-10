@@ -19,7 +19,7 @@ import { MultiResourceMutex } from '@/core/async/mutex.js';
 /*
     Stores owned devices keyed by user ID.
 */
-class DevicesStore {
+export class DevicesStore {
     #deviceOwners;
     #mutex;
     #state;
@@ -195,5 +195,3 @@ class DevicesStore {
         return false;
     }
 }
-
-export { DevicesStore };

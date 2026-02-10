@@ -1,8 +1,8 @@
-const CookieNames = Object.freeze({
+export const CookieNames = Object.freeze({
     XSRFToken: "__Host-xsrf_token"
 });
 
-class Cookies {
+export class Cookies {
     static getByName(name) {
         var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
 
@@ -15,5 +15,3 @@ class Cookies {
         return Cookies.getByName(CookieNames.XSRFToken);
     }
 };
-
-export { CookieNames, Cookies };

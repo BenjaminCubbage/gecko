@@ -1,4 +1,4 @@
-class HttpRequest {
+export class HttpRequest {
     constructor(method, url, body = null, headers = null, responseType = null) {
         this.xhr = new XMLHttpRequest();
 
@@ -57,5 +57,3 @@ class HttpRequest {
         this._anyErrorCb?.(this.xhr);
     }
 }
-
-export { HttpRequest };

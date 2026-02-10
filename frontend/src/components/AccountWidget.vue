@@ -46,7 +46,7 @@ const session = inject(Keys.SessionStore);
 
 .login-appear-enter-active,
 .login-appear-leave-active {
-    transition: transform 100ms 160ms ease, opacity 100ms 160ms ease;
+    transition: transform 200ms ease, opacity 200ms ease;
 }
 
 .login-appear-enter-from,

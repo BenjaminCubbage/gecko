@@ -1,4 +1,4 @@
-class GIBToCanvas {
+export class GIBToCanvas {
     static writeBlob(canvas, buffer) {
         const ctx = canvas?.getContext('2d');
         if (!ctx) {
@@ -52,5 +52,3 @@ class GIBToCanvas {
         return true;
     }
 };
-
-export { GIBToCanvas };
