@@ -97,7 +97,7 @@ const friends = inject(Keys.FriendsStore);
 const searchText = ref('');
 const searchMode = ref('normal');
 
-// { user: <number>, type: <string>, acceptedOn: <string> | null } | null
+// { user: <number>, type: <string> } | null
 const searchResult = ref(null);
 
 // note(ben): Placeholder only shown when this is not falsy (like null)
@@ -252,6 +252,7 @@ function tryFillSearchResultFromCache(username) {
     const [friend, type] = friends.getFriendInCacheByUsername(username);
 
     if (friend) {
+        searchResult.value = {};
         searchResult.value.user = friend.user;
         searchResultPlaceholderVariant.value = null;
 

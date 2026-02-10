@@ -5,7 +5,6 @@
         ref="inputEl"
         type="text"
         @input="inputChanged()"
-        @blur="emit('blur', $event)"
         :maxlength="maxUsernameLength" />
 </template>
 
