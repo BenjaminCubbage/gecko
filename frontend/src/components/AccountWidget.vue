@@ -28,7 +28,6 @@ const session = inject(Keys.SessionStore);
 
 <style scoped>
 .account-widget {
-    padding-left: 24px;
     display:      flex;
     height:       44px;
 }

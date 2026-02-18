@@ -89,6 +89,7 @@ function selectedDeviceChanged(value) {
     align-content: center;
     display:       flex;
     flex-flow:     column nowrap;
+    margin-bottom: calc(var(--shadow-dist-l) * 2);
 
     will-change: transform;
 }
