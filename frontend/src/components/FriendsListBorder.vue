@@ -79,8 +79,9 @@ defineProps({
             var(--col-orange-4) 50%);
 
     box-shadow:
-        inset 0 3px 0 var(--col-orange-0),
-        var(--shadow-l);
+        var(--shadow-l),
+        inset 0  3px 0 var(--col-orange-0),
+        inset 0 -3px 0 var(--col-orange-6);
 
     border-radius: var(--radius-s);
     border:        var(--border-s);

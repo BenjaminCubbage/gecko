@@ -104,19 +104,29 @@ const isMe         = computed(() => props.entryType == 'me');
 }
 
 .icon-section {
-    grid-area:    icon;
-    line-height:  0.87;
-    margin-right: 12px;
-    place-self:   center;
-    text-align:   center;
+    display:       grid;
+    grid-area:     icon;
+    height:        42px;
+    width:         42px;
+    margin-right:  12px;
+    padding-left:  2px;
+    padding-top:   0.5px;
+    place-content: center;
+    place-self:    center;
+    
+    -webkit-text-stroke: var(--text-stroke-s);
+    font-size:           2.4rem;
 
-    font-size: 2.4rem;
+    box-shadow:    
+        var(--shadow-s), 
+        inset 0  3px 0 var(--col-orange-2),
+        inset 0 -3px 0 var(--col-orange-6);
 
-    background:    rgb(255, 170, 105);
+    background:    var(--col-orange-4);
     border:        var(--border-s);
-    border-radius: 5px;
-    box-shadow:    var(--shadow-s), inset 0 3px 0 rgb(255, 202, 162);
-    padding:       6px;
+    border-radius: var(--radius-s);
+    
+    paint-order: stroke;
 }
 
 .name-section {
