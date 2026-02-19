@@ -1,12 +1,17 @@
 <template>
     <div class="bg">
         <transition name="fade-in">
-            <div v-show="isMainFontLoaded && isIconFontLoaded" class="flex-items">
+            <div
+                v-show="showContent"
+                ref="mainContentEl"
+                class="flex-items">
                 <NavigationBar class="navigation-bar" v-model:selectedTab="selectedTab" />
 
                 <div class="front-and-center">
                     <div v-show="selectedTab == 'canvas'">
-                        <RecipientSelect @selectionChanged="selectedDeviceChanged" />
+                        <RecipientSelect
+                            :show="showRecipientSelect"
+                            @selectionChanged="selectedDeviceChanged" />
                         <PicEditor :recipientDevice="selectedDevice" />
                     </div>
 
@@ -20,9 +25,11 @@
 </template>
 
 <script setup>
-import { 
-    provide, 
-    ref, 
+import {
+    computed,
+    provide,
+    ref,
+    useTemplateRef,
     watch
 } from 'vue';
 
@@ -36,9 +43,10 @@ import { FriendsStore } from './stores/friendsStore.js';
 import { SessionStore } from './stores/sessionStore.js';
 import { Keys }         from './core/di/keys.js';
 
-import { useWaitOnFont } from './composables/useWaitOnFont.js';
+import { useWaitOnFont }       from './composables/useWaitOnFont.js';
+import { useWaitOnTransition } from './composables/useWaitOnTransition.js';
 
-import { delay } from '@/core/async/delay.js';
+const mainContentEl = useTemplateRef('mainContentEl');
 
 const selectedTab    = ref('canvas');
 const selectedDevice = ref(null);
@@ -49,6 +57,21 @@ const devices = new DevicesStore();
 const { isFontLoaded: isMainFontLoaded } = useWaitOnFont('--font-heading');
 const { isFontLoaded: isIconFontLoaded } = useWaitOnFont('iconfont');
 
+const { 
+    isTransitionCompleted: isFadeInCompleted 
+} = useWaitOnTransition(mainContentEl, { 
+    propertyName: 'opacity',
+    once:         true
+});
+
+const showContent = computed(() => {
+    return isMainFontLoaded.value && isIconFontLoaded.value;
+});
+
+const showRecipientSelect = computed(() => {
+    return showContent.value && isFadeInCompleted.value;
+});
+
 provide(Keys.DevicesStore, devices);
 provide(Keys.SessionStore, session);
 provide(Keys.FriendsStore, friends);
@@ -58,7 +81,6 @@ provide(Keys.FriendsStore, friends);
     await friends.requestResync(session);
     await devices.requestResync(session, friends);
 })();
-
 
 watch(session.state, (newState, oldState) => {
     if ((newState === 'loggedout' && oldState === 'ready') ||
@@ -103,7 +125,7 @@ function selectedDeviceChanged(value) {
 }
 
 .fade-in-enter-active {
-    transition: opacity 200ms 200ms ease;
+    transition: opacity 200ms ease 200ms;
 }
 
 .fade-in-enter-from {

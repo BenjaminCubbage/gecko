@@ -2,11 +2,11 @@
     <div class="recipient-select">
         <transition name="slide-up" mode="out-in">
             <RecipientSelectLogInButton
-                v-if="session.state.value === 'loggedout'"
+                v-if="show && session.state.value === 'loggedout'"
                 key="login" />
 
             <div
-                v-else-if="session.state.value === 'ready' && selectedDevice != null"
+                v-else-if="show && session.state.value === 'ready' && selectedDevice != null"
                 class="carousels"
                 key="carousels">
                 <RecipientSelectCarousel
@@ -42,6 +42,13 @@ import {
 import RecipientSelectCarousel    from './RecipientSelectCarousel.vue';
 import RecipientSelectLogInButton from './RecipientSelectLogInButton.vue';
 import { Keys }                   from '@/core/di/keys.js';
+
+const props = defineProps({
+    show: {
+        type:    Boolean,
+        default: false
+    }
+});
 
 const session = inject(Keys.SessionStore);
 const friends = inject(Keys.FriendsStore);
