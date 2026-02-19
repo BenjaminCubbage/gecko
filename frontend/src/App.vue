@@ -1,26 +1,22 @@
 <template>
-    <div class="bg">
-        <transition name="fade-in">
-            <div
-                v-show="showContent"
-                ref="mainContentEl"
-                class="flex-items">
-                <NavigationBar class="navigation-bar" v-model:selectedTab="selectedTab" />
+    <div
+        v-show="showContent"
+        ref="mainContentEl"
+        class="layout">
+        <NavigationBar class="navigation-bar" v-model:selectedTab="selectedTab" />
 
-                <div class="front-and-center">
-                    <div v-show="selectedTab == 'canvas'">
-                        <RecipientSelect
-                            :show="showRecipientSelect"
-                            @selectionChanged="selectedDeviceChanged" />
-                        <PicEditor :recipientDevice="selectedDevice" />
-                    </div>
-
-                    <div v-show="selectedTab == 'friends'">
-                        <FriendsList />
-                    </div>
-                </div>
+        <div class="main-content">
+            <div v-show="selectedTab == 'canvas'">
+                <RecipientSelect
+                    :reveal="revealRecipientSelect"
+                    @selectionChanged="selectedDeviceChanged" />
+                <PicEditor :recipientDevice="selectedDevice" />
             </div>
-        </transition>
+
+            <div v-show="selectedTab == 'friends'">
+                <FriendsList />
+            </div>
+        </div>
     </div>
 </template>
 
@@ -46,8 +42,6 @@ import { Keys }         from './core/di/keys.js';
 import { useWaitOnFont }       from './composables/useWaitOnFont.js';
 import { useWaitOnTransition } from './composables/useWaitOnTransition.js';
 
-const mainContentEl = useTemplateRef('mainContentEl');
-
 const selectedTab    = ref('canvas');
 const selectedDevice = ref(null);
 const session = new SessionStore();
@@ -59,7 +53,7 @@ const { isFontLoaded: isIconFontLoaded } = useWaitOnFont('iconfont');
 
 const { 
     isTransitionCompleted: isFadeInCompleted 
-} = useWaitOnTransition(mainContentEl, { 
+} = useWaitOnTransition(useTemplateRef('mainContentEl'), { 
     propertyName: 'opacity',
     once:         true
 });
@@ -68,7 +62,7 @@ const showContent = computed(() => {
     return isMainFontLoaded.value && isIconFontLoaded.value;
 });
 
-const showRecipientSelect = computed(() => {
+const revealRecipientSelect = computed(() => {
     return showContent.value && isFadeInCompleted.value;
 });
 
@@ -101,22 +95,17 @@ function selectedDeviceChanged(value) {
 </script>
 
 <style scoped>
-.bg {
-    height:           100dvh;
-    overflow-y:       auto;
-    scrollbar-gutter: stable both-edges;
-}
-
-.flex-items {
+.layout {
     align-content: center;
     display:       flex;
     flex-flow:     column nowrap;
     margin-bottom: calc(var(--shadow-dist-l) * 2);
 
+    transition:  opacity 300ms ease 200ms;
     will-change: transform;
 }
 
-.front-and-center {
+.main-content {
     display:       flex;
     flex-flow:     column nowrap;
     gap:           4px;
@@ -124,11 +113,9 @@ function selectedDeviceChanged(value) {
     place-items:   center;
 }
 
-.fade-in-enter-active {
-    transition: opacity 200ms ease 200ms;
-}
-
-.fade-in-enter-from {
-    opacity: 0;
+@starting-style {
+    .layout {
+        opacity: 0;
+    }
 }
 </style>

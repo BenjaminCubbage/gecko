@@ -1,7 +1,7 @@
 <template>
     <!-- Measuring only (for width anim) -->
     <teleport to="body">
-        <div class="measure-options">
+        <div class="measure-options" inert>
             <div
                 v-for="option in options"
                 ref="measureOptionsEls"
@@ -133,12 +133,6 @@ watch(
     }
 );
 
-/*
-    Manually setting starting max is a cheap hack to get it
-    to smoothly transition on initial render from the loading
-    state. I tried only setting the transition after the actual
-    element loaded but found that was a race condition.
-*/
 const animMaxWidth = ref('26px');
 const animMinWidth = ref('26px');
 

@@ -14,13 +14,9 @@
         <title>bdcanvas</title>
 
         <style>
-            /*
-                Prefix stuff here with INDEX-* to avoid name collisions.
-
-                Some of this has been copied from txtr.css and vars.css, so 
-                that it may be displayed while the rest of the assets load.
-            */
             body {
+                margin: 0;
+
                 --col-blue-1: #7298ff;
                 --col-blue-2: #486ac1;
                 --col-blue-3: #2c4a95;
@@ -41,6 +37,12 @@
                 background-size:       var(--dots-spacing-x) var(--dots-spacing-y);
                 background-repeat:     repeat;
                 background-position-y: 4px;
+            }
+
+            #app {
+                height:           100dvh;
+                overflow-y:       auto;
+                scrollbar-gutter: stable both-edges;
             }
         </style>
     </head>

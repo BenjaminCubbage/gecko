@@ -1,8 +1,11 @@
 <template>
-    <nav class="navbar">
+    <header class="navbar">
         <AccountWidget class="account" />
-        <NavigationBarTabs v-model="selectedTab" class="pills" />
-    </nav>
+
+        <nav class="links">
+            <NavigationBarTabs v-model="selectedTab" />
+        </nav>
+    </header>
 </template>
 
 <script setup>
@@ -16,8 +19,8 @@ const selectedTab = defineModel('selectedTab');
 .navbar {
     align-items:           center;
     display:               grid;
-    grid-template-columns: [pills account] 1fr;
-    grid-template-rows:    [pills account] 96px;
+    grid-template-columns: [links account] 1fr;
+    grid-template-rows:    [links account] 96px;
     padding:               0 24px;
 }
 
@@ -26,21 +29,21 @@ const selectedTab = defineModel('selectedTab');
     grid-area:  account;
 }
 
-.pills {
+.links {
     align-self:   center;
-    grid-area:    pills;
+    grid-area:    links;
     justify-self: center;
 }
 
 @media (760px <= width < 1200px) {
     .navbar {
-        grid-template-columns: [account] 1fr [pills] auto;
+        grid-template-columns: [account] 1fr [links] auto;
     }
 }
 
 @media (width < 760px) {
     .navbar {
-        grid-template-rows: [account] 96px [pills] 48px;
+        grid-template-rows: [account] 96px [links] 48px;
         padding-bottom: 8px;
     }
 }

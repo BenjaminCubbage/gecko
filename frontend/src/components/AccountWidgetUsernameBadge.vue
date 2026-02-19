@@ -188,6 +188,7 @@ async function submit() {
 .username {
     display:       grid;
     justify-items: start;
+    overflow:      hidden;
 
     --username-aura:   0 0;
     --username-offset: 0px;
@@ -214,12 +215,16 @@ async function submit() {
             var(--username-offset));
 
     transition:
-        box-shadow 50ms ease,
-        transform  50ms ease;
+        box-shadow 50ms  ease,
+        transform  50ms  ease;
 }
 
 .username:has(> .username-button:hover) {
     --username-offset: calc(var(--shadow-dist-s) / 2);
+}
+
+.username--pressed {
+    width: 300px;
 }
 
 .username:has(> .username-button:active),
@@ -274,17 +279,17 @@ async function submit() {
 }
 
 .username-text-input {
-    width:         200px;
     margin:        0;
     padding-right: 16px;
-    border:        0;
-
+    width:         100%;
+    
     -webkit-appearance:  none;
     -webkit-text-stroke: var(--text-stroke-s);
     appearance:          none;
     box-sizing:          border-box;
-
+    
     background:     transparent;
+    border:         0;
     color:          black;
     font-family:    inherit;
     font-size:      inherit;
