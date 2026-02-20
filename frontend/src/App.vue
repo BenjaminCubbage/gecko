@@ -1,11 +1,11 @@
 <template>
     <div
         v-show="showContent"
-        ref="mainContentEl"
+        ref="layoutEl"
         class="layout">
         <NavigationBar class="navigation-bar" v-model:selectedTab="selectedTab" />
 
-        <div class="main-content">
+        <main class="main-content">
             <div v-show="selectedTab == 'canvas'">
                 <RecipientSelect
                     :reveal="revealRecipientSelect"
@@ -16,7 +16,7 @@
             <div v-show="selectedTab == 'friends'">
                 <FriendsList />
             </div>
-        </div>
+        </main>
     </div>
 </template>
 
@@ -51,9 +51,9 @@ const devices = new DevicesStore();
 const { isFontLoaded: isMainFontLoaded } = useWaitOnFont('--font-heading');
 const { isFontLoaded: isIconFontLoaded } = useWaitOnFont('iconfont');
 
-const { 
-    isTransitionCompleted: isFadeInCompleted 
-} = useWaitOnTransition(useTemplateRef('mainContentEl'), { 
+const {
+    isTransitionCompleted: isFadeInCompleted
+} = useWaitOnTransition(useTemplateRef('layoutEl'), {
     propertyName: 'opacity',
     once:         true
 });
@@ -62,6 +62,10 @@ const showContent = computed(() => {
     return isMainFontLoaded.value && isIconFontLoaded.value;
 });
 
+/*
+    For performance reasons: don't run recipient select transition
+    and content fade-in at same time.
+*/
 const revealRecipientSelect = computed(() => {
     return showContent.value && isFadeInCompleted.value;
 });
