@@ -215,8 +215,8 @@ async function submit() {
             var(--username-offset));
 
     transition:
-        box-shadow 50ms  ease,
-        transform  50ms  ease;
+        box-shadow 50ms ease,
+        transform  50ms ease;
 }
 
 .username:has(> .username-button:hover) {
@@ -224,7 +224,7 @@ async function submit() {
 }
 
 .username--pressed {
-    width: 300px;
+    width: clamp(0px, 300px, 100%);
 }
 
 .username:has(> .username-button:active),
@@ -236,7 +236,8 @@ async function submit() {
 
 .username-button,
 .username-editor {
-    grid-area: 1/1;
+    grid-area: 1 / 1;
+    width:     100%;
 }
 
 .username-button {
@@ -259,6 +260,10 @@ async function submit() {
     color:               black;
     letter-spacing:      0.03em;
     paint-order:         stroke;
+    overflow:            hidden;
+    white-space:         nowrap;
+    text-overflow:       ellipsis;
+    width:               100%;
 }
 
 .username-editor {
@@ -282,12 +287,12 @@ async function submit() {
     margin:        0;
     padding-right: 16px;
     width:         100%;
-    
+
     -webkit-appearance:  none;
     -webkit-text-stroke: var(--text-stroke-s);
     appearance:          none;
     box-sizing:          border-box;
-    
+
     background:     transparent;
     border:         0;
     color:          black;
@@ -310,19 +315,16 @@ async function submit() {
     color: var(--col-green-9);
     font-size: 2.4rem;
 
-    background: linear-gradient(
-        var(--col-green-2) 50%,
-        var(--col-green-4) 50%);
+    background:
+        linear-gradient(
+            var(--col-green-2) 50%,
+            var(--col-green-4) 50%);
 
     box-shadow:
         inset 0  3px 0 var(--col-green-0),
         inset 0 -3px 0 var(--col-green-5);
-
+            
     border-left: var(--border-s);
-
-    background: linear-gradient(
-        var(--col-green-2) 50%,
-        var(--col-green-4) 50%);
 
     paint-order: stroke;
 }

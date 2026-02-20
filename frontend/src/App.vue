@@ -102,7 +102,6 @@ function selectedDeviceChanged(value) {
     margin-bottom: calc(var(--shadow-dist-l) * 2);
 
     transition:  opacity 300ms ease 200ms;
-    will-change: transform;
 }
 
 .main-content {

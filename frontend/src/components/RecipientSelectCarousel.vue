@@ -27,9 +27,8 @@
         <div
             class="selected-option text text--display"
             :style="{
-                'max-width': animMaxWidth,
-                'min-width': animMinWidth,
-                'font-size': fontSize
+                '--target-width': textWidth,
+                'font-size':      fontSize
             }">
 
             {{ optionContent(selectedOption) }}
@@ -133,8 +132,7 @@ watch(
     }
 );
 
-const animMaxWidth = ref('26px');
-const animMinWidth = ref('26px');
+const textWidth = ref('26px');
 
 onMounted(recalculateBoxWidth);
 
@@ -164,10 +162,8 @@ function recalculateBoxWidth() {
             : measureOptionsEls.value?.toSorted((el1, el2) =>
                 el1.compareDocumentPosition(el2) & 4 ? -1 : 1)[curSelectionIndex.value];
 
-        if (element && element.offsetWidth) {
-            animMaxWidth.value = `${element.offsetWidth + 12}px`;
-            animMinWidth.value = `${element.offsetWidth + 12}px`;
-        }
+        if (element && element.offsetWidth)
+            textWidth.value = `${element.offsetWidth + 12}px`;
     });
 }
 
@@ -189,9 +185,10 @@ function tryMoveSelection(by) {
 <style scoped>
 .recipient-select-carousel {
     align-items:           center;
+    justify-items:         center;
     display:               grid;
     gap:                   12px;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: 40px minmax(0, 1fr) 40px;
     height:                36px;
 }
 
@@ -204,13 +201,14 @@ function tryMoveSelection(by) {
 }
 
 .selected-option {
+    transition:
+        width 500ms cubic-bezier(.78,-0.01,.32,1);
+
     display:       inline-block;
     justify-items: center;
     margin-left:   1.5px;
-
-    transition:
-        max-width 500ms cubic-bezier(.78,-0.01,.32,1),
-        min-width 500ms cubic-bezier(.78,-0.01,.32,1);
+    max-width:     100%;
+    width:         var(--target-width);
 }
 
 .arrow {
@@ -276,23 +274,27 @@ function tryMoveSelection(by) {
 }
 
 .text--display {
-    overflow: hidden;
-    width:    100%;
-
     -webkit-text-stroke: var(--text-stroke-l);
     color:               black;
     line-height:         1;
+    overflow:            hidden;
     text-align:          center;
     text-overflow:       ellipsis;
     user-select:         none;
     white-space:         nowrap;
 
-    paint-order:         stroke;
+    paint-order: stroke;
 }
 
-@supports (text-overflow: "") {
+@supports (-moz-appearance: none) {
     .text--display {
         text-overflow: "";
     }
+}
+
+@property --target-width {
+    syntax:        "<length>";
+    initial-value: 0px;
+    inherits:      true;
 }
 </style>

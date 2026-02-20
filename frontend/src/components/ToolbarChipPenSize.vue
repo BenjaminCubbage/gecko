@@ -133,7 +133,7 @@ const selectedPenSize = defineModel({ default: 'small' });
 }
 
 .option:not(.selected) .nib {
-    opacity:   0.3;
+    opacity:   0.2;
     transform: translate(13px, -4px) rotate(5deg);
 }
 

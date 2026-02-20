@@ -102,7 +102,7 @@ watch(selectedDevice, newValue => emit('selectionChanged', newValue));
 .slide-up-enter-active,
 .slide-up-leave-active {
     transition: 
-        transform 200ms ease;
+        transform 300ms ease;
 }
 
 .slide-up-enter-from,

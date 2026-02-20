@@ -45,7 +45,7 @@ defineProps({
     prefer the ellipses, but Firefox doesn't apply the
     text stroke and so it looks bad in Moz.
 */
-@supports(text-overflow: "") {
+@supports(-moz-appearance: none) {
     .stroked-front,
     .stroked-back {
         text-overflow: "";
