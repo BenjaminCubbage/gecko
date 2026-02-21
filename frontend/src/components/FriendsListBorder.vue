@@ -44,7 +44,8 @@ defineProps({
         0 0;
 
     box-shadow:
-        inset 0 3px 0 var(--col-orange-0),
+        inset  3px 3px 0 var(--col-orange-0),
+        inset -3px 0   0 var(--col-orange-3),
         var(--shadow-s);
 
     background:    var(--col-orange-2);
@@ -60,7 +61,7 @@ defineProps({
     content: "";
 
     bottom:   -3px;
-    height:   calc(var(--border-thickness-s) + 6px);
+    height:   calc(var(--border-thickness-s) + 4.5px);
     left:     0;
     position: absolute;
     right:    0;
@@ -80,8 +81,8 @@ defineProps({
 
     box-shadow:
         var(--shadow-l),
-        inset 0  3px 0 var(--col-orange-0),
-        inset 0 -3px 0 var(--col-orange-6);
+        inset  3px  3px 0 var(--col-orange-0),
+        inset -3px -3px 0 var(--col-orange-6);
 
     border-radius: var(--radius-s);
     border:        var(--border-s);

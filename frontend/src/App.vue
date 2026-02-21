@@ -10,7 +10,7 @@
                 <RecipientSelect
                     :reveal="revealRecipientSelect"
                     @selectionChanged="selectedDeviceChanged" />
-                <PicEditor :recipientDevice="selectedDevice" />
+                <PicEditor v-show="false" :recipientDevice="selectedDevice" />
             </div>
 
             <div v-show="selectedTab == 'friends'">

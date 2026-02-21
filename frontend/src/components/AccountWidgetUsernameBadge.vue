@@ -170,6 +170,8 @@ async function submit() {
     font-size:      2.6rem;
     letter-spacing: 0.06em;
     line-height:    1;
+
+    height: 36px;
 }
 
 .error-message {
@@ -179,16 +181,17 @@ async function submit() {
     position:       absolute;
 
     font-size:           1.8rem;
-    color:               var(--col-red-5);
+    color:               var(--col-red-6);
     -webkit-text-stroke: var(--text-stroke-s);
 
     paint-order: stroke;
 }
 
 .username {
-    display:       grid;
-    justify-items: start;
-    overflow:      hidden;
+    display:           grid;
+    grid-auto-columns: minmax(0, 1fr);
+    grid-auto-rows:    minmax(0, 1fr);
+    justify-items:     start;
 
     --username-aura:   0 0;
     --username-offset: 0px;
@@ -203,11 +206,11 @@ async function submit() {
         calc(var(--shadow-dist-s) - var(--username-offset))
         calc(var(--shadow-dist-s) - var(--username-offset))
         0 black,
-        inset 0  3px 0 var(--col-gray-0),
-        inset 0 -3px 0 var(--col-gray-4);
+        inset  3px  3px 0 var(--col-gray-0),
+        inset -3px -3px 0 var(--col-gray-4);
 
-    border:        var(--border-s);
     border-radius: var(--radius-s);
+    border:        var(--border-s);
 
     transform:
         translate(
@@ -217,6 +220,8 @@ async function submit() {
     transition:
         box-shadow 50ms ease,
         transform  50ms ease;
+
+    corner-shape: notch;
 }
 
 .username:has(> .username-button:hover) {
@@ -227,7 +232,6 @@ async function submit() {
     width: clamp(0px, 300px, 100%);
 }
 
-.username:has(> .username-button:active),
 .username--pressed,
 .username--pressed:has(> .username-button:hover) {
     --username-aura:   var(--shadow-aura);
@@ -237,33 +241,25 @@ async function submit() {
 .username-button,
 .username-editor {
     grid-area: 1 / 1;
-    width:     100%;
 }
 
 .username-button {
-    cursor:   text;
-    padding:  0 16px;
-    position: relative;
-    overflow: hidden;
-}
-
-.username-button:disabled {
-    cursor: default;
-}
-
-.username-button > * {
-    pointer-events: none;
+    padding-right: 16px;
+    position:      relative;
+    width:         100%;
 }
 
 .username-text {
+    overflow:     hidden;
+    padding-left: 16px;
+    
     -webkit-text-stroke: var(--text-stroke-s);
     color:               black;
     letter-spacing:      0.03em;
-    paint-order:         stroke;
-    overflow:            hidden;
-    white-space:         nowrap;
     text-overflow:       ellipsis;
-    width:               100%;
+    white-space:         nowrap;
+    
+    paint-order: stroke;
 }
 
 .username-editor {
@@ -285,7 +281,7 @@ async function submit() {
 
 .username-text-input {
     margin:        0;
-    padding-right: 16px;
+    padding-right: 4px;
     width:         100%;
 
     -webkit-appearance:  none;
@@ -321,12 +317,22 @@ async function submit() {
             var(--col-green-4) 50%);
 
     box-shadow:
-        inset 0  3px 0 var(--col-green-0),
-        inset 0 -3px 0 var(--col-green-5);
-            
-    border-left: var(--border-s);
+        inset  3px  3px 0 var(--col-green-0),
+        inset -3px -3px 0 var(--col-green-5);
 
-    paint-order: stroke;
+    border-left: var(--border-s);
+}
+
+@supports (corner-shape: notch) {
+    .submit-button {
+        border-radius:
+            0
+            var(--radius-s)
+            var(--radius-s)
+            0;
+
+        corner-shape: notch;
+    }
 }
 
 .submit-button:active,
@@ -354,6 +360,12 @@ async function submit() {
     left:      1px;
     top:       1px;
     position:  relative;
+
+    filter:
+        drop-shadow(0  2px var(--col-green-5))
+        drop-shadow(2px 0  var(--col-green-5))
+        drop-shadow(0 -2px var(--col-green-1))
+        drop-shadow(-2px 0 var(--col-green-1));
 }
 
 .submit-button--pressed .submit-icon {

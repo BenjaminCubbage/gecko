@@ -90,6 +90,7 @@ watch(selectedDevice, newValue => emit('selectionChanged', newValue));
     display:     grid;
     height:      100px;
     place-items: center;
+    margin: var(--edge-margin-x);
 }
 
 .carousels {

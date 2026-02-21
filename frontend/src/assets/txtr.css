@@ -5,13 +5,17 @@
 .txtr-diag {
     --grad-deg: -30deg;
 
+    --stop-1: min(25%, 12px);
+    --stop-2: 50%;
+    --stop-3: max(75%, calc(100% - 12px));
+
     background:
         var(--grad-c4)
         linear-gradient(var(--grad-deg),
-            var(--grad-c1) 25%,
-            var(--grad-c2) 25% 50%,
-            var(--grad-c3) 50% 75%,
-            var(--grad-c4) 75%);
+            var(--grad-c1) var(--stop-1),
+            var(--grad-c2) var(--stop-1) var(--stop-2),
+            var(--grad-c3) var(--stop-2) var(--stop-3),
+            var(--grad-c4) var(--stop-3));
 }
 
 .txtr-diag--red {

@@ -213,24 +213,28 @@ function tryMoveSelection(by) {
 
 .arrow {
     height: 1.35em;
-    width:  1.35em;
+    width:  1.9em;
+
+    text-shadow:
+        -1.5px -1.5px 0 var(--col-green-1),
+         1.5px  1.5px 0 var(--col-green-5);
 
     color:       black;
     font-family: var(--font-heading);
     font-size:   2.3rem;
     line-height: 0;
 
-    --arrow-offset: 0px;
-
     box-shadow:
         calc(var(--shadow-dist-s) - var(--arrow-offset))
         calc(var(--shadow-dist-s) - var(--arrow-offset))
         0 black,
-        inset 0  3px 0 var(--col-green-0),
-        inset 0 -3px 0 var(--col-green-5);
+        inset  3px  3px 0 var(--col-green-0),
+        inset -3px -3px 0 var(--col-green-5);
 
     border-radius: var(--radius-s);
     border:        2.5px solid black;
+
+    --arrow-offset: 0px;
 
     transform: translate(
         var(--arrow-offset),
@@ -239,6 +243,8 @@ function tryMoveSelection(by) {
     transition: 
         box-shadow 80ms ease,
         transform  80ms ease;
+
+    corner-shape: notch;
 }
 
 .arrow--right {
@@ -278,6 +284,7 @@ function tryMoveSelection(by) {
     color:               black;
     line-height:         1;
     overflow:            hidden;
+
     text-align:          center;
     text-overflow:       ellipsis;
     user-select:         none;

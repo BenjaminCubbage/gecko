@@ -39,9 +39,10 @@ onUnmounted(() => {
 <style scoped>
 .login-button {
     display:       flex;
+    height:        46px;
+    width:         48px;
     place-content: center;
     place-items:   center;
-    width:         48px;
 
     color:           black;
     text-decoration: none;
@@ -54,8 +55,8 @@ onUnmounted(() => {
         calc(var(--shadow-dist-s) - var(--login-button-offset))
         calc(var(--shadow-dist-s) - var(--login-button-offset))
         0 black,
-        inset 0  3px var(--col-lt-gray-0),
-        inset 0 -3px var(--col-lt-gray-4);
+        inset  3px  3px var(--col-lt-gray-0),
+        inset -3px -3px var(--col-lt-gray-6);
 
     border:        var(--border-s);
     border-radius: var(--radius-s);
@@ -68,6 +69,8 @@ onUnmounted(() => {
     transition:
         box-shadow 80ms ease,
         transform  80ms ease;
+
+    corner-shape: notch;
 }
 
 .login-button:hover {
@@ -103,6 +106,6 @@ onUnmounted(() => {
 
     background-clip: text;
 
-    transform: translate(1px, 1px);
+    translate: 0.5px 1px;
 }
 </style>

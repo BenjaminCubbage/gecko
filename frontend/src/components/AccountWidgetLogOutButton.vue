@@ -1,38 +1,48 @@
 <template>
-    <button
-        class="logout-button txtr-diag txtr-diag--red"
-        @click="emit('click')">
-        Log Out
+    <button 
+        class="logout-button"
+        @click="logOut">
+        LOG OUT
     </button>
 </template>
 
 <script setup>
-const emit = defineEmits(['click']);
+import { inject } from 'vue';
+import { Keys }   from '@/core/di/keys.js';
+
+const session = inject(Keys.SessionStore);
+
+function logOut() {
+    session.requestLogOut();
+}
 </script>
 
 <style>
 .logout-button {
-    align-items:     center;
-    display:         flex;
+    height:          35px;
     justify-content: center;
-    line-height:     1em;
-    padding:         4px 18px;
-    position:        relative;
+    line-height:     1;
+    padding:         0 18px;
 
     -webkit-text-stroke: var(--text-stroke-s);
     color:               black;
     font-family:         var(--font-heading);
-    font-size:           2.31rem;
+    font-size:           2.2rem;
     letter-spacing:      0.04em;
 
     --logout-offset: 0px;
+
+    background:
+        linear-gradient(
+            var(--col-red-2) 50%,
+            var(--col-red-3) 50%);
 
     box-shadow:
         calc(var(--shadow-dist-s) - var(--logout-offset))
         calc(var(--shadow-dist-s) - var(--logout-offset))
         0 black,
-        inset 0  3px 0 var(--col-red-1),
-        inset 0 -3px 0 var(--col-red-4);
+        inset  3px  3px 0 var(--col-red-0),
+        inset -3px -3px 0 var(--col-red-6);
 
     border: var(--border-s);
     border-radius: var(--radius-s);
@@ -47,6 +57,8 @@ const emit = defineEmits(['click']);
     transition:
         box-shadow 50ms ease,
         transform  50ms ease;
+
+    corner-shape: notch;
 }
 
 .logout-button:hover {

@@ -59,8 +59,8 @@ onUnmounted(() => {
         calc(var(--shadow-dist-s) - var(--login-button-offset))
         calc(var(--shadow-dist-s) - var(--login-button-offset))
         0 black,
-        inset 0  3px var(--col-lt-gray-0),
-        inset 0 -3px var(--col-lt-gray-4);
+        inset  3px  3px var(--col-lt-gray-0),
+        inset -3px -3px var(--col-lt-gray-6);
 
     border:        var(--border-s);
     border-radius: var(--radius-s);
@@ -75,6 +75,8 @@ onUnmounted(() => {
     transition:
         box-shadow 80ms ease,
         transform  80ms ease;
+
+    corner-shape: notch;
 }
 
 .login-button:hover {

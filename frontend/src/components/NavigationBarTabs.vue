@@ -30,8 +30,10 @@ const tabs = [
     display:      flex;
     flex-flow:    row nowrap;
     gap:          10px;
+
     font-family:  var(--font-heading);
-    font-size:    2rem;
+    font-size:    2.2rem;
+    line-height:  1.4;
 }
 
 .tab {
@@ -47,18 +49,20 @@ const tabs = [
 
     box-shadow:
         var(--tab-shadow),
-        inset 0  3px 0 var(--tab-inset-col-top),
-        inset 0 -3px 0 var(--tab-inset-col-bottom),
+        inset  3px  3px 0 var(--tab-inset-col-top),
+        inset -3px -3px 0 var(--tab-inset-col-bottom),
         var(--tab-aura);
 
     border:        var(--border-s);
-    border-radius: 999px;
+    border-radius: var(--radius-s);
 
     transition:
         transform  100ms ease,
         box-shadow 100ms ease;
 
     transform: translate(var(--tab-offset), var(--tab-offset));
+
+    corner-shape: notch;
 }
 
 .tab--green {
@@ -67,7 +71,7 @@ const tabs = [
 }
 
 .tab--orange {
-    --tab-inset-col-bottom: var(--col-orange-5);
+    --tab-inset-col-bottom: var(--col-orange-6);
     --tab-inset-col-top:    var(--col-orange-0);
 }
 
