@@ -3,7 +3,7 @@
         class="toolbar-chip-clear"
         :class="{ 'toolbar-chip-clear--pressed': isPressed }">
         <template #pad>
-            <div class="pad txtr-diag txtr-diag--red"></div>
+            <div class="pad txtr-diag txtr-diag--dk-red"></div>
         </template>
 
         <template #icons>
@@ -62,16 +62,18 @@ function click() {
 
     box-shadow:
         var(--chip-aura),
-        calc(var(--shadow-dist-s) - var(--chip-offset))
-        calc(var(--shadow-dist-s) - var(--chip-offset)) 0 black;
+        0 calc(var(--shadow-dist-s) - var(--chip-offset)) 
+        0 black,
+        inset  3px  3px var(--col-red-0),
+        inset -3px -3px var(--col-red-6);
 
     transition:
         box-shadow 50ms linear,
-        transform  50ms linear;
+        translate  50ms linear;
 
-    transform: translate(
-        var(--chip-offset),
-        var(--chip-offset));
+    translate: 0 var(--chip-offset);
+
+    corner-shape: notch;
 }
 
 .icon {
@@ -81,7 +83,7 @@ function click() {
 
 .icon-text {
     -webkit-text-stroke: var(--text-stroke-l);
-    color:               var(--col-red-5);
+    color:               var(--col-red-6);
     font-family:         var(--font-heading);
     font-size:           3rem;
     letter-spacing:      0.02em;
@@ -93,9 +95,7 @@ function click() {
     transform:
         translateY(-4px)
         scale(1, 1.1)
-        translate(
-            var(--chip-offset),
-            var(--chip-offset));
+        translateY(var(--chip-offset));
 }
 
 .toolbar-chip-clear:hover {

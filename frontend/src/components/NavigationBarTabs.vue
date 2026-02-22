@@ -44,8 +44,8 @@ const tabs = [
 
     --tab-aura: 0 0;
     --tab-shadow:
-        calc(var(--shadow-dist-s) - var(--tab-offset))
-        calc(var(--shadow-dist-s) - var(--tab-offset)) 0 black;
+        0 calc(var(--shadow-dist-s) - var(--tab-offset)) 
+        0 black;
 
     box-shadow:
         var(--tab-shadow),
@@ -57,10 +57,10 @@ const tabs = [
     border-radius: var(--radius-s);
 
     transition:
-        transform  100ms ease,
-        box-shadow 100ms ease;
+        box-shadow 100ms ease,
+        translate  100ms ease;
 
-    transform: translate(var(--tab-offset), var(--tab-offset));
+    translate: 0 var(--tab-offset);
 
     corner-shape: notch;
 }

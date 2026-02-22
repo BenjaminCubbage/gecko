@@ -19,16 +19,16 @@
 }
 
 .txtr-diag--red {
-    --grad-c1: var(--col-red-4);
-    --grad-c2: var(--col-red-2);
-    --grad-c3: var(--col-red-3);
+    --grad-c1: var(--col-red-2);
+    --grad-c2: var(--col-red-1);
+    --grad-c3: var(--col-red-2);
     --grad-c4: var(--col-red-1);
 }
 
 .txtr-diag--dk-red {
     --grad-c1: var(--col-red-4);
-    --grad-c2: var(--col-red-3);
-    --grad-c3: var(--col-red-4);
+    --grad-c2: var(--col-red-2);
+    --grad-c3: var(--col-red-3);
     --grad-c4: var(--col-red-2);
 }
 

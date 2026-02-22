@@ -10,7 +10,7 @@
             <div
                 v-else-if="session.state.value === 'ready'"
                 class="widget-layout">
-                <AccountWidgetDrawerToggle
+                <DrawerButtonProfile
                     ref="toggleEl"
                     v-model="isExpanded"
                     class="profile-button" />
@@ -20,7 +20,7 @@
                         v-show="isExpanded"
                         ref="drawerEl"
                         class="drawer">
-                        <AccountWidgetLogOutButton style="position: absolute" />
+                        <DrawerButtonLogOut @click="logOut" />
                     </div>
                 </transition>
 
@@ -39,9 +39,10 @@ import {
 } from 'vue';
 
 import AccountWidgetLogInButton   from './AccountWidgetLogInButton.vue';
-import AccountWidgetLogOutButton  from './AccountWidgetLogOutButton.vue';
-import AccountWidgetDrawerToggle  from './AccountWidgetDrawerToggle.vue';
 import AccountWidgetUsernameBadge from './AccountWidgetUsernameBadge.vue';
+
+import DrawerButtonProfile from './DrawerButtonProfile.vue';
+import DrawerButtonLogOut  from './DrawerButtonLogOut.vue';
 
 import { useIsFocusWithin } from '@/composables/useIsFocusWithin';
 
@@ -62,6 +63,10 @@ watch(isFocusWithinDrawer, newValue => {
     if (!newValue)
         isExpanded.value = false;
 });
+
+async function logOut() {
+    session.requestLogOut();
+}
 </script>
 
 <style scoped>
@@ -73,11 +78,11 @@ watch(isFocusWithinDrawer, newValue => {
     align-items: stretch;
     display:     grid;
     flex-flow:   row nowrap;
-    gap:         4px 7px;
+    gap:         8px 7px;
 
     grid-template-areas:
         "profile username"
-        "profile drawer";
+        "drawer  .";
 }
 
 .profile-button {
@@ -94,6 +99,10 @@ watch(isFocusWithinDrawer, newValue => {
 
 .drawer {
     position: relative;
+}
+
+.drawer > * {
+    position: absolute;
 }
 
 .login-appear-leave-active {
@@ -115,14 +124,15 @@ watch(isFocusWithinDrawer, newValue => {
 
 .drawer-open-enter-active,
 .drawer-open-leave-active {
-    transform-origin: 0 0;
+    transform-origin: 50% 0;
     transition: 
-        scale     100ms ease,
-        translate 100ms ease;
+        scale   100ms ease,
+        opacity 100ms ease;
 }
 
 .drawer-open-enter-from,
 .drawer-open-leave-to {
-    scale:     0;
+    scale: 0.8;
+    opacity: 0;
 }
 </style>

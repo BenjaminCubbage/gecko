@@ -97,24 +97,23 @@ function animationCancelled() {
 }
 
 .pad {
-    padding: 0 10px;
-
     border:        var(--border-s);
     border-radius: var(--radius-s);
 
     box-shadow:
         var(--chip-aura),
-        calc(var(--shadow-dist-s) - var(--chip-offset))
-        calc(var(--shadow-dist-s) - var(--chip-offset)) 
-        0 black;
-
-    transform: translate(
-        var(--chip-offset),
-        var(--chip-offset));
+        0 calc(var(--shadow-dist-s) - var(--chip-offset)) 
+        0 black,
+        inset  3px  3px var(--col-green-0),
+        inset -3px -3px var(--col-green-6);
 
     transition:
         box-shadow 50ms linear,
-        transform  50ms linear;
+        translate  50ms linear;
+
+    translate: 0 var(--chip-offset);
+
+    corner-shape: notch;
 }
 
 .icon {
@@ -127,9 +126,7 @@ function animationCancelled() {
     transform:
         translateY(-4px)
         scale(1, 1.1)
-        translate(
-            var(--chip-offset),
-            var(--chip-offset));
+        translateY(var(--chip-offset));
 
     transition: transform 50ms linear;
 }

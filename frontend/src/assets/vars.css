@@ -30,6 +30,7 @@
     --col-red-5: #f14141;
     --col-red-6: #d21138;
     --col-red-7: #b60b2d;
+    --col-red-8: #9e0826;
 
     --col-green-0: #f3f9ee;
     --col-green-1: #d9f0c1;
@@ -50,10 +51,13 @@
     --col-orange-5: #ffa43b;
     --col-orange-6: #f3952a;
 
+    --col-magenta-0: #fff2fe;
     --col-magenta-1: #ffdffc;
     --col-magenta-2: #feb0ff;
     --col-magenta-3: #e573ff;
     --col-magenta-4: #fc5aff;
+    --col-magenta-5: #f348f6;
+    --col-magenta-6: #d82ddb;
 
     --border-thickness-s: 2.5px;
     --border-thickness-l: 2.5px;
@@ -67,8 +71,8 @@
     --shadow-dist-s: 2.5px;
     --shadow-dist-l: 5px;
 
-    --shadow-s: var(--shadow-dist-s) var(--shadow-dist-s) 0 black;
-    --shadow-l: var(--shadow-dist-l) var(--shadow-dist-l) 0 black;
+    --shadow-s: 0 var(--shadow-dist-s) 0 black;
+    --shadow-l: 0 var(--shadow-dist-l) 0 black;
 
     --shadow-aura: 0 0 0 2px white;
 

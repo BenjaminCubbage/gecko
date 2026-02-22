@@ -42,27 +42,27 @@ const isToggled = defineModel({ default: true });
 
 .eraser-pad {
     box-shadow:
-        calc(var(--shadow-dist-s) - var(--chip-offset))
-        calc(var(--shadow-dist-s) - var(--chip-offset)) 0 black;
+        0 calc(var(--shadow-dist-s) - var(--chip-offset)) 
+        0 black,
+        inset  3px  3px var(--col-magenta-0),
+        inset -3px -3px var(--col-magenta-6);
 
     border:        var(--border-s);
     border-radius: var(--radius-s);
 
-    transform: translate(
-        var(--chip-offset),
-        var(--chip-offset));
-
     transition:
-        box-shadow 100ms linear,
-        transform  100ms linear;
+        box-shadow 50ms linear,
+        translate  50ms linear;
+
+    translate: 0 var(--chip-offset);
+    
+    corner-shape: notch;
 }
 
 .icon {
-    padding:  0 14px;
-    transform: translate(
-        var(--chip-offset),
-        var(--chip-offset));
-    transition: transform 50ms linear;
+    padding:    0 14px;
+    transition: translate 50ms linear;
+    translate:  0 var(--chip-offset);
 }
 
 .icon-svg {

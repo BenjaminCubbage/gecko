@@ -225,8 +225,7 @@ function tryMoveSelection(by) {
     line-height: 0;
 
     box-shadow:
-        calc(var(--shadow-dist-s) - var(--arrow-offset))
-        calc(var(--shadow-dist-s) - var(--arrow-offset))
+        0 calc(var(--shadow-dist-s) - var(--arrow-offset))
         0 black,
         inset  3px  3px 0 var(--col-green-0),
         inset -3px -3px 0 var(--col-green-5);
@@ -236,13 +235,11 @@ function tryMoveSelection(by) {
 
     --arrow-offset: 0px;
 
-    transform: translate(
-        var(--arrow-offset),
-        var(--arrow-offset));
-
     transition: 
         box-shadow 80ms ease,
-        transform  80ms ease;
+        translate  80ms ease;
+
+    translate: 0 var(--arrow-offset);
 
     corner-shape: notch;
 }

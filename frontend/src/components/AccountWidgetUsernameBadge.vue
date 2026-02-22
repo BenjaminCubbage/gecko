@@ -203,8 +203,7 @@ async function submit() {
 
     box-shadow:
         var(--username-aura),
-        calc(var(--shadow-dist-s) - var(--username-offset))
-        calc(var(--shadow-dist-s) - var(--username-offset))
+        0 calc(var(--shadow-dist-s) - var(--username-offset))
         0 black,
         inset  3px  3px 0 var(--col-gray-0),
         inset -3px -3px 0 var(--col-gray-4);
@@ -212,14 +211,11 @@ async function submit() {
     border-radius: var(--radius-s);
     border:        var(--border-s);
 
-    transform:
-        translate(
-            var(--username-offset),
-            var(--username-offset));
-
     transition:
-        box-shadow 50ms ease,
-        transform  50ms ease;
+        box-shadow 100ms ease,
+        translate  100ms ease;
+
+        translate: 0 var(--username-offset);
 
     corner-shape: notch;
 }

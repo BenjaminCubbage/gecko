@@ -1,7 +1,7 @@
 <template>
     <ToolbarChipLayout>
         <template #pad>
-            <div class="paper-sheet"></div>
+            <div class="pad txtr-diag txtr-diag--lt-gray"></div>
         </template>
 
         <template #icons>
@@ -61,10 +61,7 @@ const selectedPenSize = defineModel({ default: 'small' });
 </script>
 
 <style scoped>
-.paper-sheet {
-    height:   calc(100% + 3px);
-    position: relative;
-    top:      -1.5px;
+.pad {
     width:    140px;
     z-index:  0;
 
@@ -73,16 +70,15 @@ const selectedPenSize = defineModel({ default: 'small' });
 
     box-shadow:
         inset 0 2px 0 white,
-        var(--shadow-s);
+        var(--shadow-s),
+        inset  3px  3px var(--col-gray-0),
+        inset -3px -3px var(--col-gray-3);
 
-    background: rgb(242, 242, 245);
-
-    transform: perspective(500px) rotateX(26deg);
+    corner-shape: notch;
 }
 
 .options {
     display:          flex;
-    flex-flow:        row nowrap;
     justify-content:  space-evenly;
     z-index:          1;
 }
@@ -105,7 +101,7 @@ const selectedPenSize = defineModel({ default: 'small' });
 }
 
 .nib {
-    transform:  translate(12.5px, -3.5px);
+    transform:  translate(12.5px, -5.5px);
     transition: transform 50ms ease;
 }
 
@@ -118,7 +114,7 @@ const selectedPenSize = defineModel({ default: 'small' });
 
     border-radius: 50%;
 
-    transform: translate(0, 6.5px);
+    transform: translate(0, 5.5px);
 }
 
 .icon-text {
@@ -134,7 +130,7 @@ const selectedPenSize = defineModel({ default: 'small' });
 
 .option:not(.selected) .nib {
     opacity:   0.2;
-    transform: translate(13px, -4px) rotate(5deg);
+    transform: translate(13px, -6px) rotate(5deg);
 }
 
 .option.selected > .icon {

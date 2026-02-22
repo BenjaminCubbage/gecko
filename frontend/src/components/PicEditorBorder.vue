@@ -29,8 +29,8 @@ defineProps({
 
     box-shadow:
         var(--border-shadow),
-        inset 0  3px 0 var(--border-col-1),
-        inset 0 -3px 0 var(--border-col-4);
+        inset  3px  3px 0 var(--border-col-1),
+        inset -3px -3px 0 var(--border-col-4);
 
     border-radius: var(--radius-s);
     border:        var(--border-s);

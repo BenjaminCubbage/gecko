@@ -52,8 +52,7 @@ onUnmounted(() => {
 
     box-shadow:    
         var(--login-button-aura),
-        calc(var(--shadow-dist-s) - var(--login-button-offset))
-        calc(var(--shadow-dist-s) - var(--login-button-offset))
+        0 calc(var(--shadow-dist-s) - var(--login-button-offset))
         0 black,
         inset  3px  3px var(--col-lt-gray-0),
         inset -3px -3px var(--col-lt-gray-6);
@@ -61,14 +60,11 @@ onUnmounted(() => {
     border:        var(--border-s);
     border-radius: var(--radius-s);
 
-    transform:
-        translate(
-            var(--login-button-offset),
-            var(--login-button-offset));
-
     transition:
-        box-shadow 80ms ease,
-        transform  80ms ease;
+        box-shadow 100ms ease,
+        translate  100ms ease;
+
+    translate: 0 var(--login-button-offset);
 
     corner-shape: notch;
 }
