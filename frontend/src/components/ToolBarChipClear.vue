@@ -1,7 +1,7 @@
 <template>
-    <ToolbarChipLayout
-        class="toolbar-chip-clear"
-        :class="{ 'toolbar-chip-clear--pressed': isPressed }">
+    <ToolBarChip
+        class="tool-bar-chip-clear"
+        :class="{ 'tool-bar-chip-clear--pressed': isPressed }">
         <template #pad>
             <div class="pad txtr-diag txtr-diag--dk-red"></div>
         </template>
@@ -19,12 +19,12 @@
                 </div>
             </button>
         </template>
-    </ToolbarChipLayout>
+    </ToolBarChip>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import ToolbarChipLayout from './ToolbarChipLayout.vue';
+import { ref }     from 'vue';
+import ToolBarChip from './ToolBarChip.vue';
 
 const props = defineProps({
     animationDuration: { type: Number, default: 500 }
@@ -51,9 +51,45 @@ function click() {
 </script>
 
 <style scoped>
-.toolbar-chip-clear {
+.tool-bar-chip-clear {
     --chip-aura:   0 0;
     --chip-offset: 0px;
+    
+    transition: z-index 0ms 1000ms allow-discrete;
+
+    &:hover:not(.tool-bar-chip-clear--pressed),
+    &:active {
+        filter: var(--filter-hl-2);
+    }
+
+    &:active,
+    &.tool-bar-chip-clear--pressed,
+    &.tool-bar-chip-clear--pressed:hover {
+        --chip-aura:   var(--shadow-aura);
+        --chip-offset: var(--shadow-dist-s);
+    }
+
+    &.tool-bar-chip-clear--pressed {
+        pointer-events: none;
+        cursor:         default;
+
+        .letter {
+            animation-name:     letter-jump;
+            animation-duration: calc(var(--animation-duration) - 100ms);
+        }
+    }
+
+    &:hover,
+    &.tool-bar-chip-clear--pressed {
+        z-index: 10;
+
+        .pad,
+        .letter,
+        .icon-text {
+            will-change: transform;
+            transform:   translateZ(0);
+        }
+    }
 }
 
 .pad {
@@ -68,9 +104,11 @@ function click() {
         inset -3px -3px var(--col-red-6);
 
     transition:
-        box-shadow 50ms linear,
-        translate  50ms linear;
+        box-shadow  50ms linear,
+        translate   50ms linear,
+        transform   0ms  allow-discrete 1000ms;
 
+    transform: none;
     translate: 0 var(--chip-offset);
 
     corner-shape: notch;
@@ -88,25 +126,14 @@ function click() {
     font-size:           3rem;
     letter-spacing:      0.02em;
 
+    transition: 
+        translate 50ms ease,
+        transform 0ms  allow-discrete 1000ms;
+
+    scale:     1 1.1;
+    translate: 0 calc(var(--chip-offset) - 4px);
+
     paint-order: stroke;
-
-    transition: transform 50ms linear;
-
-    transform:
-        translateY(-4px)
-        scale(1, 1.1)
-        translateY(var(--chip-offset));
-}
-
-.toolbar-chip-clear:hover {
-    --chip-offset: calc(var(--shadow-dist-s) / 2);
-}
-
-.toolbar-chip-clear:active,
-.toolbar-chip-clear--pressed,
-.toolbar-chip-clear--pressed:hover {
-    --chip-aura:   var(--shadow-aura);
-    --chip-offset: var(--shadow-dist-s);
 }
 
 /*
@@ -115,28 +142,22 @@ function click() {
 
 .letter {
     display:   inline-block;
-    transform: translateY(calc(var(--letter-jump-arc) * -1));
-}
 
-.toolbar-chip-clear--pressed :where(.letter) {
-    animation:
-        calc(var(--animation-duration) - 100ms)
-        ease
-        letter-jump;
-}
+    transition: transform 0ms allow-discrete 1000ms;
+    transform:  none;
+    translate:  0 calc(var(--letter-jump-arc) * -1);
 
-@supports (order: sibling-index()) {
-    .letter {
+    @supports (order: sibling-index()) {
         animation-delay: calc(sibling-index() * 20ms);
     }
-}
-
-@supports not (order: sibling-index()) {
-    .letter--1 { animation-delay: calc(1 * 20ms); }
-    .letter--2 { animation-delay: calc(2 * 20ms); }
-    .letter--3 { animation-delay: calc(3 * 20ms); }
-    .letter--4 { animation-delay: calc(4 * 20ms); }
-    .letter--5 { animation-delay: calc(5 * 20ms); }
+        
+    @supports not (order: sibling-index()) {
+        &.letter--1 { animation-delay: calc(1 * 20ms); }
+        &.letter--2 { animation-delay: calc(2 * 20ms); }
+        &.letter--3 { animation-delay: calc(3 * 20ms); }
+        &.letter--4 { animation-delay: calc(4 * 20ms); }
+        &.letter--5 { animation-delay: calc(5 * 20ms); }
+    }
 }
 
 @property --letter-jump-arc {

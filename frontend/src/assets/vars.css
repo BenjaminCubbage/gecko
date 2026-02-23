@@ -18,9 +18,11 @@
     --col-lt-gray-5: #c9cfdc;
     --col-lt-gray-6: #b6bece;
 
+    --col-blue-0: #dce5ff;
     --col-blue-1: #7298ff;
     --col-blue-2: #486ac1;
     --col-blue-3: #2c4a95;
+    --col-blue-4: #152e6d;
 
     --col-red-0: #ffeeee;
     --col-red-1: #ffdfdf;
@@ -80,4 +82,7 @@
     --text-stroke-l: 4px white;
 
     --edge-margin-x: 8px;
+
+    --filter-hl-1: brightness(1.06);
+    --filter-hl-2: brightness(1.08);
 }

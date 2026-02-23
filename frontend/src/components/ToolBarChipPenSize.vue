@@ -1,5 +1,5 @@
 <template>
-    <ToolbarChipLayout>
+    <ToolBarChip>
         <template #pad>
             <div class="pad txtr-diag txtr-diag--lt-gray"></div>
         </template>
@@ -50,29 +50,31 @@
                 </div>
             </button>
         </template>
-    </ToolbarChipLayout>
+    </ToolBarChip>
 </template>
 
 <script setup>
-import ToolbarChipLayout from './ToolbarChipLayout.vue';
-import StrokedText       from './StrokedText.vue';
+import ToolBarChip from './ToolBarChip.vue';
+import StrokedText from './StrokedText.vue';
 
 const selectedPenSize = defineModel({ default: 'small' });
 </script>
 
 <style scoped>
 .pad {
-    width:    140px;
-    z-index:  0;
-
+    width: 140px;
+    
     border:        var(--border-s);
     border-radius: var(--radius-s);
 
     box-shadow:
-        inset 0 2px 0 white,
-        var(--shadow-s),
-        inset  3px  3px var(--col-gray-0),
-        inset -3px -3px var(--col-gray-3);
+        0 var(--shadow-dist-s)
+        0 black,
+        inset  3px  3px var(--col-lt-gray-0),
+        inset -3px -3px var(--col-lt-gray-6);
+
+    transition: translate  50ms linear;
+    translate:  0 var(--chip-offset);
 
     corner-shape: notch;
 }

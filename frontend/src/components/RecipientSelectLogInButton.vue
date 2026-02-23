@@ -64,8 +64,6 @@ onUnmounted(() => {
     border:        var(--border-s);
     border-radius: var(--radius-s);
 
-    paint-order: stroke;
-
     transition:
         box-shadow 100ms ease,
         translate  100ms ease;
@@ -73,6 +71,7 @@ onUnmounted(() => {
     translate: 0 var(--login-button-offset);
 
     corner-shape: notch;
+    paint-order:  stroke;
 }
 
 .login-button:hover {

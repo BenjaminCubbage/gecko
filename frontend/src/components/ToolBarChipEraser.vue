@@ -1,7 +1,7 @@
 <template>
-    <ToolbarChipLayout
-        class="toolbar-chip-eraser"
-        :class="{ 'toolbar-chip-eraser--selected': isToggled }">
+    <ToolBarChip
+        class="tool-bar-chip-eraser"
+        :class="{ 'tool-bar-chip-eraser--selected': isToggled }">
         <template #pad>
             <div class="eraser-pad txtr-diag txtr-diag--magenta"></div>
         </template>
@@ -24,20 +24,42 @@
                 </svg>
             </button>
         </template>
-    </ToolbarChipLayout>
+    </ToolBarChip>
 </template>
 
 <script setup>
-import ToolbarChipLayout from './ToolbarChipLayout.vue';
+import ToolBarChip from './ToolBarChip.vue';
 
 const isToggled = defineModel({ default: true });
 </script>
 
 <style scoped>
-.toolbar-chip-eraser {
-    --chip-offset:       0px;
-    --eraser-col-body:   #f69df4;
-    --eraser-col-head:   white;
+.tool-bar-chip-eraser {
+    --chip-offset:     0px;
+    --eraser-col-body: #f69df4;
+    --eraser-col-head: white;
+
+    --filter-1: invert(0);
+    --filter-2: invert(0);
+
+    filter: var(--filter-1) var(--filter-2);
+
+    &:is(:hover, :active):not(.tool-bar-chip-eraser--selected) {
+        --filter-1: var(--filter-hl-1);
+    }
+
+    &:active,
+    &.tool-bar-chip-eraser--selected,
+    &.tool-bar-chip-eraser--selected:hover {
+        --chip-offset: var(--shadow-dist-s);
+        --s:           2.2px;
+
+        --filter-2: 
+            drop-shadow(calc(var(--s) *  1.0) calc(var(--s) *  0.0) 0px white)
+            drop-shadow(calc(var(--s) *  0.0) calc(var(--s) *  1.0) 0px white)
+            drop-shadow(calc(var(--s) * -0.8) calc(var(--s) *  0.0) 0px white)
+            drop-shadow(calc(var(--s) *  0.0) calc(var(--s) * -0.8) 0px white);
+    }
 }
 
 .eraser-pad {
@@ -63,36 +85,14 @@ const isToggled = defineModel({ default: true });
     padding:    0 14px;
     transition: translate 50ms linear;
     translate:  0 var(--chip-offset);
-}
-
-.icon-svg {
-    height: 22px;
-
-    stroke:       black;
-    stroke-width: 150px;
-
-    paint-order:  stroke;
-
-    transform: scale(1.6);
-}
-
-.toolbar-chip-eraser:hover {
-    --chip-offset: calc(var(--shadow-dist-s) / 2);
-}
-
-.toolbar-chip-eraser:active,
-.toolbar-chip-eraser--selected,
-.toolbar-chip-eraser--selected:hover {
-    --chip-offset: var(--shadow-dist-s);
-    --s:           1px;
-    filter: drop-shadow(calc(var(--s) *  1.0) calc(var(--s) *  0.0) 0px white)
-            drop-shadow(calc(var(--s) *  1.0) calc(var(--s) *  1.0) 0px white)
-            drop-shadow(calc(var(--s) *  0.0) calc(var(--s) *  1.0) 0px white)
-            drop-shadow(calc(var(--s) * -0.8) calc(var(--s) *  1.0) 0px white)
-            drop-shadow(calc(var(--s) * -0.8) calc(var(--s) *  0.0) 0px white)
-            drop-shadow(calc(var(--s) * -0.8) calc(var(--s) * -0.8) 0px white)
-            drop-shadow(calc(var(--s) *  0.0) calc(var(--s) * -0.8) 0px white)
-            drop-shadow(calc(var(--s) *  1.0) calc(var(--s) * -0.8) 0px white);
+        
+    & > .icon-svg {
+        height:       22px;
+        stroke:       black;
+        stroke-width: 150px;
+        transform:    scale(1.6);
+        paint-order:  stroke;
+    }
 }
 
 /*

@@ -212,16 +212,16 @@ async function submit() {
     border:        var(--border-s);
 
     transition:
-        box-shadow 100ms ease,
-        translate  100ms ease;
+        box-shadow 50ms ease,
+        translate  50ms ease;
 
-        translate: 0 var(--username-offset);
+    translate: 0 var(--username-offset);
 
     corner-shape: notch;
 }
 
 .username:has(> .username-button:hover) {
-    --username-offset: calc(var(--shadow-dist-s) / 2);
+    filter: var(--filter-hl-1);
 }
 
 .username--pressed {
@@ -272,7 +272,8 @@ async function submit() {
 
     -webkit-text-stroke: var(--text-stroke-s);
     color:               black;
-    paint-order:         stroke;
+
+    paint-order: stroke;
 }
 
 .username-text-input {

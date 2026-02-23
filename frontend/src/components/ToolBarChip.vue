@@ -1,5 +1,5 @@
 <template>
-    <div class="toolbar-chip-layout">
+    <div class="tool-bar-chip-layout">
         <div class="chip-icons">
             <slot name="icons"></slot>
         </div>
@@ -11,10 +11,11 @@
 </template>
 
 <style scoped>
-.toolbar-chip-layout {
-    display: grid;
-    height:  36px;
-    z-index: 0;
+.tool-bar-chip-layout {
+    display:     grid;
+    height:      36px;
+    padding-top: 2px;
+    user-select: none;
 }
 
 .chip-icons,

@@ -189,9 +189,13 @@ defineExpose({
     gap:            12px;
     overflow:       hidden;
 
+    box-shadow:    
+         3px  3px 0 var(--col-green-0),
+        -3px -3px 0 var(--col-green-5);
+
     border-radius: var(--radius-s);
     border:        var(--border-l);
-    box-shadow:    var(--shadow-s);
+
     corner-shape:  notch;
 }
 

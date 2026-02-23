@@ -1,9 +1,9 @@
 <template>
-    <ToolbarChipLayout
-        class="toolbar-chip-send"
+    <ToolBarChip
+        class="tool-bar-chip-send"
         :class="{
-            'toolbar-chip-send--pressed':  isPressed,
-            'toolbar-chip-send--disabled': disabled
+            'tool-bar-chip-send--pressed':  isPressed,
+            'tool-bar-chip-send--disabled': disabled
         }">
         <template #pad>
             <div class="pad txtr-diag txtr-diag--dk-green"></div>
@@ -46,7 +46,7 @@
                     </svg>
 
                     <svg class="rocket-svg-flame" version="1.1" x="0px" y="0px" viewBox="0 0 457.6 457.6">
-                        <polygon class="stroke st3" points="278.5,99.5 278.5,79.6 258.6,79.6 258.6,59.7 238.7,59.7 238.7,39.8 218.8,39.8 218.8,59.7
+                        <polygon class="stroke st2" points="278.5,99.5 278.5,79.6 258.6,79.6 258.6,59.7 238.7,59.7 238.7,39.8 218.8,39.8 218.8,59.7
                             198.9,59.7 198.9,79.6 179.1,79.6 179.1,99.5 159.2,99.5 159.2,119.4 159.2,139.3 159.2,159.2 179.1,159.2 179.1,179 198.9,179
                             198.9,198.9 198.9,218.8 218.8,218.8 218.8,238.7 218.8,258.6 218.8,278.5 238.7,278.5 238.7,258.6 238.7,238.7 238.7,218.8
                             258.6,218.8 258.6,198.9 258.6,179 278.5,179 278.5,159.2 298.4,159.2 298.4,139.3 298.4,119.4 298.4,99.5 	"/>
@@ -54,12 +54,12 @@
                 </div>
             </button>
         </template>
-    </ToolbarChipLayout>
+    </ToolBarChip>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import ToolbarChipLayout from './ToolbarChipLayout.vue';
+import { ref }     from 'vue';
+import ToolBarChip from './ToolBarChip.vue';
 
 defineProps({
     disabled: { type: Boolean, default: false }
@@ -91,9 +91,74 @@ function animationCancelled() {
 </script>
 
 <style scoped>
-.toolbar-chip-send {
+.tool-bar-chip-send {
     --chip-aura:   0 0;
     --chip-offset: 0px;
+
+    &:hover:not(.tool-bar-chip-send--pressed),
+    &:active {
+        filter: var(--filter-hl-2);
+    }
+
+    &:active,
+    &.tool-bar-chip-send--pressed {
+        --chip-aura:   var(--shadow-aura);
+        --chip-offset: var(--shadow-dist-s);
+    }
+
+    &.tool-bar-chip-send--pressed {
+        pointer-events: none;
+    }
+
+    &.tool-bar-chip-send--disabled {
+        opacity:        0.5;
+        pointer-events: none;
+        filter:         grayscale();
+    }
+
+    /* 
+        Animations
+    */
+
+    &.tool-bar-chip-send--pressed .letter {
+        animation-name:     letter-jump;
+        animation-duration: 400ms;
+    }
+
+    &.tool-bar-chip-send--pressed {
+        .rocket-svgs {
+            animation:
+                rocket-bob    200ms  steps(2)                    infinite 0ms,
+                fly-away      5000ms cubic-bezier(.68,.01,.62,1) 1        500ms,
+                rocket-return 200ms  ease                        1        5500ms;
+
+            pointer-events: none;
+        }
+            
+        .rocket-svg-flame {
+            animation: flame-bob 200ms steps(5) 24;
+        }
+    }
+
+    /*
+        Texture promotion
+    */
+
+    &:hover,
+    &.tool-bar-chip-send--pressed {
+        .rocket-svgs,
+        .rocket-svg-rocket,
+        .rocket-svg-flame,
+        .pad,
+        .letter {
+            will-change: transform;
+        }
+
+        .rocket-svg-flame {
+            /* Disallow culling */
+            opacity: 0.001;
+        }
+    }
 }
 
 .pad {
@@ -129,128 +194,68 @@ function animationCancelled() {
         translateY(var(--chip-offset));
 
     transition: transform 50ms linear;
+
+    .icon-text {
+        -webkit-text-stroke: var(--text-stroke-l);
+        color:               var(--col-green-5);
+        font-family:         var(--font-heading);
+        font-size:           3rem;
+        letter-spacing:      0.02em;
+
+        paint-order: stroke;
+    }
 }
-
-.icon-text {
-    -webkit-text-stroke: var(--text-stroke-l);
-    color:               var(--col-green-5);
-    font-family:         var(--font-heading);
-    font-size:           3rem;
-    letter-spacing:      0.02em;
-
-    paint-order: stroke;
-}
-
-/*
-    Rocket SVGs
-*/
 
 .rocket-svgs {
-    transform:
-        translateY(var(--rocket-offset-y))
-        rotate(var(--rocket-rotation));
-
-    display:     grid;
-    z-index:     0;
-    opacity:     var(--rocket-opacity);
-    will-change: transform;
-}
-
-.rocket-svg-rocket {
-    transform:
-        scale(1.15);
-
-    grid-area: 1 / 1;
-    height:    36px;
-    z-index:   1;
-}
-
-.rocket-svg-flame {
-    transform:
-        translateY(24px)
-        rotate(var(--flame-rotation));
-
-    grid-area:   1 / 1;
-    opacity:     var(--flame-opacity);
-    will-change: transform;
-}
-
-.st0{ fill:#FF0600; }
-.st1{ fill:white;   }
-.st2{ fill:white;   }
-.st3{ fill:#ff7b00; }
-
-.stroke {
-    paint-order:  stroke fill;
-    stroke-width: 64px;
-    stroke:       black;
-}
-
-.toolbar-chip-send--disabled {
+    display:        grid;
+    opacity:        var(--rocket-opacity);
     pointer-events: none;
-    filter:         grayscale();
-    opacity:        0.5;
-}
+    z-index:        0;
 
-.toolbar-chip-send--pressed :where(.rocket-svg-flame) {
-    animation: flame-bob 200ms steps(5) 24;
-}
+    & > .rocket-svg-rocket {
+        grid-area: 1 / 1;
+        height:    32px;
+        z-index:   1;
+        scale:     1.27;
+    }
+        
+    & > .rocket-svg-flame {
+        grid-area: 1 / 1;
+        opacity:   0;
+        translate: 0 24px;
+    }
 
-.toolbar-chip-send--pressed :where(.rocket-svgs) {
-    animation:
-        rocket-bob    200ms  steps(2)                    infinite 0ms,
-        fly-away      5000ms cubic-bezier(.68,.01,.62,1) 1        500ms,
-        rocket-return 200ms  ease                        1        5500ms;
+    .stroke {
+        stroke-width: 64px;
+        stroke:       black;
+        paint-order:  stroke fill;
 
-    pointer-events: none;
-}
+        @supports (-moz-appearance: none) {
+            stroke-linecap:  round;
+            stroke-linejoin: round;
+        }
+    }
 
-/*
-    Letters
-*/
-
-.letter {
-    color: var(--col-green-6);
-}
-
-.toolbar-chip-send:hover {
-    --chip-offset: calc(var(--shadow-dist-s) / 2);
-}
-
-.toolbar-chip-send:active,
-.toolbar-chip-send--pressed,
-.toolbar-chip-send--pressed:hover {
-    --chip-aura:   var(--shadow-aura);
-    --chip-offset: var(--shadow-dist-s);
-}
-
-.toolbar-chip-send--pressed :where(.letter) {
-    animation: letter-jump 400ms ease;
+    .st0{ fill:#FF0600; }
+    .st1{ fill:white;   }
+    .st2{ fill:#ff7b00; }
 }
 
 .letter {
     display:   inline-block;
     transform: translateY(calc(var(--letter-jump-arc) * -1));
-}
+    color:     var(--col-green-6);
 
-@supports (-moz-appearance: none) {
-    .stroke {
-        stroke-linecap:  round;
-        stroke-linejoin: round;
-    }
-}
-
-@supports (order: sibling-index()) {
-    .letter {
+    @supports (order: sibling-index()) {
         animation-delay: calc(sibling-index() * 25ms);
     }
-}
 
-@supports not (order: sibling-index()) {
-    .letter--1 { animation-delay: calc(1 * 25ms); }
-    .letter--2 { animation-delay: calc(2 * 25ms); }
-    .letter--3 { animation-delay: calc(3 * 25ms); }
-    .letter--4 { animation-delay: calc(4 * 25ms); }
+    @supports not (order: sibling-index()) {
+        &.letter--1 { animation-delay: calc(1 * 25ms); }
+        &.letter--2 { animation-delay: calc(2 * 25ms); }
+        &.letter--3 { animation-delay: calc(3 * 25ms); }
+        &.letter--4 { animation-delay: calc(4 * 25ms); }
+    }
 }
 </style>
 
@@ -268,100 +273,42 @@ function animationCancelled() {
     100% { --letter-jump-arc:  0px; }
 }
 
-@property --flame-scale {
-    inherits:      false;
-    initial-value: 100%;
-    syntax:        "<percentage>";
-}
-
-@property --flame-rotation {
-    inherits:      true;
-    initial-value: 0deg;
-    syntax:        "<angle>";
-}
-
-@property --flame-opacity {
-    inherits: true;
-    initial-value: 0%;
-    syntax: "<percentage>";
-}
-
 @keyframes flame-bob {
-    0% {
-        --flame-opacity:  100%;
-        --flame-rotation: 5deg;
-    }
-
-    50% {
-        --flame-rotation: -5deg;
-    }
-
-    100% {
-        --flame-opacity:  100%;
-        --flame-rotation: 5deg;
-    }
-}
-
-@property --rocket-rotation {
-    inherits:      false;
-    initial-value: 0deg;
-    syntax:        "<angle>";
-}
-
-@property --rocket-offset-y {
-    inherits: false;
-    initial-value: 0px;
-    syntax: "<length>";
-}
-
-@property --rocket-opacity {
-    inherits: false;
-    initial-value: 100%;
-    syntax: "<percentage>";
+    0%   { rotate:  5deg; opacity: 100%; }
+    50%  { rotate: -5deg; }
+    100% { rotate:  5deg; opacity: 100%; }
 }
 
 @keyframes rocket-bob {
-    0% {
-        --rocket-rotation: 1.5deg;
-    }
-
-    50% {
-        --rocket-rotation: -1.5deg;
-    }
-
-    100% {
-        --rocket-rotation: 1.5deg;
-    }
+    0%   { rotate:  1.5deg; }
+    50%  { rotate: -1.5deg; }
+    100% { rotate:  1.5deg; }
 }
 
 @keyframes fly-away {
     0% {
-        --rocket-offset-y: 0px;
+        opacity:   100%;
+        translate: 0 0;
     }
 
-    94.9999% {
-        --rocket-offset-y: -800px;
-        --rocket-opacity: 100%;
+    94% {
+        opacity:   100%;
+        translate: 0 -800px;
     }
 
-    95% {
-        --rocket-opacity: 0%;
-    }
-
-    100% {
-        --rocket-opacity: 0%;
-    }
+    95%  { opacity: 0%; }
+    100% { opacity: 0%; }
 }
 
 @keyframes rocket-return {
     0% {
-        --rocket-offset-y: 2px;
-        --rocket-opacity:  0%;
+        opacity: 0%;
+        translate: 0 2px;
     }
 
     100% {
-        --rocket-offset-y: 0px;
-        --rocket-opacity:  100%;
+        opacity:   100%;
+        translate: 0 0;
     }
 }
 </style>

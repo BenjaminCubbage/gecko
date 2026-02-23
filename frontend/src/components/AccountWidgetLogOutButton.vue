@@ -47,8 +47,6 @@ function logOut() {
     border: var(--border-s);
     border-radius: var(--radius-s);
 
-    paint-order: stroke;
-
     transform:
         translate(
             var(--logout-offset),
@@ -59,6 +57,7 @@ function logOut() {
         transform  50ms ease;
 
     corner-shape: notch;
+    paint-order:  stroke;
 }
 
 .logout-button:hover {

@@ -41,9 +41,9 @@
 
 .txtr-diag--dk-green {
     --grad-c1: var(--col-green-5);
-    --grad-c2: var(--col-green-3);
-    --grad-c3: var(--col-green-4);
-    --grad-c4: var(--col-green-2);
+    --grad-c2: var(--col-green-4);
+    --grad-c3: var(--col-green-3);
+    --grad-c4: var(--col-green-0);
 }
 
 .txtr-diag--orange {
@@ -65,6 +65,13 @@
     --grad-c2: var(--col-lt-gray-2);
     --grad-c3: var(--col-lt-gray-3);
     --grad-c4: var(--col-lt-gray-1);
+}
+
+.txtr-diag--gray {
+    --grad-c1: var(--col-gray-4);
+    --grad-c2: var(--col-gray-3);
+    --grad-c3: var(--col-gray-2);
+    --grad-c4: var(--col-gray-0);
 }
 
 /*

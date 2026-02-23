@@ -110,16 +110,17 @@ defineExpose({
     border:        var(--border-s);
 
     transition:
-        box-shadow 100ms  ease,
-        translate  100ms ease;
+        box-shadow 50ms  ease,
+        translate  50ms ease;
 
     translate: 0 var(--inner-button-offset);
 
     corner-shape: notch;
 }
 
-.drawer-button:hover {
-    --inner-button-offset: calc(var(--shadow-dist-s) / 2);
+.drawer-button:hover,
+.drawer-button:active {
+    filter: var(--filter-hl-1);
 }
 
 .drawer-button--button:active {
@@ -130,6 +131,8 @@ defineExpose({
 .drawer-button--toggle--toggled:hover {
     --inner-button-aura:   var(--shadow-aura);
     --inner-button-offset: var(--shadow-dist-s);
+    
+    filter: none;
 }
 
 .drawer-button > * {

@@ -1,44 +1,58 @@
 <template>
-    <div class="navbar-tabs">
+    <nav class="navbar-tabs">
         <button
             v-for="tab in tabs"
             class="tab tab--green"
             :class="[
                 { 'tab--active': selectedTab === tab.value },
-                ...tab.texture
+                ...tab.classes
             ]"
             @click="selectedTab = tab.value"
             :key="tab.value">
-            <StrokedText>{{ tab.title }}</StrokedText>
+            {{ tab.title }}
         </button>
-    </div>
+
+        <div class="pad txtr-diag txtr-diag--lt-gray"></div>
+    </nav>
 </template>
 
 <script setup>
-import StrokedText from './StrokedText.vue';
-
-const selectedTab = defineModel({ default: 'canvas' });
+const selectedTab = defineModel({ 
+    type:     String,
+    required: true,
+    validator(value) {
+        return [
+            'canvas',
+            'friends'
+        ].includes(value);
+    }
+});
 
 const tabs = [
-    { title: 'CANVAS',  value: 'canvas',  texture: ['tab--green',  'txtr-diag', 'txtr-diag--green' ] },
-    { title: 'FRIENDS', value: 'friends', texture: ['tab--orange', 'txtr-diag', 'txtr-diag--orange'] }
+    { title: 'CANVAS',  value: 'canvas',  classes: ['tab--left',  'tab--green',  'txtr-diag', 'txtr-diag--green' ] },
+    { title: 'FRIENDS', value: 'friends', classes: ['tab--right', 'tab--orange', 'txtr-diag', 'txtr-diag--orange'] }
 ];
 </script>
 
 <style scoped>
 .navbar-tabs {
-    display:      flex;
-    flex-flow:    row nowrap;
-    gap:          10px;
+    grid-template-areas:
+        "tab-left tab-right"
+        "pad      pad";
+
+    display: grid;
 
     font-family:  var(--font-heading);
     font-size:    2.2rem;
-    line-height:  1.4;
+    line-height:  1.3;
 }
 
 .tab {
     padding: 0px 20px;
     width:   116px;
+
+    -webkit-text-stroke: var(--text-stroke-s);
+    color:               black;
 
     --tab-offset: 0px;
 
@@ -57,12 +71,25 @@ const tabs = [
     border-radius: var(--radius-s);
 
     transition:
-        box-shadow 100ms ease,
-        translate  100ms ease;
+        box-shadow 80ms ease,
+        translate  80ms ease;
 
     translate: 0 var(--tab-offset);
 
     corner-shape: notch;
+    paint-order:  stroke;
+}
+
+.tab--left {
+    grid-area:                  tab-left;
+    border-bottom-right-radius: 0;
+    border-top-right-radius:    0;
+}
+
+.tab--right {
+    grid-area:                  tab-right;
+    border-bottom-left-radius: 0;
+    border-top-left-radius:    0;
 }
 
 .tab--green {
@@ -75,13 +102,34 @@ const tabs = [
     --tab-inset-col-top:    var(--col-orange-0);
 }
 
-.tab:hover {
-    --tab-offset: calc(var(--shadow-dist-s) / 2);
+.tab:hover,
+.tab:active {
+    filter: var(--filter-hl-1);
 }
 
 .tab--active,
 .tab--active:hover {
-    --tab-aura:   var(--shadow-aura);
     --tab-offset: var(--shadow-dist-s);
+    pointer-events: none;
+}
+
+.pad {
+    margin-left:  -8px;
+    margin-right: -8px;
+    margin-top: -28px;
+
+    grid-area: pad;
+    height:    38px;
+
+    border:        var(--border-s);
+    border-radius: var(--radius-s);
+
+    box-shadow:
+        0 var(--shadow-dist-s)
+        0 black,
+        inset  3px  3px var(--col-gray-0),
+        inset -3px -3px var(--col-gray-4);
+
+    corner-shape: notch;
 }
 </style>

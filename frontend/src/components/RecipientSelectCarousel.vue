@@ -1,21 +1,4 @@
 <template>
-    <!-- Measuring only (for width anim) -->
-    <teleport to="body">
-        <div class="measure-options" inert>
-            <div
-                v-for="option in options"
-                ref="measureOptionsEls"
-                class="text"
-                :style="`font-size: ${fontSize}`"
-                :key="optionID(option)">
-                <RecipientSelectDeviceSignal
-                    v-if="isDevicesVariant"
-                    :status="selectedOption.status" />
-                {{ optionContent(option) }}
-            </div>
-        </div>
-    </teleport>
-
     <div class="recipient-select-carousel">
         <button
             class="arrow arrow--left txtr-diag txtr-diag--green"
@@ -24,18 +7,8 @@
             &lt;
         </button>
 
-        <div
-            class="selected-option text text--display"
-            :style="{
-                '--target-width': textWidth,
-                'font-size':      fontSize
-            }">
-
-            {{ optionContent(selectedOption) }}
-
-            <RecipientSelectDeviceSignal
-                v-if="isDevicesVariant"
-                :status="selectedOption.status" />
+        <div class="selection">
+            <slot name="label" :option="selectedOption" />
         </div>
 
         <button
@@ -50,40 +23,13 @@
 <script setup>
 import {
     computed,
-    nextTick,
-    onMounted,
-    ref,
-    useTemplateRef,
     watch
 } from 'vue';
 
-import RecipientSelectDeviceSignal from './RecipientSelectDeviceSignal.vue';
-
-import { Device } from '@/models/device.js';
-import { User }   from '@/models/user.js';
-
 const props = defineProps({
-    variant: {
-        type:      String,
-        required:  true,
-        validator(value) {
-            return [
-                'users',
-                'devices'
-            ].includes(value);
-        }
-    },
-
     options: {
         type:     Array,
-        required: true,
-        validator(value, props) {
-            return value?.length && value.every(v => {
-                return props.variant === 'users'
-                    ? v instanceof User
-                    : v instanceof Device;
-            });
-        }
+        required: true
     }
 });
 
@@ -93,18 +39,6 @@ const selectedOption = defineModel({
     }
 });
 
-const measureOptionsEls = useTemplateRef('measureOptionsEls');
-const measureLoadingEl  = useTemplateRef('measureLoadingEl');
-
-const isUsersVariant   = computed(() => props.variant === 'users');
-const isDevicesVariant = computed(() => !isUsersVariant.value);
-
-const fontSize = computed(() =>
-    isUsersVariant.value
-        ? '3.2rem'
-        : '2.2rem'
-);
-
 const curSelectionIndex = computed(() => props.options?.indexOf(selectedOption.value) ?? -1);
 const hasNext           = computed(() => curSelectionIndex.value + 1 < props.options.length);
 const hasPrev           = computed(() => curSelectionIndex.value > 0);
@@ -112,8 +46,6 @@ const hasPrev           = computed(() => curSelectionIndex.value > 0);
 watch(selectedOption, () => {
     if (!props.options.includes(selectedOption.value))
         selectedOption.value = props.options[0];
-    else
-        recalculateBoxWidth();
 });
 
 watch(() => props.options, () => {
@@ -122,50 +54,6 @@ watch(() => props.options, () => {
 }, {
     immediate: true
 });
-
-watch(
-    () => isUsersVariant.value
-        ? [selectedOption.value.username]
-        : [selectedOption.value.name, selectedOption.value.status],
-    () => {
-        recalculateBoxWidth();
-    }
-);
-
-const textWidth = ref('26px');
-
-onMounted(recalculateBoxWidth);
-
-function optionID(option) {
-    return props.variant === 'users'
-        ? option.userID
-        : option.deviceID;
-}
-
-function optionContent(option) {
-    return props.variant === 'users'
-        ? option.username
-        : option.name;
-}
-
-function recalculateBoxWidth() {
-    /*
-        Give elements a chance to render
-    */
-    nextTick(() => {
-        /*
-            Vue does not gaurantee order of v-for ref arrays, so we must
-            use compareDocumentPosition.
-        */
-        const element = props.mode == 'loading'
-            ? measureLoadingEl?.value
-            : measureOptionsEls.value?.toSorted((el1, el2) =>
-                el1.compareDocumentPosition(el2) & 4 ? -1 : 1)[curSelectionIndex.value];
-
-        if (element && element.offsetWidth)
-            textWidth.value = `${element.offsetWidth + 12}px`;
-    });
-}
 
 function carouselPrev() {
     tryMoveSelection(-1);
@@ -184,36 +72,55 @@ function tryMoveSelection(by) {
 
 <style scoped>
 .recipient-select-carousel {
-    align-items:           center;
-    justify-items:         center;
-    display:               grid;
-    gap:                   12px;
-    grid-template-columns: 40px minmax(0, 1fr) 40px;
-    height:                36px;
+    contain: strict;
+    contain-intrinsic-height: 34px;
+
+    grid-template:
+        "arrow-left selection      arrow-right" auto /
+         auto       minmax(0, 1fr) auto;
+
+    align-items:    stretch;
+    justify-items:  stretch;
+    display:        grid;
+    padding-bottom: var(--shadow-dist-s);
+    user-select:    none;
+    z-index:        0;
 }
 
-.measure-options {
-    display:     grid;
-    place-items: start;
-    position:    fixed;
-    visibility:  hidden;
-    z-index:     100;
-}
+.selection {
+    display:       grid;
+    grid-area:     selection;
+    place-items:   center;
+    z-index:       1;
 
-.selected-option {
-    transition:
-        width 500ms cubic-bezier(.78,-0.01,.32,1);
+    -webkit-text-stroke: var(--text-stroke-l);
+    color:               black;
+    font-family:         var(--font-heading);
+    overflow:            hidden;
+    text-overflow:       ellipsis;
+    user-select:         none;
+    white-space:         nowrap;
+    line-height:         0;
 
-    display:       inline-block;
-    justify-items: center;
-    margin-left:   1.5px;
-    max-width:     100%;
-    width:         var(--target-width);
+    background:
+        linear-gradient(
+            var(--col-gray-2) 50%,
+            var(--col-gray-3) 50%);
+
+    box-shadow:
+        0 var(--shadow-dist-s)
+        0 black,
+        inset  3px  3px 0 var(--col-gray-0),
+        inset -3px -3px 0 var(--col-gray-4);
+
+    border: var(--border-s);
+
+    paint-order: stroke;
 }
 
 .arrow {
-    height: 1.35em;
-    width:  1.9em;
+    width:   1.9em;
+    z-index: 1;
 
     text-shadow:
         -1.5px -1.5px 0 var(--col-green-1),
@@ -236,69 +143,38 @@ function tryMoveSelection(by) {
     --arrow-offset: 0px;
 
     transition: 
-        box-shadow 80ms ease,
-        translate  80ms ease;
+        box-shadow 50ms ease,
+        translate  50ms ease;
 
     translate: 0 var(--arrow-offset);
 
     corner-shape: notch;
 }
 
-.arrow--right {
-    padding-left: 2.5px;
-}
-
 .arrow:disabled {
-    cursor:  default;
-    opacity: 0.5;
+    cursor:         default;
+    pointer-events: none;
+    color:          var(--col-green-6);
 }
 
-.arrow:hover:not(:disabled) {
-    --arrow-offset: calc(var(--shadow-dist-s) / 2);
+.arrow:hover,
+.arrow:active {
+    filter: var(--filter-hl-1);
 }
 
-.arrow:active:not(:disabled) {
+.arrow:active {
     --arrow-offset: var(--shadow-dist-s);
 }
 
-.loaded-enter-active,
-.loaded-leave-active {
-    transition: transform 50ms ease;
+.arrow--left {
+    grid-area:                  arrow-left;
+    border-top-right-radius:    0;
+    border-bottom-right-radius: 0;
 }
 
-.loaded-enter-from,
-.loaded-leave-to {
-    transform: scale(0.8);
-}
-
-.text {
-    padding:     0 3px;
-    font-family: var(--font-heading);
-}
-
-.text--display {
-    -webkit-text-stroke: var(--text-stroke-l);
-    color:               black;
-    line-height:         1;
-    overflow:            hidden;
-
-    text-align:          center;
-    text-overflow:       ellipsis;
-    user-select:         none;
-    white-space:         nowrap;
-
-    paint-order: stroke;
-}
-
-@supports (-moz-appearance: none) {
-    .text--display {
-        text-overflow: "";
-    }
-}
-
-@property --target-width {
-    syntax:        "<length>";
-    initial-value: 0px;
-    inherits:      true;
+.arrow--right {
+    grid-area:                 arrow-right;
+    border-top-left-radius:    0;
+    border-bottom-left-radius: 0;
 }
 </style>

@@ -1,10 +1,7 @@
 <template>
     <header class="navbar">
         <AccountWidget class="account" />
-
-        <nav class="links">
-            <NavigationBarTabs v-model="selectedTab" />
-        </nav>
+        <NavigationBarTabs v-model="selectedTab" class="links" />
     </header>
 </template>
 

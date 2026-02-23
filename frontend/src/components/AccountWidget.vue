@@ -1,33 +1,30 @@
 <template>
-    <div class="account-widget">
-        <transition name="login-appear" mode="out-in">
-            <div
-                v-if="session.state.value === 'loggedout' || session.state.value === 'error'"
-                class="login-button-wrapper">
-                <AccountWidgetLogInButton />
-            </div>
+    <transition name="login-appear" mode="out-in">
+        <div
+            v-if="session.state.value === 'loggedout' || session.state.value === 'error'"
+            class="login-button-wrapper">
+            <AccountWidgetLogInButton />
+        </div>
+
+        <div
+            v-else-if="session.state.value === 'ready'"
+            class="widget-layout">
+            <DrawerButtonProfile
+                ref="toggleEl"
+                v-model="isExpanded"
+                class="drawer-toggle" />
 
             <div
-                v-else-if="session.state.value === 'ready'"
-                class="widget-layout">
-                <DrawerButtonProfile
-                    ref="toggleEl"
-                    v-model="isExpanded"
-                    class="profile-button" />
-
-                <transition name="drawer-open">
-                    <div
-                        v-show="isExpanded"
-                        ref="drawerEl"
-                        class="drawer">
-                        <DrawerButtonLogOut @click="logOut" />
-                    </div>
-                </transition>
-
-                <AccountWidgetUsernameBadge class="username-badge" />
+                ref="drawerEl"
+                class="drawer"
+                :class="{ 'drawer--expanded': isExpanded }"
+                :inert="!isExpanded">
+                <DrawerButtonLogOut @click="logOut" />
             </div>
-        </transition>
-    </div>
+
+            <AccountWidgetUsernameBadge class="username-badge" />
+        </div>
+    </transition>
 </template>
 
 <script setup>
@@ -70,23 +67,24 @@ async function logOut() {
 </script>
 
 <style scoped>
-.account-widget {
-    display: flex;
-}
-
 .widget-layout {
-    align-items: stretch;
     display:     grid;
     flex-flow:   row nowrap;
     gap:         8px 7px;
 
-    grid-template-areas:
-        "profile username"
-        "drawer  .";
+    grid-template:
+        "profile username"       auto
+        "drawer  ."              auto /
+         auto    minmax(0, 1fr);
 }
 
-.profile-button {
+.drawer-toggle {
     grid-area: profile;
+}
+
+.drawer-toggle:is(:hover, :active, :focus) + .drawer,
+.drawer--expanded {
+    will-change: transform;
 }
 
 .username-badge {
@@ -98,7 +96,19 @@ async function logOut() {
 }
 
 .drawer {
+    contain: layout;
+
     position: relative;
+    pointer-events: none;
+
+    scale:            0;
+    transform-origin: 50% 0;
+    transition:       scale 200ms ease;
+}
+
+.drawer--expanded {
+    pointer-events: all;
+    scale:          1;
 }
 
 .drawer > * {
@@ -125,14 +135,12 @@ async function logOut() {
 .drawer-open-enter-active,
 .drawer-open-leave-active {
     transform-origin: 50% 0;
-    transition: 
+    transition:
         scale   100ms ease,
         opacity 100ms ease;
 }
 
 .drawer-open-enter-from,
 .drawer-open-leave-to {
-    scale: 0.8;
-    opacity: 0;
 }
 </style>
