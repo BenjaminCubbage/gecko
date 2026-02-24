@@ -47,10 +47,10 @@
 }
 
 .txtr-diag--orange {
-    --grad-c1: var(--col-orange-4);
-    --grad-c2: var(--col-orange-2);
-    --grad-c3: var(--col-orange-3);
-    --grad-c4: var(--col-orange-1);
+    --grad-c1: var(--col-orange-5);
+    --grad-c2: var(--col-orange-3);
+    --grad-c3: var(--col-orange-4);
+    --grad-c4: var(--col-orange-2);
 }
 
 .txtr-diag--magenta {

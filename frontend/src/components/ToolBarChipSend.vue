@@ -186,7 +186,6 @@ function animationCancelled() {
     display:     flex;
     gap:         5px;
     padding:     0 5px 0 10px;
-    line-height: 0;
 
     transform:
         translateY(-4px)
@@ -201,6 +200,7 @@ function animationCancelled() {
         font-family:         var(--font-heading);
         font-size:           3rem;
         letter-spacing:      0.02em;
+        line-height:         0;
 
         paint-order: stroke;
     }
@@ -226,7 +226,7 @@ function animationCancelled() {
     }
 
     .stroke {
-        stroke-width: 64px;
+        stroke-width: 67px;
         stroke:       black;
         paint-order:  stroke fill;
 

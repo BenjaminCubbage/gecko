@@ -37,7 +37,7 @@ const props = defineProps({
 
 const picEditorCanvas = useTemplateRef('picEditorCanvas');
 
-const penSize   = ref('small');
+const penSize   = ref('medium');
 const isErasing = ref(false);
 
 const session = inject(Keys.SessionStore);
