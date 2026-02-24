@@ -1,8 +1,8 @@
 <template>
-    <a 
+    <a
         class="login-button txtr-diag txtr-diag--lt-gray"
         :class="{ 'login-button--pressed': isPressed }"
-        href="/auth/login" 
+        href="/auth/login"
         draggable="false"
         @click="press">
         <StrokedText>
@@ -50,7 +50,7 @@ onUnmounted(() => {
     --login-button-aura:   0 0;
     --login-button-offset: 0px;
 
-    box-shadow:    
+    box-shadow:
         var(--login-button-aura),
         0 calc(var(--shadow-dist-s) - var(--login-button-offset))
         0 black,

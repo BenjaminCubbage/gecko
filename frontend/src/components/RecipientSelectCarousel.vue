@@ -142,7 +142,7 @@ function tryMoveSelection(by) {
 
     --arrow-offset: 0px;
 
-    transition: 
+    transition:
         box-shadow 50ms ease,
         translate  50ms ease;
 

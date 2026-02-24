@@ -1,15 +1,15 @@
-import { 
-    computed, 
-    onUnmounted, 
-    ref 
+import {
+    computed,
+    onUnmounted,
+    ref
 } from 'vue';
 
 /*
     Utility for displaying a loading state while the user waits
     for a task to complete.
 
-    For instance, a spinner can be shown if a resource fetch is 
-    taking a while. It will then be displayed for a minimum amount 
+    For instance, a spinner can be shown if a resource fetch is
+    taking a while. It will then be displayed for a minimum amount
     of time, to prevent flickering.
 */
 export function useLoadingState(spinDelay = 100, minimumSpinTime = 300) {

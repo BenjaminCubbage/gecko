@@ -2,7 +2,7 @@ import { onMounted, ref }               from 'vue';
 import { getComputedCSSVar } from '@/core/dom/cssVar.js';
 
 /*
-    Attempts to load a font, and tracks whether or not the font 
+    Attempts to load a font, and tracks whether or not the font
     is loaded yet.
 
     The fontFamily argument can be a css variable on :root, like

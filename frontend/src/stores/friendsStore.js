@@ -126,7 +126,7 @@ export class FriendsStore {
         }
     }
 
-    /* 
+    /*
         Asks server to send a friend request to the target user.
     */
     async publishCreateFriendRequest(session, targetUser) {

@@ -21,7 +21,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits([
-    'clear', 
+    'clear',
     'send'
 ]);
 
@@ -48,7 +48,7 @@ const isErasing = defineModel('isErasing', {
         linear-gradient(
             var(--col-gray-2) 50%,
             var(--col-gray-3) 50%);
-            
+
     box-shadow:
          3px  3px var(--col-green-6),
         -3px -3px var(--col-green-0),

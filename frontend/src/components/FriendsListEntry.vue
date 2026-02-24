@@ -113,19 +113,19 @@ const isMe         = computed(() => props.entryType == 'me');
     padding-top:   0.5px;
     place-content: center;
     place-self:    center;
-    
+
     -webkit-text-stroke: var(--text-stroke-s);
     font-size:           2.4rem;
 
-    box-shadow:    
-        var(--shadow-s), 
+    box-shadow:
+        var(--shadow-s),
         inset 0  3px 0 var(--col-orange-2),
         inset 0 -3px 0 var(--col-orange-6);
 
     background:    var(--col-orange-4);
     border:        var(--border-s);
     border-radius: var(--radius-s);
-    
+
     paint-order: stroke;
 }
 

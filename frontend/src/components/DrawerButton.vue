@@ -131,7 +131,7 @@ defineExpose({
 .drawer-button--toggle--toggled:hover {
     --inner-button-aura:   var(--shadow-aura);
     --inner-button-offset: var(--shadow-dist-s);
-    
+
     filter: none;
 }
 

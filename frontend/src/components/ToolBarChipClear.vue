@@ -54,7 +54,7 @@ function click() {
 .tool-bar-chip-clear {
     --chip-aura:   0 0;
     --chip-offset: 0px;
-    
+
     transition: z-index 0ms 1000ms allow-discrete;
 
     &:hover:not(.tool-bar-chip-clear--pressed),
@@ -98,7 +98,7 @@ function click() {
 
     box-shadow:
         var(--chip-aura),
-        0 calc(var(--shadow-dist-s) - var(--chip-offset)) 
+        0 calc(var(--shadow-dist-s) - var(--chip-offset))
         0 black,
         inset  3px  3px var(--col-red-0),
         inset -3px -3px var(--col-red-6);
@@ -126,7 +126,7 @@ function click() {
     font-size:           3rem;
     letter-spacing:      0.02em;
 
-    transition: 
+    transition:
         translate 50ms ease,
         transform 0ms  allow-discrete 1000ms;
 
@@ -150,7 +150,7 @@ function click() {
     @supports (order: sibling-index()) {
         animation-delay: calc(sibling-index() * 20ms);
     }
-        
+
     @supports not (order: sibling-index()) {
         &.letter--1 { animation-delay: calc(1 * 20ms); }
         &.letter--2 { animation-delay: calc(2 * 20ms); }

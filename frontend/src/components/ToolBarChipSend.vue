@@ -116,7 +116,7 @@ function animationCancelled() {
         filter:         grayscale();
     }
 
-    /* 
+    /*
         Animations
     */
 
@@ -134,7 +134,7 @@ function animationCancelled() {
 
             pointer-events: none;
         }
-            
+
         .rocket-svg-flame {
             animation: flame-bob 200ms steps(5) 24;
         }
@@ -167,7 +167,7 @@ function animationCancelled() {
 
     box-shadow:
         var(--chip-aura),
-        0 calc(var(--shadow-dist-s) - var(--chip-offset)) 
+        0 calc(var(--shadow-dist-s) - var(--chip-offset))
         0 black,
         inset  3px  3px var(--col-green-0),
         inset -3px -3px var(--col-green-6);
@@ -218,7 +218,7 @@ function animationCancelled() {
         z-index:   1;
         scale:     1.27;
     }
-        
+
     & > .rocket-svg-flame {
         grid-area: 1 / 1;
         opacity:   0;

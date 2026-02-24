@@ -1,10 +1,10 @@
-import { 
-    onUnmounted, 
+import {
+    onUnmounted,
     ref,
     watch
 } from 'vue';
 
-/* 
+/*
     Select the entirety of an input's content when it receives
     focus.
 
@@ -19,7 +19,7 @@ export function useAutoHighlightTextInput(elRefs, mode = 'end') {
     const registeredEls = [];
 
     watch(elRefs, newValue => {
-        const newEls = newValue instanceof Array 
+        const newEls = newValue instanceof Array
             ? newValue
             : [newValue];
 
@@ -62,7 +62,7 @@ export function useAutoHighlightTextInput(elRefs, mode = 'end') {
                 console.warn(`[useAutoHighlightTextInput]: Not all elements were of type HTMLInputElement`);
             }
         }
-        
+
         for (const el of els.filter(e => e instanceof HTMLInputElement))
             el.addEventListener('focus', handleGotFocus);
     }

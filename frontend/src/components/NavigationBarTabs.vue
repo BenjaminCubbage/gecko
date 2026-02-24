@@ -17,7 +17,7 @@
 </template>
 
 <script setup>
-const selectedTab = defineModel({ 
+const selectedTab = defineModel({
     type:     String,
     required: true,
     validator(value) {
@@ -58,7 +58,7 @@ const tabs = [
 
     --tab-aura: 0 0;
     --tab-shadow:
-        0 calc(var(--shadow-dist-s) - var(--tab-offset)) 
+        0 calc(var(--shadow-dist-s) - var(--tab-offset))
         0 black;
 
     box-shadow:

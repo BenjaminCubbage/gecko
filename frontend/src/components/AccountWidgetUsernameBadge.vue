@@ -248,13 +248,13 @@ async function submit() {
 .username-text {
     overflow:     hidden;
     padding-left: 16px;
-    
+
     -webkit-text-stroke: var(--text-stroke-s);
     color:               black;
     letter-spacing:      0.03em;
     text-overflow:       ellipsis;
     white-space:         nowrap;
-    
+
     paint-order: stroke;
 }
 

@@ -54,7 +54,7 @@ const isToggled = defineModel({ default: true });
         --chip-offset: var(--shadow-dist-s);
         --s:           2.2px;
 
-        --filter-2: 
+        --filter-2:
             drop-shadow(calc(var(--s) *  1.0) calc(var(--s) *  0.0) 0px white)
             drop-shadow(calc(var(--s) *  0.0) calc(var(--s) *  1.0) 0px white)
             drop-shadow(calc(var(--s) * -0.8) calc(var(--s) *  0.0) 0px white)
@@ -64,7 +64,7 @@ const isToggled = defineModel({ default: true });
 
 .eraser-pad {
     box-shadow:
-        0 calc(var(--shadow-dist-s) - var(--chip-offset)) 
+        0 calc(var(--shadow-dist-s) - var(--chip-offset))
         0 black,
         inset  3px  3px var(--col-magenta-0),
         inset -3px -3px var(--col-magenta-6);
@@ -77,7 +77,7 @@ const isToggled = defineModel({ default: true });
         translate  50ms linear;
 
     translate: 0 var(--chip-offset);
-    
+
     corner-shape: notch;
 }
 
@@ -85,7 +85,7 @@ const isToggled = defineModel({ default: true });
     padding:    0 14px;
     transition: translate 50ms linear;
     translate:  0 var(--chip-offset);
-        
+
     & > .icon-svg {
         height:       22px;
         stroke:       black;

@@ -6,7 +6,7 @@
             :is-erasing="isErasing"
             @canvas-changed="canvasChanged" />
 
-        <ToolBar 
+        <ToolBar
             :send-disabled="recipientDevice == null"
             v-model:pen-size="penSize"
             v-model:is-erasing="isErasing"
@@ -30,7 +30,7 @@ import { Keys }     from '@/core/di/keys.js';
 
 const props = defineProps({
     recipientDevice: {
-        type:     null, 
+        type:     null,
         required: true
     }
 });
