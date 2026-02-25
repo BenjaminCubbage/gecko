@@ -2,7 +2,7 @@
     <div class="pic-editor txtr-diag txtr-diag--green">
         <PicEditorCanvas
             ref="picEditorCanvas"
-            :pen-size="penSize  "
+            :pen-size="penSize"
             :is-erasing="isErasing"
             @canvas-changed="canvasChanged" />
 

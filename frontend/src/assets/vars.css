@@ -69,7 +69,7 @@
     --border-s: var(--border-thickness-s) solid black;
     --border-l: var(--border-thickness-l) solid black;
 
-    --radius-s: 3px;
+    --radius-s: 6px;
     --radius-l: 6px;
 
     --shadow-dist-s: 2.5px;
@@ -78,7 +78,8 @@
     --shadow-s: 0 var(--shadow-dist-s) 0 black;
     --shadow-l: 0 var(--shadow-dist-l) 0 black;
 
-    --shadow-aura: 0 0 0 2px white;
+    --shadow-dist-aura: 2px;
+    --shadow-aura: 0 0 0 var(--shadow-dist-aura) white;
 
     --text-stroke-s: 3.5px white;
     --text-stroke-l: 4px white;

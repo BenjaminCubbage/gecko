@@ -1,39 +1,198 @@
 <template>
-    <div class="tool-bar-chip-layout">
-        <div class="chip-icons">
-            <slot name="icons"></slot>
+    <button 
+        :class="`
+            tool-bar-chip 
+            tool-bar-chip--icon-${iconPlacement}
+            tool-bar-chip--hl-style-${highlightStyle}
+            tool-bar-chip--disable-style-${disableStyle}`">
+        <div v-if="iconPlacement !== 'none'" class="icon" aria-hidden="true">
+            <slot name="icon"></slot>
         </div>
 
-        <div class="chip-pad">
-            <slot name="pad"></slot>
+        <div :class="`label label--${color}`">
+            <slot name="label"></slot>
         </div>
-    </div>
+
+        <div :class="`pad pad--${color} txtr-diag txtr-diag--${color}`"></div>
+    </button>
 </template>
 
+<script setup>
+const props = defineProps({
+    color: {
+        type:     String,
+        required: true,
+        validator(value) {
+            return [
+                'dk-green',
+                'magenta',
+                'orange',
+                'dk-red'
+            ].includes(value);
+        }
+    },
+
+    iconPlacement: {
+        type:    String,
+        default: 'left',
+        validator(value) {
+            return [
+                'left',
+                'right',
+                'none'
+            ].includes(value);
+        }
+    },
+
+    highlightStyle: {
+        type:    String,
+        default: 'shadow',
+        validator(value) {
+            return [
+                'shadow',
+                'filter'
+            ].includes(value);
+        }
+    },
+
+    disableStyle: {
+        type:    String,
+        default: 'grayed',
+        validator(value) {
+            return [
+                'grayed',
+                'none'
+            ].includes(value);
+        }
+    }
+});
+</script>
+
 <style scoped>
-.tool-bar-chip-layout {
+.tool-bar-chip {
+    contain: content;
+
+    --chip-padding-x: 10px;
+    --transition-dur: 50ms;
+    --press-depth:    0px;
+    --select-aura:    0 0;
+
     display:     grid;
-    height:      36px;
-    padding-top: 2px;
+    height:      40px;
+    place-items: center;
     user-select: none;
+    padding:     0 calc(var(--chip-padding-x) + var(--shadow-dist-aura));
+
+    &.tool-bar-chip--icon-left  { grid-template: [pad icon label] auto / [pad-start icon]  auto [label] auto [pad-end]; }
+    &.tool-bar-chip--icon-right { grid-template: [pad icon label] auto / [pad-start label] auto [icon]  auto [pad-end]; }
+    &.tool-bar-chip--icon-none  { grid-template: [pad icon label] auto / [pad-start label] auto              [pad-end]; }
+
+    &:hover:not(:disabled),
+    &:active {
+        filter: var(--filter-hl-1);
+    }
+
+    &:active {
+        --press-depth: var(--shadow-dist-s);
+    }
+
+    &:active[aria-pressed],
+    &[aria-pressed=true] {
+        --press-depth: var(--shadow-dist-s);
+
+        &.tool-bar-chip--hl-style-shadow {
+            --select-aura: var(--shadow-aura);
+        }
+
+        &.tool-bar-chip--hl-style-filter {
+            --w: 2.2px;
+
+            filter:
+                var(--filter-hl-1)
+                drop-shadow(calc(var(--w) *  1.0) calc(var(--w) *  0.0) 0px white)
+                drop-shadow(calc(var(--w) *  0.0) calc(var(--w) *  1.0) 0px white)
+                drop-shadow(calc(var(--w) * -0.8) calc(var(--w) *  0.0) 0px white)
+                drop-shadow(calc(var(--w) *  0.0) calc(var(--w) * -0.8) 0px white);
+        }
+    }
+
+    &.tool-bar-chip--disable-style-grayed:disabled {
+        opacity: 0.5;
+        filter:  grayscale();
+    }
+
+    &:disabled {
+        pointer-events: none;
+    }
+
+    & > .icon  { grid-area: icon;  z-index: 2; }
+    & > .label { grid-area: label; z-index: 1; }
+    & > .pad   { grid-area: pad;   z-index: 0; }
+
+    & > .icon  { translate: 0 calc(-3.75px + var(--press-depth)); }
+    & > .label { translate: 0 calc(-3.75px + var(--press-depth)); }
+    & > .pad   { translate: 0 calc( 3.75px + var(--press-depth)); }
 }
 
-.chip-icons,
-.chip-pad {
-    grid-area: 1 / 1;
+.icon {
+    display:       grid;
+    align-self:    stretch;
+    place-content: center;
+    transition:    translate var(--transition-dur);
 }
 
-.chip-icons {
-    display:          flex;
-    justify-content:  space-evenly;
-    place-self:       stretch;
-    z-index:          1;
+.label {
+    display:     flex;
+    align-items: center;
+
+    -webkit-text-stroke:  var(--text-stroke-l);
+    font-family:          var(--font-heading);
+    font-size:            3rem;
+    font-variant-numeric: tabular-nums;
+    letter-spacing:       0.02em;
+    line-height:          1;
+
+    /* Make text a bit taller */
+    scale:      1 1.1;
+    transition: translate var(--transition-dur);
+
+    paint-order: stroke;
+
+    &.label--dk-green { color: var(--col-green-5); }
+    &.label--magenta  { color: var(--col-magenta-6); }
+    &.label--orange   { color: var(--col-orange-8); }
+    &.label--dk-red   { color: var(--col-red-6); }
 }
 
-.chip-pad {
-    align-self: end;
-    display:    grid;
-    height:     24px;
-    z-index:    0;
+.pad {
+    --color-bevel-lt: 0;
+    --color-bevel-dk: 0;
+
+    display:      grid;
+    height:       24px;
+    justify-self: stretch;
+    z-index:      0;
+    margin:       0 calc(var(--chip-padding-x) * -1);
+
+    box-shadow:
+        var(--select-aura),
+        0 calc(var(--shadow-dist-s) - var(--press-depth))
+        0 black,
+        inset  3px  3px var(--color-bevel-lt),
+        inset -3px -3px var(--color-bevel-dk);
+
+    border:        var(--border-s);
+    border-radius: var(--radius-s);
+    
+    transition: 
+        translate  var(--transition-dur),
+        box-shadow var(--transition-dur);
+
+    corner-shape: notch;
+
+    &.pad--dk-green { --color-bevel-lt: var(--col-green-0);   --color-bevel-dk: var(--col-green-6); }
+    &.pad--dk-red      { --color-bevel-lt: var(--col-red-0);     --color-bevel-dk: var(--col-red-6); }
+    &.pad--magenta  { --color-bevel-lt: var(--col-magenta-0); --color-bevel-dk: var(--col-magenta-6); }
+    &.pad--orange   { --color-bevel-lt: var(--col-orange-0);  --color-bevel-dk: var(--col-orange-8); }
 }
 </style>

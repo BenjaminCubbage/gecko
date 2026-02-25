@@ -42,7 +42,7 @@ const isErasing = defineModel('isErasing', {
     gap:             12px;
     isolation:       isolate;
     justify-content: center;
-    padding:         9px;
+    padding:         4px 0;
 
     background:
         linear-gradient(
