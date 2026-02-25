@@ -3,17 +3,23 @@
         v-show="showContent"
         ref="layoutEl"
         class="layout">
-        <NavigationBar class="navigation-bar" v-model:selectedTab="selectedTab" />
+        <NavigationBar class="navigation" v-model:selectedTab="selectedTab" />
 
         <main class="main-content">
-            <div v-show="selectedTab == 'canvas'">
+            <div
+                v-show="selectedTab == 'canvas'"
+                role="tabpanel"
+                :id="tabPanelIds.canvas">
                 <RecipientSelect
                     :reveal="revealRecipientSelect"
                     @selectionChanged="selectedDeviceChanged" />
                 <PicEditor :recipientDevice="selectedDevice" />
             </div>
 
-            <div v-show="selectedTab == 'friends'">
+            <div
+                v-show="selectedTab == 'friends'"
+                role="tabpanel"
+                :id="tabPanelIds.friends">
                 <FriendsList />
             </div>
         </main>
@@ -25,6 +31,7 @@ import {
     computed,
     provide,
     ref,
+    useId,
     useTemplateRef,
     watch
 } from 'vue';
@@ -39,8 +46,14 @@ import { FriendsStore } from './stores/friendsStore.js';
 import { SessionStore } from './stores/sessionStore.js';
 import { Keys }         from './core/di/keys.js';
 
-import { useWaitOnFont }       from './composables/useWaitOnFont.js';
-import { useWaitOnTransition } from './composables/useWaitOnTransition.js';
+import { useElementIdRegistry } from './composables/useElementIdRegistry.js';
+import { useWaitOnFont }        from './composables/useWaitOnFont.js';
+import { useWaitOnTransition }  from './composables/useWaitOnTransition.js';
+
+const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry, {
+    canvas:  useId(),
+    friends: useId()
+});
 
 const selectedTab    = ref('canvas');
 const selectedDevice = ref(null);
@@ -100,12 +113,17 @@ function selectedDeviceChanged(value) {
 
 <style scoped>
 .layout {
-    align-content: center;
-    display:       flex;
-    flex-flow:     column nowrap;
-    margin-bottom: calc(var(--shadow-dist-l) * 2);
+    contain: content;
+
+    align-content:  center;
+    display:        flex;
+    flex-flow:      column nowrap;
+    padding-bottom: calc(var(--shadow-dist-l) * 2);
 
     transition:  opacity 300ms ease 200ms;
+
+    & > .navigation   { contain: layout; z-index: 1; }
+    & > .main-content { contain: layout; z-index: 0; }
 }
 
 .main-content {

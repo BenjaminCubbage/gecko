@@ -8,9 +8,7 @@
         :aria-pressed="isPressed"
         @click="click">
         <template #label>
-            <div
-                class="icon-text"
-                :style="`--animation-duration: ${animationDuration}ms`">
+            <div class="icon-text">
                 <span class="letter letter--1">C</span>
                 <span class="letter letter--2">L</span>
                 <span class="letter letter--3">E</span>
@@ -22,9 +20,9 @@
 </template>
 
 <script setup>
-import { 
-    onUnmounted, 
-    ref 
+import {
+    onUnmounted,
+    ref
 } from 'vue';
 import ToolBarChip from './ToolBarChip.vue';
 

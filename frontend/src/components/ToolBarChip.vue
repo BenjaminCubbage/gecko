@@ -1,10 +1,12 @@
 <template>
-    <button 
+    <button
+        :aria-disabled="disabled"
         :class="`
-            tool-bar-chip 
+            tool-bar-chip
             tool-bar-chip--icon-${iconPlacement}
             tool-bar-chip--hl-style-${highlightStyle}
-            tool-bar-chip--disable-style-${disableStyle}`">
+            tool-bar-chip--disable-style-${disableStyle}`"
+        @click="click">
         <div v-if="iconPlacement !== 'none'" class="icon" aria-hidden="true">
             <slot name="icon"></slot>
         </div>
@@ -64,8 +66,22 @@ const props = defineProps({
                 'none'
             ].includes(value);
         }
+    },
+
+    disabled: {
+        type:    Boolean,
+        default: false
     }
 });
+
+const emit = defineEmits([
+    'click'
+]);
+
+function click() {
+    if (!props.disabled)
+        emit('click');
+}
 </script>
 
 <style scoped>
@@ -87,7 +103,7 @@ const props = defineProps({
     &.tool-bar-chip--icon-right { grid-template: [pad icon label] auto / [pad-start label] auto [icon]  auto [pad-end]; }
     &.tool-bar-chip--icon-none  { grid-template: [pad icon label] auto / [pad-start label] auto              [pad-end]; }
 
-    &:hover:not(:disabled),
+    &:hover:not([aria-disabled=true]),
     &:active {
         filter: var(--filter-hl-1);
     }
@@ -116,13 +132,14 @@ const props = defineProps({
         }
     }
 
-    &.tool-bar-chip--disable-style-grayed:disabled {
-        opacity: 0.5;
-        filter:  grayscale();
-    }
-
-    &:disabled {
+    &[aria-disabled=true] {
         pointer-events: none;
+
+        &.tool-bar-chip--disable-style-grayed,
+        &.tool-bar-chip--disable-style-grayed {
+            opacity: 0.5;
+            filter:  grayscale();
+        }
     }
 
     & > .icon  { grid-area: icon;  z-index: 2; }
@@ -165,8 +182,8 @@ const props = defineProps({
 }
 
 .pad {
-    --color-bevel-lt: 0;
-    --color-bevel-dk: 0;
+    --chip-col-bevel-lt: 0;
+    --chip-col-bevel-dk: 0;
 
     display:      grid;
     height:       24px;
@@ -178,21 +195,21 @@ const props = defineProps({
         var(--select-aura),
         0 calc(var(--shadow-dist-s) - var(--press-depth))
         0 black,
-        inset  3px  3px var(--color-bevel-lt),
-        inset -3px -3px var(--color-bevel-dk);
+        inset  3px  3px var(--chip-col-bevel-lt),
+        inset -3px -3px var(--chip-col-bevel-dk);
 
     border:        var(--border-s);
     border-radius: var(--radius-s);
-    
-    transition: 
+
+    transition:
         translate  var(--transition-dur),
         box-shadow var(--transition-dur);
 
     corner-shape: notch;
 
-    &.pad--dk-green { --color-bevel-lt: var(--col-green-0);   --color-bevel-dk: var(--col-green-6); }
-    &.pad--dk-red      { --color-bevel-lt: var(--col-red-0);     --color-bevel-dk: var(--col-red-6); }
-    &.pad--magenta  { --color-bevel-lt: var(--col-magenta-0); --color-bevel-dk: var(--col-magenta-6); }
-    &.pad--orange   { --color-bevel-lt: var(--col-orange-0);  --color-bevel-dk: var(--col-orange-8); }
+    &.pad--dk-green { --chip-col-bevel-lt: var(--col-green-0);   --chip-col-bevel-dk: var(--col-green-6); }
+    &.pad--dk-red   { --chip-col-bevel-lt: var(--col-red-0);     --chip-col-bevel-dk: var(--col-red-6); }
+    &.pad--magenta  { --chip-col-bevel-lt: var(--col-magenta-0); --chip-col-bevel-dk: var(--col-magenta-6); }
+    &.pad--orange   { --chip-col-bevel-lt: var(--col-orange-0);  --chip-col-bevel-dk: var(--col-orange-8); }
 }
 </style>

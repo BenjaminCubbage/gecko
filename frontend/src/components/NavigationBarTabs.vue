@@ -1,15 +1,21 @@
 <template>
-    <nav class="navbar-tabs">
+    <nav role="tablist" class="navbar-tabs">
         <button
-            v-for="tab in tabs"
-            class="tab tab--green"
-            :class="[
-                { 'tab--active': selectedTab === tab.value },
-                ...tab.classes
-            ]"
-            @click="selectedTab = tab.value"
-            :key="tab.value">
-            {{ tab.title }}
+            role="tab"
+            :aria-selected="selectedTab === 'canvas'"
+            :aria-controls="tabPanelIds.canvas"
+            class="tab tab--left tab--green txtr-diag txtr-diag--green"
+            @click="selectedTab = 'canvas'">
+            canvas
+        </button>
+
+        <button
+            role="tab"
+            :aria-selected="selectedTab === 'friends'"
+            :aria-controls="tabPanelIds.friends"
+            class="tab tab--right tab--orange txtr-diag txtr-diag--orange"
+            @click="selectedTab = 'friends'">
+            friends
         </button>
 
         <div class="pad txtr-diag txtr-diag--lt-gray"></div>
@@ -17,6 +23,11 @@
 </template>
 
 <script setup>
+import { Keys } from '@/core/di/keys.js';
+import { useElementIdRegistry } from '@/composables/useElementIdRegistry';
+
+const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
+
 const selectedTab = defineModel({
     type:     String,
     required: true,
@@ -27,45 +38,40 @@ const selectedTab = defineModel({
         ].includes(value);
     }
 });
-
-const tabs = [
-    { title: 'CANVAS',  value: 'canvas',  classes: ['tab--left',  'tab--green',  'txtr-diag', 'txtr-diag--green' ] },
-    { title: 'FRIENDS', value: 'friends', classes: ['tab--right', 'tab--orange', 'txtr-diag', 'txtr-diag--orange'] }
-];
 </script>
 
 <style scoped>
 .navbar-tabs {
+    isolation: isolate;
+
     grid-template-areas:
         "tab-left tab-right"
         "pad      pad";
 
     display: grid;
 
-    font-family:  var(--font-heading);
-    font-size:    2.2rem;
-    line-height:  1.3;
+    font-family: var(--font-heading);
+    font-size:   2.2rem;
+    line-height: 1.3;
+
+    & > .tab { z-index: 1; }
+    & > .pad { z-index: 0; }
 }
 
 .tab {
-    padding: 0px 20px;
-    width:   116px;
+    width: 120px;
 
     -webkit-text-stroke: var(--text-stroke-s);
     color:               black;
+    text-transform:      uppercase;
 
     --tab-offset: 0px;
 
-    --tab-aura: 0 0;
-    --tab-shadow:
-        0 calc(var(--shadow-dist-s) - var(--tab-offset))
-        0 black;
-
     box-shadow:
-        var(--tab-shadow),
-        inset  3px  3px 0 var(--tab-inset-col-top),
-        inset -3px -3px 0 var(--tab-inset-col-bottom),
-        var(--tab-aura);
+        0 calc(var(--shadow-dist-s) - var(--tab-offset))
+        0 black,
+        inset  3px  3px 0 var(--tab-col-bevel-lt),
+        inset -3px -3px 0 var(--tab-col-bevel-dk);
 
     border:        var(--border-s);
     border-radius: var(--radius-s);
@@ -78,39 +84,22 @@ const tabs = [
 
     corner-shape: notch;
     paint-order:  stroke;
-}
 
-.tab--left {
-    grid-area:                  tab-left;
-    border-bottom-right-radius: 0;
-    border-top-right-radius:    0;
-}
+    &.tab--left  { grid-area: tab-left;  border-radius: var(--radius-s) 0 0 var(--radius-s); }
+    &.tab--right { grid-area: tab-right; border-radius: 0 var(--radius-s) var(--radius-s) 0; }
 
-.tab--right {
-    grid-area:                  tab-right;
-    border-bottom-left-radius: 0;
-    border-top-left-radius:    0;
-}
+    &.tab--green  { --tab-col-bevel-lt: var(--col-green-0);  --tab-col-bevel-dk: var(--col-green-5); }
+    &.tab--orange { --tab-col-bevel-lt: var(--col-orange-0); --tab-col-bevel-dk: var(--col-orange-7); }
 
-.tab--green {
-    --tab-inset-col-bottom: var(--col-green-5);
-    --tab-inset-col-top:    var(--col-green-0);
-}
+    &:hover,
+    &:active {
+        filter: var(--filter-hl-1);
+    }
 
-.tab--orange {
-    --tab-inset-col-bottom: var(--col-orange-6);
-    --tab-inset-col-top:    var(--col-orange-0);
-}
-
-.tab:hover,
-.tab:active {
-    filter: var(--filter-hl-1);
-}
-
-.tab--active,
-.tab--active:hover {
-    --tab-offset: var(--shadow-dist-s);
-    pointer-events: none;
+    &[aria-selected=true] {
+        --tab-offset: var(--shadow-dist-s);
+        pointer-events: none;
+    }
 }
 
 .pad {

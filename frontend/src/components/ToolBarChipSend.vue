@@ -6,8 +6,8 @@
         :disable-style="isLaunching ? 'none' : 'grayed'"
         :aria-pressed="isLaunching"
         :disabled="disabled || isLaunching"
+        :aria-describedby="statusElId"
         aria-label="Send"
-        aria-describedby="launch-status"
         @click="click"
         v-bind="attrs">
         <template #label>
@@ -53,7 +53,7 @@
         </template>
     </ToolBarChip>
 
-    <span id="launch-status" role="status" class="util-sr-only">
+    <span :id="statusElId" role="status" class="util-sr-only">
         {{ isLaunching ? 'sending image' : null }}
     </span>
 </template>
@@ -62,12 +62,14 @@
 import {
     onUnmounted,
     ref,
-    useAttrs
+    useAttrs,
+    useId
 } from 'vue';
 
 import ToolBarChip from './ToolBarChip.vue';
 
-const attrs = useAttrs();
+const attrs      = useAttrs();
+const statusElId = useId();
 
 defineProps({
     disabled: { type: Boolean, default: false }
