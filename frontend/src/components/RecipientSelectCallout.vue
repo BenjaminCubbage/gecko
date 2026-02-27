@@ -11,7 +11,6 @@
 
     -webkit-text-stroke: var(--text-stroke-s);
     color:               black;
-    font-family:         var(--font-heading);
     font-size:           2.4rem;
     letter-spacing:      0.02em;
 

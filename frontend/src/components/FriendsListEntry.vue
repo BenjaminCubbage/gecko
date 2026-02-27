@@ -88,7 +88,6 @@ const isMe         = computed(() => props.entryType == 'me');
     padding: 12px 24px 12px 18px;
 
     color:          black;
-    font-family:    var(--font-heading);
     font-size:      2.2rem;
     letter-spacing: 0.04em;
     line-height:    1;

@@ -2,7 +2,7 @@
     <div class="account-widget-username-badge">
         <div
             class="username"
-            :class="{ 'username--pressed': isEditing || isLoading }">
+            :data-pressed="isEditing || isLoading">
             <div class="username-editor" v-show="isEditing || isLoading">
                 <div class="at-symbol">@</div>
 
@@ -17,11 +17,11 @@
                     @keydown.enter="submit" />
 
                 <button
-                    class="submit-button"
-                    :class="{ 'submit-button--pressed': isLoading }"
                     ref="submitButtonEl"
-                    @blur="blur"
+                    class="submit-button"
+                    :data-pressed="isLoading"
                     :disabled="!isValidInput || isLoading"
+                    @blur="blur"
                     @click="submit">
                     <LoadingSpinner
                         v-if="isSpinning"
@@ -165,8 +165,6 @@ async function submit() {
     display:     flex;
     position:    relative;
 
-    color:          var(--text);
-    font-family:    var(--font-heading);
     font-size:      2.6rem;
     letter-spacing: 0.06em;
     line-height:    1;
@@ -205,8 +203,7 @@ async function submit() {
         var(--username-aura),
         0 calc(var(--shadow-dist-s) - var(--username-offset))
         0 black,
-        inset  3px  3px 0 var(--col-gray-0),
-        inset -3px -3px 0 var(--col-gray-4);
+        var(--shadow-inst-gray);
 
     border-radius: var(--radius-s);
     border:        var(--border-s);
@@ -224,12 +221,12 @@ async function submit() {
     filter: var(--filter-hl-1);
 }
 
-.username--pressed {
+.username[data-pressed=true] {
     width: clamp(0px, 300px, 100%);
 }
 
-.username--pressed,
-.username--pressed:has(> .username-button:hover) {
+.username[data-pressed=true],
+.username[data-pressed=true]:has(> .username-button:hover) {
     --username-aura:   var(--shadow-aura);
     --username-offset: var(--shadow-dist-s);
 }
@@ -313,11 +310,8 @@ async function submit() {
             var(--col-green-2) 50%,
             var(--col-green-4) 50%);
 
-    box-shadow:
-        inset  3px  3px 0 var(--col-green-0),
-        inset -3px -3px 0 var(--col-green-5);
-
     border-left: var(--border-s);
+    box-shadow:  var(--shadow-inst-green);
 }
 
 @supports (corner-shape: notch) {
@@ -333,7 +327,7 @@ async function submit() {
 }
 
 .submit-button:active,
-.submit-button--pressed {
+.submit-button[data-pressed=true] {
     background: linear-gradient(
         var(--col-green-2) 56%,
         var(--col-green-4) 56%);
@@ -365,7 +359,7 @@ async function submit() {
         drop-shadow(-2px 0 var(--col-green-1));
 }
 
-.submit-button--pressed .submit-icon {
+.submit-button[data-pressed=true] .submit-icon {
     transform: translateY(2px);
 }
 </style>

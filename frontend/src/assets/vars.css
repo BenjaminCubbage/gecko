@@ -1,5 +1,5 @@
 :root {
-    --font-heading: 'Jersey 15';
+    --font-main: 'Jersey 15';
 
     --col-gray-0: white;
     --col-gray-1: #eff3f7;
@@ -23,6 +23,15 @@
     --col-blue-2: #486ac1;
     --col-blue-3: #2c4a95;
     --col-blue-4: #152e6d;
+
+    --col-lt-blue-0: #f2f5ff;
+    --col-lt-blue-1: #ccd7f7;
+    --col-lt-blue-2: #b3c2ee;
+    --col-lt-blue-3: #b1c2f4;
+    --col-lt-blue-4: #97adf0;
+    --col-lt-blue-5: #7f98e4;
+    --col-lt-blue-6: #6984d3;
+    --col-lt-blue-7: #5a76c9;
 
     --col-red-0: #ffeeee;
     --col-red-1: #ffdfdf;
@@ -75,14 +84,39 @@
     --shadow-dist-s: 2.5px;
     --shadow-dist-l: 5px;
 
+    --shadow-inst-dist: 3px;
+    --shadow-aura-dist: 2px;
+
     --shadow-s: 0 var(--shadow-dist-s) 0 black;
     --shadow-l: 0 var(--shadow-dist-l) 0 black;
 
-    --shadow-dist-aura: 2px;
-    --shadow-aura: 0 0 0 var(--shadow-dist-aura) white;
+    --shadow-inst-green:
+        inset      var(--shadow-inst-dist)            var(--shadow-inst-dist)       0 var(--col-green-0),
+        inset calc(var(--shadow-inst-dist) * -1) calc(var(--shadow-inst-dist) * -1) 0 var(--col-green-5);
 
-    --text-stroke-s: 3.5px white;
-    --text-stroke-l: 4px white;
+    --shadow-inst-lt-gray:
+        inset      var(--shadow-inst-dist)            var(--shadow-inst-dist)       0 var(--col-lt-gray-0),
+        inset calc(var(--shadow-inst-dist) * -1) calc(var(--shadow-inst-dist) * -1) 0 var(--col-lt-gray-6);
+
+    --shadow-inst-gray:
+        inset      var(--shadow-inst-dist)            var(--shadow-inst-dist)       0 var(--col-gray-0),
+        inset calc(var(--shadow-inst-dist) * -1) calc(var(--shadow-inst-dist) * -1) 0 var(--col-gray-4);
+
+    --shadow-inst-orange:
+        inset      var(--shadow-inst-dist)            var(--shadow-inst-dist)       0 var(--col-orange-0),
+        inset calc(var(--shadow-inst-dist) * -1) calc(var(--shadow-inst-dist) * -1) 0 var(--col-orange-6);
+
+    --shadow-inst-red:
+        inset      var(--shadow-inst-dist)            var(--shadow-inst-dist)       0 var(--col-red-0),
+        inset calc(var(--shadow-inst-dist) * -1) calc(var(--shadow-inst-dist) * -1) 0 var(--col-red-6);
+
+    --shadow-aura: 0 0 0 var(--shadow-aura-dist) white;
+
+    --text-stroke-width-s:  3.5px;
+    --text-stroke-width-l:  4.5px;
+
+    --text-stroke-s:  var(--text-stroke-width-s)  white;
+    --text-stroke-l:  var(--text-stroke-width-l)  white;
 
     --edge-margin-x: 8px;
 

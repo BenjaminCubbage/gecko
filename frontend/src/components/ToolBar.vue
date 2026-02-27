@@ -1,10 +1,18 @@
 <template>
-    <div class="tool-bar">
-        <ToolBarChipPenSize v-model="penSize" />
-        <ToolBarChipEraser v-model="isErasing" />
-        <ToolBarChipClear @click="emit('clear')" />
-        <ToolBarChipSend :disabled="sendDisabled" @click="emit('send')" />
-    </div>
+    <menu class="tool-bar">
+        <li>
+            <ToolBarChipPenSize v-model="penSize" />
+        </li>
+        <li>
+            <ToolBarChipEraser v-model="isErasing" />
+        </li>
+        <li>
+            <ToolBarChipClear @click="emit('clear')" />
+        </li>
+        <li>
+            <ToolBarChipSend :disabled="sendDisabled" @click="emit('send')" />
+        </li>
+    </menu>
 </template>
 
 <script setup>
@@ -39,10 +47,11 @@ const isErasing = defineModel('isErasing', {
 <style scoped>
 .tool-bar {
     display:         flex;
-    gap:             12px;
     isolation:       isolate;
     justify-content: center;
     padding:         4px 0;
+
+    list-style-type: none;
 
     background:
         linear-gradient(
@@ -50,14 +59,16 @@ const isErasing = defineModel('isErasing', {
             var(--col-gray-3) 50%);
 
     box-shadow:
-         3px  3px var(--col-green-6),
-        -3px -3px var(--col-green-0),
-        inset  3px  3px 0 var(--col-gray-0),
-        inset -3px -3px 0 var(--col-gray-4);
+             var(--shadow-inst-dist)            var(--shadow-inst-dist)       var(--col-green-6),
+        calc(var(--shadow-inst-dist) * -1) calc(var(--shadow-inst-dist) * -1) var(--col-green-0),
+        var(--shadow-inst-gray);
 
     border-radius: var(--radius-s);
     border:        var(--border-s);
 
     corner-shape: notch;
+}
+
+.tool-bar::marker {
 }
 </style>

@@ -87,8 +87,7 @@ function canvasChanged() {
 
     box-shadow:
         var(--shadow-l),
-        inset  3px  3px 0 var(--col-green-0),
-        inset -3px -3px 0 var(--col-green-6);
+        var(--shadow-inst-green);
 
     border-radius: var(--radius-s);
     border:        var(--border-s);

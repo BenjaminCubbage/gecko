@@ -5,9 +5,8 @@
         :class="{
             'drawer-button--button':          variant === 'button',
             'drawer-button--toggle':          variant === 'toggle',
-            'drawer-button--toggle--toggled': isToggled,
-
         }"
+        :data-toggled="isToggled"
         @click="click"
         v-bind="colorAttrs"
         :aria-expanded="isToggled">
@@ -103,8 +102,8 @@ defineExpose({
         var(--inner-button-aura),
         0 calc(var(--shadow-dist-s) - var(--inner-button-offset))
         0 black,
-        inset  3px  3px var(--col-bevel-lt),
-        inset -3px -3px var(--col-bevel-dk);
+        inset      var(--shadow-inst-dist)            var(--shadow-inst-dist)       var(--col-bevel-lt),
+        inset calc(var(--shadow-inst-dist) * -1) calc(var(--shadow-inst-dist) * -1) var(--col-bevel-dk);
 
     border-radius: var(--radius-s);
     border:        var(--border-s);
@@ -127,8 +126,8 @@ defineExpose({
     --inner-button-offset: var(--shadow-dist-s);
 }
 
-.drawer-button--toggle--toggled,
-.drawer-button--toggle--toggled:hover {
+.drawer-button--toggle[data-toggled=true],
+.drawer-button--toggle[data-toggled=true]:hover {
     --inner-button-aura:   var(--shadow-aura);
     --inner-button-offset: var(--shadow-dist-s);
 

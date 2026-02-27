@@ -1,7 +1,7 @@
 <template>
     <a
         class="login-button txtr-diag txtr-diag--lt-gray"
-        :class="{ 'login-button--pressed': isPressed }"
+        :data-pressed="isPressed"
         href="/auth/login"
         draggable="false"
         @click="press">
@@ -58,8 +58,7 @@ onUnmounted(() => {
         var(--login-button-aura),
         0 calc(var(--shadow-dist-s) - var(--login-button-offset))
         0 black,
-        inset  3px  3px var(--col-lt-gray-0),
-        inset -3px -3px var(--col-lt-gray-6);
+        var(--shadow-inst-lt-gray);
 
     border:        var(--border-s);
     border-radius: var(--radius-s);
@@ -79,8 +78,8 @@ onUnmounted(() => {
 }
 
 .login-button:active,
-.login-button--pressed,
-.login-button--pressed:hover {
+.login-button[data-pressed=true],
+.login-button[data-pressed=true]:hover {
     --login-button-aura:   var(--shadow-aura);
     --login-button-offset: var(--shadow-dist-s);
 }
@@ -115,9 +114,6 @@ onUnmounted(() => {
 
     -webkit-text-stroke: var(--text-stroke-s);
     color:               black;
-    font-family:         var(--font-heading);
-    font-family:         var(--font-heading);
-    font-size:           2.2rem;
     font-size:           2.4rem;
     letter-spacing:      0.04em;
 }

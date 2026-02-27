@@ -1,23 +1,29 @@
 <template>
-    <div class="recipient-select-carousel">
+    <fieldset class="recipient-select-carousel">
+        <StrokedText is="legend" class="legend" stroke-color="black" stroke-thickness="4px">
+            <slot name="label"></slot>
+        </StrokedText>
+
         <button
             class="arrow arrow--left txtr-diag txtr-diag--green"
-            @click="carouselPrev"
-            :disabled="!hasPrev">
+            :aria-label="ariaLabelPrev"
+            :disabled="!hasPrev"
+            @click="carouselPrev">
             &lt;
         </button>
 
-        <div class="selection">
-            <slot name="label" :option="selectedOption" />
-        </div>
+        <output class="selection" aria-status="true">
+            <slot name="option" :option="selectedOption" />
+        </output>
 
         <button
             class="arrow arrow--right txtr-diag txtr-diag--green"
-            @click="carouselNext"
-            :disabled="!hasNext">
+            :aria-label="ariaLabelNext"
+            :disabled="!hasNext"
+            @click="carouselNext">
             &gt;
         </button>
-    </div>
+    </fieldset>
 </template>
 
 <script setup>
@@ -26,9 +32,21 @@ import {
     watch
 } from 'vue';
 
+import StrokedText from './StrokedText.vue';
+
 const props = defineProps({
     options: {
         type:     Array,
+        required: true
+    },
+
+    ariaLabelPrev: {
+        type:     String,
+        required: true
+    },
+
+    ariaLabelNext: {
+        type:     String,
         required: true
     }
 });
@@ -72,31 +90,66 @@ function tryMoveSelection(by) {
 
 <style scoped>
 .recipient-select-carousel {
-    contain: strict;
-    contain-intrinsic-height: 34px;
+    contain:   strict;
+    isolation: isolate;
 
     grid-template:
-        "arrow-left selection      arrow-right" auto /
+        ".          legend         ."           14px
+        "arrow-left selection      arrow-right" 1fr /
          auto       minmax(0, 1fr) auto;
 
-    align-items:    stretch;
-    justify-items:  stretch;
     display:        grid;
+    gap:            1px 0;
+    height:         52px;
     padding-bottom: var(--shadow-dist-s);
     user-select:    none;
-    z-index:        0;
+
+    .legend    { place-self: end left; z-index: 1; }
+    .selection { place-self: stretch;  z-index: 0; }
+    .arrow     { place-self: stretch;  z-index: 0; }
+}
+
+.legend {
+    grid-area: legend;
+
+    overflow:      hidden;
+    padding:       0 var(--text-stroke-width-s);
+    text-overflow: ellipsis;
+    user-select:   none;
+    white-space:   nowrap;
+
+    color:          transparent;
+    font-size:      2rem;
+    letter-spacing: 0.04em;
+    line-height:    1;
+
+    background:
+        linear-gradient(to right,
+            var(--col-green-0) 2.5px,
+            transparent        2.5px),
+        linear-gradient(
+            var(--col-green-0) 6px,
+            var(--col-green-2) 6px calc(100% - 6px),
+            var(--col-green-4) calc(100% - 6px));
+
+    background-clip: text;
+
+    filter:
+        drop-shadow(0 var(--shadow-dist-s) black);
+
+    translate: 4px 6px;
 }
 
 .selection {
-    display:       grid;
-    grid-area:     selection;
-    place-items:   center;
-    z-index:       1;
+    grid-area: selection;
 
-    -webkit-text-stroke: var(--text-stroke-l);
+    display:     grid;
+    place-items: center;
+
+    -webkit-text-stroke: var(--text-stroke-s);
     color:               black;
-    font-family:         var(--font-heading);
-    overflow:            hidden;
+    overflow-x:          auto;
+    scrollbar-width:     none;
     text-overflow:       ellipsis;
     user-select:         none;
     white-space:         nowrap;
@@ -110,8 +163,7 @@ function tryMoveSelection(by) {
     box-shadow:
         0 var(--shadow-dist-s)
         0 black,
-        inset  3px  3px 0 var(--col-gray-0),
-        inset -3px -3px 0 var(--col-gray-4);
+        var(--shadow-inst-gray);
 
     border: var(--border-s);
 
@@ -119,23 +171,20 @@ function tryMoveSelection(by) {
 }
 
 .arrow {
-    width:   1.9em;
-    z-index: 1;
+    width: 1.9em;
 
     text-shadow:
         -1.5px -1.5px 0 var(--col-green-1),
          1.5px  1.5px 0 var(--col-green-5);
 
     color:       black;
-    font-family: var(--font-heading);
     font-size:   2.3rem;
     line-height: 0;
 
     box-shadow:
         0 calc(var(--shadow-dist-s) - var(--arrow-offset))
         0 black,
-        inset  3px  3px 0 var(--col-green-0),
-        inset -3px -3px 0 var(--col-green-5);
+        var(--shadow-inst-green);
 
     border-radius: var(--radius-s);
     border:        2.5px solid black;

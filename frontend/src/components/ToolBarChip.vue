@@ -97,7 +97,7 @@ function click() {
     height:      40px;
     place-items: center;
     user-select: none;
-    padding:     0 calc(var(--chip-padding-x) + var(--shadow-dist-aura));
+    padding:     0 calc(3px + var(--chip-padding-x) + var(--shadow-aura-dist));
 
     &.tool-bar-chip--icon-left  { grid-template: [pad icon label] auto / [pad-start icon]  auto [label] auto [pad-end]; }
     &.tool-bar-chip--icon-right { grid-template: [pad icon label] auto / [pad-start label] auto [icon]  auto [pad-end]; }
@@ -162,8 +162,7 @@ function click() {
     display:     flex;
     align-items: center;
 
-    -webkit-text-stroke:  var(--text-stroke-l);
-    font-family:          var(--font-heading);
+    -webkit-text-stroke:  var(--text-stroke-s);
     font-size:            3rem;
     font-variant-numeric: tabular-nums;
     letter-spacing:       0.02em;
@@ -195,8 +194,8 @@ function click() {
         var(--select-aura),
         0 calc(var(--shadow-dist-s) - var(--press-depth))
         0 black,
-        inset  3px  3px var(--chip-col-bevel-lt),
-        inset -3px -3px var(--chip-col-bevel-dk);
+        inset      var(--shadow-inst-dist)            var(--shadow-inst-dist)       var(--chip-col-bevel-lt),
+        inset calc(var(--shadow-inst-dist) * -1) calc(var(--shadow-inst-dist) * -1) var(--chip-col-bevel-dk);
 
     border:        var(--border-s);
     border-radius: var(--radius-s);

@@ -28,10 +28,9 @@ defineProps({
     height:         68px;
     place-content:  center;
 
-    color:          black;
-    font-family:    var(--font-heading);
-    font-size:      2.1rem;
-    text-align:     center;
+    color:      black;
+    font-size:  2.1rem;
+    text-align: center;
 }
 
 .info {

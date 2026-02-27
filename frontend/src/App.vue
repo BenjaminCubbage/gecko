@@ -6,7 +6,7 @@
         <NavigationBar class="navigation" v-model:selectedTab="selectedTab" />
 
         <main class="main-content">
-            <div
+            <section
                 v-show="selectedTab == 'canvas'"
                 role="tabpanel"
                 :id="tabPanelIds.canvas">
@@ -14,14 +14,14 @@
                     :reveal="revealRecipientSelect"
                     @selectionChanged="selectedDeviceChanged" />
                 <PicEditor :recipientDevice="selectedDevice" />
-            </div>
+            </section>
 
-            <div
+            <section
                 v-show="selectedTab == 'friends'"
                 role="tabpanel"
                 :id="tabPanelIds.friends">
                 <FriendsList />
-            </div>
+            </section>
         </main>
     </div>
 </template>
@@ -61,7 +61,7 @@ const session = new SessionStore();
 const friends = new FriendsStore();
 const devices = new DevicesStore();
 
-const { isFontLoaded: isMainFontLoaded } = useWaitOnFont('--font-heading');
+const { isFontLoaded: isMainFontLoaded } = useWaitOnFont('--font-main');
 const { isFontLoaded: isIconFontLoaded } = useWaitOnFont('iconfont');
 
 const {
@@ -127,11 +127,8 @@ function selectedDeviceChanged(value) {
 }
 
 .main-content {
-    display:       flex;
-    flex-flow:     column nowrap;
-    gap:           4px;
+    display:       grid;
     place-content: center;
-    place-items:   center;
 }
 
 @starting-style {

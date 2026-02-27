@@ -6,7 +6,7 @@ import { getComputedCSSVar } from '@/core/dom/cssVar.js';
     is loaded yet.
 
     The fontFamily argument can be a css variable on :root, like
-    --font-heading.
+    --font-main.
 */
 export function useWaitOnFont(fontFamily, fontModifiers = '1rem') {
     const isFontLoaded = ref(false);

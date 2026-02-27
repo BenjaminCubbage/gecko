@@ -34,7 +34,7 @@ const selectedTab = defineModel('selectedTab');
 
 @media (760px <= width < 1200px) {
     .navbar {
-        grid-template-columns: [account] 1fr [links] auto;
+        grid-template-rows: [account] 96px 8px [links] 48px 8px;
     }
 }
 

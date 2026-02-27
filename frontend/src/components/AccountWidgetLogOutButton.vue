@@ -26,7 +26,6 @@ function logOut() {
 
     -webkit-text-stroke: var(--text-stroke-s);
     color:               black;
-    font-family:         var(--font-heading);
     font-size:           2.2rem;
     letter-spacing:      0.04em;
 
@@ -41,8 +40,7 @@ function logOut() {
         calc(var(--shadow-dist-s) - var(--logout-offset))
         calc(var(--shadow-dist-s) - var(--logout-offset))
         0 black,
-        inset  3px  3px 0 var(--col-red-0),
-        inset -3px -3px 0 var(--col-red-6);
+        var(--shadow-inst-red);
 
     border: var(--border-s);
     border-radius: var(--radius-s);

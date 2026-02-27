@@ -3,7 +3,7 @@
         class="tool-bar-chip-clear"
         color="dk-red"
         :disable-style="isPressed ? 'none' : 'grayed'"
-        :class="{ 'tool-bar-chip-clear--pressed': isPressed }"
+        :data-pressed="isPressed"
         :disabled="isPressed"
         :aria-pressed="isPressed"
         @click="click">
@@ -24,6 +24,7 @@ import {
     onUnmounted,
     ref
 } from 'vue';
+
 import ToolBarChip from './ToolBarChip.vue';
 
 const emit = defineEmits([
@@ -51,7 +52,7 @@ onUnmounted(() => {
 .tool-bar-chip-clear {
     transition: z-index 0ms 1000ms allow-discrete;
 
-    &.tool-bar-chip-clear--pressed {
+    &.tool-bar-chip-clear[data-pressed=true] {
         pointer-events: none;
         cursor:         default;
 
@@ -62,7 +63,7 @@ onUnmounted(() => {
     }
 
     &:hover,
-    &.tool-bar-chip-clear--pressed {
+    &.tool-bar-chip-clear[data-pressed=true] {
         z-index: 10;
 
         .letter,

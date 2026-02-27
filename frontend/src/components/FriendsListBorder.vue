@@ -24,7 +24,6 @@ defineProps({
 .friends-list-border {
     align-self:  start;
     display:     grid;
-    font-family: var(--font-heading);
 }
 
 .tab {
@@ -81,8 +80,7 @@ defineProps({
 
     box-shadow:
         var(--shadow-l),
-        inset  3px  3px 0 var(--col-orange-0),
-        inset -3px -3px 0 var(--col-orange-6);
+        var(--shadow-inst-orange);
 
     border-radius: var(--radius-s);
     border:        var(--border-s);
