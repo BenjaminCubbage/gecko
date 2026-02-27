@@ -14,7 +14,7 @@
 
             <FriendsListEntry
                 v-else
-                :entryType="searchResult.type"
+                :entry-type="searchResult.type"
                 :user="searchResult.user"
                 @sendRequest="sendRequest"
                 @acceptRequest="acceptRequest"
@@ -61,7 +61,7 @@
             <FriendsListEntry
                 v-for="friend in friends.activeFriends"
                 :user="friend.user"
-                :acceptedOn="friend.acceptedOn"
+                :accepted-on="friend.acceptedOn"
                 entryType="active"
                 @delete="deleteFriendOrRequest"
                 :key="friend.user.userID">

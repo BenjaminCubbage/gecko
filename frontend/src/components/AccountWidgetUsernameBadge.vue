@@ -2,17 +2,19 @@
     <div class="account-widget-username-badge">
         <div
             class="username"
-            :data-pressed="isEditing || isLoading">
-            <div class="username-editor" v-show="isEditing || isLoading">
+            :data-pressed="isInputActive">
+            <div class="username-editor" v-show="isInputActive">
                 <div class="at-symbol">@</div>
 
                 <BaseInput
                     v-model="inputText"
                     ref="inputEl"
                     class="username-text-input"
-                    :disabled="isLoading"
+                    :temporarily-disabled="isLoading"
                     :maxlength="maxUsernameLength"
-                    :charPredicate="isValidUsernameChar"
+                    :char-predicate="isValidUsernameChar"
+                    name="username"
+                    autocomplete="off"
                     @blur="blur"
                     @keydown.enter="submit" />
 
@@ -21,18 +23,20 @@
                     class="submit-button"
                     :data-pressed="isLoading"
                     :disabled="!isValidInput || isLoading"
+                    aria-label="Submit username"
                     @blur="blur"
                     @click="submit">
                     <LoadingSpinner
-                        v-if="isSpinning"
-                        style="position: relative; top: 2px" />
+                        v-if="isSpinning" />
                     <i v-else class="submit-icon hn hn-check-solid"></i>
                 </button>
             </div>
 
             <button
-                v-show="!isEditing && !isLoading"
+                v-show="!isInputActive"
+                ref="editButtonEl"
                 class="username-button"
+                :aria-label="`Edit username ${session.activeUser.value.username}`"
                 :disabled="isLoading"
                 @click="edit">
                 <div class="username-text">
@@ -46,9 +50,12 @@
             </button>
         </div>
 
-        <div v-show="isEditing || isLoading" class="error-message">
+        <span
+            role="status"
+            v-show="isInputActive"
+            class="error-message">
             {{ errorMessage }}
-        </div>
+        </span>
     </div>
 </template>
 
@@ -89,6 +96,7 @@ const errorMessage = ref('');
 
 const submitButtonEl = useTemplateRef('submitButtonEl');
 const inputEl        = useTemplateRef('inputEl');
+const editButtonEl   = useTemplateRef('editButtonEl');
 
 useAutoHighlightTextInput(() => inputEl.value?.innerElement);
 
@@ -99,9 +107,14 @@ const {
     stoppedLoading
 } = useLoadingState();
 
+const isInputActive = computed(() => {
+    return isEditing.value || isLoading.value;
+});
+
 const isValidInput = computed(() => {
-    return inputText.value !== session.activeUser.value.username
-        && isValidUsername(inputText.value);
+    return (
+        inputText.value !== session.activeUser.value.username &&
+        isValidUsername(inputText.value));
 });
 
 watch(() => session.activeUser.value.username, newValue => {
@@ -111,7 +124,7 @@ watch(() => session.activeUser.value.username, newValue => {
     immediate: true
 });
 
-watch(() => isEditing.value || isLoading.value, newValue => {
+watch(isInputActive, newValue => {
     if (!newValue)
         inputText.value = session.activeUser.value.username;
 });
@@ -124,12 +137,17 @@ watch(isEditing, newValue => {
 async function edit() {
     isEditing.value = true;
     await nextTick();
-    inputEl.value.innerElement.focus();
+    inputEl.value?.innerElement?.focus();
 }
 
-function blur(e) {
-    if (e.relatedTarget != submitButtonEl.value &&
-        e.relatedTarget != inputEl?.value.innerElement) {
+async function blur(e) {
+    if (e.target === inputEl.value?.innerElement &&
+        !isInputActive.value) {
+        editButtonEl.value?.focus();
+    }
+
+    if (e.relatedTarget !== submitButtonEl.value &&
+        e.relatedTarget !== inputEl.value?.innerElement) {
         isEditing.value = false;
     }
 }
@@ -139,6 +157,8 @@ async function submit() {
         return;
 
     isEditing.value = false;
+    inputEl.value?.innerElement?.focus();
+
     startedLoading();
 
     try {
@@ -152,8 +172,7 @@ async function submit() {
             errorMessage.value = `Error updating username`;
 
         edit();
-    }
-    finally {
+    } finally {
         stoppedLoading();
     }
 }
@@ -302,7 +321,7 @@ async function submit() {
     place-items:     center;
     width:           55px;
 
-    color: var(--col-green-9);
+    color:     var(--col-green-9);
     font-size: 2.4rem;
 
     background:
@@ -312,6 +331,12 @@ async function submit() {
 
     border-left: var(--border-s);
     box-shadow:  var(--shadow-inst-green);
+
+    border-radius:
+        0
+        calc(var(--radius-s) - 1px)
+        calc(var(--radius-s) - 1px)
+        0;
 }
 
 @supports (corner-shape: notch) {
@@ -348,6 +373,8 @@ async function submit() {
 }
 
 .submit-icon {
+    font-size: 1.8rem;
+
     left:      1px;
     top:       1px;
     position:  relative;

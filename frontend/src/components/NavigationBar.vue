@@ -1,5 +1,5 @@
 <template>
-    <header class="navbar">
+    <header class="navigation-bar">
         <AccountWidget class="account" />
         <NavigationBarTabs v-model="selectedTab" class="links" />
     </header>
@@ -13,7 +13,7 @@ const selectedTab = defineModel('selectedTab');
 </script>
 
 <style scoped>
-.navbar {
+.navigation-bar {
     align-items:           center;
     display:               grid;
     grid-template-columns: [links account] 1fr;
@@ -33,13 +33,13 @@ const selectedTab = defineModel('selectedTab');
 }
 
 @media (760px <= width < 1200px) {
-    .navbar {
+    .navigation-bar {
         grid-template-rows: [account] 96px 8px [links] 48px 8px;
     }
 }
 
 @media (width < 760px) {
-    .navbar {
+    .navigation-bar {
         grid-template-rows: [account] 64px 32px [links] 48px 8px;
         padding: 0 var(--edge-margin-x);
     }

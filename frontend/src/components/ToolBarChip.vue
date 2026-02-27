@@ -1,6 +1,9 @@
 <template>
     <button
         :aria-disabled="disabled"
+        :aria-pressed="pressed"
+        :data-pressed="pressed || temporarilyPressed"
+        :aria-describedby="statusElId"
         :class="`
             tool-bar-chip
             tool-bar-chip--icon-${iconPlacement}
@@ -16,10 +19,16 @@
         </div>
 
         <div :class="`pad pad--${color} txtr-diag txtr-diag--${color}`"></div>
+
+        <span :id="statusElId" class="util-sr-only">
+            {{ srStatus }}
+        </span>
     </button>
 </template>
 
 <script setup>
+import { useId } from 'vue';
+
 const props = defineProps({
     color: {
         type:     String,
@@ -71,6 +80,36 @@ const props = defineProps({
     disabled: {
         type:    Boolean,
         default: false
+    },
+
+    /*
+        For short animations. Like disabled, but doesn't announce it 
+        for SR.
+    */
+    temporarilyDisabled: {
+        type:    Boolean,
+        default: false
+    },
+
+    pressed: {
+        type: Boolean,
+        default: null
+    },
+
+    /*
+        See temporarilyDisabled.
+    */
+    temporarilyPressed: {
+        type: Boolean,
+        default: false
+    },
+
+    /*
+        Screenreader status.
+    */
+    srStatus: {
+        type:    String,
+        default: null
     }
 });
 
@@ -78,8 +117,10 @@ const emit = defineEmits([
     'click'
 ]);
 
+const statusElId = useId();
+
 function click() {
-    if (!props.disabled)
+    if (!props.disabled && !props.temporarilyDisabled)
         emit('click');
 }
 </script>
@@ -112,8 +153,8 @@ function click() {
         --press-depth: var(--shadow-dist-s);
     }
 
-    &:active[aria-pressed],
-    &[aria-pressed=true] {
+    &:active[data-pressed],
+    &[data-pressed=true] {
         --press-depth: var(--shadow-dist-s);
 
         &.tool-bar-chip--hl-style-shadow {

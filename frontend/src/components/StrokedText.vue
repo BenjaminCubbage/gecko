@@ -1,16 +1,16 @@
 <template>
-    <component :is="is" class="stroked">
+    <component :is="is" class="stroked-text">
         <span
-            class="stroked-back"
-            :class="{ 'ellipses': ellipses }"
+            class="text text--back"
+            :class="{ 'text--ellipses': ellipses }"
             :style="{ '-webkit-text-stroke': `${strokeThickness} ${strokeColor}` }"
             aria-hidden="true">
             <slot />
         </span>
 
         <span
-            class="stroked-front"
-            :class="{ 'ellipses': ellipses }">
+            class="text text--front"
+            :class="{ 'text--ellipses': ellipses }">
             <slot />
         </span>
     </component>
@@ -29,25 +29,25 @@ defineProps({
 </script>
 
 <style scoped>
-.stroked {
+.stroked-text {
     isolation: isolate;
     display:   grid;
 
-    & > .stroked-front,
-    & > .stroked-back {
-        grid-area:   1 / 1;
-        white-space: nowrap;
+    & > .text {
+        grid-area: 1 / 1;
     }
-
-    & > .stroked-front { z-index: 1; }
-    & > .stroked-back  { z-index: 0; }
 }
 
-.stroked-front {
+.text--back {
+    pointer-events: none;
+    user-select:    none;
+}
+
+.text--front {
     background: inherit;
 }
 
-.ellipses {
+.text--ellipses {
     overflow:      hidden;
     text-overflow: ellipsis;
 }
@@ -58,14 +58,9 @@ defineProps({
     text stroke and so it looks bad in Moz.
 */
 @supports(-moz-appearance: none) {
-    .stroked-front,
-    .stroked-back {
+    .text-front,
+    .text-back {
         text-overflow: "";
     }
-}
-
-.stroked-back {
-    pointer-events: none;
-    user-select:     none;
 }
 </style>

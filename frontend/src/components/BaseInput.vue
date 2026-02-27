@@ -2,9 +2,12 @@
     <input
         ref="innerElement"
         class="base-input"
-        :value="inputText"
-        spellcheck="false"
         type="text"
+        :value="inputText"
+        :disabled="disabled"
+        :data-disabled="disabled || temporarilyDisabled"
+        spellcheck="false"
+        @keydown="keyDown"
         @input="input" />
 </template>
 
@@ -18,6 +21,19 @@ const props = defineProps({
         validator(fn) {
             return !fn || fn instanceof Function;
         }
+    },
+
+    disabled: {
+        type:    Boolean,
+        default: false
+    },
+
+    /*
+        Disable input but don't lose focus or announce to SR.
+    */
+    temporarilyDisabled: {
+        type:    Boolean,
+        default: false
     }
 });
 
@@ -27,6 +43,13 @@ const inputText = defineModel({
 });
 
 const innerElement = useTemplateRef('innerElement');
+
+function keyDown(e) {
+    if (props.disabled || props.temporarilyDisabled) {
+        if (e.key !== 'Tab')
+            e.preventDefault();
+    }
+}
 
 async function input() {
     /*
@@ -74,5 +97,9 @@ defineExpose({
     outline:    none;
 
     paint-order: stroke;
+
+    &[data-disabled=true] {
+        caret-color: transparent;
+    }
 }
 </style>

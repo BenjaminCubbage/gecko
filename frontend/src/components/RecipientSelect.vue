@@ -13,15 +13,11 @@
                     v-model="selectedUser"
                     class="users"
                     variant="users"
-                    aria-label-prev="Previous Friend"
-                    aria-label-next="Next Friend"
-                    :options="userOptions">
+                    aria-label="Recipient"
+                    :options="userOptions"
+                    :get-option-label="getUserLabel">
                     <template #label>
                         RECIPIENT
-                    </template>
-
-                    <template #option="{ option }">
-                        {{ option.username }}
                     </template>
                 </RecipientSelectCarousel>
 
@@ -29,15 +25,11 @@
                     v-model="selectedDevice"
                     class="devices"
                     variant="devices"
-                    aria-label-prev="Previous Device"
-                    aria-label-next="Next Device"
-                    :options="deviceOptions">
+                    aria-label="Recipient Device"
+                    :options="deviceOptions"
+                    :get-option-label="getDeviceLabel">
                     <template #label>
                         DEVICE
-                    </template>
-
-                    <template #option="{ option }">
-                        {{ option?.name }}
                     </template>
                 </RecipientSelectCarousel>
 
@@ -88,7 +80,7 @@ const devices = inject(Keys.DevicesStore);
 const selectedUser   = ref();
 const selectedDevice = ref();
 
-const emit = defineEmits([ 'selectionChanged' ]);
+const emit = defineEmits([ 'selection-changed' ]);
 
 const userOptions = computed(() => {
     return devices.state.value === 'ready'
@@ -113,7 +105,10 @@ watch(deviceOptions, () => {
         selectedDevice.value = deviceOptions.value[0];
 });
 
-watch(selectedDevice, newValue => emit('selectionChanged', newValue));
+watch(selectedDevice, newValue => emit('selection-changed', newValue));
+
+function getUserLabel  (user)   { return user?.username; }
+function getDeviceLabel(device) { return device?.name; }
 </script>
 
 <style scoped>
@@ -160,16 +155,15 @@ watch(selectedDevice, newValue => emit('selectionChanged', newValue));
 
     translate: -12px 14px;
 
-    & > .st0{ fill:var(--col-green-3); }
-    & > .st1{ fill:var(--col-green-0); }
-    & > .st2{ fill:var(--col-green-5); }
-}
+    & > .st0{ fill: var(--col-green-1); }
+    & > .st1{ fill: var(--col-green-0); }
+    & > .st2{ fill: var(--col-green-3); }
 
-.arrow-path {
-    stroke-width: 6px;
-    stroke:       black;
-    fill:         var(--col-green-3);
-    paint-order:  stroke;
+    & > .st0{ 
+        paint-order:  stroke;
+        stroke-width: 6px;
+        stroke:       black;
+    }
 }
 
 .slide-up-enter-active,

@@ -3,13 +3,13 @@
         class="tool-bar-chip-send"
         color="dk-green"
         icon-placement="right"
-        :disable-style="isLaunching ? 'none' : 'grayed'"
-        :aria-pressed="isLaunching"
-        :disabled="disabled || isLaunching"
-        :aria-describedby="statusElId"
         aria-label="Send"
-        @click="click"
-        v-bind="attrs">
+        :disable-style="isLaunching ? 'none' : 'grayed'"
+        :disabled="disabled"
+        :sr-status="srStatus"
+        :temporarily-disabled="isLaunching"
+        :temporarily-pressed="isLaunching"
+        @click="click">
         <template #label>
             <span class="letter letter--1">S</span>
             <span class="letter letter--2">E</span>
@@ -52,24 +52,16 @@
             </div>
         </template>
     </ToolBarChip>
-
-    <span :id="statusElId" role="status" class="util-sr-only">
-        {{ isLaunching ? 'sending image' : null }}
-    </span>
 </template>
 
 <script setup>
 import {
+    computed,
     onUnmounted,
-    ref,
-    useAttrs,
-    useId
+    ref
 } from 'vue';
 
 import ToolBarChip from './ToolBarChip.vue';
-
-const attrs      = useAttrs();
-const statusElId = useId();
 
 defineProps({
     disabled: { type: Boolean, default: false }
@@ -81,6 +73,12 @@ const emit = defineEmits([
 
 const isLaunching = ref(false);
 let launchTimeout = null;
+
+const srStatus = computed(() => {
+    return isLaunching.value
+        ? 'Sending image'
+        : null;
+});
 
 function click() {
     isLaunching.value = true;
@@ -109,12 +107,12 @@ onUnmounted(() => {
         Animations
     */
 
-    &[aria-pressed=true] .letter {
+    &[data-pressed=true] .letter {
         animation-name:     letter-jump;
         animation-duration: 400ms;
     }
 
-    &[aria-pressed=true] {
+    &[data-pressed=true] {
         .rocket-svgs {
             animation:
                 rocket-bob    200ms  steps(2)                    infinite 0ms,
@@ -134,7 +132,7 @@ onUnmounted(() => {
     */
 
     &:hover,
-    &[aria-pressed=true] {
+    &[data-pressed=true] {
         .rocket-svgs,
         .rocket-svg-rocket,
         .rocket-svg-flame,

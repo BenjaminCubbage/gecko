@@ -1,38 +1,54 @@
 <template>
-    <fieldset class="recipient-select-carousel">
-        <StrokedText is="legend" class="legend" stroke-color="black" stroke-thickness="4px">
+    <div
+        ref="spinButtonEl"
+        role="spinbutton"
+        class="recipient-select-carousel"
+        tabindex="0"
+        aria-valuemin="0"
+        :aria-valuemax="options.length"
+        :aria-valuetext="selectedOptionLabel">
+        <StrokedText 
+            is="label" 
+            class="label" 
+            stroke-color="black" 
+            stroke-thickness="4px">
             <slot name="label"></slot>
         </StrokedText>
 
         <button
+            tabindex="-1"
             class="arrow arrow--left txtr-diag txtr-diag--green"
-            :aria-label="ariaLabelPrev"
             :disabled="!hasPrev"
+            aria-label="Previous"
             @click="carouselPrev">
             &lt;
         </button>
 
-        <output class="selection" aria-status="true">
-            <slot name="option" :option="selectedOption" />
-        </output>
+        <span class="selection">
+            {{ selectedOptionLabel }}
+        </span>
 
         <button
+            tabindex="-1"
             class="arrow arrow--right txtr-diag txtr-diag--green"
-            :aria-label="ariaLabelNext"
             :disabled="!hasNext"
+            aria-label="Next"
             @click="carouselNext">
             &gt;
         </button>
-    </fieldset>
+    </div>
 </template>
 
 <script setup>
 import {
     computed,
-    watch
+    useId,
+    watch,
+    useTemplateRef
 } from 'vue';
 
-import StrokedText from './StrokedText.vue';
+import StrokedText            from './StrokedText.vue';
+import { useArrowNavigation } from '@/composables/useArrowNavigation';
 
 const props = defineProps({
     options: {
@@ -40,13 +56,8 @@ const props = defineProps({
         required: true
     },
 
-    ariaLabelPrev: {
-        type:     String,
-        required: true
-    },
-
-    ariaLabelNext: {
-        type:     String,
+    getOptionLabel: {
+        type:     Function,
         required: true
     }
 });
@@ -57,9 +68,27 @@ const selectedOption = defineModel({
     }
 });
 
+const {
+    onArrowLeft,
+    onArrowRight,
+    onArrowUp,
+    onArrowDown
+} = useArrowNavigation(useTemplateRef('spinButtonEl'));
+
+onArrowLeft (carouselPrev);
+onArrowRight(carouselNext);
+onArrowUp   (carouselNext);
+onArrowDown (carouselPrev);
+
+const selectionElId = useId();
+
 const curSelectionIndex = computed(() => props.options?.indexOf(selectedOption.value) ?? -1);
 const hasNext           = computed(() => curSelectionIndex.value + 1 < props.options.length);
 const hasPrev           = computed(() => curSelectionIndex.value > 0);
+
+const selectedOptionLabel = computed(() => {
+    return props.getOptionLabel(selectedOption.value);
+});
 
 watch(selectedOption, () => {
     if (!props.options.includes(selectedOption.value))
@@ -94,7 +123,7 @@ function tryMoveSelection(by) {
     isolation: isolate;
 
     grid-template:
-        ".          legend         ."           14px
+        ".          label         ."           14px
         "arrow-left selection      arrow-right" 1fr /
          auto       minmax(0, 1fr) auto;
 
@@ -104,13 +133,13 @@ function tryMoveSelection(by) {
     padding-bottom: var(--shadow-dist-s);
     user-select:    none;
 
-    .legend    { place-self: end left; z-index: 1; }
+    .label    { place-self: end left; z-index: 1; }
     .selection { place-self: stretch;  z-index: 0; }
     .arrow     { place-self: stretch;  z-index: 0; }
 }
 
-.legend {
-    grid-area: legend;
+.label {
+    grid-area: label;
 
     overflow:      hidden;
     padding:       0 var(--text-stroke-width-s);
@@ -120,7 +149,7 @@ function tryMoveSelection(by) {
 
     color:          transparent;
     font-size:      2rem;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.05em;
     line-height:    1;
 
     background:
@@ -129,8 +158,8 @@ function tryMoveSelection(by) {
             transparent        2.5px),
         linear-gradient(
             var(--col-green-0) 6px,
-            var(--col-green-2) 6px calc(100% - 6px),
-            var(--col-green-4) calc(100% - 6px));
+            var(--col-green-1) 6px calc(100% - 6px),
+            var(--col-green-3) calc(100% - 6px));
 
     background-clip: text;
 

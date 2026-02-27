@@ -51,8 +51,6 @@ const isErasing = defineModel('isErasing', {
     justify-content: center;
     padding:         4px 0;
 
-    list-style-type: none;
-
     background:
         linear-gradient(
             var(--col-gray-2) 50%,
@@ -67,8 +65,5 @@ const isErasing = defineModel('isErasing', {
     border:        var(--border-s);
 
     corner-shape: notch;
-}
-
-.tool-bar::marker {
 }
 </style>

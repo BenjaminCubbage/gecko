@@ -3,13 +3,12 @@
         ref="innerElement"
         class="drawer-button"
         :class="{
-            'drawer-button--button':          variant === 'button',
-            'drawer-button--toggle':          variant === 'toggle',
+            'drawer-button--button': variant === 'button',
+            'drawer-button--toggle': variant === 'toggle',
         }"
         :data-toggled="isToggled"
         @click="click"
-        v-bind="colorAttrs"
-        :aria-expanded="isToggled">
+        v-bind="colorAttrs">
         <slot></slot>
     </button>
 </template>

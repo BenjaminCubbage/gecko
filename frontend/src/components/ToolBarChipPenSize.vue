@@ -2,7 +2,7 @@
     <ToolBarChip
         class="tool-bar-chip-pen-size"
         color="orange"
-        :aria-label="`Pen Size: ${penSize}`"
+        :aria-label="`${penSize} Brush`"
         @click="cycle"
         v-bind="attrs">
         <template #icon>

@@ -1,27 +1,22 @@
 <template>
     <div
-        v-show="showContent"
+        v-show="fontsLoaded"
         ref="layoutEl"
         class="layout">
-        <NavigationBar class="navigation" v-model:selectedTab="selectedTab" />
+        <NavigationBar class="header" v-model:selected-tab="selectedTab" />
 
         <main class="main-content">
-            <section
+            <CanvasSection
                 v-show="selectedTab == 'canvas'"
                 role="tabpanel"
-                :id="tabPanelIds.canvas">
-                <RecipientSelect
-                    :reveal="revealRecipientSelect"
-                    @selectionChanged="selectedDeviceChanged" />
-                <PicEditor :recipientDevice="selectedDevice" />
-            </section>
+                :id="tabPanelIds.canvas"
+                :revealRecipientSelect="revealRecipientSelect" />
 
-            <section
+            <FriendsSection
                 v-show="selectedTab == 'friends'"
                 role="tabpanel"
                 :id="tabPanelIds.friends">
-                <FriendsList />
-            </section>
+            </FriendsSection>
         </main>
     </div>
 </template>
@@ -36,10 +31,9 @@ import {
     watch
 } from 'vue';
 
-import FriendsList     from './components/FriendsList.vue';
-import NavigationBar   from './components/NavigationBar.vue';
-import PicEditor       from './components/PicEditor.vue';
-import RecipientSelect from './components/RecipientSelect.vue';
+import NavigationBar  from './components/NavigationBar.vue';
+import CanvasSection  from './sections/CanvasSection.vue';
+import FriendsSection from './sections/FriendsSection.vue';
 
 import { DevicesStore } from './stores/devicesStore.js';
 import { FriendsStore } from './stores/friendsStore.js';
@@ -55,8 +49,7 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry, {
     friends: useId()
 });
 
-const selectedTab    = ref('canvas');
-const selectedDevice = ref(null);
+const selectedTab = ref('canvas');
 const session = new SessionStore();
 const friends = new FriendsStore();
 const devices = new DevicesStore();
@@ -71,7 +64,7 @@ const {
     once:         true
 });
 
-const showContent = computed(() => {
+const fontsLoaded = computed(() => {
     return isMainFontLoaded.value && isIconFontLoaded.value;
 });
 
@@ -80,7 +73,7 @@ const showContent = computed(() => {
     and content fade-in at same time.
 */
 const revealRecipientSelect = computed(() => {
-    return showContent.value && isFadeInCompleted.value;
+    return fontsLoaded.value && isFadeInCompleted.value;
 });
 
 provide(Keys.DevicesStore, devices);
@@ -105,10 +98,6 @@ watch(friends.activeFriends, newFriends => {
     if (devices.state.value === 'ready')
         devices.requestUpsertUserIDs(newFriends.map(f => f.user.userID));
 });
-
-function selectedDeviceChanged(value) {
-    selectedDevice.value = value;
-}
 </script>
 
 <style scoped>
@@ -122,7 +111,7 @@ function selectedDeviceChanged(value) {
 
     transition:  opacity 300ms ease 200ms;
 
-    & > .navigation   { contain: layout; z-index: 1; }
+    & > .header       { contain: layout; z-index: 1; }
     & > .main-content { contain: layout; z-index: 0; }
 }
 

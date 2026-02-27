@@ -1,9 +1,12 @@
 <template>
     <DrawerButton
         ref="drawerButtonEl"
-        v-model:is-toggled="isToggled"
         color="green"
-        variant="toggle">
+        variant="toggle"
+        v-model:is-toggled="isToggled"
+        :aria-expanded="isToggled"
+        aria-haspopup="menu"
+        aria-label="Profile Options">
         <i class="icon hn hn-user-solid"></i>
     </DrawerButton>
 </template>

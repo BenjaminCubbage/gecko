@@ -12,15 +12,19 @@
             <DrawerButtonProfile
                 ref="toggleEl"
                 v-model="isExpanded"
-                class="drawer-toggle" />
+                class="drawer-toggle"
+                :aria-controls="dropdownMenuId" />
 
-            <div
+            <menu
                 ref="drawerEl"
                 class="drawer"
-                :class="{ 'drawer--expanded': isExpanded }"
+                :id="dropdownMenuId"
+                :data-expanded="isExpanded"
                 :inert="!isExpanded">
-                <DrawerButtonLogOut @click="logOut" />
-            </div>
+                <li>
+                    <DrawerButtonLogOut @click="logOut" />
+                </li>
+            </menu>
 
             <AccountWidgetUsernameBadge class="username-badge" />
         </div>
@@ -31,6 +35,7 @@
 import {
     inject,
     ref,
+    useId,
     useTemplateRef,
     watch
 } from 'vue';
@@ -55,6 +60,8 @@ const drawerEl = useTemplateRef('drawerEl');
 const {
     isFocusWithin: isFocusWithinDrawer
 } = useIsFocusWithin([ () => toggleEl.value?.innerElement, drawerEl ]);
+
+const dropdownMenuId = useId();
 
 watch(isFocusWithinDrawer, newValue => {
     if (!newValue)
@@ -83,7 +90,7 @@ async function logOut() {
 }
 
 .drawer-toggle:is(:hover, :active, :focus) + .drawer,
-.drawer--expanded {
+.drawer[data-expanded=true] {
     will-change: transform;
 }
 
@@ -106,7 +113,7 @@ async function logOut() {
     transition:       scale 200ms ease;
 }
 
-.drawer--expanded {
+.drawer[data-expanded=true] {
     pointer-events: all;
     scale:          1;
 }

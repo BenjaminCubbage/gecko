@@ -2,10 +2,11 @@
     <ToolBarChip
         class="tool-bar-chip-clear"
         color="dk-red"
+        aria-label="Clear"
         :disable-style="isPressed ? 'none' : 'grayed'"
-        :data-pressed="isPressed"
-        :disabled="isPressed"
-        :aria-pressed="isPressed"
+        :sr-status="srStatus"
+        :temporarily-disabled="isPressed"
+        :temporarily-pressed="isPressed"
         @click="click">
         <template #label>
             <div class="icon-text">
@@ -21,6 +22,7 @@
 
 <script setup>
 import {
+    computed,
     onUnmounted,
     ref
 } from 'vue';
@@ -33,6 +35,12 @@ const emit = defineEmits([
 
 const isPressed    = ref(false);
 let unpressTimeout = null;
+
+const srStatus = computed(() => {
+    return isPressed.value
+        ? 'Clearing Canvas'
+        : null;
+});
 
 function click() {
     emit('click');

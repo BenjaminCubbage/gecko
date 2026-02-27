@@ -2,7 +2,7 @@
     <ToolBarChip
         class="tool-bar-chip-eraser"
         color="magenta"
-        :aria-pressed="isToggled"
+        :pressed="isToggled"
         aria-label="Eraser"
         highlight-style="filter"
         @click="isToggled = !isToggled">
