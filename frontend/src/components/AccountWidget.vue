@@ -82,9 +82,9 @@ async function logOut() {
         let errorMessage;
 
         if (e instanceof HttpError)
-            errorMessage = `Couldn't log out: Error ${e.status}`;
+            errorMessage = `Couldn't log out: Status ${e.status}`;
         else if (e instanceof NetworkError)
-            errorMessage = `Couldn't log out: Couldn't connect`;
+            errorMessage = `Couldn't log out: Connection failed`;
         else
             errorMessage = `Unexpected error while logging out`;
 

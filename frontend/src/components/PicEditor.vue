@@ -59,8 +59,11 @@ function send() {
             .onSuccess(() => {
                 snackBar.pushMessage('Image sent successfully');
             })
-            .onHttpError(() => {
-                snackBar.pushMessage('Failed to send image');
+            .onHttpError((_, status) => {
+                snackBar.pushMessage(`Couldn't upload image: Status ${status}`);
+            })
+            .onNetworkError(() => {
+                snackBar.pushMessage(`Couldn't upload image: Connection failed`);
             });
     }
 }

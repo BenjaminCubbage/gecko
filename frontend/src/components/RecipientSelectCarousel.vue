@@ -42,7 +42,6 @@
 <script setup>
 import {
     computed,
-    useId,
     watch,
     useTemplateRef
 } from 'vue';
@@ -79,8 +78,6 @@ onArrowLeft (carouselPrev);
 onArrowRight(carouselNext);
 onArrowUp   (carouselNext);
 onArrowDown (carouselPrev);
-
-const selectionElId = useId();
 
 const curSelectionIndex = computed(() => props.options?.indexOf(selectedOption.value) ?? -1);
 const hasNext           = computed(() => curSelectionIndex.value + 1 < props.options.length);
@@ -129,7 +126,7 @@ function tryMoveSelection(by) {
 
     display:        grid;
     gap:            1px 0;
-    height:         52px;
+    height:         53px;
     padding-bottom: var(--shadow-dist-s);
     user-select:    none;
 

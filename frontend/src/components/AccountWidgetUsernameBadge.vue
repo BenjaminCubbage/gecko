@@ -16,7 +16,8 @@
                     name="username"
                     autocomplete="off"
                     @blur="blur"
-                    @keydown.enter="submit" />
+                    @keydown.enter="submit"
+                    @keydown.esc="cancel" />
 
                 <button
                     ref="submitButtonEl"
@@ -141,6 +142,10 @@ async function edit() {
     inputEl.value?.innerElement?.focus();
 }
 
+function cancel() {
+    isEditing.value = false;
+}
+
 async function blur(e) {
     if (e.target === inputEl.value?.innerElement &&
         !isInputActive.value) {
@@ -149,7 +154,7 @@ async function blur(e) {
 
     if (e.relatedTarget !== submitButtonEl.value &&
         e.relatedTarget !== inputEl.value?.innerElement) {
-        isEditing.value = false;
+        cancel();
     }
 }
 
