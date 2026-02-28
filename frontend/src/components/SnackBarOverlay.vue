@@ -144,7 +144,7 @@ onUnmounted(() => {
     --easing-pop:     cubic-bezier(.58, -0.22, .69, 1.22);
 
     &[data-dismissed-manually=true] {
-        --transition-dur: 0ms;
+        --transition-dur: 200ms;
     }
 
     &.expand-enter-active,
