@@ -185,4 +185,4 @@ export class SessionStore {
 
         return false;
     }
-};
+}

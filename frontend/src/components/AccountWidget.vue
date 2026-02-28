@@ -2,17 +2,17 @@
     <transition name="login-appear" mode="out-in">
         <div
             v-if="session.state.value === 'loggedout' || session.state.value === 'error'"
-            class="login-button-wrapper">
+            class="account-widget account-widget--login">
             <AccountWidgetLogInButton />
         </div>
 
         <div
             v-else-if="session.state.value === 'ready'"
-            class="widget-layout">
+            class="account-widget account-widget--profile">
             <DrawerButtonProfile
                 ref="toggleEl"
                 v-model="isExpanded"
-                class="drawer-toggle"
+                class="drawer-button-profile"
                 :aria-controls="dropdownMenuId" />
 
             <menu
@@ -26,7 +26,7 @@
                 </li>
             </menu>
 
-            <AccountWidgetUsernameBadge class="username-badge" />
+            <AccountWidgetUsernameBadge class="account-widget-username-badge" />
         </div>
     </transition>
 </template>
@@ -50,7 +50,13 @@ import { useIsFocusWithin } from '@/composables/useIsFocusWithin';
 
 import { Keys } from '@/core/di/keys.js';
 
-const session = inject(Keys.SessionStore);
+import {
+    HttpError,
+    NetworkError
+} from '@/core/errors/errors.js';
+
+const session  = inject(Keys.SessionStore);
+const snackBar = inject(Keys.SnackBarStore)
 
 const isExpanded = ref(false);
 
@@ -69,37 +75,53 @@ watch(isFocusWithinDrawer, newValue => {
 });
 
 async function logOut() {
-    session.requestLogOut();
+    try {
+        session.requestLogOut();
+        snackBar.pushMessage('You are now logged out');
+    } catch (e) {
+        let errorMessage;
+
+        if (e instanceof HttpError)
+            errorMessage = `Couldn't log out: Error ${e.status}`;
+        else if (e instanceof NetworkError)
+            errorMessage = `Couldn't log out: Couldn't connect`;
+        else
+            errorMessage = `Unexpected error while logging out`;
+
+        snackBar.pushMessage(errorMessage);
+    }
 }
 </script>
 
 <style scoped>
-.widget-layout {
-    display:     grid;
-    flex-flow:   row nowrap;
-    gap:         8px 7px;
+.account-widget {
+    &.account-widget--profile {
+        display:     grid;
+        flex-flow:   row nowrap;
+        gap:         8px 7px;
 
-    grid-template:
-        "profile username"       auto
-        "drawer  ."              auto /
-         auto    minmax(0, 1fr);
+        grid-template:
+            "profile username"       auto
+            "drawer  ."              auto /
+            auto    minmax(0, 1fr);
+    }
+
+    &.account-widget--login {
+        display: grid;
+    }
 }
 
-.drawer-toggle {
+.drawer-button-profile {
     grid-area: profile;
 }
 
-.drawer-toggle:is(:hover, :active, :focus) + .drawer,
+.drawer-button-profile:is(:hover, :active, :focus) + .drawer,
 .drawer[data-expanded=true] {
     will-change: transform;
 }
 
-.username-badge {
+.account-widget-username-badge {
     grid-area: username;
-}
-
-.login-button-wrapper {
-    display: grid;
 }
 
 .drawer {
@@ -145,9 +167,5 @@ async function logOut() {
     transition:
         scale   100ms ease,
         opacity 100ms ease;
-}
-
-.drawer-open-enter-from,
-.drawer-open-leave-to {
 }
 </style>

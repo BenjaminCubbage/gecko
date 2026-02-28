@@ -35,12 +35,14 @@ const props = defineProps({
     }
 });
 
+const session  = inject(Keys.SessionStore);
+const snackBar = inject(Keys.SnackBarStore);
+
 const picEditorCanvas = useTemplateRef('picEditorCanvas');
 
 const penSize   = ref('medium');
 const isErasing = ref(false);
 
-const session = inject(Keys.SessionStore);
 let idempotencyKey = crypto.randomUUID();
 
 function send() {
@@ -53,7 +55,13 @@ function send() {
             session.xsrfCookie,
             idempotencyKey,
             props.recipientDevice.deviceID,
-            picEditorCanvas.value.readGIBBlob());
+            picEditorCanvas.value.readGIBBlob())
+            .onSuccess(() => {
+                snackBar.pushMessage('Image sent successfully');
+            })
+            .onHttpError(() => {
+                snackBar.pushMessage('Failed to send image');
+            });
     }
 }
 

@@ -3,7 +3,7 @@
         v-show="fontsLoaded"
         ref="layoutEl"
         class="layout">
-        <NavigationBar class="header" v-model:selected-tab="selectedTab" />
+        <NavigationBar class="navigation-bar" v-model:selected-tab="selectedTab" />
 
         <main class="main-content">
             <CanvasSection
@@ -19,6 +19,8 @@
             </FriendsSection>
         </main>
     </div>
+
+    <SnackBarOverlay />
 </template>
 
 <script setup>
@@ -31,18 +33,30 @@ import {
     watch
 } from 'vue';
 
-import NavigationBar  from './components/NavigationBar.vue';
-import CanvasSection  from './sections/CanvasSection.vue';
-import FriendsSection from './sections/FriendsSection.vue';
+import CanvasSection   from './sections/CanvasSection.vue';
+import FriendsSection  from './sections/FriendsSection.vue';
+import NavigationBar   from './components/NavigationBar.vue';
+import SnackBarOverlay from './components/SnackBarOverlay.vue';
 
-import { DevicesStore } from './stores/devicesStore.js';
-import { FriendsStore } from './stores/friendsStore.js';
-import { SessionStore } from './stores/sessionStore.js';
-import { Keys }         from './core/di/keys.js';
+import { DevicesStore }  from './stores/devicesStore.js';
+import { FriendsStore }  from './stores/friendsStore.js';
+import { SessionStore }  from './stores/sessionStore.js';
+import { SnackBarStore } from './stores/snackBarStore.js';
+import { Keys }          from './core/di/keys.js';
 
 import { useElementIdRegistry } from './composables/useElementIdRegistry.js';
 import { useWaitOnFont }        from './composables/useWaitOnFont.js';
 import { useWaitOnTransition }  from './composables/useWaitOnTransition.js';
+
+const session  = new SessionStore();
+const friends  = new FriendsStore();
+const devices  = new DevicesStore();
+const snackBar = new SnackBarStore();
+
+provide(Keys.DevicesStore,  devices);
+provide(Keys.SessionStore,  session);
+provide(Keys.FriendsStore,  friends);
+provide(Keys.SnackBarStore, snackBar);
 
 const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry, {
     canvas:  useId(),
@@ -50,9 +64,6 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry, {
 });
 
 const selectedTab = ref('canvas');
-const session = new SessionStore();
-const friends = new FriendsStore();
-const devices = new DevicesStore();
 
 const { isFontLoaded: isMainFontLoaded } = useWaitOnFont('--font-main');
 const { isFontLoaded: isIconFontLoaded } = useWaitOnFont('iconfont');
@@ -75,10 +86,6 @@ const fontsLoaded = computed(() => {
 const revealRecipientSelect = computed(() => {
     return fontsLoaded.value && isFadeInCompleted.value;
 });
-
-provide(Keys.DevicesStore, devices);
-provide(Keys.SessionStore, session);
-provide(Keys.FriendsStore, friends);
 
 (async () => {
     await session.requestResync();
@@ -104,25 +111,28 @@ watch(friends.activeFriends, newFriends => {
 .layout {
     contain: content;
 
+    height:           100dvh;
+    overflow:         auto;
+    scrollbar-gutter: stable both-edges;
+
     align-content:  center;
     display:        flex;
     flex-flow:      column nowrap;
     padding-bottom: calc(var(--shadow-dist-l) * 2);
 
-    transition:  opacity 300ms ease 200ms;
+    transition:
+        opacity 300ms 200ms;
 
-    & > .header       { contain: layout; z-index: 1; }
-    & > .main-content { contain: layout; z-index: 0; }
+    & > .navigation-bar { contain: layout; z-index: 1; }
+    & > .main-content   { contain: layout; z-index: 0; }
+        
+    @starting-style {
+        opacity: 0;
+    }
 }
 
 .main-content {
     display:       grid;
     place-content: center;
-}
-
-@starting-style {
-    .layout {
-        opacity: 0;
-    }
 }
 </style>

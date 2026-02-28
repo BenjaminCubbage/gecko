@@ -1,7 +1,7 @@
 <template>
     <header class="navigation-bar">
-        <AccountWidget class="account" />
-        <NavigationBarTabs v-model="selectedTab" class="links" />
+        <AccountWidget class="account-widget" />
+        <NavigationBarTabs v-model="selectedTab" class="navigation-bar-tabs" />
     </header>
 </template>
 
@@ -21,12 +21,12 @@ const selectedTab = defineModel('selectedTab');
     padding:               0 24px;
 }
 
-.account {
+.account-widget {
     align-self: center;
     grid-area:  account;
 }
 
-.links {
+.navigation-bar-tabs {
     align-self:   center;
     grid-area:    links;
     justify-self: center;
@@ -41,7 +41,7 @@ const selectedTab = defineModel('selectedTab');
 @media (width < 760px) {
     .navigation-bar {
         grid-template-rows: [account] 64px 32px [links] 48px 8px;
-        padding: 0 var(--edge-margin-x);
+        padding: 0 var(--vp-margin);
     }
 }
 </style>

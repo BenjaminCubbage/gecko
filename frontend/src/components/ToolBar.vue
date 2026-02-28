@@ -1,5 +1,7 @@
 <template>
-    <menu class="tool-bar">
+    <menu
+        class="tool-bar"
+        aria-label="Toolbar">
         <li>
             <ToolBarChipPenSize v-model="penSize" />
         </li>

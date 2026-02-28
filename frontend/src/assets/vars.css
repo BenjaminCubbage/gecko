@@ -81,14 +81,16 @@
     --radius-s: 3px;
     --radius-l: 6px;
 
-    --shadow-dist-s: 2.5px;
-    --shadow-dist-l: 5px;
+    --shadow-dist-xs: 2.0px;
+    --shadow-dist-s:  2.5px;
+    --shadow-dist-l:  5.0px;
 
     --shadow-inst-dist: 3px;
     --shadow-aura-dist: 2px;
 
-    --shadow-s: 0 var(--shadow-dist-s) 0 black;
-    --shadow-l: 0 var(--shadow-dist-l) 0 black;
+    --shadow-xs: 0 var(--shadow-dist-xs) 0 black;
+    --shadow-s:  0 var(--shadow-dist-s)  0 black;
+    --shadow-l:  0 var(--shadow-dist-l)  0 black;
 
     --shadow-inst-green:
         inset      var(--shadow-inst-dist)            var(--shadow-inst-dist)       0 var(--col-green-0),
@@ -110,6 +112,9 @@
         inset      var(--shadow-inst-dist)            var(--shadow-inst-dist)       0 var(--col-red-0),
         inset calc(var(--shadow-inst-dist) * -1) calc(var(--shadow-inst-dist) * -1) 0 var(--col-red-6);
 
+    --shadow-inst-dk-red: 
+        var(--shadow-inst-red);
+
     --shadow-aura: 0 0 0 var(--shadow-aura-dist) white;
 
     --text-stroke-width-s:  3.5px;
@@ -118,7 +123,7 @@
     --text-stroke-s:  var(--text-stroke-width-s)  white;
     --text-stroke-l:  var(--text-stroke-width-l)  white;
 
-    --edge-margin-x: 8px;
+    --vp-margin: 8px;
 
     --filter-hl-1: brightness(1.06);
     --filter-hl-2: brightness(1.08);

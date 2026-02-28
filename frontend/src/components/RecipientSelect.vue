@@ -119,7 +119,7 @@ function getDeviceLabel(device) { return device?.name; }
     align-items:   center;
     justify-items: stretch;
     display:       grid;
-    margin:        0 var(--edge-margin-x);
+    margin:        0 var(--vp-margin);
 }
 
 .carousels {
@@ -155,8 +155,8 @@ function getDeviceLabel(device) { return device?.name; }
 
     translate: -12px 14px;
 
-    & > .st0{ fill: var(--col-green-1); }
-    & > .st1{ fill: var(--col-green-0); }
+    & > .st0{ fill: var(--col-green-2); }
+    & > .st1{ fill: var(--col-green-1); }
     & > .st2{ fill: var(--col-green-3); }
 
     & > .st0{ 

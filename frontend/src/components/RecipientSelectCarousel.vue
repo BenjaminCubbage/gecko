@@ -154,11 +154,11 @@ function tryMoveSelection(by) {
 
     background:
         linear-gradient(to right,
-            var(--col-green-0) 2.5px,
+            var(--col-green-1) 2.5px,
             transparent        2.5px),
         linear-gradient(
-            var(--col-green-0) 6px,
-            var(--col-green-1) 6px calc(100% - 6px),
+            var(--col-green-1) 6px,
+            var(--col-green-2) 6px calc(100% - 6px),
             var(--col-green-3) calc(100% - 6px));
 
     background-clip: text;

@@ -2,7 +2,7 @@
     <button
         :aria-disabled="disabled"
         :aria-pressed="pressed"
-        :data-pressed="pressed || temporarilyPressed"
+        :data-pressed="temporarilyPressed || (pressed ?? temporarilyPressed)"
         :aria-describedby="statusElId"
         :class="`
             tool-bar-chip
@@ -78,21 +78,21 @@ const props = defineProps({
     },
 
     disabled: {
-        type:    Boolean,
-        default: false
+        type:    null,
+        default: null
     },
 
     /*
         For short animations. Like disabled, but doesn't announce it 
-        for SR.
+        to SR.
     */
     temporarilyDisabled: {
-        type:    Boolean,
-        default: false
+        type:    null,
+        default: null
     },
 
     pressed: {
-        type: Boolean,
+        type:    null,
         default: null
     },
 
@@ -100,8 +100,8 @@ const props = defineProps({
         See temporarilyDisabled.
     */
     temporarilyPressed: {
-        type: Boolean,
-        default: false
+        type:    null,
+        default: null
     },
 
     /*
@@ -176,7 +176,6 @@ function click() {
     &[aria-disabled=true] {
         pointer-events: none;
 
-        &.tool-bar-chip--disable-style-grayed,
         &.tool-bar-chip--disable-style-grayed {
             opacity: 0.5;
             filter:  grayscale();
