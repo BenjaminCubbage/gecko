@@ -136,7 +136,7 @@ export class SessionStore {
         Redirects the user to the log in endpoint. Returns false if
         the user is already logged in.
     */
-    async requestLogIn() {
+    requestLogIn() {
         if (this.#activeUser.value != null)
             return false;
 

@@ -10,37 +10,37 @@
                 v-else-if="reveal && session.state.value === 'ready' && selectedDevice != null"
                 class="carousels"
                 key="carousels">
-                <RecipientSelectCarousel
+                <RecipientSelectSpinButton
                     v-model="selectedUser"
                     class="recipient-select-carousel--users"
-                    variant="users"
                     aria-label="Recipient"
                     :options="userOptions"
                     :get-option-label="getUserLabel">
                     <template #label>
                         RECIPIENT
                     </template>
-                </RecipientSelectCarousel>
+                </RecipientSelectSpinButton>
 
-                <RecipientSelectCarousel
+                <RecipientSelectSpinButton
                     v-model="selectedDevice"
                     class="recipient-select-carousel--devices"
-                    variant="devices"
-                    aria-label="Recipient Device"
+                    variant="with-status"
+                    aria-label="Recipient's Device"
                     :options="deviceOptions"
-                    :get-option-label="getDeviceLabel">
+                    :get-option-label="getDeviceLabel"
+                    :get-option-status-label="getDeviceStatusLabel">
                     <template #label>
                         DEVICE
                     </template>
-                </RecipientSelectCarousel>
+                </RecipientSelectSpinButton>
 
                 <svg class="arrow" viewBox="0 -10 39.4 49.5">
                     <path class="arrow-path st0" d="M30.9,15.8v-2.3h-2.3v-2.2h-2.3V9.1h-2.2c0,1.1,0,3.3,0,4.5c-3.6,0-7.6,0-11.2,0c0-2.8,0-6.2,0-8.9
                         c-2,0-4.8,0-6.7,0c0,4.3,0,9.1,0,13.4h2.3v2.3c5.1,0,10.6,0,15.7,0c0,1.1,0,3.3,0,4.5h2.3v-2.3h2.3v-2.3H31V18h2.3v-2.3L30.9,15.8
                         L30.9,15.8z"/>
                     <rect x="6.2" y="4.7" class="st1" width="2.3" height="13.4"/>
-                    <rect x="17.4" y="9.1" transform="matrix(3.762241e-11 -1 1 3.762241e-11 3.7783 33.2783)" class="st1" width="2.3" height="11.2"/>
-                    <rect x="9.5" y="3.6" transform="matrix(1.520923e-11 -1 1 1.520923e-11 4.879 16.484)" class="st1" width="2.3" height="4.5"/>
+                    <rect x="17.4" y="9.1" transform="matrix(0 -1 1 0 3.7783 33.2783)" class="st1" width="2.3" height="11.2"/>
+                    <rect x="9.5" y="3.6" transform="matrix(0 -1 1 0 4.879 16.484)" class="st1" width="2.3" height="4.5"/>
                     <rect x="24.1" y="9.1" class="st1" width="2.2" height="2.2"/>
                     <rect x="26.3" y="11.3" class="st1" width="2.3" height="2.2"/>
                     <rect x="28.6" y="13.5" class="st1" width="2.3" height="2.2"/>
@@ -63,7 +63,7 @@ import {
     watch
 } from 'vue';
 
-import RecipientSelectCarousel    from './RecipientSelectCarousel.vue';
+import RecipientSelectSpinButton    from './RecipientSelectSpinButton.vue';
 import RecipientSelectLogInPrompt from './RecipientSelectLogInPrompt.vue';
 import { Keys }                   from '@/core/di/keys.js';
 
@@ -110,6 +110,32 @@ watch(selectedDevice, newValue => emit('selectionChanged', newValue));
 
 function getUserLabel  (user)   { return user?.username; }
 function getDeviceLabel(device) { return device?.name; }
+
+function getDeviceStatusLabel(device) {
+    return {
+        'online': {
+            color:    'green',
+            text:     'online',
+            ariaText: 'currently online'
+        },
+        
+        'offline': {
+            color:    'red',
+            text:     'offline',
+            ariaText: 'currently offline'
+        },
+
+        'pending': {
+            color:    'blue',
+            text:     'pending',
+            ariaText: 'connection status pending'
+        }
+    }[device?.status] ?? {
+        color:    'blue',
+        text:     'loading',
+        ariaText: 'connection status loading'
+    };
+}
 </script>
 
 <style scoped>

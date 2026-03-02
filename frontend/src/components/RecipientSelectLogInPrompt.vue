@@ -4,7 +4,8 @@
             You must
             <TextContentInlineButton
                 class="log-in-button" 
-                aria-label="Log in"
+                aria-label="Log in to send images"
+                role="link"
                 @click="logIn">
                 log in
             </TextContentInlineButton>

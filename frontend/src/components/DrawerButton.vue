@@ -77,6 +77,15 @@ const colorAttrs = computed(() => {
                     '--col-bevel-dk': 'var(--col-red-5)'
                 }
             }
+
+        case 'lt-gray':
+            return {
+                class: 'txtr-diag txtr-diag--lt-gray',
+                style: {
+                    '--col-bevel-lt': 'var(--col-lt-gray-0)',
+                    '--col-bevel-dk': 'var(--col-lt-gray-6)'
+                }
+            }
     }
 
     return {};

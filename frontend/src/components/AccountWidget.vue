@@ -1,8 +1,10 @@
 <template>
     <div
         v-if="session.state.value === 'loggedout' || session.state.value === 'error'"
-        class="account-widget account-widget--login">
-        <AccountWidgetLogInButton />
+        class="account-widget account-widget--log-in">
+        <DrawerButtonLogIn 
+            v-model:is-logging-in="isLoggingIn"
+            @click="logIn" />
     </div>
 
     <div
@@ -38,11 +40,11 @@ import {
     watch
 } from 'vue';
 
-import AccountWidgetLogInButton   from './AccountWidgetLogInButton.vue';
 import AccountWidgetUsernameBadge from './AccountWidgetUsernameBadge.vue';
 
-import DrawerButtonProfile from './DrawerButtonProfile.vue';
+import DrawerButtonLogIn   from './DrawerButtonLogIn.vue';
 import DrawerButtonLogOut  from './DrawerButtonLogOut.vue';
+import DrawerButtonProfile from './DrawerButtonProfile.vue';
 
 import { useIsFocusWithin } from '@/composables/useIsFocusWithin';
 
@@ -58,6 +60,7 @@ const snackBar = inject(Keys.SnackBarStore)
 
 const isExpanded   = ref(false);
 const isLoggingOut = ref(false);
+const isLoggingIn  = ref(false);
 
 const toggleEl = useTemplateRef('toggleEl');
 const drawerEl = useTemplateRef('drawerEl');
@@ -90,6 +93,16 @@ async function logOut() {
         isLoggingOut.value = false;
     }
 }
+
+function logIn() {
+    if (!session.requestLogIn()) {
+        /* 
+            Shouldn't happen 
+        */
+        snackBar.pushMessage('Already logged in');
+        isLoggingIn.value = false;
+    }
+}
 </script>
 
 <style scoped>
@@ -105,7 +118,7 @@ async function logOut() {
             auto    minmax(0, 1fr);
     }
 
-    &.account-widget--login {
+    &.account-widget--log-in {
         display: grid;
     }
 }

@@ -1,6 +1,5 @@
 <template>
     <DrawerButton
-        ref="drawerButtonEl"
         color="red"
         variant="toggle"
         aria-label="Log out"
@@ -18,24 +17,11 @@
 </template>
 
 <script setup>
-    import {
-        computed,
-        useTemplateRef
-    } from 'vue';
-
     import DrawerButton from './DrawerButton.vue';
 
-    const isLoggingOut = defineModel('is-logging-out', {
+    const isLoggingOut = defineModel('isLoggingOut', {
         required: true,
         type:     Boolean
-    });
-    
-    const drawerButtonEl = useTemplateRef('drawerButtonEl');
-
-    defineExpose({
-        innerElement: computed(() => {
-            return drawerButtonEl.value?.innerElement;
-        })
     });
 </script>
 
