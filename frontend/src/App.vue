@@ -15,8 +15,7 @@
             <FriendsSection
                 v-show="selectedTab == 'friends'"
                 role="tabpanel"
-                :id="tabPanelIds.friends">
-            </FriendsSection>
+                :id="tabPanelIds.friends" />
         </main>
     </div>
 

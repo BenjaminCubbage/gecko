@@ -1,34 +1,32 @@
 <template>
-    <transition name="login-appear" mode="out-in">
-        <div
-            v-if="session.state.value === 'loggedout' || session.state.value === 'error'"
-            class="account-widget account-widget--login">
-            <AccountWidgetLogInButton />
-        </div>
+    <div
+        v-if="session.state.value === 'loggedout' || session.state.value === 'error'"
+        class="account-widget account-widget--login">
+        <AccountWidgetLogInButton />
+    </div>
 
-        <div
-            v-else-if="session.state.value === 'ready'"
-            class="account-widget account-widget--profile">
-            <DrawerButtonProfile
-                ref="toggleEl"
-                v-model="isExpanded"
-                class="drawer-button-profile"
-                :aria-controls="dropdownMenuId" />
+    <div
+        v-else-if="session.state.value === 'ready'"
+        class="account-widget account-widget--profile">
+        <DrawerButtonProfile
+            ref="toggleEl"
+            v-model="isExpanded"
+            class="drawer-button-profile"
+            :aria-controls="dropdownMenuId" />
 
-            <menu
-                ref="drawerEl"
-                class="drawer"
-                :id="dropdownMenuId"
-                :data-expanded="isExpanded"
-                :inert="!isExpanded">
-                <li>
-                    <DrawerButtonLogOut @click="logOut" />
-                </li>
-            </menu>
+        <menu
+            ref="drawerEl"
+            class="drawer"
+            :id="dropdownMenuId"
+            :data-expanded="isExpanded"
+            :inert="!isExpanded">
+            <li>
+                <DrawerButtonLogOut v-model:is-logging-out="isLoggingOut" @click="logOut" />
+            </li>
+        </menu>
 
-            <AccountWidgetUsernameBadge class="account-widget-username-badge" />
-        </div>
-    </transition>
+        <AccountWidgetUsernameBadge class="account-widget-username-badge" />
+    </div>
 </template>
 
 <script setup>
@@ -58,7 +56,8 @@ import {
 const session  = inject(Keys.SessionStore);
 const snackBar = inject(Keys.SnackBarStore)
 
-const isExpanded = ref(false);
+const isExpanded   = ref(false);
+const isLoggingOut = ref(false);
 
 const toggleEl = useTemplateRef('toggleEl');
 const drawerEl = useTemplateRef('drawerEl');
@@ -69,15 +68,14 @@ const {
 
 const dropdownMenuId = useId();
 
-watch(isFocusWithinDrawer, newValue => {
-    if (!newValue)
+watch([isFocusWithinDrawer, isLoggingOut], () => {
+    if (!isFocusWithinDrawer.value && !isLoggingOut.value)
         isExpanded.value = false;
 });
 
 async function logOut() {
     try {
-        session.requestLogOut();
-        snackBar.pushMessage('You are now logged out');
+        await session.requestLogOutAndReload();
     } catch (e) {
         let errorMessage;
 
@@ -89,6 +87,7 @@ async function logOut() {
             errorMessage = `Unexpected error while logging out`;
 
         snackBar.pushMessage(errorMessage);
+        isLoggingOut.value = false;
     }
 }
 </script>
@@ -142,23 +141,6 @@ async function logOut() {
 
 .drawer > * {
     position: absolute;
-}
-
-.login-appear-leave-active {
-    transition:
-        transform 200ms ease-in,
-        opacity   200ms ease-in;
-}
-
-.login-appear-enter-active {
-    transition:
-        transform 200ms ease-out,
-        opacity   200ms ease-out;
-}
-
-.login-appear-enter-from,
-.login-appear-leave-to {
-    transform: translateY(-140px);
 }
 
 .drawer-open-enter-active,

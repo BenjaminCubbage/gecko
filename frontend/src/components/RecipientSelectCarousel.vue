@@ -1,12 +1,7 @@
 <template>
     <div
         ref="spinButtonEl"
-        role="spinbutton"
-        class="recipient-select-carousel"
-        tabindex="0"
-        aria-valuemin="0"
-        :aria-valuemax="options.length"
-        :aria-valuetext="selectedOptionLabel">
+        class="recipient-select-carousel">
         <StrokedText 
             is="label" 
             class="label" 
@@ -24,7 +19,12 @@
             &lt;
         </button>
 
-        <span class="selection">
+        <span class="selection"
+            role="spinbutton"
+            tabindex="0"
+            aria-valuemin="0"
+            :aria-valuemax="options.length"
+            :aria-valuetext="selectedOptionLabel">
             {{ selectedOptionLabel }}
         </span>
 
@@ -130,7 +130,7 @@ function tryMoveSelection(by) {
     padding-bottom: var(--shadow-dist-s);
     user-select:    none;
 
-    .label    { place-self: end left; z-index: 1; }
+    .label     { place-self: end left; z-index: 1; }
     .selection { place-self: stretch;  z-index: 0; }
     .arrow     { place-self: stretch;  z-index: 0; }
 }
@@ -145,25 +145,23 @@ function tryMoveSelection(by) {
     white-space:   nowrap;
 
     color:          transparent;
-    font-size:      2rem;
+    font-size:      1.9rem;
     letter-spacing: 0.05em;
     line-height:    1;
 
     background:
-        linear-gradient(to right,
-            var(--col-green-1) 2.5px,
-            transparent        2.5px),
         linear-gradient(
-            var(--col-green-1) 6px,
-            var(--col-green-2) 6px calc(100% - 6px),
-            var(--col-green-3) calc(100% - 6px));
+            var(--col-green-0) 35%,
+            var(--col-green-1) 35% 50%,
+            var(--col-green-3) 50% 65%,
+            var(--col-green-4) 65%);
 
     background-clip: text;
 
     filter:
-        drop-shadow(0 var(--shadow-dist-s) black);
+        drop-shadow(0 var(--shadow-dist-xs) black);
 
-    translate: 4px 6px;
+    translate: 4px 7px;
 }
 
 .selection {

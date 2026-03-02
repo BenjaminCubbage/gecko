@@ -7,6 +7,7 @@
             'drawer-button--toggle': variant === 'toggle',
         }"
         :data-toggled="isToggled"
+        :data-temporarily-disabled="temporarilyDisabled"
         @click="click"
         v-bind="colorAttrs">
         <slot></slot>
@@ -40,6 +41,11 @@ const props = defineProps({
                 'red'
             ].includes(value);
         }
+    },
+
+    temporarilyDisabled: {
+        type:    Boolean,
+        default: false
     }
 });
 
@@ -47,6 +53,10 @@ const isToggled = defineModel('is-toggled', {
     type:     Boolean,
     required: false
 });
+
+const emit = defineEmits([
+    'click'
+]);
 
 const colorAttrs = computed(() => {
     switch (props.color) {
@@ -73,8 +83,13 @@ const colorAttrs = computed(() => {
 });
 
 function click() {
+    if (props.temporarilyDisabled)
+        return;
+
     if (props.variant === 'toggle')
         isToggled.value = !isToggled.value;
+
+    emit('click');
 }
 
 const innerElement = useTemplateRef('innerElement');
@@ -130,6 +145,10 @@ defineExpose({
     --inner-button-aura:   var(--shadow-aura);
     --inner-button-offset: var(--shadow-dist-s);
 
+    filter: none;
+}
+
+.drawer-button[temporarily-disabled=true] {
     filter: none;
 }
 

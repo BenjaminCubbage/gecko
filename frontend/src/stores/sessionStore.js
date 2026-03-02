@@ -108,22 +108,21 @@ export class SessionStore {
     }
 
     /*
-        Returns false if the user was already logged out.
+        Logs out and refreshes the page if successful.
     */
-    async requestLogOut() {
+    async requestLogOutAndReload() {
         if (this.#activeUser.value == null)
-            return false;
+            window.location.reload();
 
         try {
-            this.#state.value      = 'loggedout'
-            this.#activeUser.value = null;
-
             await new Promise((resolve, reject) => {
                 Dispatch.Post_LogOut(this.xsrfCookie)
                     .onSuccess(() => resolve())
                     .onHttpError((body, status) => reject(new HttpError(status, body)))
                     .onNetworkError(() => reject(new NetworkError()));
             });
+
+            window.location.reload();
         } catch (e) {
             /*
                 If we're unauthorized we're already logged out
@@ -131,7 +130,17 @@ export class SessionStore {
             if (e.status !== 401)
                 throw e;
         }
+    }
 
+    /*
+        Redirects the user to the log in endpoint. Returns false if
+        the user is already logged in.
+    */
+    async requestLogIn() {
+        if (this.#activeUser.value != null)
+            return false;
+
+        window.location.replace('/auth/login');
         return true;
     }
 

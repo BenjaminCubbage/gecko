@@ -1,7 +1,8 @@
 <template>
     <div class="recipient-select">
         <transition name="slide-up" mode="out-in">
-            <RecipientSelectLogInButton
+            <RecipientSelectLogInPrompt
+                class="recipient-select-log-in-prompt"
                 v-if="reveal && session.state.value === 'loggedout'"
                 key="login" />
 
@@ -11,7 +12,7 @@
                 key="carousels">
                 <RecipientSelectCarousel
                     v-model="selectedUser"
-                    class="users"
+                    class="recipient-select-carousel--users"
                     variant="users"
                     aria-label="Recipient"
                     :options="userOptions"
@@ -23,7 +24,7 @@
 
                 <RecipientSelectCarousel
                     v-model="selectedDevice"
-                    class="devices"
+                    class="recipient-select-carousel--devices"
                     variant="devices"
                     aria-label="Recipient Device"
                     :options="deviceOptions"
@@ -63,7 +64,7 @@ import {
 } from 'vue';
 
 import RecipientSelectCarousel    from './RecipientSelectCarousel.vue';
-import RecipientSelectLogInButton from './RecipientSelectLogInButton.vue';
+import RecipientSelectLogInPrompt from './RecipientSelectLogInPrompt.vue';
 import { Keys }                   from '@/core/di/keys.js';
 
 const props = defineProps({
@@ -80,7 +81,7 @@ const devices = inject(Keys.DevicesStore);
 const selectedUser   = ref();
 const selectedDevice = ref();
 
-const emit = defineEmits([ 'selection-changed' ]);
+const emit = defineEmits([ 'selectionChanged' ]);
 
 const userOptions = computed(() => {
     return devices.state.value === 'ready'
@@ -105,7 +106,7 @@ watch(deviceOptions, () => {
         selectedDevice.value = deviceOptions.value[0];
 });
 
-watch(selectedDevice, newValue => emit('selection-changed', newValue));
+watch(selectedDevice, newValue => emit('selectionChanged', newValue));
 
 function getUserLabel  (user)   { return user?.username; }
 function getDeviceLabel(device) { return device?.name; }
@@ -113,13 +114,15 @@ function getDeviceLabel(device) { return device?.name; }
 
 <style scoped>
 .recipient-select {
-    contain:                  layout paint size;
-    contain-intrinsic-height: 140px;
+    contain: layout paint size;
 
     align-items:   center;
-    justify-items: stretch;
     display:       grid;
+    height:        140px;
     margin:        0 var(--vp-margin);
+
+    & > .carousels                      { place-self: stretch; }
+    & > .recipient-select-log-in-prompt { place-self: center; }
 }
 
 .carousels {
@@ -131,19 +134,9 @@ function getDeviceLabel(device) { return device?.name; }
     display: grid;
     margin:  0 4%;
 
-    .users   { place-self: end   stretch; }
-    .devices { place-self: start stretch; }
-    .arrow   { place-self: start end; }
-}
-
-.users {
-    grid-area: users;
-    font-size: 2.4rem;
-}
-
-.devices {
-    grid-area: devices;
-    font-size: 2.2rem;
+    .recipient-select-carousel--users   { grid-area: users;   place-self: end   stretch; font-size: 2.4rem; }
+    .recipient-select-carousel--devices { grid-area: devices; place-self: start stretch; font-size: 2.2rem; }
+    .arrow                              { place-self: start end; }
 }
 
 .arrow {
@@ -155,9 +148,9 @@ function getDeviceLabel(device) { return device?.name; }
 
     translate: -12px 14px;
 
-    & > .st0{ fill: var(--col-green-2); }
-    & > .st1{ fill: var(--col-green-1); }
-    & > .st2{ fill: var(--col-green-3); }
+    & > .st0{ fill: var(--col-green-3); }
+    & > .st1{ fill: var(--col-green-0); }
+    & > .st2{ fill: var(--col-green-4); }
 
     & > .st0{ 
         paint-order:  stroke;
@@ -174,6 +167,10 @@ function getDeviceLabel(device) { return device?.name; }
 
 .slide-up-enter-from,
 .slide-up-leave-to {
-    scale: 0
+    /* 
+        Setting scale to purely zero interferes with SR (tested
+        on NVDA)
+    */
+    scale: 0.01;
 }
 </style>
