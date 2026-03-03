@@ -10,7 +10,7 @@ import {
     HttpError,
     PartialCompletionError,
     ResourceLockedError
-} from '../core/errors/errors.js';
+} from '@/core/errors/errors.js';
 
 import { Device }             from '@//models/device.js';
 import { Dispatch }           from '@/core/dispatch/Dispatch.js';

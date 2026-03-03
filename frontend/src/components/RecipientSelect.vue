@@ -25,7 +25,7 @@
                     v-model="selectedDevice"
                     class="recipient-select-carousel--devices"
                     variant="with-status"
-                    aria-label="Recipient's Device"
+                    aria-label="Recipient's Device Suboption"
                     :options="deviceOptions"
                     :get-option-label="getDeviceLabel"
                     :get-option-status-label="getDeviceStatusLabel">
@@ -81,7 +81,7 @@ const devices = inject(Keys.DevicesStore);
 const selectedUser   = ref();
 const selectedDevice = ref();
 
-const emit = defineEmits([ 'selectionChanged' ]);
+const emit = defineEmits(['selectionChanged']);
 
 const userOptions = computed(() => {
     return devices.state.value === 'ready'
@@ -111,30 +111,34 @@ watch(selectedDevice, newValue => emit('selectionChanged', newValue));
 function getUserLabel  (user)   { return user?.username; }
 function getDeviceLabel(device) { return device?.name; }
 
-function getDeviceStatusLabel(device) {
-    return {
-        'online': {
-            color:    'green',
-            text:     'online',
-            ariaText: 'currently online'
-        },
-        
-        'offline': {
-            color:    'red',
-            text:     'offline',
-            ariaText: 'currently offline'
-        },
+const deviceStatusLabels = {
+    'online': {
+        color:    'green',
+        text:     'online',
+        ariaText: 'is currently online'
+    },
+    
+    'offline': {
+        color:    'red',
+        text:     'offline',
+        ariaText: 'is currently offline'
+    },
 
-        'pending': {
-            color:    'blue',
-            text:     'pending',
-            ariaText: 'connection status pending'
-        }
-    }[device?.status] ?? {
+    'pending': {
+        color:    'blue',
+        text:     'pending',
+        ariaText: 'pending connection status'
+    },
+
+    'loading': {
         color:    'blue',
         text:     'loading',
-        ariaText: 'connection status loading'
-    };
+        ariaText: 'loading connection status'
+    }
+};
+
+function getDeviceStatusLabel(device) {
+    return deviceStatusLabels[device?.status] ?? deviceStatusLabels['loading'];
 }
 </script>
 

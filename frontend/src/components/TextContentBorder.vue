@@ -8,6 +8,8 @@
 
 <style scoped>
 .text-content-border {
+    contain: layout;
+
     padding: 6px;
 
     border:        var(--border-s);

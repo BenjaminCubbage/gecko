@@ -1,5 +1,6 @@
 <template>
     <button
+        ref="toolBarChipEl"
         :aria-disabled="disabled"
         :aria-pressed="pressed"
         :data-pressed="temporarilyPressed || (pressed ?? temporarilyPressed)"
@@ -27,7 +28,10 @@
 </template>
 
 <script setup>
-import { useId } from 'vue';
+import { 
+    useId, 
+    useTemplateRef 
+} from 'vue';
 
 const props = defineProps({
     color: {
@@ -123,6 +127,10 @@ function click() {
     if (!props.disabled && !props.temporarilyDisabled)
         emit('click');
 }
+
+defineExpose({
+    innerElement: useTemplateRef('toolBarChipEl')
+});
 </script>
 
 <style scoped>

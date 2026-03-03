@@ -8,7 +8,7 @@
             class="label" 
             stroke-color="black" 
             stroke-thickness="4px">
-            <slot name="label"></slot>
+            <slot name="label"></slot> {{ curSelectionIndex + 1 }}/{{ options.length }}
         </StrokedText>
 
         <button
@@ -173,31 +173,30 @@ function tryMoveSelection(by) {
 
 <style scoped>
 .recipient-select-carousel {
-    contain:   strict;
+    --ht-label:      14px;
+    --ht-selection:  34px;
+    --ht-status:     26px;
+
+    contain:   content;
     isolation: isolate;
 
     display:        grid;
-    gap:            1px 0;
     padding-bottom: var(--shadow-dist-s);
     user-select:    none;
 
     &.recipient-select-carousel--normal {
         grid-template:
-            ".          label          ."           14px
-            "arrow-left selection      arrow-right" 1fr /
+            ".          label          ."           var(--ht-label)
+            "arrow-left selection      arrow-right" var(--ht-selection) /
             auto        minmax(0, 1fr) auto;
-            
-        height: 53px;
     }
 
     &.recipient-select-carousel--with-status {
         grid-template:
-            ".          label          ."           14px
-            "arrow-left selection      arrow-right" 1fr
-            ".          status         ."           26px /
+            ".          label          ."           var(--ht-label)
+            "arrow-left selection      arrow-right" var(--ht-selection)
+            ".          status         ."           var(--ht-status) /
             auto        minmax(0, 1fr) auto;
-            
-        height: 79px;
     }
 
     .label     { place-self: end left;     z-index: 2; }
@@ -214,11 +213,12 @@ function tryMoveSelection(by) {
     text-overflow: ellipsis;
     user-select:   none;
     white-space:   nowrap;
-
-    color:          transparent;
-    font-size:      1.9rem;
-    letter-spacing: 0.05em;
-    line-height:    1;
+    
+    color:                transparent;
+    font-size:            1.9rem;
+    font-variant-numeric: tabular-nums;
+    letter-spacing:       0.05em;
+    line-height:          1;
 
     background:
         linear-gradient(
@@ -229,10 +229,8 @@ function tryMoveSelection(by) {
 
     background-clip: text;
 
-    filter:
-        drop-shadow(0 var(--shadow-dist-xs) black);
-
-    translate: 4px 7px;
+    filter:    drop-shadow(0 var(--shadow-dist-xs) black);
+    translate: 4px 4px;
 }
 
 .selection {

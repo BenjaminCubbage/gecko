@@ -4,6 +4,7 @@
         :data-disabled="isClearing"
         @pointerdown="dragMouse"
         @pointermove="dragMouse"
+        @touchstart="dragTouch"
         @touchmove="dragTouch"
         @mouseleave="stopDragging"
         @touchend="stopDragging"

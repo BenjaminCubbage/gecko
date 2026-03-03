@@ -1,6 +1,7 @@
 <template>
-    <nav role="tablist" class="navigation-bar-tabs txtr-diag txtr-diag--lt-gray">
+    <nav ref="tabListEl" role="tablist" class="navigation-bar-tabs txtr-diag txtr-diag--lt-gray">
         <button
+            ref="tabCanvasEl"
             role="tab"
             :aria-selected="selectedTab === 'canvas'"
             :aria-controls="tabPanelIds.canvas"
@@ -10,6 +11,7 @@
         </button>
 
         <button
+            ref="tabFriendsEl"
             role="tab"
             :aria-selected="selectedTab === 'friends'"
             :aria-controls="tabPanelIds.friends"
@@ -21,10 +23,14 @@
 </template>
 
 <script setup>
-import { Keys } from '@/core/di/keys.js';
-import { useElementIdRegistry } from '@/composables/useElementIdRegistry';
+import { 
+    computed,
+    useTemplateRef
+} from 'vue';
 
-const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
+import { Keys }                 from '@/core/di/keys.js';
+import { useElementIdRegistry } from '@/composables/useElementIdRegistry';
+import { useRovingFocus }       from '@/composables/useRovingFocus';
 
 const selectedTab = defineModel({
     type:     String,
@@ -36,6 +42,17 @@ const selectedTab = defineModel({
         ].includes(value);
     }
 });
+
+const selectedTabIndex = computed(() => {
+    return selectedTab.value === 'canvas' ? 0 : 1;
+});
+
+useRovingFocus(useTemplateRef('tabListEl'), [
+    useTemplateRef('tabCanvasEl'),
+    useTemplateRef('tabFriendsEl')
+], selectedTabIndex);
+
+const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
 </script>
 
 <style scoped>

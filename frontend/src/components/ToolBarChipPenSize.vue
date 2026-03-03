@@ -1,5 +1,6 @@
 <template>
     <ToolBarChip
+        ref="toolBarChipEl"
         class="tool-bar-chip-pen-size"
         color="orange"
         :aria-label="`${penSize} brush`"
@@ -39,7 +40,8 @@
 <script setup>
 import {
     computed,
-    useAttrs
+    useAttrs,
+    useTemplateRef
 } from 'vue';
 
 import ToolBarChip from './ToolBarChip.vue';
@@ -58,6 +60,8 @@ const penSize = defineModel({
     }
 });
 
+const toolBarChipEl = useTemplateRef('toolBarChipEl');
+
 const sizeNumber = computed(() => {
     return penSize.value === 'small'
         ? '1'
@@ -74,6 +78,10 @@ function cycle() {
                 ? 'large'
                 : 'small';
 }
+
+defineExpose({
+    innerElement: computed(() => toolBarChipEl.value?.innerElement)
+});
 </script>
 
 <style scoped>

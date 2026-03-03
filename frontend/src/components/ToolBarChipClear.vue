@@ -1,5 +1,6 @@
 <template>
     <ToolBarChip
+        ref="toolBarChipEl"
         class="tool-bar-chip-clear"
         color="dk-red"
         aria-label="Clear"
@@ -24,7 +25,8 @@
 import {
     computed,
     onUnmounted,
-    ref
+    ref,
+    useTemplateRef
 } from 'vue';
 
 import ToolBarChip from './ToolBarChip.vue';
@@ -35,6 +37,8 @@ const emit = defineEmits([
 
 const isPressed    = ref(false);
 let unpressTimeout = null;
+
+const toolBarChipEl = useTemplateRef('toolBarChipEl');
 
 const srStatus = computed(() => {
     return isPressed.value
@@ -53,6 +57,10 @@ function click() {
 
 onUnmounted(() => {
     clearTimeout(unpressTimeout);
+});
+
+defineExpose({
+    innerElement: computed(() => toolBarChipEl.value?.innerElement)
 });
 </script>
 

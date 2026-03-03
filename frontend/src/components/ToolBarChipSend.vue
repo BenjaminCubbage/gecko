@@ -1,5 +1,6 @@
 <template>
     <ToolBarChip
+        ref="toolBarChipEl"
         class="tool-bar-chip-send"
         color="dk-green"
         icon-placement="right"
@@ -58,7 +59,8 @@
 import {
     computed,
     onUnmounted,
-    ref
+    ref,
+    useTemplateRef
 } from 'vue';
 
 import ToolBarChip from './ToolBarChip.vue';
@@ -73,6 +75,8 @@ const emit = defineEmits([
 
 const isLaunching = ref(false);
 let launchTimeout = null;
+
+const toolBarChipEl = useTemplateRef('toolBarChipEl');
 
 const srStatus = computed(() => {
     return isLaunching.value
@@ -95,7 +99,11 @@ function animationCancelled() {
 
 onUnmounted(() => {
     clearTimeout(launchTimeout);
-})
+});
+
+defineExpose({
+    innerElement: computed(() => toolBarChipEl.value?.innerElement)
+});
 </script>
 
 <style scoped>

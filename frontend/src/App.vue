@@ -119,14 +119,13 @@ watch(friends.activeFriends, newFriends => {
     flex-flow:      column nowrap;
     padding-bottom: calc(var(--shadow-dist-l) * 2);
 
-    transition:
-        opacity 300ms 200ms;
+    transition: opacity 300ms 200ms;
 
     & > .navigation-bar { contain: layout; z-index: 1; }
     & > .main-content   { contain: layout; z-index: 0; }
         
     @starting-style {
-        opacity: 0;
+        opacity: 0.01;
     }
 }
 

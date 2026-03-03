@@ -1,7 +1,7 @@
 <template>
-    <button class="text-content-inline-button">
+    <a class="text-content-inline-button">
         <slot />
-    </button>
+    </a>
 </template>
 
 <style>
@@ -9,6 +9,7 @@
     text-decoration:       underline 3px;
     color:                 var(--col-blue-4);
     text-decoration-color: var(--col-blue-4);
+    text-underline-offset: 3px;
 
     &:hover,
     &:focus {

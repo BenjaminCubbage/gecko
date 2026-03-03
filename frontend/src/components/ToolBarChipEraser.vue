@@ -1,5 +1,6 @@
 <template>
     <ToolBarChip
+        ref="toolBarChipEl"
         class="tool-bar-chip-eraser"
         color="magenta"
         :pressed="isToggled"
@@ -24,9 +25,20 @@
 </template>
 
 <script setup>
+import { 
+    computed,
+    useTemplateRef
+} from 'vue';
+
 import ToolBarChip from './ToolBarChip.vue';
 
 const isToggled = defineModel({ default: true });
+
+const toolBarChipEl = useTemplateRef('toolBarChipEl');
+
+defineExpose({
+    innerElement: computed(() => toolBarChipEl.value?.innerElement)
+});
 </script>
 
 <style scoped>

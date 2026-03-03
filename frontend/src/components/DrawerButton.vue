@@ -38,7 +38,8 @@ const props = defineProps({
         validator(value) {
             return [
                 'green',
-                'red'
+                'red',
+                'lt-gray'
             ].includes(value);
         }
     },

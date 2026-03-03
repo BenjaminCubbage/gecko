@@ -1,27 +1,36 @@
 <template>
     <menu
+        ref="toolBarEl"
         class="tool-bar"
         aria-label="Toolbar">
-        <li>
-            <ToolBarChipPenSize v-model="penSize" />
-        </li>
-        <li>
-            <ToolBarChipEraser v-model="isErasing" />
-        </li>
-        <li>
-            <ToolBarChipClear @click="emit('clear')" />
-        </li>
-        <li>
-            <ToolBarChipSend :disabled="sendDisabled" @click="emit('send')" />
-        </li>
+        <li><ToolBarChipPenSize ref="chipPenSizeEl" v-model="penSize" /></li>
+        <li><ToolBarChipEraser ref="chipEraserEl" v-model="isErasing" /></li>
+        <li><ToolBarChipClear ref="chipClearEl" @click="emit('clear')" /></li>
+        <li><ToolBarChipSend ref="chipSendEl" :disabled="sendDisabled" @click="emit('send')" /></li>
     </menu>
 </template>
 
 <script setup>
+import { useTemplateRef } from 'vue';
+
 import ToolBarChipClear   from './ToolBarChipClear.vue';
 import ToolBarChipEraser  from './ToolBarChipEraser.vue';
 import ToolBarChipPenSize from './ToolBarChipPenSize.vue';
 import ToolBarChipSend    from './ToolBarChipSend.vue';
+
+import { useRovingFocus } from '@/composables/useRovingFocus';
+
+const chipPenSizeEl = useTemplateRef('chipPenSizeEl');
+const chipEraserEl  = useTemplateRef('chipEraserEl');
+const chipClearEl   = useTemplateRef('chipClearEl');
+const chipSendEl    = useTemplateRef('chipSendEl');
+
+useRovingFocus(useTemplateRef('toolBarEl'), [
+    () => chipPenSizeEl.value?.innerElement,
+    () => chipEraserEl.value?.innerElement,
+    () => chipClearEl.value?.innerElement,
+    () => chipSendEl.value?.innerElement
+]);
 
 const props = defineProps({
     sendDisabled: {

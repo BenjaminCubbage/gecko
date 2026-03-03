@@ -2,13 +2,12 @@
     <div class="recipient-select-log-in-prompt">
         <TextContentBorder>
             You must
-            <TextContentInlineButton
+            <TextContentInlineLink
                 class="log-in-button" 
                 aria-label="Log in to send images"
                 role="link"
                 @click="logIn">
-                log in
-            </TextContentInlineButton>
+                log in</TextContentInlineLink>
             to send images
         </TextContentBorder>
     </div>
@@ -19,8 +18,8 @@ import {
     inject
 } from 'vue';
 
-import TextContentBorder       from './TextContentBorder.vue';
-import TextContentInlineButton from './TextContentInlineButton.vue';
+import TextContentBorder     from './TextContentBorder.vue';
+import TextContentInlineLink from './TextContentInlineLink.vue';
 
 import { Keys } from '@/core/di/keys.js';
 
