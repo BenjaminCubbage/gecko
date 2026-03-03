@@ -1,7 +1,7 @@
 <template>
     <div
         class="canvas-frame"
-        :style="{ 'pointer-events': isClearing ? 'none' : 'all' }"
+        :data-disabled="isClearing"
         @pointerdown="dragMouse"
         @pointermove="dragMouse"
         @touchmove="dragTouch"
@@ -195,6 +195,10 @@ defineExpose({
     border:        var(--border-l);
 
     corner-shape:  notch;
+
+    &[data-disabled=true] {
+        pointer-events: none;
+    }
 }
 
 .canvas {
