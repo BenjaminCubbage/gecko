@@ -47,9 +47,8 @@ import DrawerButtonLogIn   from './DrawerButtonLogIn.vue';
 import DrawerButtonLogOut  from './DrawerButtonLogOut.vue';
 import DrawerButtonProfile from './DrawerButtonProfile.vue';
 
-import { useIsFocusWithin } from '@/composables/useIsFocusWithin';
-
-import { Keys } from '@/core/di/keys.js';
+import { useIsFocusWithin } from '@/composables/useIsFocusWithin.js';
+import { Keys }             from '@/core/di/keys.js';
 
 import {
     HttpError,
@@ -89,14 +88,12 @@ async function logOut() {
     try {
         await session.requestLogOutAndReload();
     } catch (e) {
-        let errorMessage;
-
-        if (e instanceof HttpError)
-            errorMessage = `Couldn't log out: Status ${e.status}`;
-        else if (e instanceof NetworkError)
-            errorMessage = `Couldn't log out: Connection failed`;
-        else
-            errorMessage = `Unexpected error while logging out`;
+        const errorMessage =
+            e instanceof HttpError
+                ? `Couldn't log out: Status ${e.status}`
+                : e instanceof NetworkError
+                    ? `Couldn't log out: Connection failed`
+                    : `Unexpected error while logging out`;
 
         snackBar.pushMessage(errorMessage);
         isLoggingOut.value = false;
@@ -105,9 +102,6 @@ async function logOut() {
 
 function logIn() {
     if (!session.requestLogIn()) {
-        /* 
-            Shouldn't happen 
-        */
         snackBar.pushMessage('Already logged in');
         isLoggingIn.value = false;
     }
@@ -119,7 +113,7 @@ function logIn() {
     &.account-widget--profile {
         display:     grid;
         flex-flow:   row nowrap;
-        gap:         8px 7px;
+        gap:         0 7px;
 
         grid-template:
             "profile username"       auto
@@ -148,7 +142,7 @@ function logIn() {
 .drawer {
     contain: layout;
 
-    position: relative;
+    position:       relative;
     pointer-events: none;
 
     scale:            0;
@@ -163,6 +157,7 @@ function logIn() {
 
 .drawer > * {
     position: absolute;
+    top:      8px;
 }
 
 .drawer-open-enter-active,
