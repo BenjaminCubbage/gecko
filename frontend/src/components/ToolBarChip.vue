@@ -53,8 +53,7 @@ const props = defineProps({
         validator(value) {
             return [
                 'left',
-                'right',
-                'none'
+                'right'
             ].includes(value);
         }
     },
@@ -150,7 +149,6 @@ defineExpose({
 
     &.tool-bar-chip--icon-left  { grid-template: [pad icon label] auto / [pad-start icon]  auto [label] auto [pad-end]; }
     &.tool-bar-chip--icon-right { grid-template: [pad icon label] auto / [pad-start label] auto [icon]  auto [pad-end]; }
-    &.tool-bar-chip--icon-none  { grid-template: [pad icon label] auto / [pad-start label] auto              [pad-end]; }
 
     &:hover:not([aria-disabled=true]),
     &:active {

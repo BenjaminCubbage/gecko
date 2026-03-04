@@ -8,9 +8,9 @@ export class CanvasUtils {
             pixelFormat: 'rgba-unorm8'});
 
         for (let i = 0; i < data.data.length; i += 4) {
-            if (data.data[i + 0] < 240 ||
-                data.data[i + 1] < 240 ||
-                data.data[i + 2] < 240) {
+            if (data.data[i + 0] < 250 ||
+                data.data[i + 1] < 250 ||
+                data.data[i + 2] < 250) {
                 data.data[i + 0] = 0;
                 data.data[i + 1] = 0;
                 data.data[i + 2] = 0;

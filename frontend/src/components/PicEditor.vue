@@ -91,6 +91,7 @@ function canvasChanged() {
 
 <style scoped>
 .pic-editor {
+    align-items:    stretch;
     display:        flex;
     flex-direction: column;
     gap:            10px;

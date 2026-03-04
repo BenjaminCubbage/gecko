@@ -23,7 +23,7 @@
             :data-expanded="isExpanded"
             :inert="!isExpanded">
             <li>
-                <DrawerButtonLogOut v-model:is-logging-out="isLoggingOut" @click="logOut" />
+                <DrawerButtonLogOut ref="logOutButtonEl" v-model:is-logging-out="isLoggingOut" @click="logOut" />
             </li>
         </menu>
 
@@ -34,6 +34,7 @@
 <script setup>
 import {
     inject,
+    nextTick,
     ref,
     useId,
     useTemplateRef,
@@ -62,14 +63,22 @@ const isExpanded   = ref(false);
 const isLoggingOut = ref(false);
 const isLoggingIn  = ref(false);
 
-const toggleEl = useTemplateRef('toggleEl');
-const drawerEl = useTemplateRef('drawerEl');
+const toggleEl       = useTemplateRef('toggleEl');
+const drawerEl       = useTemplateRef('drawerEl');
+const logOutButtonEl = useTemplateRef('logOutButtonEl');
 
 const {
     isFocusWithin: isFocusWithinDrawer
 } = useIsFocusWithin([ () => toggleEl.value?.innerElement, drawerEl ]);
 
 const dropdownMenuId = useId();
+
+watch(isExpanded, async newValue => {
+    if (newValue) {
+        await nextTick();
+        logOutButtonEl.value?.innerElement?.focus();
+    }
+});
 
 watch([isFocusWithinDrawer, isLoggingOut], () => {
     if (!isFocusWithinDrawer.value && !isLoggingOut.value)

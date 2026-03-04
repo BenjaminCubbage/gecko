@@ -2,6 +2,7 @@
     <ToolBarChip
         ref="toolBarChipEl"
         class="tool-bar-chip-send"
+        :class="`tool-bar-chip-send--size-${size}`"
         color="dk-green"
         icon-placement="right"
         aria-label="Send"
@@ -11,7 +12,7 @@
         :temporarily-disabled="isLaunching"
         :temporarily-pressed="isLaunching"
         @click="click">
-        <template #label>
+        <template v-if="size === 'normal'" #label>
             <span class="letter letter--1">S</span>
             <span class="letter letter--2">E</span>
             <span class="letter letter--3">N</span>
@@ -66,7 +67,21 @@ import {
 import ToolBarChip from './ToolBarChip.vue';
 
 defineProps({
-    disabled: { type: Boolean, default: false }
+    size: {
+        type:    String,
+        required: true,
+        validator(value) {
+            return [
+                'normal',
+                'small'
+            ].includes(value);
+        }
+    },
+
+    disabled: { 
+        type:    Boolean, 
+        default: false 
+    }
 });
 
 const emit = defineEmits([
@@ -109,7 +124,10 @@ defineExpose({
 <style scoped>
 .tool-bar-chip-send {
     contain: layout;
-    gap:     6px;
+
+    &.tool-bar-chip-send--size-normal {
+        gap: 6px;
+    }
 
     /*
         Animations

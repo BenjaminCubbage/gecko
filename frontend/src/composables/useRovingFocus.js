@@ -3,18 +3,33 @@ import {
     onUnmounted
 } from 'vue';
 
+/*
+    Use arrow keys to tab between a roving tab index.
+
+    On load and when focus leaves the container, the selection
+    will revert to the prioritySelectionIndexRef value, if it
+    is set.
+*/
 export function useRovingFocus(containerElRef, elsRef, prioritySelectionIndexRef = null) {
     let registeredContainer   = null;
     let registeredEls         = [];
     let currentFocusableIndex = 0;
 
     watch(containerElRef, newValue => {
-        unregisterContainer(registerContainer);
+        if (registeredContainer)
+            unregisterContainer(registeredContainer);
+
         registeredContainer = newValue;
-        registerContainer(registeredContainer);
+
+        if (registeredContainer)
+            registerContainer(registeredContainer);
+    }, {
+        immediate: true
     });
 
     watch(elsRef, newValue => {
+        newValue = (newValue ?? []).filter(Boolean);
+
         /*
             This is inefficient, maybe make this faster later?
         */
@@ -22,6 +37,8 @@ export function useRovingFocus(containerElRef, elsRef, prioritySelectionIndexRef
         registeredEls = newValue;
         registeredEls.forEach(registerEl);
         checkTabIndices();
+    }, {
+        immediate: true
     });
 
     /*
@@ -31,11 +48,14 @@ export function useRovingFocus(containerElRef, elsRef, prioritySelectionIndexRef
         Call this when the list of registered elements changes.
     */
     function checkTabIndices() {
-        if (!registeredEls.length)
+        if (!registeredEls.length) {
+            currentFocusableIndex = -1;
             return;
+        }
 
         if (registeredEls.length === 1) {
             registeredEls[0].tabIndex = 0;
+            currentFocusableIndex     = 0;
             return;
         }
 
@@ -67,7 +87,7 @@ export function useRovingFocus(containerElRef, elsRef, prioritySelectionIndexRef
                 /*
                     Nearest neighbor of last focused element
                 */
-                currentFocusableIndex = Math.min(currentFocusableIndex, registeredEls.length);
+                currentFocusableIndex = Math.min(currentFocusableIndex, registeredEls.length - 1);
                 registeredEls[currentFocusableIndex].tabIndex = 0;
             }
         }
@@ -80,6 +100,7 @@ export function useRovingFocus(containerElRef, elsRef, prioritySelectionIndexRef
             /*
                 Focus was set programmatically.
             */
+
             if (currentFocusableIndex >= registeredEls.length)
                 throw new RangeError(
                     '[useRovingFocus]: currentFocusableIndex was greater than ' +
@@ -97,6 +118,9 @@ export function useRovingFocus(containerElRef, elsRef, prioritySelectionIndexRef
     }
 
     function containerFocusOutCallback({ relatedTarget }) {
+        if (currentFocusableIndex === -1)
+            return;
+
         if (!registeredEls.includes(relatedTarget) &&
             prioritySelectionIndexRef?.value != null) {
             registeredEls[currentFocusableIndex].tabIndex = -1;
@@ -105,8 +129,8 @@ export function useRovingFocus(containerElRef, elsRef, prioritySelectionIndexRef
         }
     }
 
-    function elKeyDownCallback({ target, key }) {
-        const index = registeredEls.indexOf(target);
+    function elKeyDownCallback(e) {
+        const index = registeredEls.indexOf(e.target);
 
         if (index === -1)
             throw new Error(
@@ -118,7 +142,7 @@ export function useRovingFocus(containerElRef, elsRef, prioritySelectionIndexRef
                 '[useRovingFocus]: Nominal descendant triggered callback ' +
                 'but container was falsy.')
 
-        switch (key) {
+        switch (e.key) {
         case 'ArrowUp':
         case 'ArrowLeft':
             if (index === 0)
@@ -128,6 +152,7 @@ export function useRovingFocus(containerElRef, elsRef, prioritySelectionIndexRef
             currentFocusableIndex = index - 1;
 
             registeredEls[index - 1].focus();
+            e.preventDefault();
             break;
 
         case 'ArrowDown':
@@ -137,8 +162,9 @@ export function useRovingFocus(containerElRef, elsRef, prioritySelectionIndexRef
             registeredEls[index    ].tabIndex = -1;
             registeredEls[index + 1].tabIndex = 0;
             currentFocusableIndex = index + 1;
-            
+
             registeredEls[index + 1].focus();
+            e.preventDefault();
             break;
         }
     }

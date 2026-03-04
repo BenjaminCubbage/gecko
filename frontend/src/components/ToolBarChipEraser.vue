@@ -62,7 +62,7 @@ defineExpose({
     visually consistent with text-based icons that have
     strokes set using the property.
 */
-@supports (-moz-appearance:none) {
+@supports (-moz-appearance: none) {
     .icon-svg {
         stroke-linecap:  round;
         stroke-linejoin: round;

@@ -11,12 +11,12 @@
 </template>
 
 <script setup>
-    import DrawerButton from './DrawerButton.vue';
+import DrawerButton from './DrawerButton.vue';
 
-    const isLoggingIn = defineModel('isLoggingIn', {
-        required: true,
-        type:     Boolean
-    });
+const isLoggingIn = defineModel('isLoggingIn', {
+    required: true,
+    type:     Boolean
+});
 </script>
 
 <style scoped>

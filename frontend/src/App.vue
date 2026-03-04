@@ -130,7 +130,16 @@ watch(friends.activeFriends, newFriends => {
 }
 
 .main-content {
+    grid-template-columns: 
+        1fr [main] min(550px, 100%) 1fr;
+
     display:       grid;
-    place-content: center;
+    place-content: stretch;
+
+    & > * {
+        grid-column:  main;
+        margin-left:  var(--vp-margin);
+        margin-right: var(--vp-margin);
+    }
 }
 </style>

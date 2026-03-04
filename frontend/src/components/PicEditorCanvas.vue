@@ -9,11 +9,14 @@
         @mouseleave="stopDragging"
         @touchend="stopDragging"
         @mouseup="stopDragging">
-        <canvas ref="canvas" class="canvas" width="480" height="288"></canvas>
+        <canvas ref="canvas" class="canvas" :width="resolutionX" :height="resolutionY"></canvas>
     </div>
 </template>
 
 <script setup>
+const resolutionX = 400;
+const resolutionY = 220;
+
 import {
     computed,
     onMounted,
@@ -37,7 +40,11 @@ const props = defineProps({
 const emit = defineEmits([ 'canvasChanged' ]);
 
 const canvas = useTemplateRef('canvas');
-const ctx    = computed(() => canvas.value?.getContext('2d', { willReadFrequently: true }));
+const ctx    = computed(() => canvas.value?.getContext('2d', {
+    alpha:              false,
+    desynchronized:     false,
+    willReadFrequently: true
+}));
 
 const isClearing = ref(false);
 const isBlank    = ref(true);
@@ -46,7 +53,7 @@ const lineWidth = computed(() => {
     const baseWidth = {
         'small':  3,
         'medium': 5,
-        'large':  8
+        'large':  7
     }[props.penSize] ?? 5;
 
     return baseWidth * (props.isErasing ? 2 : 1);
@@ -55,7 +62,15 @@ const lineWidth = computed(() => {
 const penColor = computed(() =>
     props.isErasing
         ? 'white'
-        : 'blue');
+        : 'black');
+
+/*
+    queuedLines is an array of coordinates. These coordinates 
+    get queued, and lines are drawn between them each
+    animation frame.
+*/
+let queuedLines          = [];
+let animationFrameHandle = null;
 
 watch([ lineWidth, ctx ], () => {
     if (ctx.value)
@@ -66,11 +81,6 @@ watch([ penColor, ctx], () => {
     if (ctx.value)
         ctx.value.strokeStyle = penColor.value;
 });
-
-const draggingState = {
-    isDragging: false,
-    previousDragPosition: { x: 0, y: 0 }
-}
 
 onMounted(() => {
     if (!ctx.value) {
@@ -84,8 +94,23 @@ onMounted(() => {
     clear();
 });
 
+function clientToPixelCoords({ clientX, clientY }) {
+    if (!canvas.value)
+        return { x: -1, y: -1 };
+
+    const rect = canvas.value.getBoundingClientRect();
+
+    return {
+        x: (clientX - rect.left) * (canvas.value.width / canvas.value.clientWidth),
+        y: (clientY - rect.top)  * (canvas.value.height / canvas.value.clientHeight)
+    };
+}
+
 function dragMouse(e) {
-    // Recursively handle coalesced events for smoother drawing
+    /*
+        Handling coalesced events results in smoother curves when the
+        mouse is moving quickly
+    */
     if (e.getCoalescedEvents)
         for (const extra of e.getCoalescedEvents())
             dragMouse(extra);
@@ -95,11 +120,7 @@ function dragMouse(e) {
         return;
     }
 
-    const rect = canvas.value.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    drag(x, y);
+    queueLine(clientToPixelCoords(e));
 }
 
 function dragTouch(e) {
@@ -108,53 +129,81 @@ function dragTouch(e) {
         return;
     }
 
-    const touch = e.touches[0];
-    const rect = canvas.value.getBoundingClientRect();
-    const x = touch.clientX - rect.left;
-    const y = touch.clientY - rect.top;
-    drag(x, y);
+    queueLine(clientToPixelCoords(e.touches[0]));
 
     /*
-         * Some drag events aren't cancelable (like zooming)
-         */
-    if (e.cancelable && e.target === canvas.value)
+        Some drag events aren't cancelable
+    */
+    if (e.cancelable)
         e.preventDefault();
 }
 
-function drag(x, y) {
-    if (!ctx.value) return;
+function queueLine(pixelCoords) {
+    queuedLines.push(pixelCoords);
 
-    if (!draggingState.isDragging) {
-        draggingState.previousDragPosition.x = x;
-        draggingState.previousDragPosition.y = y;
+    if (!animationFrameHandle)
+        animationFrameHandle = requestAnimationFrame(drawQueuedLines);
+}
+
+function drawQueuedLines() {
+    animationFrameHandle = null;
+
+    if (!ctx.value || !queuedLines.length) {
+        return;
     }
 
-    isBlank.value = false;
+    const dirtyRect = {
+           t:0,
+        l:0,  r:0,
+           b:0
+    };
 
-    ctx.value.beginPath();
-    ctx.value.moveTo(draggingState.previousDragPosition.x, draggingState.previousDragPosition.y);
-    ctx.value.lineTo(x, y + 0.5); // +0.5 to fix subpixel rendering issues
-    ctx.value.stroke();
+    let previousX = queuedLines[0].x;
+    let previousY = queuedLines[0].y;
 
-    const changedX = Math.min(draggingState.previousDragPosition.x, x) - ctx.value.lineWidth - 10;
-    const changedY = Math.min(draggingState.previousDragPosition.y, y) - ctx.value.lineWidth - 10;
-    const changedWidth = Math.abs(draggingState.previousDragPosition.x - x) + ctx.value.lineWidth + 20;
-    const changedHeight = Math.abs(draggingState.previousDragPosition.y - y) + ctx.value.lineWidth + 20;
+    dirtyRect.l = dirtyRect.r = previousX;
+    dirtyRect.t = dirtyRect.b = previousY;
 
-    /*
-         * Prevent anti-aliasing by snapping to pure bitonal in the changed area
-         */
-    CanvasUtils.snapToPureBitonal(ctx.value, changedX, changedY, changedWidth, changedHeight);
+    for (const { x, y } of queuedLines) {
+        isBlank.value = false;
 
-    draggingState.isDragging = true;
-    draggingState.previousDragPosition.x = x;
-    draggingState.previousDragPosition.y = y;
+        dirtyRect.t = Math.min(y, dirtyRect.t);
+        dirtyRect.b = Math.max(y, dirtyRect.b);
+        dirtyRect.l = Math.min(x, dirtyRect.l);
+        dirtyRect.r = Math.max(x, dirtyRect.r);
+
+        ctx.value.beginPath();
+        ctx.value.moveTo(previousX, previousY);
+        ctx.value.lineTo(x, y);
+        ctx.value.stroke();
+
+        previousX = x;
+        previousY = y;
+    }
+
+    queuedLines[0]     = queuedLines[queuedLines.length - 1];
+    queuedLines.length = 1;
+
+    dirtyRect.t -= ctx.value.lineWidth + 5;
+    dirtyRect.b += ctx.value.lineWidth + 5;
+    dirtyRect.l -= ctx.value.lineWidth + 5;
+    dirtyRect.r += ctx.value.lineWidth + 5;
+
+    /* 
+        Prevent anti-aliasing 
+    */
+    CanvasUtils.snapToPureBitonal(
+        ctx.value,
+        dirtyRect.l,
+        dirtyRect.t,
+        dirtyRect.r - dirtyRect.l,
+        dirtyRect.b - dirtyRect.t);
 
     emit('canvasChanged');
 }
 
 function stopDragging() {
-    draggingState.isDragging = false;
+    queuedLines.length = 0;
 }
 
 async function clear() {
@@ -182,28 +231,56 @@ defineExpose({
 
 <style scoped>
 .canvas-frame {
-    align-self:     center;
+    contain:   inline-size;
+    isolation: isolate;
+
     display:        flex;
     flex-direction: column;
     gap:            12px;
     overflow:       hidden;
+    position:       relative;
 
-    box-shadow:
-             var(--shadow-inst-dist)            var(--shadow-inst-dist)       var(--col-green-0),
-        calc(var(--shadow-inst-dist) * -1) calc(var(--shadow-inst-dist) * -1) var(--col-green-5);
-
-    border-radius: var(--radius-s);
-    border:        var(--border-l);
-
-    corner-shape:  notch;
+    padding: var(--shadow-inst-dist);
+    margin: calc(var(--shadow-inst-dist) * -1);
 
     &[data-disabled=true] {
         pointer-events: none;
     }
-}
 
-.canvas {
-    background:      white;
-    image-rendering: pixelated;
+    &::after    { z-index: 1; }
+    & > .canvas { z-index: 0; }
+
+    /*
+        Using border-radius with overflow: none killed canvas
+        performance due to off-screen rendering, so I'm using a
+        pseudo-element to simulate it.
+    */
+    &::after {
+        content:  '';
+
+        position: absolute;
+        inset:    var(--shadow-inst-dist);
+
+        /*
+            The first two shadows are purely aesthetic, the second two
+            are to hide the corners of the canvas.
+        */
+        box-shadow:
+                 var(--shadow-inst-dist)            var(--shadow-inst-dist)       var(--col-green-0),
+            calc(var(--shadow-inst-dist) * -1) calc(var(--shadow-inst-dist) * -1) var(--col-green-5),
+            calc(var(--shadow-inst-dist) * -1)      var(--shadow-inst-dist)       var(--col-green-3),
+                 var(--shadow-inst-dist)       calc(var(--shadow-inst-dist) * -1) var(--col-green-3);
+
+        border: var(--border-l);
+        border-radius: var(--radius-s);
+
+        corner-shape: notch;
+    }
+
+    & > .canvas {
+        background:      white;
+        image-rendering: pixelated;
+        transform:       translateZ(0);
+    }
 }
 </style>

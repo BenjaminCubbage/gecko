@@ -12,25 +12,25 @@
 </template>
 
 <script setup>
-    import {
-        computed,
-        useTemplateRef
-    } from 'vue';
+import {
+    computed,
+    useTemplateRef
+} from 'vue';
 
-    import DrawerButton from './DrawerButton.vue';
+import DrawerButton from './DrawerButton.vue';
 
-    const isToggled = defineModel({
-        type:     Boolean,
-        required: true
-    });
+const isToggled = defineModel({
+    type:     Boolean,
+    required: true
+});
 
-    const drawerButtonEl = useTemplateRef('drawerButtonEl');
+const drawerButtonEl = useTemplateRef('drawerButtonEl');
 
-    defineExpose({
-        innerElement: computed(() => {
-            return drawerButtonEl.value?.innerElement;
-        })
-    });
+defineExpose({
+    innerElement: computed(() => {
+        return drawerButtonEl.value?.innerElement;
+    })
+});
 </script>
 
 <style scoped>

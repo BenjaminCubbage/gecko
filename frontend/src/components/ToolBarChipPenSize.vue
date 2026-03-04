@@ -2,6 +2,7 @@
     <ToolBarChip
         ref="toolBarChipEl"
         class="tool-bar-chip-pen-size"
+        :class="`tool-bar-chip-pen-size--size-${size}`"
         color="orange"
         :aria-label="`${penSize} brush`"
         @click="cycle"
@@ -25,7 +26,7 @@
             </svg>
         </template>
 
-        <template #label>
+        <template v-if="size === 'normal'" #label>
             SIZE:
 
             <transition name="size-number" mode="out-in">
@@ -47,6 +48,19 @@ import {
 import ToolBarChip from './ToolBarChip.vue';
 
 const attrs = useAttrs();
+
+defineProps({
+    size: {
+        type:    String,
+        required: true,
+        validator(value) {
+            return [
+                'normal',
+                'small'
+            ].includes(value);
+        }
+    }
+});
 
 const penSize = defineModel({
     type: String,
@@ -85,7 +99,7 @@ defineExpose({
 </script>
 
 <style scoped>
-.tool-bar-chip-pen-size {
+.tool-bar-chip-pen-size--size-normal {
     gap: 7px;
 }
 
