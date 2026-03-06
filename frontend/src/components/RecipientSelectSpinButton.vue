@@ -2,14 +2,12 @@
     <div
         class="recipient-select-carousel"
         :class="`recipient-select-carousel--${variant}`">
-        <StrokedText 
-            is="label" 
+        <BaseLabel 
             :id="labelElId"
-            class="label" 
-            stroke-color="black" 
-            stroke-thickness="4px">
+            class="label"
+            variant="no-box">
             <slot name="label"></slot> {{ curSelectionIndex + 1 }}/{{ options.length }}
-        </StrokedText>
+        </BaseLabel>
 
         <button
             tabindex="-1"
@@ -65,7 +63,7 @@ import {
     useTemplateRef
 } from 'vue';
 
-import StrokedText            from './StrokedText.vue';
+import BaseLabel              from './BaseLabel.vue';
 import { useArrowNavigation } from '@/composables/useArrowNavigation';
 
 const props = defineProps({
@@ -132,8 +130,8 @@ const {
 
 onArrowLeft (carouselPrev);
 onArrowRight(carouselNext);
-onArrowUp   (carouselNext);
-onArrowDown (carouselPrev);
+onArrowUp   (carouselPrev);
+onArrowDown (carouselNext);
 
 const curSelectionIndex = computed(() => props.options?.indexOf(selectedOption.value) ?? -1);
 const hasNext           = computed(() => curSelectionIndex.value + 1 < props.options.length);
@@ -199,37 +197,14 @@ function tryMoveSelection(by) {
             auto        minmax(0, 1fr) auto;
     }
 
-    .label     { place-self: end left;     z-index: 2; }
-    .selection { place-self: stretch;      z-index: 1; }
-    .arrow     { place-self: stretch;      z-index: 1; }
-    .status    { place-self: start center; z-index: 0; }
+    .label { place-self: end left;     z-index: 2; }
+    .selection  { place-self: stretch;      z-index: 1; }
+    .arrow      { place-self: stretch;      z-index: 1; }
+    .status     { place-self: start center; z-index: 0; }
 }
 
 .label {
     grid-area: label;
-
-    overflow:      hidden;
-    padding:       0 var(--text-stroke-width-s);
-    text-overflow: ellipsis;
-    user-select:   none;
-    white-space:   nowrap;
-    
-    color:                transparent;
-    font-size:            1.9rem;
-    font-variant-numeric: tabular-nums;
-    letter-spacing:       0.05em;
-    line-height:          1;
-
-    background:
-        linear-gradient(
-            var(--col-green-0) 35%,
-            var(--col-green-1) 35% 50%,
-            var(--col-green-3) 50% 65%,
-            var(--col-green-4) 65%);
-
-    background-clip: text;
-
-    filter:    drop-shadow(0 var(--shadow-dist-xs) black);
     translate: 4px 4px;
 }
 

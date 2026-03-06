@@ -6,7 +6,8 @@
                 class="log-in-button" 
                 aria-label="Log in to send images"
                 role="link"
-                @click="logIn">
+                @click="logIn"
+                href="#">
                 log in</TextContentInlineLink>
             to send images
         </TextContentBorder>

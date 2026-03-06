@@ -2,11 +2,12 @@
     <menu
         ref="toolBarEl"
         class="tool-bar"
-        aria-label="Tool Bar">
-        <li><ToolBarChipPenSize ref="chipPenSizeEl" :size="chipPenSizeSize" v-model="penSize" /></li>
-        <li><ToolBarChipEraser  ref="chipEraserEl"                          v-model="isErasing" /></li>
-        <li><ToolBarChipClear   ref="chipClearEl"   :size="chipClearSize"   @click="emit('clear')" /></li>
-        <li><ToolBarChipSend    ref="chipSendEl"    :size="chipSendSize"    :disabled="sendDisabled" @click="emit('send')" /></li>
+        aria-label="Tool Bar"
+        v-roving-container>
+        <li><ToolBarChipPenSize v-roving-item ref="chipPenSizeEl" :size="chipPenSizeSize" v-model="penSize" /></li>
+        <li><ToolBarChipEraser  v-roving-item ref="chipEraserEl"                          v-model="isErasing" /></li>
+        <li><ToolBarChipClear   v-roving-item ref="chipClearEl"   :size="chipClearSize"   @click="emit('clear')" /></li>
+        <li><ToolBarChipSend    v-roving-item ref="chipSendEl"    :size="chipSendSize"    :disabled="sendDisabled" @click="emit('send')" /></li>
     </menu>
 </template>
 
@@ -23,7 +24,6 @@ import ToolBarChipPenSize from './ToolBarChipPenSize.vue';
 import ToolBarChipSend    from './ToolBarChipSend.vue';
 
 import { useElementDimensions } from '@/composables/useElementDimensions.js';
-import { useRovingFocus }       from '@/composables/useRovingFocus.js';
 
 const props = defineProps({
     sendDisabled: {
@@ -42,23 +42,11 @@ const isErasing = defineModel('isErasing', { type: Boolean, required: true });
 
 const toolBarEl = useTemplateRef('toolBarEl');
 
-const chipPenSizeEl = useTemplateRef('chipPenSizeEl');
-const chipEraserEl  = useTemplateRef('chipEraserEl');
-const chipClearEl   = useTemplateRef('chipClearEl');
-const chipSendEl    = useTemplateRef('chipSendEl');
-
 const { inline: toolbarWidth } = useElementDimensions(toolBarEl);
 
 const chipPenSizeSize = computed(() => toolbarWidth.value > 400 ? 'normal' : 'small');
 const chipClearSize   = computed(() => toolbarWidth.value > 450 ? 'normal' : 'small');
 const chipSendSize    = computed(() => toolbarWidth.value > 350 ? 'normal' : 'small');
-
-useRovingFocus(toolBarEl, [
-    () => chipPenSizeEl.value?.innerElement,
-    () => chipEraserEl.value?.innerElement,
-    () => chipClearEl.value?.innerElement,
-    () => chipSendEl.value?.innerElement
-], ref(0));
 </script>
 
 <style scoped>

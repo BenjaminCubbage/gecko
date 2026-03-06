@@ -9,7 +9,8 @@
                 <BaseInput
                     v-model="inputText"
                     ref="inputEl"
-                    class="username-text-input"
+                    class="base-input"
+                    variant="no-box"
                     :temporarily-disabled="isLoading"
                     :maxlength="maxUsernameLength"
                     :char-predicate="isValidUsernameChar"
@@ -299,23 +300,10 @@ async function submit() {
     paint-order: stroke;
 }
 
-.username-text-input {
-    margin:        0;
-    padding-right: 4px;
-    width:         100%;
-
-    -webkit-appearance:  none;
-    -webkit-text-stroke: var(--text-stroke-s);
-    appearance:          none;
-    box-sizing:          border-box;
-
-    background:     transparent;
-    border:         0;
-    color:          black;
-    font-family:    inherit;
-    font-size:      inherit;
-    letter-spacing: 0.03em;
-    outline:        none;
+.base-input {
+    margin:  0;
+    padding: 0 4px 0 2.5px;
+    width:   100%;
 
     paint-order: stroke;
 }

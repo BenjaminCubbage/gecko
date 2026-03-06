@@ -2,6 +2,7 @@
     <input
         ref="innerElement"
         class="base-input"
+        :class="`base-input--variant-${variant}`"
         type="text"
         :value="inputText"
         :disabled="disabled"
@@ -12,14 +13,28 @@
 </template>
 
 <script setup>
-import { nextTick, useTemplateRef } from 'vue';
+import { 
+    nextTick, 
+    useTemplateRef 
+} from 'vue';
 
 const props = defineProps({
+    variant: {
+        type: String,
+        default: 'normal',
+        validator(value) {
+            return [
+                'normal',
+                'no-box'
+            ].includes(value);
+        }
+    },
+
     charPredicate: {
         type:    null,
         default: null,
-        validator(fn) {
-            return !fn || fn instanceof Function;
+        validator(value) {
+            return !value || value instanceof Function;
         }
     },
 
@@ -53,7 +68,7 @@ function keyDown(e) {
 
 async function input() {
     /*
-        note(ben): nextTick seems to be needed on Firefox
+        nextTick seems to be needed on Firefox
     */
     await nextTick();
 
@@ -83,20 +98,28 @@ defineExpose({
 
 <style scope>
 .base-input {
-    appearance:    none;
-    box-sizing:    border-box;
-    margin:        0;
-    padding-right: 0;
-    border:        0;
+    -webkit-appearance: none;
+    appearance:         none;
+    margin:             0;
+    width:              100%;
+    
+    -webkit-text-stroke: var(--text-stroke-s);
+    background:          transparent;
+    color:               black;
+    font-family:         inherit;
+    font-size:           inherit;
+    letter-spacing:      0.03em;
+    outline:             none;
 
-    color:       inherit;
-    font-family: inherit;
-    font-size:   inherit;
+    &.base-input--variant-normal {
+        height:  36px;
+        padding: 0 16px;
+    }
 
-    background: transparent;
-    outline:    none;
-
-    paint-order: stroke;
+    &.base-input--variant-no-box {
+        padding: 0;
+        border:  0;
+    }
 
     &[data-disabled=true] {
         caret-color: transparent;

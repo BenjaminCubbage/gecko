@@ -103,7 +103,7 @@ export class DevicesStore {
 
             try {
                 await this.#requestDeviceStatuses(
-                    userIDs.map(id => this.#deviceOwners[id]));
+                    userIDs.filter(id => this.#deviceOwners[id]).map(id => this.#deviceOwners[id]));
             } catch (e) {
                 throw new PartialCompletionError(e);
             }

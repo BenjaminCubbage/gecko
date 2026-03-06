@@ -1,7 +1,7 @@
 :root {
     --font-main: 'Jersey 15';
 
-    --col-gray-0: white;
+    --col-gray-0: #ffffff;
     --col-gray-1: #eff3f7;
     --col-gray-2: #cbd4de;
     --col-gray-3: #b0b9cc;
@@ -10,7 +10,7 @@
     --col-gray-6: #656b82;
     --col-gray-7: #4d5269;
 
-    --col-lt-gray-0: white;
+    --col-lt-gray-0: #ffffff;
     --col-lt-gray-1: #f8fafc;
     --col-lt-gray-2: #edf0f3;
     --col-lt-gray-3: #eaecf1;
@@ -119,8 +119,8 @@
 
     --shadow-aura: 0 0 0 var(--shadow-aura-dist) white;
 
-    --text-stroke-width-s:  3.5px;
-    --text-stroke-width-l:  4.5px;
+    --text-stroke-width-s: 3.5px;
+    --text-stroke-width-l: 4.0px;
 
     --text-stroke-s:  var(--text-stroke-width-s)  white;
     --text-stroke-l:  var(--text-stroke-width-l)  white;

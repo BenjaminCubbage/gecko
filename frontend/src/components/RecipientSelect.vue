@@ -115,13 +115,13 @@ const deviceStatusLabels = {
     'online': {
         color:    'green',
         text:     'online',
-        ariaText: 'is currently online'
+        ariaText: 'online status'
     },
     
     'offline': {
         color:    'red',
         text:     'offline',
-        ariaText: 'is currently offline'
+        ariaText: 'offline status'
     },
 
     'pending': {

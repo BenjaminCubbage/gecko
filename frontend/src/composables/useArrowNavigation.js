@@ -30,8 +30,15 @@ export function useArrowNavigation(elRefs) {
     });
 
     function handleKeyDown(e) {
-        for (const handler of handlers.get(e.key) ?? [])
+        let anyHandlers = false;
+
+        for (const handler of handlers.get(e.key) ?? []) {
             handler();
+            anyHandlers = true;
+        }
+
+        if (anyHandlers)
+            e.preventDefault();
     }
 
     function register(els) {
