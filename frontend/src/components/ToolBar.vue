@@ -13,7 +13,7 @@
 
 <script setup>
 import {
-    computed, 
+    computed,
     ref,
     useTemplateRef
 } from 'vue';

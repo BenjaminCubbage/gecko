@@ -1,7 +1,7 @@
 <template>
-    <nav 
-        ref="tabListEl" 
-        role="tablist" 
+    <nav
+        ref="tabListEl"
+        role="tablist"
         class="navigation-bar-tabs txtr-diag txtr-diag--lt-gray"
         v-roving-container
         v-roving-home="selectedTab === 'canvas' ? 0 : 1">

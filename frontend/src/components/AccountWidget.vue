@@ -2,7 +2,7 @@
     <div
         v-if="session.state.value === 'loggedout' || session.state.value === 'error'"
         class="account-widget account-widget--log-in">
-        <DrawerButtonLogIn 
+        <DrawerButtonLogIn
             v-model:is-logging-in="isLoggingIn"
             @click="logIn" />
     </div>
@@ -68,7 +68,7 @@ const logOutButtonEl = useTemplateRef('logOutButtonEl');
 
 const {
     isFocusWithin: isFocusWithinDrawer
-} = useIsFocusWithin([ () => toggleEl.value?.innerElement, drawerEl ]);
+} = useIsFocusWithin([() => toggleEl.value?.innerElement, drawerEl]);
 
 const dropdownMenuId = useId();
 

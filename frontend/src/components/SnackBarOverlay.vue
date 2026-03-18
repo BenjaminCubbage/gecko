@@ -55,9 +55,9 @@ const {
     reset:       resetHiddenTimer,
     restart:     restartHiddenTimer,
     cancel:      cancelHiddenTimer
-} = useTimer({ 
-    duration:           7000, 
-    initiallyCompleted: true 
+} = useTimer({
+    duration:           7000,
+    initiallyCompleted: true
 });
 
 const srStatus = computed(() => {

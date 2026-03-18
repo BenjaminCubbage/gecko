@@ -1,4 +1,4 @@
-/* 
+/*
     Roving tab index implementation. Usage:
 
     <ul v-roving-container v-roving-home="0">
@@ -17,7 +17,7 @@
     per item.
 
     In this example, a user browse the top-level container as
-    normal, and then enter and exit the subcontainer at any 
+    normal, and then enter and exit the subcontainer at any
     time by pressing Space/Enter or Esc/Tab respectively:
 
     <ul v-roving-container>
@@ -36,7 +36,7 @@
                 <button v-roving-item>6</button>
             </div>
         </li>
-        
+
         <li v-roving-item>
             <div v-roving-container>
                 <button v-roving-item>7</button>
@@ -77,15 +77,14 @@ function isContainer(el) {
     return el?.hasAttribute?.(Attributes.RovingTabIndexContainer) ?? false;
 }
 
-function isSubcontainer(container) {
-    return findAncestorElement(container, isContainer);
-}
-
 function getItemContainer(el) {
     return findAncestorElement(el, isContainer);
 }
 
 function getSubcontainerItem(el) {
+    if (isItem(el))
+        return el;
+
     return findAncestorElement(el, isItem);
 }
 
@@ -101,7 +100,7 @@ function getContainerItemsWalker(container) {
             /*
                 Don't traverse subcontainers.
             */
-            if (isContainer(el))
+            if (isContainer(el.parentNode) && el.parentNode !== container)
                 return NodeFilter.FILTER_REJECT;
 
             return isItem(el)
@@ -142,16 +141,24 @@ function getLastContainerItem(container) {
 }
 
 function getNextItem(item, forward = true) {
-    const walker       = getContainerItemsWalker(getItemContainer(item));
+    const container = getItemContainer(item);
+    const walker    = getContainerItemsWalker(container);
+
     walker.currentNode = item;
 
-    return (
-        forward
-            ? walker.nextNode()
-            : walker.previousNode()) ?? item;
+    const result = forward
+        ? walker.nextNode()
+        : walker.previousNode();
+
+    return result !== container
+        ? result
+        : item;
 }
 
 function getItemSubcontainer(item) {
+    if (isContainer(item))
+        return item;
+
     const walker = document.createTreeWalker(
         item,
         NodeFilter.SHOW_ELEMENT,
@@ -216,11 +223,11 @@ function itemKeyDown(e) {
     case 'ArrowDown':
     case 'ArrowRight':
     {
-        getNextItem(e.currentTarget, 
-            e.key === 'ArrowDown' || 
+        getNextItem(e.currentTarget,
+            e.key === 'ArrowDown' ||
             e.key === 'ArrowRight')?.focus();
     }
-    break;   
+    break;
 
     case 'Enter':
     case 'Space':

@@ -1,6 +1,6 @@
 import { createApp } from 'vue';
 
-import { 
+import {
     rovingTabIndexHomeIndex,
     rovingTabIndexContainer,
     rovingTabIndexItem

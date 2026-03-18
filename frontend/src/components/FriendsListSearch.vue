@@ -1,6 +1,5 @@
 <template>
     <div v-if="session.state.value === 'ready'">
-        test
     </div>
 </template>
 

@@ -13,9 +13,9 @@
 </template>
 
 <script setup>
-import { 
-    nextTick, 
-    useTemplateRef 
+import {
+    nextTick,
+    useTemplateRef
 } from 'vue';
 
 const props = defineProps({
@@ -102,7 +102,7 @@ defineExpose({
     appearance:         none;
     margin:             0;
     width:              100%;
-    
+
     -webkit-text-stroke: var(--text-stroke-s);
     background:          transparent;
     color:               black;

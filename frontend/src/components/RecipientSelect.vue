@@ -117,7 +117,7 @@ const deviceStatusLabels = {
         text:     'online',
         ariaText: 'online status'
     },
-    
+
     'offline': {
         color:    'red',
         text:     'offline',
@@ -181,7 +181,7 @@ function getDeviceStatusLabel(device) {
     & > .st1{ fill: var(--col-green-0); }
     & > .st2{ fill: var(--col-green-4); }
 
-    & > .st0{ 
+    & > .st0{
         paint-order:  stroke;
         stroke-width: 6px;
         stroke:       black;
@@ -196,7 +196,7 @@ function getDeviceStatusLabel(device) {
 
 .slide-up-enter-from,
 .slide-up-leave-to {
-    /* 
+    /*
         Setting scale to purely zero interferes with SR (tested
         on NVDA)
     */

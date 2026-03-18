@@ -27,7 +27,7 @@ export function useElementDimensions(elRef) {
 
         if (newEl)
             observer.observe(newEl);
-        
+
         observedEl = newEl;
     }, {
         immediate: true

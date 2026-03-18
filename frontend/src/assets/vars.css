@@ -17,6 +17,7 @@
     --col-lt-gray-4: #dde0e8;
     --col-lt-gray-5: #c9cfdc;
     --col-lt-gray-6: #b6bece;
+    --col-lt-gray-7: #a5afc2;
 
     --col-blue-0: #dce5ff;
     --col-blue-1: #7298ff;
@@ -94,6 +95,9 @@
     --shadow-s:  0 var(--shadow-dist-s)  0 black;
     --shadow-l:  0 var(--shadow-dist-l)  0 black;
 
+    --shadow-inst-white:
+        inset calc(var(--shadow-inst-dist) * -1) calc(var(--shadow-inst-dist) * -1) var(--col-lt-gray-3);
+
     --shadow-inst-green:
         inset      var(--shadow-inst-dist)            var(--shadow-inst-dist)       0 var(--col-green-0),
         inset calc(var(--shadow-inst-dist) * -1) calc(var(--shadow-inst-dist) * -1) 0 var(--col-green-5);
@@ -114,7 +118,7 @@
         inset      var(--shadow-inst-dist)            var(--shadow-inst-dist)       0 var(--col-red-0),
         inset calc(var(--shadow-inst-dist) * -1) calc(var(--shadow-inst-dist) * -1) 0 var(--col-red-6);
 
-    --shadow-inst-dk-red: 
+    --shadow-inst-dk-red:
         var(--shadow-inst-red);
 
     --shadow-aura: 0 0 0 var(--shadow-aura-dist) white;

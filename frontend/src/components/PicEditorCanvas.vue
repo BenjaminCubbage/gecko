@@ -65,7 +65,7 @@ const penColor = computed(() =>
         : 'black');
 
 /*
-    queuedLines is an array of coordinates. These coordinates 
+    queuedLines is an array of coordinates. These coordinates
     get queued, and lines are drawn between them each
     animation frame.
 */
@@ -189,8 +189,8 @@ function drawQueuedLines() {
     dirtyRect.l -= ctx.value.lineWidth + 5;
     dirtyRect.r += ctx.value.lineWidth + 5;
 
-    /* 
-        Prevent anti-aliasing 
+    /*
+        Prevent anti-aliasing
     */
     CanvasUtils.snapToPureBitonal(
         ctx.value,

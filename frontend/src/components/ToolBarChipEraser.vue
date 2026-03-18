@@ -25,7 +25,7 @@
 </template>
 
 <script setup>
-import { 
+import {
     computed,
     useTemplateRef
 } from 'vue';

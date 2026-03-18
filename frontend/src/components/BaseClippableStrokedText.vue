@@ -52,7 +52,7 @@ defineProps({
 
     &.text--front {
         -webkit-text-stroke: 0 black;
-        
+
         background-image: inherit;
         background-clip:  text;
     }

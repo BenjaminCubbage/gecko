@@ -2,10 +2,9 @@
     <div
         class="recipient-select-carousel"
         :class="`recipient-select-carousel--${variant}`">
-        <BaseLabel 
+        <BaseLabel
             :id="labelElId"
-            class="label"
-            variant="no-box">
+            class="label">
             <slot name="label"></slot> {{ curSelectionIndex + 1 }}/{{ options.length }}
         </BaseLabel>
 
@@ -27,7 +26,7 @@
             &gt;
         </button>
 
-        <span 
+        <span
             class="selection"
             ref="spinButtonEl"
             role="spinbutton"
@@ -38,7 +37,7 @@
             :aria-valuemax="options.length"
             :aria-valuenow="curSelectionIndex"
             :aria-valuetext="`${selectedOptionLabel}, ${selectedOptionStatusLabel?.ariaText ?? ''}`">
-            {{ selectedOptionLabel }} 
+            {{ selectedOptionLabel }}
         </span>
 
         <div
@@ -77,7 +76,7 @@ const props = defineProps({
             ].includes(value);
         }
     },
-    
+
     options: {
         type:     Array,
         required: true
@@ -322,7 +321,7 @@ function tryMoveSelection(by) {
         0               0
         var(--radius-s) var(--radius-s);
 
-    box-shadow: 
+    box-shadow:
         var(--shadow-s),
         inset 3px 3px var(--col-lt-gray-0),
         inset -3px -3px var(--col-lt-gray-6);
@@ -343,8 +342,8 @@ function tryMoveSelection(by) {
         height:  0.4em;
         width:   0.4em;
 
-        box-shadow:    
-            0 0 
+        box-shadow:
+            0 0
             0 calc(var(--text-stroke-width-s) / 2) white;
 
         background:    currentColor;

@@ -122,10 +122,10 @@ defineExpose({
 
 .icon-svg {
     width: 30px;
-    
+
     stroke-width: 6.9px;
     stroke:       black;
-    
+
     scale:      0.88;
     transform:  scale(1.2);
     translate:  0.2px 1.4px;
@@ -134,8 +134,8 @@ defineExpose({
     paint-order: stroke;
 
 
-    & > .st0 { 
-        fill: var(--col-red-4); 
+    & > .st0 {
+        fill: var(--col-red-4);
     }
 
     @supports (-moz-appearance: none) {

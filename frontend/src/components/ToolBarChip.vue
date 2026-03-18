@@ -28,9 +28,9 @@
 </template>
 
 <script setup>
-import { 
-    useId, 
-    useTemplateRef 
+import {
+    useId,
+    useTemplateRef
 } from 'vue';
 
 const props = defineProps({
@@ -86,7 +86,7 @@ const props = defineProps({
     },
 
     /*
-        For short animations. Like disabled, but doesn't announce it 
+        For short animations. Like disabled, but doesn't announce it
         to SR.
     */
     temporarilyDisabled: {

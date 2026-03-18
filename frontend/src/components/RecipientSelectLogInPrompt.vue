@@ -3,7 +3,7 @@
         <TextContentBorder>
             You must
             <TextContentInlineLink
-                class="log-in-button" 
+                class="log-in-button"
                 aria-label="Log in to send images"
                 role="link"
                 @click="logIn"

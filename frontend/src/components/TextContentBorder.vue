@@ -24,8 +24,6 @@
 }
 
 .inner-content {
-    cursor: default;
-
     -webkit-text-stroke: var(--text-stroke-s);
     paint-order:         stroke;
 

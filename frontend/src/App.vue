@@ -123,14 +123,14 @@ watch(friends.activeFriends, newFriends => {
 
     & > .navigation-bar { contain: layout; z-index: 1; }
     & > .main-content   { contain: layout; z-index: 0; }
-        
+
     @starting-style {
         opacity: 0.01;
     }
 }
 
 .main-content {
-    grid-template-columns: 
+    grid-template-columns:
         1fr [main] min(550px, 100%) 1fr;
 
     display:       grid;
