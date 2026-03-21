@@ -21,6 +21,13 @@
 
         <span class="username">@{{ friend.user.username }}</span>
 
+        <span v-if="footnoteText" class="
+            footnote
+            txtr-diag txtr-diag--orange
+            shdw shdw--otst-white">
+            {{ footnoteText }}
+        </span>
+
         <div class="separator"></div>
 
         <div class="buttons">
@@ -91,6 +98,12 @@ const computedFriendType = computed(() => {
     return 'not-friends';
 });
 
+const footnoteText = computed(() => {
+    switch (computedFriendType.value) {
+    case 'active': return `Since ${props.friend.acceptedOn}`;
+    }
+});
+
 async function acceptFriend() {
     await friends.publishAcceptFriendRequest(session, props.friend.user.userID);
 }
@@ -116,11 +129,12 @@ onBeforeUnmount(() => {
     contain: content;
 
     grid-template:
-        "icon username separator buttons" auto /
+        "icon username separator buttons" auto 
+        "icon footnote separator buttons" auto /
          auto auto     1fr       auto;
 
     display: grid;
-    gap:     6px 12px;
+    gap:     3px 12px;
     padding: 12px 24px;
 
     color:     black;
@@ -138,14 +152,16 @@ onBeforeUnmount(() => {
         }
     }
 
-    & > .icon      { grid-area: icon;      place-self: stretch start; }
-    & > .username  { grid-area: username;  place-self: center start; }
+    & > .icon      { grid-area: icon;      place-self: center start; }
+    & > .username  { grid-area: username;  place-self: end start; }
+    & > .footnote  { grid-area: footnote;  place-self: start start; }
     & > .separator { grid-area: separator; place-self: center right; }
     & > .buttons   { grid-area: buttons;   place-self: center start; }
 }
 
 .icon {
-    width: 42px;
+    height: 30px;
+    width:  42px;
 
     border:        var(--border-s);
     border-radius: var(--radius-s);
@@ -190,14 +206,29 @@ onBeforeUnmount(() => {
     11%, 20% { --glance-y:  2px; }
 }
 
-.username {
-    text-shadow:
-        var(--shadow-dist-s)
-        var(--shadow-dist-s)
-        var(--col-lt-gray-2);
+.username,
+.footnote {
+    cursor: default;
 
-    cursor:      default;
-    line-height: 1.2;
+    &.username {
+        line-height: 1;
+        
+        text-shadow:
+            var(--shadow-dist-s)
+            var(--shadow-dist-s)
+            var(--col-lt-gray-2);
+    }
+
+    &.footnote {
+        margin: -2px -6px;
+        padding: 2px  6px;
+
+        color:       black;
+        font-size:   0.8em;
+        line-height: 0.8;
+
+        border-radius: var(--radius-s);
+    }
 }
 
 .separator {
