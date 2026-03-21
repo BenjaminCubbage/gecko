@@ -300,11 +300,18 @@ function bindItem(el) {
 }
 
 function unbindItem(el) {
+    const wasFocused = document.activeElement === el;
+    const newFocusEl = wasFocused
+        ? getNextItem(el, true) ?? getNextItem(el, false)
+        : null;
+
     el.removeEventListener('keydown',  itemKeyDown);
     el.removeEventListener('focusin',  itemFocusIn);
     el.removeEventListener('focusout', itemFocusOut);
     el.removeAttribute(Attributes.RovingTabIndexItem);
-    resetContainerIndices(getItemContainer(el));
+
+    resetContainerIndices(getItemContainer(el), wasFocused);
+    newFocusEl?.focus();
 }
 
 /*

@@ -1,6 +1,8 @@
 <template>
     <div
-        class="canvas-frame"
+        class="
+            canvas-frame
+            shdw-after shdw-after--recessed shdw-after--otst-green"
         :data-disabled="isClearing"
         @pointerdown="dragMouse"
         @pointermove="dragMouse"
@@ -101,8 +103,8 @@ function clientToPixelCoords({ clientX, clientY }) {
     const rect = canvas.value.getBoundingClientRect();
 
     return {
-        x: (clientX - rect.left) * (canvas.value.width / canvas.value.clientWidth),
-        y: (clientY - rect.top)  * (canvas.value.height / canvas.value.clientHeight)
+        x: Math.round((clientX - rect.left) * (canvas.value.width  / canvas.value.clientWidth)),
+        y: Math.round((clientY - rect.top)  * (canvas.value.height / canvas.value.clientHeight))
     };
 }
 
@@ -152,6 +154,9 @@ function drawQueuedLines() {
         return;
     }
 
+    /*
+        The area of the screen that is redrawn
+    */
     const dirtyRect = {
            t:0,
         l:0,  r:0,
@@ -240,8 +245,8 @@ defineExpose({
     overflow:       hidden;
     position:       relative;
 
-    padding: var(--shadow-inst-dist);
-    margin: calc(var(--shadow-inst-dist) * -1);
+    padding: var(--shadow-dist-m);
+    margin:  calc(var(--shadow-dist-m) * -1);
 
     &[data-disabled=true] {
         pointer-events: none;
@@ -259,22 +264,13 @@ defineExpose({
         content:  '';
 
         position: absolute;
-        inset:    var(--shadow-inst-dist);
+        inset:    var(--shadow-dist-m);
+        
+        --shdw-etc: 
+            0 0 0 7px var(--col-green-3);
 
-        /*
-            The first two shadows are purely aesthetic, the second two
-            are to hide the corners of the canvas.
-        */
-        box-shadow:
-                 var(--shadow-inst-dist)            var(--shadow-inst-dist)       var(--col-green-0),
-            calc(var(--shadow-inst-dist) * -1) calc(var(--shadow-inst-dist) * -1) var(--col-green-5),
-            calc(var(--shadow-inst-dist) * -1)      var(--shadow-inst-dist)       var(--col-green-3),
-                 var(--shadow-inst-dist)       calc(var(--shadow-inst-dist) * -1) var(--col-green-3);
-
-        border: var(--border-l);
+        border:        var(--border-l);
         border-radius: var(--radius-s);
-
-        corner-shape: notch;
     }
 
     & > .canvas {

@@ -14,7 +14,10 @@
 
                 <button
                     ref="closeButtonEl"
-                    class="close-button txtr-diag txtr-diag--dk-red"
+                    class="
+                        close-button 
+                        txtr-diag txtr-diag--dk-red
+                        shdw shdw--inst-red shdw--elevated-s"
                     aria-label="Hide status"
                     @click="handleClick"
                     @focus="handleFocus">
@@ -43,8 +46,8 @@ import {
 } from 'vue';
 
 import TextContentBorder from './TextContentBorder.vue';
-import { Keys }             from '@/core/di/keys.js';
-import { useTimer }         from '@/composables/useTimer';
+import { Keys }          from '@/core/di/keys.js';
+import { useTimer }      from '@/composables/useTimer';
 
 const { latestMessage } = inject(Keys.SnackBarStore);
 const dismissedManually = ref(false);
@@ -174,28 +177,19 @@ function handleFocus(e) {
 
     border:        var(--border-s);
     border-radius: var(--radius-s);
-    corner-shape:  notch;
-
-    box-shadow:
-        var(--shadow-inst-red),
-        0 calc(var(--shadow-dist-xs) - var(--press-depth)) 0 black;
 
     text-shadow:
         -1.5px -1.5px var(--col-red-1),
          1.5px  1.5px var(--col-red-5);
 
-    transition:
-        box-shadow var(--transition-dur),
-        translate  var(--transition-dur),
-        filter     var(--transition-dur);
+    translate: 0 calc(var(--shadow-dist-s) - var(--shdw-dist-elevation));
 
     &:hover {
         filter: var(--filter-hl-1);
     }
 
     &:active {
-        --press-depth: var(--shadow-dist-xs);
-        translate: 0 var(--press-depth);
+        --shdw-dist-elevation: 0px;
     }
 }
 </style>

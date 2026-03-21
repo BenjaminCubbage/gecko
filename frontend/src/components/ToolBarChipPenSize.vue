@@ -112,7 +112,6 @@ defineExpose({
 .brushes-svg {
     width:       30px;
     scale:       1.22;
-    paint-order: stroke;
 
     & > .stroke {
         stroke:       black;

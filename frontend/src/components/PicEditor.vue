@@ -1,5 +1,8 @@
 <template>
-    <div class="pic-editor txtr-diag txtr-diag--green">
+    <div class="
+        pic-editor 
+        txtr-diag txtr-diag--green
+        shdw shdw--inst-green shdw--elevated-l">
         <PicEditorCanvas
             ref="picEditorCanvas"
             :pen-size="penSize"
@@ -97,13 +100,7 @@ function canvasChanged() {
     gap:            10px;
     padding:        9px;
 
-    box-shadow:
-        var(--shadow-l),
-        var(--shadow-inst-green);
-
     border-radius: var(--radius-s);
     border:        var(--border-s);
-
-    corner-shape: notch;
 }
 </style>

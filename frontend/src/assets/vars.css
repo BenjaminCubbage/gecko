@@ -84,43 +84,17 @@
     --radius-s: 3px;
     --radius-l: 6px;
 
-    --shadow-dist-xs: 2.0px;
-    --shadow-dist-s:  2.5px;
+    --shadow-dist-xs: 1.8px;
+    --shadow-dist-s:  2.2px;
+    --shadow-dist-m:  3.0px;
     --shadow-dist-l:  5.0px;
 
-    --shadow-inst-dist: 3px;
     --shadow-aura-dist: 2px;
 
     --shadow-xs: 0 var(--shadow-dist-xs) 0 black;
     --shadow-s:  0 var(--shadow-dist-s)  0 black;
+    --shadow-m:  0 var(--shadow-dist-m)  0 black;
     --shadow-l:  0 var(--shadow-dist-l)  0 black;
-
-    --shadow-inst-white:
-        inset calc(var(--shadow-inst-dist) * -1) calc(var(--shadow-inst-dist) * -1) var(--col-lt-gray-3);
-
-    --shadow-inst-green:
-        inset      var(--shadow-inst-dist)            var(--shadow-inst-dist)       0 var(--col-green-0),
-        inset calc(var(--shadow-inst-dist) * -1) calc(var(--shadow-inst-dist) * -1) 0 var(--col-green-5);
-
-    --shadow-inst-lt-gray:
-        inset      var(--shadow-inst-dist)            var(--shadow-inst-dist)       0 var(--col-lt-gray-0),
-        inset calc(var(--shadow-inst-dist) * -1) calc(var(--shadow-inst-dist) * -1) 0 var(--col-lt-gray-6);
-
-    --shadow-inst-gray:
-        inset      var(--shadow-inst-dist)            var(--shadow-inst-dist)       0 var(--col-gray-0),
-        inset calc(var(--shadow-inst-dist) * -1) calc(var(--shadow-inst-dist) * -1) 0 var(--col-gray-4);
-
-    --shadow-inst-orange:
-        inset      var(--shadow-inst-dist)            var(--shadow-inst-dist)       0 var(--col-orange-0),
-        inset calc(var(--shadow-inst-dist) * -1) calc(var(--shadow-inst-dist) * -1) 0 var(--col-orange-6);
-
-    --shadow-inst-red:
-        inset      var(--shadow-inst-dist)            var(--shadow-inst-dist)       0 var(--col-red-0),
-        inset calc(var(--shadow-inst-dist) * -1) calc(var(--shadow-inst-dist) * -1) 0 var(--col-red-6);
-
-    --shadow-inst-dk-red:
-        var(--shadow-inst-red);
-
     --shadow-aura: 0 0 0 var(--shadow-aura-dist) white;
 
     --text-stroke-width-s: 3.5px;

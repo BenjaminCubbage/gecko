@@ -1,7 +1,9 @@
 <template>
     <menu
         ref="toolBarEl"
-        class="tool-bar"
+        class="
+            tool-bar
+            shdw shdw--inst-gray shdw--otst-green"
         aria-label="Tool Bar"
         v-roving-container>
         <li><ToolBarChipPenSize v-roving-item ref="chipPenSizeEl" :size="chipPenSizeSize" v-model="penSize" /></li>
@@ -14,7 +16,6 @@
 <script setup>
 import {
     computed,
-    ref,
     useTemplateRef
 } from 'vue';
 
@@ -63,14 +64,7 @@ const chipSendSize    = computed(() => toolbarWidth.value > 350 ? 'normal' : 'sm
             var(--col-gray-2) 50%,
             var(--col-gray-3) 50%);
 
-    box-shadow:
-             var(--shadow-inst-dist)            var(--shadow-inst-dist)       var(--col-green-6),
-        calc(var(--shadow-inst-dist) * -1) calc(var(--shadow-inst-dist) * -1) var(--col-green-0),
-        var(--shadow-inst-gray);
-
     border-radius: var(--radius-s);
     border:        var(--border-s);
-
-    corner-shape: notch;
 }
 </style>

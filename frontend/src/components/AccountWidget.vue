@@ -23,7 +23,10 @@
             :data-expanded="isExpanded"
             :inert="!isExpanded">
             <li>
-                <DrawerButtonLogOut ref="logOutButtonEl" v-model:is-logging-out="isLoggingOut" @click="logOut" />
+                <DrawerButtonLogOut
+                    ref="logOutButtonEl"
+                    v-model:is-logging-out="isLoggingOut"
+                    @click="logOut" />
             </li>
         </menu>
 
@@ -130,9 +133,9 @@ function logIn() {
     grid-area: profile;
 }
 
-.drawer-button-profile:is(:hover, :active, :focus) + .drawer,
+.drawer-button-profile:is(:hover, :active, :focus) ~ .drawer,
 .drawer[data-expanded=true] {
-    will-change: transform;
+    will-change: transform opacity;
 }
 
 .account-widget-username-badge {
@@ -142,29 +145,26 @@ function logIn() {
 .drawer {
     contain: layout;
 
-    position:       relative;
+    position: relative;
+    
     pointer-events: none;
+    scale:   0.8;
+    opacity: 0;
 
-    scale:            0;
-    transform-origin: 50% 0;
-    transition:       scale 200ms ease;
+    transition: 
+        opacity 100ms,
+        scale   100ms;
 }
 
 .drawer[data-expanded=true] {
     pointer-events: all;
-    scale:          1;
+    
+    scale:   1;
+    opacity: 1;
 }
 
 .drawer > * {
     position: absolute;
     top:      8px;
-}
-
-.drawer-open-enter-active,
-.drawer-open-leave-active {
-    transform-origin: 50% 0;
-    transition:
-        scale   100ms ease,
-        opacity 100ms ease;
 }
 </style>

@@ -10,21 +10,24 @@
     line-height: 1.5;
 
     color-scheme: dark;
+
+    paint-order:  stroke;
+    corner-shape: notch;
 }
 
 html,
 body {
-    box-sizing: border-box;
-    height:     100%;
-    width:      100%;
-    margin:     0;
-    padding:    0;
+    height:  100%;
+    width:   100%;
+    margin:  0;
+    padding: 0;
 }
 
 *,
 *::before,
 *::after {
-    box-sizing: border-box;
+    box-sizing:   border-box;
+    corner-shape: inherit;
 
     @media (prefers-reduced-motion: reduce) {
         transition:                none   !important;
@@ -33,8 +36,47 @@ body {
     }
 }
 
+*:not(
+    a, 
+    button
+) {
+    contain: layout;
+}
+
+* {
+    cursor: default;
+}
+
 button,
-a {
+label {
+    user-select: none;
+}
+
+input,
+p,
+h1, 
+h2, 
+h3, 
+h4, 
+h5, 
+h6,
+textarea {
+    cursor: text;
+}
+
+:disabled {
+    pointer-events: none;
+}
+
+:where(
+    a,
+    button
+) * {
+    cursor: pointer;
+}
+
+a,
+button {
     cursor:  pointer;
     padding: 0;
 
@@ -49,7 +91,9 @@ a {
 }
 
 ::selection {
-    color: black;
+    background:  rgb(103, 179, 255);
+    color:       black;
+    text-shadow: none;
 }
 
 fieldset {

@@ -5,12 +5,15 @@
         <BaseLabel
             :id="labelElId"
             class="label">
-            <slot name="label"></slot> {{ curSelectionIndex + 1 }}/{{ options.length }}
+            <slot name="label"></slot> {{ selectedOptionDisplayNumber }}
         </BaseLabel>
 
         <button
             tabindex="-1"
-            class="arrow arrow--left txtr-diag txtr-diag--green"
+            class="
+                arrow arrow--left
+                txtr-diag txtr-diag--green
+                shdw shdw--inst-green shdw--elevated-s"
             :disabled="!hasPrev"
             aria-label="Previous"
             @click="carouselPrev">
@@ -19,7 +22,10 @@
 
         <button
             tabindex="-1"
-            class="arrow arrow--right txtr-diag txtr-diag--green"
+            class="
+                arrow arrow--right
+                txtr-diag txtr-diag--green
+                shdw shdw--inst-green shdw--elevated-s"
             :disabled="!hasNext"
             aria-label="Next"
             @click="carouselNext">
@@ -27,7 +33,9 @@
         </button>
 
         <span
-            class="selection"
+            class="
+                selection
+                shdw shdw--inst-gray shdw--elevated-s"
             ref="spinButtonEl"
             role="spinbutton"
             tabindex="0"
@@ -37,19 +45,27 @@
             :aria-valuemax="options.length"
             :aria-valuenow="curSelectionIndex"
             :aria-valuetext="`${selectedOptionLabel}, ${selectedOptionStatusLabel?.ariaText ?? ''}`">
-            {{ selectedOptionLabel }}
+            <template v-if="selectedOptionLabel">
+                {{ selectedOptionLabel }}
+            </template>
+            
+            <LoadingSpinner v-else />
         </span>
 
         <div
-            v-if="variant === 'with-status' && selectedOptionStatusLabel"
-            class="status"
-            :class="`status--${selectedOptionStatusLabel.color}`"
-            :key="selectedOptionStatusLabel.text"
+            v-if="variant === 'with-status' && selectedOptionLabel"
+            class="
+                status
+                shdw shdw--inst-lt-gray shdw--elevated-s"
+            :class="`status--${selectedOptionStatusLabel?.color ?? 'blue'}`"
             aria-hidden="true">
-            <span class="status-dot"></span>
-            <span class="status-text">
-                {{ selectedOptionStatusLabel.text }}
-            </span>
+            <template v-if="selectedOptionStatusLabel">
+                <span class="status-dot"></span>
+                <span class="status-text">
+                    {{ selectedOptionStatusLabel.text }}
+                </span>
+            </template>
+            <LoadingSpinner v-else />
         </div>
     </div>
 </template>
@@ -63,6 +79,7 @@ import {
 } from 'vue';
 
 import BaseLabel              from './BaseLabel.vue';
+import LoadingSpinner         from './LoadingSpinner.vue';
 import { useArrowNavigation } from '@/composables/useArrowNavigation';
 
 const props = defineProps({
@@ -94,7 +111,7 @@ const props = defineProps({
             color:    'red' | 'green' | 'blue',
             text:     String,
             ariaText: String
-        })
+        } | null)
     */
     getOptionStatusLabel: {
         type:     Function,
@@ -137,13 +154,21 @@ const hasNext           = computed(() => curSelectionIndex.value + 1 < props.opt
 const hasPrev           = computed(() => curSelectionIndex.value > 0);
 
 const selectedOptionLabel = computed(() => {
-    return props.getOptionLabel(selectedOption.value);
+    return curSelectionIndex.value !== -1
+        ? props.getOptionLabel(selectedOption.value)
+        : null;
 });
 
 const selectedOptionStatusLabel = computed(() => {
-    return props.variant === 'with-status'
+    return props.variant === 'with-status' && curSelectionIndex.value !== -1
         ? props.getOptionStatusLabel(selectedOption.value)
         : null;
+});
+
+const selectedOptionDisplayNumber = computed(() => {
+    return curSelectionIndex.value !== -1
+        ? `${curSelectionIndex.value + 1}/${props.options.length}`
+        : '-/-';
 });
 
 watch(selectedOption, () => {
@@ -179,7 +204,6 @@ function tryMoveSelection(by) {
 
     display:        grid;
     padding-bottom: var(--shadow-dist-s);
-    user-select:    none;
 
     &.recipient-select-carousel--normal {
         grid-template:
@@ -196,7 +220,7 @@ function tryMoveSelection(by) {
             auto        minmax(0, 1fr) auto;
     }
 
-    .label { place-self: end left;     z-index: 2; }
+    .label      { place-self: end left;     z-index: 2; }
     .selection  { place-self: stretch;      z-index: 1; }
     .arrow      { place-self: stretch;      z-index: 1; }
     .status     { place-self: start center; z-index: 0; }
@@ -218,23 +242,16 @@ function tryMoveSelection(by) {
     overflow-x:          auto;
     scrollbar-width:     none;
     text-overflow:       ellipsis;
-    user-select:         none;
     white-space:         nowrap;
     line-height:         0;
+    user-select:         none;
 
     background:
         linear-gradient(
             var(--col-gray-2) 50%,
             var(--col-gray-3) 50%);
 
-    box-shadow:
-        0 var(--shadow-dist-s)
-        0 black,
-        var(--shadow-inst-gray);
-
     border: var(--border-s);
-
-    paint-order: stroke;
 }
 
 .arrow {
@@ -248,23 +265,12 @@ function tryMoveSelection(by) {
     font-size:   2.3rem;
     line-height: 0;
 
-    box-shadow:
-        0 calc(var(--shadow-dist-s) - var(--arrow-offset))
-        0 black,
-        var(--shadow-inst-green);
-
     border-radius: var(--radius-s);
     border:        2.5px solid black;
 
-    --arrow-offset: 0px;
-
-    transition:
-        box-shadow 50ms ease,
-        translate  50ms ease;
-
-    translate: 0 var(--arrow-offset);
-
-    corner-shape: notch;
+    translate: 
+        0 
+        calc(var(--shadow-dist-s) - var(--shdw-dist-elevation));
 
     &.arrow--left {
         grid-area:                  arrow-left;
@@ -284,7 +290,7 @@ function tryMoveSelection(by) {
     }
 
     &:active {
-        --arrow-offset: var(--shadow-dist-s);
+        --shdw-dist-elevation: 0px;
     }
 
     &:disabled {
@@ -302,9 +308,10 @@ function tryMoveSelection(by) {
     gap:             6px;
     justify-content: center;
     padding-bottom:  4px;
-    padding-top:     calc(3px + var(--shadow-inst-dist));
+    padding-top:     calc(3px + var(--shadow-dist-m));
     width:           110px;
     height:          100%;
+    user-select:     none;
 
     -webkit-text-stroke: var(--text-stroke-s);
     font-size:           1.7rem;
@@ -321,17 +328,9 @@ function tryMoveSelection(by) {
         0               0
         var(--radius-s) var(--radius-s);
 
-    box-shadow:
-        var(--shadow-s),
-        inset 3px 3px var(--col-lt-gray-0),
-        inset -3px -3px var(--col-lt-gray-6);
-
     border: var(--border-s);
 
-    translate: 0 calc(var(--shadow-inst-dist) * -1 - 0.5px);
-
-    corner-shape: notch;
-    paint-order:  stroke;
+    translate: 0 calc(var(--shadow-dist-m) * -1 - 0.5px);
 
     &.status--red   { color: var(--col-red-7); }
     &.status--green { color: var(--col-green-7); }
@@ -348,8 +347,6 @@ function tryMoveSelection(by) {
 
         background:    currentColor;
         border-radius: 1.5px;
-
-        corner-shape: notch;
 
         @supports not (corner-shape: notch) {
             height: 0.35em;

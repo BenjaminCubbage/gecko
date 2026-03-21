@@ -2,6 +2,7 @@
     <button
         ref="toolBarChipEl"
         :aria-disabled="disabled"
+        :data-disabled="disabled || temporarilyDisabled"
         :aria-pressed="pressed"
         :data-pressed="temporarilyPressed || (pressed ?? temporarilyPressed)"
         :aria-describedby="statusElId"
@@ -19,7 +20,10 @@
             <slot name="label"></slot>
         </div>
 
-        <div :class="`pad pad--${color} txtr-diag txtr-diag--${color}`"></div>
+        <div :class="`
+            pad pad--${color} 
+            txtr-diag txtr-diag--${color}
+            shdw shdw--inst-${color} shdw--elevated-s`"></div>
 
         <span :id="statusElId" class="util-sr-only">
             {{ srStatus }}
@@ -144,13 +148,12 @@ defineExpose({
     display:     grid;
     height:      40px;
     place-items: center;
-    user-select: none;
     padding:     0 calc(3px + var(--chip-padding-x) + var(--shadow-aura-dist));
 
     &.tool-bar-chip--icon-left  { grid-template: [pad icon label] auto / [pad-start icon]  auto [label] auto [pad-end]; }
     &.tool-bar-chip--icon-right { grid-template: [pad icon label] auto / [pad-start label] auto [icon]  auto [pad-end]; }
 
-    &:hover:not([aria-disabled=true]),
+    &:hover:not([data-disabled=true]),
     &:active {
         filter: var(--filter-hl-1);
     }
@@ -172,11 +175,15 @@ defineExpose({
 
             filter:
                 var(--filter-hl-1)
-                drop-shadow(calc(var(--w) *  1.0) calc(var(--w) *  0.0) 0px white)
-                drop-shadow(calc(var(--w) *  0.0) calc(var(--w) *  1.0) 0px white)
-                drop-shadow(calc(var(--w) * -0.8) calc(var(--w) *  0.0) 0px white)
-                drop-shadow(calc(var(--w) *  0.0) calc(var(--w) * -0.8) 0px white);
+                drop-shadow(calc(var(--w) *  1.0) calc(var(--w) *  0.0) 0 white)
+                drop-shadow(calc(var(--w) *  0.0) calc(var(--w) *  1.0) 0 white)
+                drop-shadow(calc(var(--w) * -0.8) calc(var(--w) *  0.0) 0 white)
+                drop-shadow(calc(var(--w) *  0.0) calc(var(--w) * -0.8) 0 white);
         }
+    }
+
+    &[data-disabled=true] {
+        pointer-events: none;
     }
 
     &[aria-disabled=true] {
@@ -218,8 +225,6 @@ defineExpose({
     scale:      1 1.1;
     transition: translate var(--transition-dur);
 
-    paint-order: stroke;
-
     &.label--dk-green { color: var(--col-green-5); }
     &.label--magenta  { color: var(--col-magenta-6); }
     &.label--orange   { color: var(--col-orange-8); }
@@ -227,6 +232,9 @@ defineExpose({
 }
 
 .pad {
+    --shdw-dist-elevation: calc(var(--shadow-dist-s) - var(--press-depth));
+    --shdw-etc:            var(--select-aura);
+
     --chip-col-bevel-lt: 0;
     --chip-col-bevel-dk: 0;
 
@@ -236,21 +244,12 @@ defineExpose({
     z-index:      0;
     margin:       0 calc(var(--chip-padding-x) * -1);
 
-    box-shadow:
-        var(--select-aura),
-        0 calc(var(--shadow-dist-s) - var(--press-depth))
-        0 black,
-        inset      var(--shadow-inst-dist)            var(--shadow-inst-dist)       var(--chip-col-bevel-lt),
-        inset calc(var(--shadow-inst-dist) * -1) calc(var(--shadow-inst-dist) * -1) var(--chip-col-bevel-dk);
-
     border:        var(--border-s);
     border-radius: var(--radius-s);
 
     transition:
         translate  var(--transition-dur),
         box-shadow var(--transition-dur);
-
-    corner-shape: notch;
 
     &.pad--dk-green { --chip-col-bevel-lt: var(--col-green-0);   --chip-col-bevel-dk: var(--col-green-6); }
     &.pad--dk-red   { --chip-col-bevel-lt: var(--col-red-0);     --chip-col-bevel-dk: var(--col-red-6); }

@@ -9,8 +9,7 @@
             <CanvasSection
                 v-show="selectedTab == 'canvas'"
                 role="tabpanel"
-                :id="tabPanelIds.canvas"
-                :revealRecipientSelect="revealRecipientSelect" />
+                :id="tabPanelIds.canvas" />
 
             <FriendsSection
                 v-show="selectedTab == 'friends'"
@@ -62,7 +61,7 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry, {
     friends: useId()
 });
 
-const selectedTab = ref('friends');
+const selectedTab = ref('canvas');
 
 const { isFontLoaded: isMainFontLoaded } = useWaitOnFont('--font-main');
 const { isFontLoaded: isIconFontLoaded } = useWaitOnFont('iconfont');
@@ -76,14 +75,6 @@ const {
 
 const fontsLoaded = computed(() => {
     return isMainFontLoaded.value && isIconFontLoaded.value;
-});
-
-/*
-    For performance reasons: don't run recipient select transition
-    and content fade-in at same time.
-*/
-const revealRecipientSelect = computed(() => {
-    return fontsLoaded.value && isFadeInCompleted.value;
 });
 
 (async () => {

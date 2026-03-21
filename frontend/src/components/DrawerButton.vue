@@ -1,24 +1,20 @@
 <template>
     <button
         ref="innerElement"
-        class="drawer-button"
-        :class="{
-            'drawer-button--button': variant === 'button',
-            'drawer-button--toggle': variant === 'toggle',
-        }"
+        :class="`
+            drawer-button drawer-button--variant-${variant}
+            shdw shdw--elevated-s shdw--inst-${color}
+            shdw-filter shdw-filter--s shdw-filter--${color}
+            txtr-diag txtr-diag--${color}`"
         :data-toggled="isToggled"
         :data-temporarily-disabled="temporarilyDisabled"
-        @click="click"
-        v-bind="colorAttrs">
+        @click="click">
         <slot></slot>
     </button>
 </template>
 
 <script setup>
-import {
-    computed,
-    useTemplateRef
-} from 'vue';
+import { useTemplateRef } from 'vue';
 
 const props = defineProps({
     variant: {
@@ -34,14 +30,7 @@ const props = defineProps({
 
     color: {
         type: String,
-        required: true,
-        validator(value) {
-            return [
-                'green',
-                'red',
-                'lt-gray'
-            ].includes(value);
-        }
+        required: true
     },
 
     temporarilyDisabled: {
@@ -59,39 +48,6 @@ const emit = defineEmits([
     'click'
 ]);
 
-const colorAttrs = computed(() => {
-    switch (props.color) {
-        case 'green':
-            return {
-                class: 'txtr-diag txtr-diag--green',
-                style: {
-                    '--col-bevel-lt': 'var(--col-green-0)',
-                    '--col-bevel-dk': 'var(--col-green-5)'
-                }
-            }
-
-        case 'red':
-            return {
-                class: 'txtr-diag txtr-diag--red',
-                style: {
-                    '--col-bevel-lt': 'var(--col-red-0)',
-                    '--col-bevel-dk': 'var(--col-red-5)'
-                }
-            }
-
-        case 'lt-gray':
-            return {
-                class: 'txtr-diag txtr-diag--lt-gray',
-                style: {
-                    '--col-bevel-lt': 'var(--col-lt-gray-0)',
-                    '--col-bevel-dk': 'var(--col-lt-gray-6)'
-                }
-            }
-    }
-
-    return {};
-});
-
 function click() {
     if (props.temporarilyDisabled)
         return;
@@ -102,10 +58,8 @@ function click() {
     emit('click');
 }
 
-const innerElement = useTemplateRef('innerElement');
-
 defineExpose({
-    innerElement
+    innerElement: useTemplateRef('innerElement')
 });
 </script>
 
@@ -119,58 +73,36 @@ defineExpose({
     --col-bevel-lt: transparent;
     --col-bevel-dk: transparent;
 
-    --inner-button-aura:   0 0;
-    --inner-button-offset: 0px;
-
-    box-shadow:
-        var(--inner-button-aura),
-        0 calc(var(--shadow-dist-s) - var(--inner-button-offset))
-        0 black,
-        inset      var(--shadow-inst-dist)            var(--shadow-inst-dist)       var(--col-bevel-lt),
-        inset calc(var(--shadow-inst-dist) * -1) calc(var(--shadow-inst-dist) * -1) var(--col-bevel-dk);
-
     border-radius: var(--radius-s);
     border:        var(--border-s);
 
-    transition:
-        box-shadow 50ms  ease,
-        translate  50ms ease;
+    translate: 
+        0 
+        calc(var(--shadow-dist-s) - var(--shdw-dist-elevation));
+        
+    &:hover,
+    &:active,
+    &.drawer-button--variant-toggle[data-toggled=true] {
+        filter: var(--filter-hl-1);
+    }
+        
+    &[temporarily-disabled=true] {
+        filter: none;
+    }
 
-    translate: 0 var(--inner-button-offset);
+    &.drawer-button--variant-button:active {
+        --shdw-dist-elevation: 0px;
+    }
 
-    corner-shape: notch;
-}
+    &.drawer-button--variant-toggle[data-toggled=true],
+    &.drawer-button--variant-toggle[data-toggled=true]:hover {
+        --shdw-dist-elevation: 0px;
+        --shdw-etc: var(--shadow-aura);
+    }
 
-.drawer-button:hover,
-.drawer-button:active {
-    filter: var(--filter-hl-1);
-}
-
-.drawer-button--button:active {
-    --inner-button-offset: var(--shadow-dist-s);
-}
-
-.drawer-button--toggle[data-toggled=true],
-.drawer-button--toggle[data-toggled=true]:hover {
-    --inner-button-aura:   var(--shadow-aura);
-    --inner-button-offset: var(--shadow-dist-s);
-
-    filter: none;
-}
-
-.drawer-button[temporarily-disabled=true] {
-    filter: none;
-}
-
-.drawer-button > * {
-    color:       black;
-    font-size:   2.8rem;
-    line-height: 1em;
-
-    filter:
-        drop-shadow(0  2px var(--col-bevel-dk))
-        drop-shadow(2px 0  var(--col-bevel-dk))
-        drop-shadow(0 -2px var(--col-bevel-lt))
-        drop-shadow(-2px 0 var(--col-bevel-lt));
+    & > * {
+        color:       black;
+        font-size:   2.8rem;
+    }
 }
 </style>

@@ -1,17 +1,54 @@
 <template>
-    <i class="spinner hn hn-spinner-solid"></i>
+    <span class="spinner" v-bind="attrs">
+        <span role="status" class="util-sr-only" v-deferred-content="'Loading'"></span>
+    </span>
 </template>
+
+<script setup>
+import { useAttrs } from 'vue';
+defineOptions({
+    inheritAttrs: false
+});
+const attrs = useAttrs();
+</script>
 
 <style scoped>
 .spinner {
-    display:   inline-block;
-    color:     inherit;
-    font-size: 2.3rem;
-    animation: rotate 700ms infinite steps(8, end);
+    contain: content;
+
+    display: inline-grid;
+    padding: var(--shadow-dist-l);
+    width:   min-content;
+
+    font-size:   2.3rem;
+    line-height: 0;
+
+    &::before,
+    &::after {
+        content:   '...' / '';
+        grid-area: 1 / 1;
+    }
+
+    &::before {
+        opacity: 0;
+    }
+
+    &::after {
+        animation:  
+            cycle 500ms infinite steps(1, end);
+
+        text-align: left;
+        translate:  0 -0.22em;
+    }
 }
 
-@keyframes rotate {
-    from { transform: rotate(0deg);   }
-    to   { transform: rotate(360deg); }
+@keyframes cycle {
+    16.6% { text-align: right; }
+    66.6% { text-align: left; }
+
+    0%           { content: '...' / ''; }
+    16.6%, 83.3% { content: '..'  / ''; }
+    33.3%, 66.6% { content: '.'   / ''; }
+    50%          { content: ''    / ''; }
 }
 </style>

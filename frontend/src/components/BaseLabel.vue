@@ -28,7 +28,6 @@ defineProps({
 <style scoped>
 .label {
     padding:     0 var(--text-stroke-width-s);
-    user-select: none;
     white-space: nowrap;
 
     -webkit-text-stroke:  black var(--text-stroke-width-l);

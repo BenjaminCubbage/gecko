@@ -1,7 +1,10 @@
 <template>
     <div class="account-widget-username-badge">
         <div
-            class="username"
+            :class="[
+                'username',
+                'shdw shdw--inst-gray shdw--elevated-s'
+            ]"
             :data-pressed="isInputActive">
             <div class="username-editor" v-show="isInputActive">
                 <div class="at-symbol">@</div>
@@ -22,14 +25,16 @@
 
                 <button
                     ref="submitButtonEl"
-                    class="submit-button"
+                    class="
+                        submit-button
+                        shdw shdw--inst-green
+                        shdw-filter shdw-filter--xs shdw-filter--green"
                     :data-pressed="isLoading"
                     :disabled="!isValidInput || isLoading"
                     aria-label="Submit username"
                     @blur="blur"
                     @click="submit">
-                    <LoadingSpinner
-                        v-if="isSpinning" />
+                    <LoadingSpinner v-if="isSpinning" class="loading-spinner" />
                     <i v-else class="submit-icon hn hn-check-solid"></i>
                 </button>
             </div>
@@ -150,7 +155,9 @@ function cancel() {
 async function blur(e) {
     if (e.target === inputEl.value?.innerElement &&
         !isInputActive.value) {
-        editButtonEl.value?.focus();
+        editButtonEl.value?.focus({
+            focusVisible: false
+        });
     }
 
     if (e.relatedTarget !== submitButtonEl.value &&
@@ -190,13 +197,12 @@ async function submit() {
 .account-widget-username-badge {
     align-items: stretch;
     display:     flex;
+    height:      36px;
     position:    relative;
 
     font-size:      2.6rem;
     letter-spacing: 0.06em;
     line-height:    1;
-
-    height: 36px;
 }
 
 .error-message {
@@ -208,8 +214,6 @@ async function submit() {
     font-size:           1.8rem;
     color:               var(--col-red-6);
     -webkit-text-stroke: var(--text-stroke-s);
-
-    paint-order: stroke;
 }
 
 .username {
@@ -218,49 +222,36 @@ async function submit() {
     grid-auto-rows:    minmax(0, 1fr);
     justify-items:     start;
 
-    --username-aura:   0 0;
-    --username-offset: 0px;
-
     background:
         linear-gradient(
             var(--col-gray-2) 50%,
             var(--col-gray-3) 50%);
 
-    box-shadow:
-        var(--username-aura),
-        0 calc(var(--shadow-dist-s) - var(--username-offset))
-        0 black,
-        var(--shadow-inst-gray);
-
     border-radius: var(--radius-s);
     border:        var(--border-s);
 
-    transition:
-        box-shadow 50ms ease,
-        translate  50ms ease;
+    translate: 
+        0 
+        calc(var(--shadow-dist-s) - var(--shdw-dist-elevation));
 
-    translate: 0 var(--username-offset);
+    &:has(> .username-button:hover) {
+        filter: var(--filter-hl-1);
+    }
 
-    corner-shape: notch;
-}
+    &[data-pressed=true] {
+        width: min(300px, 100%);
+    }
 
-.username:has(> .username-button:hover) {
-    filter: var(--filter-hl-1);
-}
+    &[data-pressed=true],
+    &[data-pressed=true]:has(> .username-button:hover) {
+        --shdw-dist-elevation: 0px;
+        --shdw-etc: var(--shadow-aura);
+    }
 
-.username[data-pressed=true] {
-    width: clamp(0px, 300px, 100%);
-}
-
-.username[data-pressed=true],
-.username[data-pressed=true]:has(> .username-button:hover) {
-    --username-aura:   var(--shadow-aura);
-    --username-offset: var(--shadow-dist-s);
-}
-
-.username-button,
-.username-editor {
-    grid-area: 1 / 1;
+    & > .username-button,
+    & > .username-editor {
+        grid-area: 1 / 1;
+    }
 }
 
 .username-button {
@@ -278,8 +269,6 @@ async function submit() {
     letter-spacing:      0.03em;
     text-overflow:       ellipsis;
     white-space:         nowrap;
-
-    paint-order: stroke;
 }
 
 .username-editor {
@@ -296,25 +285,20 @@ async function submit() {
 
     -webkit-text-stroke: var(--text-stroke-s);
     color:               black;
-
-    paint-order: stroke;
 }
 
 .base-input {
     margin:  0;
     padding: 0 4px 0 2.5px;
     width:   100%;
-
-    paint-order: stroke;
 }
 
 .submit-button {
     align-self:      stretch;
     display:         flex;
     justify-content: center;
-    padding:         0 13px;
     place-items:     center;
-    width:           55px;
+    width:           60px;
 
     color:     var(--col-green-9);
     font-size: 2.4rem;
@@ -325,63 +309,37 @@ async function submit() {
             var(--col-green-4) 50%);
 
     border-left: var(--border-s);
-    box-shadow:  var(--shadow-inst-green);
 
     border-radius:
         0
-        calc(var(--radius-s) - 1px)
-        calc(var(--radius-s) - 1px)
+        var(--radius-s)
+        var(--radius-s)
         0;
-}
 
-@supports (corner-shape: notch) {
-    .submit-button {
+    @supports not (corner-shape: notch) {
         border-radius:
             0
-            var(--radius-s)
-            var(--radius-s)
+            calc(var(--radius-s) - 1px)
+            calc(var(--radius-s) - 1px)
             0;
-
-        corner-shape: notch;
     }
-}
 
-.submit-button:active,
-.submit-button[data-pressed=true] {
-    background: linear-gradient(
-        var(--col-green-2) 56%,
-        var(--col-green-4) 56%);
+    &:active,
+    &[data-pressed=true] {
+        --shdw-dist-mult: -1;
+    }
 
-    box-shadow: inset 0 2px 0 black;
-}
+    &:disabled > .submit-icon {
+        opacity: 0.3;
+    }
 
-.submit-button:active .submit-icon {
-    transform: translateY(2px);
-}
+    & > .submit-icon {
+        font-size: 1.8rem;
+        translate: 1px 1.5px;
+    }
 
-.submit-button:disabled {
-    pointer-events: none;
-}
-
-.submit-button:disabled .submit-icon {
-    opacity: 0.3;
-}
-
-.submit-icon {
-    font-size: 1.8rem;
-
-    left:      1px;
-    top:       1px;
-    position:  relative;
-
-    filter:
-        drop-shadow(0  2px var(--col-green-5))
-        drop-shadow(2px 0  var(--col-green-5))
-        drop-shadow(0 -2px var(--col-green-1))
-        drop-shadow(-2px 0 var(--col-green-1));
-}
-
-.submit-button[data-pressed=true] .submit-icon {
-    transform: translateY(2px);
+    & > .loading-spinner {
+        font-size: 3.2rem;
+    }
 }
 </style>

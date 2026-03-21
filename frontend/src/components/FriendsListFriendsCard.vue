@@ -4,7 +4,10 @@
         :data-deleting="isDeleting"
         v-roving-container>
         <div
-            class="icon txtr-diag txtr-diag--orange"
+            class="
+                icon
+                txtr-diag txtr-diag--orange
+                shdw shdw--inst-orange shdw--otst-white"
             :style="{
                 '--blink-freq':   blinkFreq,
                 '--blink-delay':  blinkDelay,
@@ -21,7 +24,7 @@
         <div class="separator"></div>
 
         <div class="buttons">
-            <button ref="button1El" v-roving-item v-if="computedFriendType === 'active'"      class="button txtr-diag txtr-diag--dk-red" @click="deleteFriend">x</button>
+            <button ref="button1El" v-roving-item v-if="computedFriendType === 'active'"      class="button txtr-diag txtr-diag--dk-red shdw shdw--inst-red shdw--elevated-s" @click="deleteFriend">x</button>
             <button ref="button1El" v-roving-item v-if="computedFriendType === 'incoming'"    class="button" @click="acceptFriend">accept request</button>
             <button ref="button2El" v-roving-item v-if="computedFriendType === 'incoming'"    class="button" @click="deleteFriend">delete request</button>
             <button ref="button1El" v-roving-item v-if="computedFriendType === 'outgoing'"    class="button" @click="deleteFriend">cancel request</button>
@@ -112,18 +115,16 @@ onBeforeUnmount(() => {
 .friends-list-friends-card {
     contain: content;
 
-    display: grid;
-    gap: 6px 12px;
     grid-template:
         "icon username separator buttons" auto /
          auto auto     1fr       auto;
 
-    paint-order:         stroke;
+    display: grid;
+    gap:     6px 12px;
+    padding: 12px 24px;
 
-    font-size: 2.4rem;
     color:     black;
-
-    padding: var(--shadow-dist-s) 0;
+    font-size: 2.4rem;
 
     &[data-deleting=true] {
         filter:         grayscale(1);
@@ -148,14 +149,9 @@ onBeforeUnmount(() => {
 
     border:        var(--border-s);
     border-radius: var(--radius-s);
-    corner-shape:  notch;
 
     line-height: 0.8;
     text-align: center;
-
-    box-shadow:
-        var(--shadow-inst-orange),
-        var(--shadow-inst-dist) var(--shadow-inst-dist) var(--col-lt-gray-4);
 
     &::after {
         content: 'o_o';
@@ -195,11 +191,13 @@ onBeforeUnmount(() => {
 }
 
 .username {
-    cursor: default;
-    line-height: 1.2;
-    -webkit-text-stroke: var(--text-stroke-s);
     text-shadow:
-        var(--shadow-inst-dist) var(--shadow-inst-dist) var(--col-lt-gray-2);
+        var(--shadow-dist-s)
+        var(--shadow-dist-s)
+        var(--col-lt-gray-2);
+
+    cursor:      default;
+    line-height: 1.2;
 }
 
 .separator {
@@ -208,7 +206,7 @@ onBeforeUnmount(() => {
     --checker-size: 8px;
 
     height: var(--checker-size);
-    width: 100%;
+    width:  100%;
 
     background-image:
         conic-gradient(
@@ -240,10 +238,8 @@ onBeforeUnmount(() => {
         display:       grid;
         place-content: center;
 
-        padding-left: 1.2px;
+        padding-left:   1.2px;
         padding-bottom: 1.4px;
-
-        user-select: none;
 
         font-size:      2.1rem;
         letter-spacing: 0.04em;
@@ -257,29 +253,21 @@ onBeforeUnmount(() => {
                 var(--col-red-2) 50%,
                 var(--col-red-3) 50%);
 
-        box-shadow:
-            var(--shadow-s),
-            var(--shadow-inst-red);
-
         border-radius: var(--radius-s);
         border:        var(--border-s);
-        corner-shape:  notch;
 
-        transition:
-            translate  80ms,
-            box-shadow 80ms;
+        translate:
+            0
+            calc(var(--shdw-dist-elevation) * -1);
 
-        translate: 0 calc(var(--shadow-dist-s) * -1);
-
-        &:hover {
+        &:hover,
+        &:active {
             filter: var(--filter-hl-1);
         }
 
         &:active {
             translate: 0;
-            box-shadow:
-                0 0 black,
-                var(--shadow-inst-red);
+            --shdw-dist-elevation: 0;
         }
     }
 }

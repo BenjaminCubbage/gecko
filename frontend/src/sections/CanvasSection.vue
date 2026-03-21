@@ -1,7 +1,6 @@
 <template>
     <section>
         <RecipientSelect
-            :reveal="revealRecipientSelect"
             @selection-changed="recipientDeviceChanged" />
         <PicEditor :recipient-device="recipientDevice" />
     </section>
@@ -11,13 +10,6 @@
 import { ref }         from 'vue';
 import PicEditor       from '@/components/PicEditor.vue';
 import RecipientSelect from '@/components/RecipientSelect.vue';
-
-defineProps({
-    revealRecipientSelect: {
-        type:    Boolean,
-        default: true
-    }
-});
 
 const recipientDevice = ref(null);
 

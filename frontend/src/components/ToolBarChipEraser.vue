@@ -47,7 +47,6 @@ defineExpose({
     stroke:       black;
     stroke-width: 150px;
     transform:    scale(1.2);
-    paint-order:  stroke;
     translate:    0.2px 0.5px;
 
     & > .st0 { fill: #FFFFFF; }

@@ -1,0 +1,121 @@
+/*
+    This standardizes the most common usage for box-shadow in
+    this application, which is for a combination of a downward
+    black "elevated platform", a colorful inset bevel, and/or
+    an outset bevel for nested components.
+
+    So if you wanted e.g. a small black platform and a red inset
+    bevel for an X button, you would do:
+
+    <button
+        class="
+            x-button
+            shdw shdw--inst-red shdw--elevated-s">
+        X
+    </button>
+
+    There are also shdw-after/before classes to target
+    pseudoelements, but because I don't use those as often
+    I'm adding them as needed.
+*/
+
+.shdw,
+.shdw-after::after,
+.shdw-before::before {
+    --shdw-etc: 0 0;
+
+    --shdw-dist-elevation: 0px;
+    --shdw-dist-mult:      1;
+    --shdw-dist:           var(--shadow-dist-m);
+
+    --shdw-otst-1: #0000;
+    --shdw-otst-2: #0000;
+
+    --shdw-inst-1: #0000;
+    --shdw-inst-2: #0000;
+
+    box-shadow:
+        inset calc(var(--shdw-dist) * var(--shdw-dist-mult) * -1) calc(var(--shdw-dist) * var(--shdw-dist-mult) * -1) var(--shdw-inst-2),
+        inset calc(var(--shdw-dist) * var(--shdw-dist-mult))      calc(var(--shdw-dist) * var(--shdw-dist-mult))      var(--shdw-inst-1),
+
+        calc(var(--shdw-dist) * var(--shdw-dist-mult) * -1) calc(var(--shdw-dist) * var(--shdw-dist-mult) * -1) var(--shdw-otst-1),
+        calc(var(--shdw-dist) * var(--shdw-dist-mult))      calc(var(--shdw-dist) * var(--shdw-dist-mult))      var(--shdw-otst-2),
+
+        0 var(--shdw-dist-elevation) black,
+        
+        var(--shdw-etc);
+}
+
+/*
+    This can make a shadow look recessed into its parent
+    container. It doesn't apply to the elevation.
+*/
+.shdw--recessed,
+.shdw-after--recessed::after,
+.shdw-before--recessed::before {
+    --shdw-dist-mult: -1;
+}
+
+.shdw--inst-white  { --shdw-inst-2: var(--col-lt-gray-2); }
+.shdw--otst-white  { --shdw-otst-2: var(--col-lt-gray-2); }
+
+.shdw--inst-lt-gray { --shdw-inst-1: var(--col-lt-gray-0); --shdw-inst-2: var(--col-lt-gray-6); }
+.shdw--otst-lt-gray { --shdw-otst-1: var(--col-lt-gray-0); --shdw-otst-2: var(--col-lt-gray-6); }
+
+.shdw--inst-gray { --shdw-inst-1: var(--col-gray-0); --shdw-inst-2: var(--col-gray-4); }
+.shdw--otst-gray { --shdw-otst-1: var(--col-gray-0); --shdw-otst-2: var(--col-gray-4); }
+
+.shdw--inst-orange { --shdw-inst-1: var(--col-orange-0); --shdw-inst-2: var(--col-orange-7); }
+.shdw--otst-orange { --shdw-otst-1: var(--col-orange-0); --shdw-otst-2: var(--col-orange-7); }
+
+.shdw--inst-green, .shdw-after--inst-green::after { --shdw-inst-1: var(--col-green-0); --shdw-inst-2: var(--col-green-5); }
+.shdw--otst-green, .shdw-after--otst-green::after { --shdw-otst-1: var(--col-green-0); --shdw-otst-2: var(--col-green-5); }
+
+.shdw--inst-dk-green { --shdw-inst-1: var(--col-green-0); --shdw-inst-2: var(--col-green-6); }
+.shdw--otst-dk-green { --shdw-otst-1: var(--col-green-0); --shdw-otst-2: var(--col-green-6); }
+
+.shdw--inst-red { --shdw-inst-1: var(--col-red-0); --shdw-inst-2: var(--col-red-5); }
+.shdw--otst-red { --shdw-otst-1: var(--col-red-0); --shdw-otst-2: var(--col-red-5); }
+
+.shdw--inst-dk-red { --shdw-inst-1: var(--col-red-0); --shdw-inst-2: var(--col-red-6); }
+.shdw--otst-dk-red { --shdw-otst-1: var(--col-red-0); --shdw-otst-2: var(--col-red-6); }
+
+.shdw--inst-magenta { --shdw-inst-1: var(--col-magenta-0); --shdw-inst-2: var(--col-magenta-5); }
+.shdw--otst-magenta { --shdw-otst-1: var(--col-magenta-0); --shdw-otst-2: var(--col-magenta-5); }
+
+/*
+    These are for the bottom black elevation "platform". Small
+    elevation is mainly for buttons, and large elevation is for
+    big content containers.
+*/
+.shdw--elevated-xs { --shdw-dist-elevation: var(--shadow-dist-xs); }
+.shdw--elevated-s  { --shdw-dist-elevation: var(--shadow-dist-s); }
+.shdw--elevated-m  { --shdw-dist-elevation: var(--shadow-dist-m); }
+.shdw--elevated-l  { --shdw-dist-elevation: var(--shadow-dist-l); }
+
+/*
+    These shadows are mainly for button icons.
+*/
+
+.shdw-filter {
+    
+}
+
+.shdw-filter > * {
+    --shdw-filter-dist: var(--shadow-dist-m);
+    --shdw-filter-1: #0000;
+    --shdw-filter-2: #0000;
+
+    filter:
+        drop-shadow(     var(--shdw-filter-dist)            var(--shdw-filter-dist)       var(--shdw-filter-2))
+        drop-shadow(calc(var(--shdw-filter-dist) * -1) calc(var(--shdw-filter-dist) * -1) var(--shdw-filter-1));
+}
+
+.shdw-filter--xs > * { --shdw-filter-dist: var(--shadow-dist-xs); }
+.shdw-filter--s  > * { --shdw-filter-dist: var(--shadow-dist-s); }
+.shdw-filter--m  > * { --shdw-filter-dist: var(--shadow-dist-m); }
+.shdw-filter--l  > * { --shdw-filter-dist: var(--shadow-dist-l); }
+
+.shdw-filter--green  > * { --shdw-filter-1: var(--col-green-1); --shdw-filter-2: var(--col-green-6); }
+.shdw-filter--red    > * { --shdw-filter-1: var(--col-red-0);   --shdw-filter-2: var(--col-red-5); }
+.shdw-filter--dk-red > * { --shdw-filter-1: var(--col-red-0);   --shdw-filter-2: var(--col-red-6); }

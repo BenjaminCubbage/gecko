@@ -2,7 +2,8 @@
     <component :is="is" class="clippable-stroked-text">
         <span
             class="text text--back"
-            aria-hidden="true">
+            aria-hidden="true"
+            inert>
             <slot />
         </span>
 
@@ -44,11 +45,6 @@ defineProps({
 
 .text {
     grid-area: 1 / 1;
-
-    &.text--back {
-        pointer-events: none;
-        user-select:    none;
-    }
 
     &.text--front {
         -webkit-text-stroke: 0 black;

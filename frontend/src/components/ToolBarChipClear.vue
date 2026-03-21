@@ -131,9 +131,6 @@ defineExpose({
     translate:  0.2px 1.4px;
     transition: rotate 800ms ease;
 
-    paint-order: stroke;
-
-
     & > .st0 {
         fill: var(--col-red-4);
     }

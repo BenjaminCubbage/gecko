@@ -201,7 +201,6 @@ defineExpose({
     .stroke {
         stroke-width: 62px;
         stroke:       black;
-        paint-order:  stroke fill;
 
         @supports (-moz-appearance: none) {
             stroke-linecap:  round;
