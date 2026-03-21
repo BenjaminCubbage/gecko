@@ -49,7 +49,7 @@
                 {{ selectedOptionLabel }}
             </template>
             
-            <LoadingSpinner v-else />
+            <LoadingSpinner v-else class="loading-spinner" />
         </span>
 
         <div
@@ -65,7 +65,7 @@
                     {{ selectedOptionStatusLabel.text }}
                 </span>
             </template>
-            <LoadingSpinner v-else />
+            <LoadingSpinner v-else class="loading-spinner" />
         </div>
     </div>
 </template>
@@ -356,5 +356,10 @@ function tryMoveSelection(by) {
             rotate:        45deg;
         }
     }
+}
+
+.loading-spinner {
+    font-size: 2.6rem;
+    color:     black;
 }
 </style>
