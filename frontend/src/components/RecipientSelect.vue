@@ -99,7 +99,11 @@ watch(deviceOptions, () => {
 
 watch(selectedDevice, newValue => emit('selectionChanged', newValue));
 
-function getUserLabel  (user)   { return user?.username; }
+function getUserLabel(user)   { 
+    return session?.activeUserID !== user?.userID
+        ? user?.username
+        : `${user?.username} [me]`;
+}
 function getDeviceLabel(device) { return device?.name; }
 
 const deviceStatusLabels = {

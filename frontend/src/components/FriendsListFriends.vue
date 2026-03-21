@@ -28,15 +28,13 @@
                         v-roving-item />
                 </li>
 
-                <li
+                <FriendsListFriendsCard
                     v-for="friend in friends.activeFriends"
                     :key="friend.user.userID"
-                    class="list-item">
-                    <FriendsListFriendsCard
-                        :friend="friend"
-                        friend-type="active"
-                        v-roving-item />
-                </li>
+                    class="list-item"
+                    :friend="friend"
+                    friend-type="active"
+                    v-roving-item />
             </ul>
         </div>
     </div>
@@ -64,11 +62,18 @@ const friends = inject(Keys.FriendsStore);
 }
 
 .list {
+    contain: content;
+
     display:        flex;
     flex-direction: column;
     overflow:       auto;
-    padding:        6px;
+    padding:        6px 0;
     gap:            3px;
+    height:         260px;
+    
+    scrollbar-gutter: stable both-edges;
+
+    scrollbar-color: black transparent;
 
     background:    white;
     border-radius: var(--radius-s);

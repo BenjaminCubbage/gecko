@@ -135,7 +135,7 @@ onBeforeUnmount(() => {
 
     display: grid;
     gap:     3px 12px;
-    padding: 12px 24px;
+    padding: 12px 12px;
 
     color:     black;
     font-size: 2.4rem;
