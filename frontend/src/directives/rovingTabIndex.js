@@ -62,6 +62,13 @@ const Attributes = {
     Utilities
 */
 
+function scrollElementIntoView(el) {
+    el.scrollIntoView({
+        block:  'nearest',
+        inline: 'nearest'
+    });
+}
+
 function findAncestorElement(el, predicate) {
     while (el = el.parentElement)
         if (predicate(el))
@@ -223,11 +230,16 @@ function itemKeyDown(e) {
     case 'ArrowDown':
     case 'ArrowRight':
     {
-        getNextItem(e.currentTarget,
-            e.key === 'ArrowDown' ||
-            e.key === 'ArrowRight')?.focus();
-            
-        e.preventDefault();
+        const item = 
+            getNextItem(e.currentTarget,
+                e.key === 'ArrowDown' ||
+                e.key === 'ArrowRight');
+
+        if (item) {
+            item.focus();
+            scrollElementIntoView(item);
+            e.preventDefault();
+        }
     }
     break;
 
@@ -242,8 +254,10 @@ function itemKeyDown(e) {
                 homeIndex
             } = getContainerItems(subcontainer);
 
-            if (homeIndex !== -1)
+            if (homeIndex !== -1) {
                 items[homeIndex].focus();
+                scrollElementIntoView(items[homeIndex]);
+            }
 
             e.preventDefault();
         }
@@ -258,6 +272,7 @@ function itemKeyDown(e) {
 
         if (parentItem) {
             parentItem.focus();
+            scrollElementIntoView(parentItem);
             e.preventDefault();
         }
     }
@@ -267,10 +282,13 @@ function itemKeyDown(e) {
     case 'End':
     {
         const container = getItemContainer(e.currentTarget);
-        if (e.key === 'End')
-            getLastContainerItem(container).focus();
-        else
-            getFirstContainerItem(container).focus();
+
+        const newItem = e.key === 'End'
+            ? getLastContainerItem(container)
+            : getFirstContainerItem(container);
+
+        newItem.focus();
+        scrollElementIntoView(newItem);
     }
     break;
     }

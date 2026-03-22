@@ -2,7 +2,7 @@
     <div class="friends-list-friends">
         <FriendsListDetailsDialog 
             ref="detailsDialog"
-            :friend="detailedFriend"
+            :user="detailedFriend?.user"
             v-model:is-open="isDetailsOpen" />
 
         <ul v-roving-container>
@@ -11,7 +11,7 @@
                 :key="friend.user.userID"
                 v-roving-item>
                 <FriendsListFriendsCard
-                    :friend="friend" />
+                    :user="friend.user" />
             </li>
         </ul>
 
@@ -30,7 +30,7 @@
                     v-for="friend in friends.pendingOutgoing.value"
                     :key="friend.user.userID">
                     <FriendsListFriendsCard
-                        :friend="friend"
+                        :user="friend.user"
                         v-roving-item />
                 </li>
 
@@ -38,7 +38,7 @@
                     v-for="friend in friends.activeFriends.value"
                     :key="friend.user.userID"
                     class="list-item"
-                    :friend="friend"
+                    :user="friend.user"
                     v-roving-item
                     @show-friend-details="showFriendDetails" />
             </ul>

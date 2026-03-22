@@ -3,8 +3,8 @@
         ref="baseDialog" 
         color="orange"
         v-model:is-open="isOpen">
-        <template v-if="friend != null">
-            <FriendsListFriendsCard class="friends-list-friends-card" :friend="friend" variant="details" />
+        <template v-if="user != null">
+            <FriendsListFriendsCard :user="user" variant="details" />
         </template>
     </BaseDialog>
 </template>
@@ -12,22 +12,17 @@
 <script setup>
 import BaseDialog             from './BaseDialog.vue';
 import FriendsListFriendsCard from './FriendsListFriendsCard.vue';
-import { Friend }             from '@/models/friend.js';
+import { User }               from '@/models/user.js';
 
 const props = defineProps({
-    friend: {
+    user: {
         type:     null,
         required: true,
         validator(f) {
-            return f instanceof Friend || f == null;
+            return f instanceof User || f == null;
         }
     }
 });
 
 const isOpen = defineModel('isOpen');
 </script>
-
-<style scoped>
-.friends-list-friends-card {
-}
-</style>

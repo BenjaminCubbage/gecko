@@ -66,15 +66,13 @@ import {
     watch
 } from 'vue';
 
-import { 
-    Friend,
-    FriendStatus
-} from '@/models/friend.js';
-import { Keys }   from '@/core/di/keys.js';
+import { User }         from '@/models/user.js';
+import { FriendStatus } from '@/models/friend.js';
+import { Keys }         from '@/core/di/keys.js';
 
 const props = defineProps({
-    friend: {
-        type:     Friend,
+    user: {
+        type:     User,
         required: true
     },
 
@@ -107,23 +105,36 @@ const glanceYDelay = ref(`${Math.random() * 28000}ms`);
 const isDeleting  = ref(false);
 let deletingTimer = null;
 
-watch(() => props.friend, () => isDeleting.value = false);
+/*
+    The friend object associated with the provided user ID.
+
+    If the user is not a pending or active friend, this will
+    be null.
+*/
+const friend = computed(() => {
+    return friends.getFriendByUserID(props.user.userID);
+});
+
+watch(() => props.friend, () => {
+    isDeleting.value = false
+});
 
 const footnoteText = computed(() => {
-    switch (props.friend.status) {
-    case FriendStatus.Active: return `Friends since: ${props.friend.acceptedOn}`;
+    switch (friend.value?.status) {
+    case FriendStatus.Active: return `Friends since: ${friend.value.acceptedOn}`;
+    case null:                return 'Not Friends';
     }
 });
 
 async function acceptFriend() {
-    await friends.publishAcceptFriendRequest(session, props.friend.user.userID);
+    await friends.publishAcceptFriendRequest(session, friend.value.user.userID);
 }
 
 async function deleteFriend() {
     isDeleting.value = true;
 
     await new Promise((resolve => (deletingTimer = setTimeout(resolve, 500))));
-    await friends.publishDeleteFriendOrRequest(session, props.friend.user.userID);
+    await friends.publishDeleteFriendOrRequest(session, friend.value.user.userID);
     isDeleting.value = false;
 }
 
@@ -191,7 +202,7 @@ onBeforeUnmount(() => {
         }
 
         & > .buttons > .button {
-            height:    28px;
+            height:    32px;
             padding:   0 20px;
             width:     auto;
 

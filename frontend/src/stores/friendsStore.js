@@ -77,11 +77,18 @@ export class FriendsStore {
     }
 
     /*
+        Returns the friend with the provided user ID, if it exists.
+    */
+    getFriendByUserID(userID) {
+        return this.#friends.find(f => f.user.userID === userID);
+    }
+
+    /*
         Assign props to friend with userID, if it exists
         Returns the updated friend if it was found, otherwise null
     */
     updateFriendInCacheIfExists(userID, props) {
-        const friend = this.#friends.find(f => f.user.userID === userID);
+        const friend = this.getFriendByUserID(userID);
 
         if (!friend)
             return null;
@@ -182,7 +189,7 @@ export class FriendsStore {
         if (!session?.activeUser.value)
             throw new Error('[FriendsStore]: User not logged in');
 
-        const friend = this.#friends.find(f => f.user.userID === userID);
+        const friend = this.getFriendByUserID(userID);
 
         if (friend == null || friend.status !== FriendStatus.PendingIncoming)
             throw new Error(`[FriendsStore]: User ${userID} has no associate incoming friend request in cache`);
@@ -210,7 +217,7 @@ export class FriendsStore {
         Asks server to delete an existing or pending friendship.
     */
     async publishDeleteFriendOrRequest(session, userID) {
-        const friend = this.#friends.find(f => f.user.userID === userID);
+        const friend = this.getFriendByUserID(userID);
 
         if (!friend)
             throw new Error(`[FriendsStore]: User ${userID} is not a pending or active friend`);
