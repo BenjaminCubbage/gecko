@@ -39,7 +39,7 @@
 
         <div class="buttons">
             <button
-                v-if="computedFriendType === 'active'"
+                v-if="friend.status === FriendStatus.Active"
                 ref="button1El"
                 class="
                     button button--unfriend
@@ -49,10 +49,10 @@
                 v-roving-item>
             </button>
 
-            <button ref="button1El" v-roving-item v-if="computedFriendType === 'incoming'"    class="button" @click="acceptFriend">accept request</button>
+            <!-- <button ref="button1El" v-roving-item v-if="computedFriendType === 'incoming'"    class="button" @click="acceptFriend">accept request</button>
             <button ref="button2El" v-roving-item v-if="computedFriendType === 'incoming'"    class="button" @click="deleteFriend">delete request</button>
             <button ref="button1El" v-roving-item v-if="computedFriendType === 'outgoing'"    class="button" @click="deleteFriend">cancel request</button>
-            <button ref="button1El" v-roving-item v-if="computedFriendType === 'not-friends'" class="button" @click="requestFriend">send request</button>
+            <button ref="button1El" v-roving-item v-if="computedFriendType === 'not-friends'" class="button" @click="requestFriend">send request</button> -->
         </div>
     </div>
 </template>
@@ -66,27 +66,16 @@ import {
     watch
 } from 'vue';
 
-import { Friend } from '@/models/friend.js';
+import { 
+    Friend,
+    FriendStatus
+} from '@/models/friend.js';
 import { Keys }   from '@/core/di/keys.js';
 
 const props = defineProps({
     friend: {
         type:     Friend,
         required: true
-    },
-
-    friendType: {
-        type:    String,
-        default: 'auto-detect',
-        validator(value) {
-            return [
-                'auto-detect',
-                'active',
-                'incoming',
-                'outgoing',
-                'not-friends'
-            ].includes(value);
-        }
     },
 
     variant: {
@@ -120,20 +109,9 @@ let deletingTimer = null;
 
 watch(() => props.friend, () => isDeleting.value = false);
 
-const computedFriendType = computed(() => {
-    if (props.friendType !== 'auto-detect')
-        return props.friendType;
-
-    if (friends.pendingIncoming.some(f => f.user.userID === props.friend.user.userID)) return 'incoming';
-    if (friends.pendingOutgoing.some(f => f.user.userID === props.friend.user.userID)) return 'outgoing';
-    if (friends.activeFriends  .some(f => f.user.userID === props.friend.user.userID)) return 'active';
-
-    return 'not-friends';
-});
-
 const footnoteText = computed(() => {
-    switch (computedFriendType.value) {
-    case 'active': return `Friends since: ${props.friend.acceptedOn}`;
+    switch (props.friend.status) {
+    case FriendStatus.Active: return `Friends since: ${props.friend.acceptedOn}`;
     }
 });
 

@@ -76,7 +76,7 @@ const emit = defineEmits(['selectionChanged']);
 
 const userOptions = computed(() => {
     return devices.state.value === 'ready'
-        ? [session.activeUser.value, ...friends.activeFriends.map(f => f.user)]
+        ? [session.activeUser.value, ...friends.activeFriends.value.map(f => f.user)]
             .filter(user => user.userID in devices.deviceOwners)
         : [];
 });

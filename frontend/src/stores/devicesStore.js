@@ -176,7 +176,8 @@ export class DevicesStore {
     static #getIDs(session, friends) {
         return [
             session.activeUserID,
-            ...friends.activeFriends.map(f => f.user.userID)];
+            ...friends.activeFriends.value.map(f => f.user.userID)
+        ];
     }
 
     static #getDevices(deviceOwners) {

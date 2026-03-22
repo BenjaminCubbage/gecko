@@ -7,12 +7,11 @@
 
         <ul v-roving-container>
             <li
-                v-for="friend in friends.pendingIncoming"
+                v-for="friend in friends.pendingIncoming.value"
                 :key="friend.user.userID"
                 v-roving-item>
                 <FriendsListFriendsCard
-                    :friend="friend"
-                    friend-type="incoming" />
+                    :friend="friend" />
             </li>
         </ul>
 
@@ -28,20 +27,18 @@
                 tabindex="-1"
                 v-roving-container>
                 <li
-                    v-for="friend in friends.pendingOutgoing"
+                    v-for="friend in friends.pendingOutgoing.value"
                     :key="friend.user.userID">
                     <FriendsListFriendsCard
                         :friend="friend"
-                        friend-type="outgoing"
                         v-roving-item />
                 </li>
 
                 <FriendsListFriendsCard
-                    v-for="friend in friends.activeFriends"
+                    v-for="friend in friends.activeFriends.value"
                     :key="friend.user.userID"
                     class="list-item"
                     :friend="friend"
-                    friend-type="active"
                     v-roving-item
                     @show-friend-details="showFriendDetails" />
             </ul>

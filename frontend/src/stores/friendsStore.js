@@ -1,4 +1,5 @@
 import {
+    computed,
     reactive,
     readonly,
     ref
@@ -12,8 +13,11 @@ import {
 
 import { Dispatch }           from '@/core/dispatch/Dispatch.js';
 import { equalsIgnoreCase }   from '@/core/string/equalsIgnoreCase.js';
-import { Friend }             from '@//models/friend.js';
 import { MultiResourceMutex } from '@/core/async/mutex.js';
+
+import { 
+    FriendStatus, Friend 
+} from '@//models/friend.js';
 
 /*
     Stores the friends associated with a session's active user.
@@ -23,6 +27,8 @@ import { MultiResourceMutex } from '@/core/async/mutex.js';
          - pendingOutgoing()
 */
 export class FriendsStore {
+    #friends;
+
     #active;
     #pendingIn;
     #pendingOut;
@@ -30,35 +36,31 @@ export class FriendsStore {
     #state;
     #mutex;
 
-    #activeRO;
-    #pendingInRO;
-    #pendingOutRO;
     #stateRO;
 
     constructor() {
-        this.#active     = reactive([]);
-        this.#pendingIn  = reactive([]);
-        this.#pendingOut = reactive([]);
+        this.#friends = reactive([]);
 
         this.#mutex = new MultiResourceMutex();
         this.#state = ref('uninitialized');
 
-        this.#activeRO     = readonly(this.#active);
-        this.#pendingInRO  = readonly(this.#pendingIn);
-        this.#pendingOutRO = readonly(this.#pendingOut);
-        this.#stateRO      = readonly(this.#state);
+        this.#active     = computed(() => this.#friends.filter(f => f.status === FriendStatus.Active));
+        this.#pendingIn  = computed(() => this.#friends.filter(f => f.status === FriendStatus.PendingIncoming));
+        this.#pendingOut = computed(() => this.#friends.filter(f => f.status === FriendStatus.PendingOutgoing));
+
+        this.#stateRO = readonly(this.#state);
     }
 
     get activeFriends() {
-        return this.#activeRO;
+        return this.#active;
     }
 
     get pendingIncoming() {
-        return this.#pendingInRO;
+        return this.#pendingIn;
     }
 
     get pendingOutgoing() {
-        return this.#pendingOutRO;
+        return this.#pendingOut;
     }
 
     get state() {
@@ -70,7 +72,7 @@ export class FriendsStore {
         Returns the updated friend if it was found, otherwise null
     */
     updateFriendInCacheIfExists(userID, props) {
-        const [friend, _] = this.#getFriendInCacheByUserID(userID);
+        const friend = this.#friends.find(f => f.user.userID === userID);
 
         if (!friend)
             return null;
@@ -114,9 +116,14 @@ export class FriendsStore {
                 })
             ]);
 
-            FriendsStore.#setArr(this.#active,     activeFriends['friends'].map(Friend.fromJSON));
-            FriendsStore.#setArr(this.#pendingIn,  pendingFriends['friend_requests']['incoming'].map(Friend.fromJSON));
-            FriendsStore.#setArr(this.#pendingOut, pendingFriends['friend_requests']['outgoing'].map(Friend.fromJSON));
+            FriendsStore.#setArr(this.#friends,
+                [
+                    ...activeFriends['friends'].map(json => Friend.fromJSON(json, FriendStatus.Active)),
+                    ...pendingFriends['friend_requests']['incoming'].map(json => Friend.fromJSON(json, FriendStatus.PendingIncoming)),
+                    ...pendingFriends['friend_requests']['outgoing'].map(json => Friend.fromJSON(json, FriendStatus.PendingOutgoing))
+                ]
+            );
+
             this.#state.value = 'ready';
         } catch (e) {
             this.#state.value = 'error';
@@ -139,7 +146,7 @@ export class FriendsStore {
         if (session.activeUser.value.userID === targetUser.userID)
             throw new Error(`[FriendsStore]: Can't friend self`);
 
-        if (this.#getFriendInCacheByUserID(targetUser.userID)[0])
+        if (this.#friends.some(f => f.user.userID === targetUser.userID))
             throw new Error('[FriendsStore]: Friendship or friend request with that userID already exists in cache');
 
         if (!this.#mutex.tryLock(targetUser.userID))
@@ -166,9 +173,9 @@ export class FriendsStore {
         if (!session?.activeUser.value)
             throw new Error('[FriendsStore]: User not logged in');
 
-        const [friend, friendType] = this.#getFriendInCacheByUserID(userID);
+        const friend = this.#friends.find(f => f.user.userID === userID);
 
-        if (!friend || friendType != 'pendingin')
+        if (friend == null || friend.status !== FriendStatus.PendingIncoming)
             throw new Error(`[FriendsStore]: User ${userID} has no associate incoming friend request in cache`);
 
         if (!this.#mutex.tryLock(friend.user.userID))
@@ -194,7 +201,7 @@ export class FriendsStore {
         Asks server to delete an existing or pending friendship.
     */
     async publishDeleteFriendOrRequest(session, userID) {
-        const [friend, friendType] = this.#getFriendInCacheByUserID(userID);
+        const friend = this.#friends.find(f => f.user.userID === userID);
 
         if (!friend)
             throw new Error(`[FriendsStore]: User ${userID} is not a pending or active friend`);
@@ -203,7 +210,7 @@ export class FriendsStore {
             throw new ResourceLockedError();
 
         try {
-            if (friendType === 'active')
+            if (friend.status === FriendStatus.Active)
                 await new Promise((resolve, reject) => {
                     Dispatch.Delete_Friend(
                         session.activeUserID,
@@ -224,59 +231,14 @@ export class FriendsStore {
                         .onNetworkError(()             => reject(new NetworkError()));
                 });
 
-            switch (friendType) {
-            case 'active':     FriendsStore.#removeFromArr(this.#active,     friend); break;
-            case 'pendingin':  FriendsStore.#removeFromArr(this.#pendingIn,  friend); break;
-            case 'pendingout': FriendsStore.#removeFromArr(this.#pendingOut, friend); break;
-            }
+            FriendsStore.#removeFromArr(this.#friends, friend);
         } finally {
             this.#mutex.unlock(userID);
         }
     }
 
-    /*
-        Returns the first friendship matching the predicate,
-        as well as the type of that friendship, as a pair.
-        Returns [null, null] if no friend was found.
-        Return value is like:
-        [
-            [0]: readonly({ user_id: <userid>, ...}) | null,
-            [1]: 'active' | 'pendingin' | 'pendingout' | null
-        ]
-    */
-    getFriendInCacheByPredicate(predicate) {
-        return FriendsStore.#findInArr(this.activeFriends,   'active',     predicate) ??
-               FriendsStore.#findInArr(this.pendingIncoming, 'pendingin',  predicate) ??
-               FriendsStore.#findInArr(this.pendingOutgoing, 'pendingout', predicate) ??
-               [null, null];
-    }
-
-    /*
-        Ditto
-    */
-    getFriendInCacheByUsername(username) {
-        return this.getFriendInCacheByPredicate(
-            friend => equalsIgnoreCase(friend.user.username, username));
-    }
-
-    /*
-        Private variants: get non-readonly friends by predicate
-    */
-
-    #getFriendInCacheByPredicate(predicate) {
-        return FriendsStore.#findInArr(this.#active,     'active',     predicate) ??
-               FriendsStore.#findInArr(this.#pendingIn,  'pendingin',  predicate) ??
-               FriendsStore.#findInArr(this.#pendingOut, 'pendingout', predicate) ??
-               [null, null];
-    }
-
-    #getFriendInCacheByUserID(userID) {
-        return this.#getFriendInCacheByPredicate(
-            friend => friend.user.userID === userID);
-    }
-
     static #setArr(arr, newValue) {
-        arr.splice(0, arr.length);
+        arr.length = 0;
         arr.push(...newValue);
     }
 
@@ -294,16 +256,5 @@ export class FriendsStore {
             return false;
         arr.splice(index, 1);
         return true;
-    }
-
-    /*
-        Returns null (not a pair) on failure for convenient
-        chaining.
-    */
-    static #findInArr(arr, type, predicate) {
-        const found = arr.find(predicate);
-        if (found)
-            return [found, type];
-        return null;
     }
 }
