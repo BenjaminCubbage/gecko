@@ -21,9 +21,12 @@ import {
 
 /*
     Stores the friends associated with a session's active user.
-    Contains three collections:
-         - activeFriends(),
-         - pendingIncoming(), and
+
+    Contains one main collection, allFriends(), which includes
+    pending incoming and outgoing friendships, as well as three
+    derived views:
+         - activeFriends()
+         - pendingIncoming()
          - pendingOutgoing()
 */
 export class FriendsStore {
@@ -36,6 +39,7 @@ export class FriendsStore {
     #state;
     #mutex;
 
+    #friendsRO;
     #stateRO;
 
     constructor() {
@@ -48,7 +52,12 @@ export class FriendsStore {
         this.#pendingIn  = computed(() => this.#friends.filter(f => f.status === FriendStatus.PendingIncoming));
         this.#pendingOut = computed(() => this.#friends.filter(f => f.status === FriendStatus.PendingOutgoing));
 
-        this.#stateRO = readonly(this.#state);
+        this.#friendsRO = readonly(this.#friends);
+        this.#stateRO   = readonly(this.#state);
+    }
+
+    get allFriends() {
+        return this.#friendsRO;
     }
 
     get activeFriends() {
@@ -82,8 +91,8 @@ export class FriendsStore {
     }
 
     /*
-        Sync up with server. If the user is not logged in, set all
-        collections to empty.
+        Sync up with server. If the user is not logged in, set friends
+        collection to empty.
     */
     async requestResync(session) {
         if (!this.#mutex.tryLockAll())
