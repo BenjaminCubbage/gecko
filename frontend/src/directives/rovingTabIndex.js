@@ -226,6 +226,8 @@ function itemKeyDown(e) {
         getNextItem(e.currentTarget,
             e.key === 'ArrowDown' ||
             e.key === 'ArrowRight')?.focus();
+            
+        e.preventDefault();
     }
     break;
 

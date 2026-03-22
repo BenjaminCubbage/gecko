@@ -290,16 +290,20 @@ onBeforeUnmount(() => {
 
 .username,
 .footnote {
+    filter:
+        drop-shadow(3px 3px var(--col-lt-gray-5));
+
     -webkit-text-stroke: var(--text-stroke-s);
-    filter: drop-shadow(3px 3px var(--col-lt-gray-5));
+    text-align:          left;
 
     &.username {
         line-height: 0.85;
-        word-break: break-all;
+        word-break:  break-all;
 
         &:hover,
         &:focus-visible,
         &:active {
+            transform-origin: 0% 50%;
             scale: 1.03;
         }
     }

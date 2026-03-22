@@ -6,7 +6,8 @@
             txtr-diag txtr-diag--${color}
             shdw shdw--inst-${color} shdw--elevated-l`"
         closedby="any" 
-        @close="dialogClosed">
+        @close="dialogClosed"
+        tabindex="-1">
         <div 
             :class="`
                 inner-border
@@ -18,9 +19,12 @@
 
 <script setup>
 import { 
+    nextTick,
     useTemplateRef, 
     watch 
 } from 'vue';
+
+import { focusFirstFocusableChild } from '@/core/dom/focusable';
 
 const props = defineProps({
     color: {
@@ -37,10 +41,26 @@ const isOpen = defineModel('isOpen', {
 });
 
 watch([isOpen, innerElement], () => {
-    if (isOpen.value)
-        innerElement.value?.showModal();
-    else
-        innerElement.value?.close();
+    if (innerElement.value == null)
+        return;
+
+    const currentlyOpen = innerElement.value.open;
+
+    if (isOpen.value && !currentlyOpen) {
+        innerElement.value.showModal();
+
+        nextTick(() => {
+            /*
+                Even with a tabindex of -1, the dialog was being
+                focused instead of its content. This makes sure
+                we focus the first focusable child.
+            */
+            if (innerElement.value != null)
+                focusFirstFocusableChild(innerElement.value);
+        });
+    }
+    else if (currentlyOpen)
+        innerElement.value.close();
 }, {
     immediate: true
 });
