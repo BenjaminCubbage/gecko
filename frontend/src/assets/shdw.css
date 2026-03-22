@@ -60,7 +60,7 @@
 .shdw--otst-white  { --shdw-otst-2: var(--col-lt-gray-2); }
 
 .shdw--inst-lt-gray { --shdw-inst-1: var(--col-lt-gray-0); --shdw-inst-2: var(--col-lt-gray-6); }
-.shdw--otst-lt-gray { --shdw-otst-1: var(--col-lt-gray-0); --shdw-otst-2: var(--col-lt-gray-6); }
+.shdw--otst-lt-gray { --shdw-otst-1: var(--col-lt-gray-0); --shdw-otst-2: var(--col-lt-gray-5); }
 
 .shdw--inst-gray { --shdw-inst-1: var(--col-gray-0); --shdw-inst-2: var(--col-gray-4); }
 .shdw--otst-gray { --shdw-otst-1: var(--col-gray-0); --shdw-otst-2: var(--col-gray-4); }
@@ -74,11 +74,11 @@
 .shdw--inst-dk-green { --shdw-inst-1: var(--col-green-0); --shdw-inst-2: var(--col-green-6); }
 .shdw--otst-dk-green { --shdw-otst-1: var(--col-green-0); --shdw-otst-2: var(--col-green-6); }
 
-.shdw--inst-red { --shdw-inst-1: var(--col-red-0); --shdw-inst-2: var(--col-red-5); }
-.shdw--otst-red { --shdw-otst-1: var(--col-red-0); --shdw-otst-2: var(--col-red-5); }
+.shdw--inst-red { --shdw-inst-1: var(--col-red-1); --shdw-inst-2: var(--col-red-6); }
+.shdw--otst-red { --shdw-otst-1: var(--col-red-1); --shdw-otst-2: var(--col-red-6); }
 
-.shdw--inst-dk-red { --shdw-inst-1: var(--col-red-0); --shdw-inst-2: var(--col-red-6); }
-.shdw--otst-dk-red { --shdw-otst-1: var(--col-red-0); --shdw-otst-2: var(--col-red-6); }
+.shdw--inst-dk-red { --shdw-inst-1: var(--col-red-1); --shdw-inst-2: var(--col-red-6); }
+.shdw--otst-dk-red { --shdw-otst-1: var(--col-red-1); --shdw-otst-2: var(--col-red-6); }
 
 .shdw--inst-magenta { --shdw-inst-1: var(--col-magenta-0); --shdw-inst-2: var(--col-magenta-5); }
 .shdw--otst-magenta { --shdw-otst-1: var(--col-magenta-0); --shdw-otst-2: var(--col-magenta-5); }

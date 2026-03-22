@@ -1,13 +1,15 @@
 <template>
     <div
-        class="friends-list-friends-card"
+        :class="`
+            friends-list-friends-card
+            friends-list-friends-card--variant-${variant}`"
         :data-deleting="isDeleting"
         v-roving-container>
         <div
             class="
                 icon
                 txtr-diag txtr-diag--orange
-                shdw shdw--inst-orange shdw--otst-white"
+                shdw shdw--inst-orange shdw--otst-lt-gray"
             :style="{
                 '--blink-freq':   blinkFreq,
                 '--blink-delay':  blinkDelay,
@@ -19,19 +21,34 @@
             inert>
         </div>
 
-        <span class="username">@{{ friend.user.username }}</span>
+        <component
+            :is="variant === 'normal' ? 'button' : 'span'"
+            class="username"
+            @click="emit('showFriendDetails', friend)"
+            v-roving-item="variant === 'normal'">
+            @{{ friend.user.username }}
+        </component>
 
-        <span v-if="footnoteText" class="
-            footnote
-            txtr-diag txtr-diag--orange
-            shdw shdw--otst-white">
+        <span
+            v-if="variant === 'details' && footnoteText"
+            class="footnote">
             {{ footnoteText }}
         </span>
 
-        <div class="separator"></div>
+        <div class="separator" aria-hidden></div>
 
         <div class="buttons">
-            <button ref="button1El" v-roving-item v-if="computedFriendType === 'active'"      class="button txtr-diag txtr-diag--dk-red shdw shdw--inst-red shdw--elevated-s" @click="deleteFriend">x</button>
+            <button
+                v-if="computedFriendType === 'active'"
+                ref="button1El"
+                class="
+                    button button--unfriend
+                    txtr-diag txtr-diag--dk-red
+                    shdw shdw--inst-dk-red shdw--elevated-s"
+                @click="deleteFriend"
+                v-roving-item>
+            </button>
+
             <button ref="button1El" v-roving-item v-if="computedFriendType === 'incoming'"    class="button" @click="acceptFriend">accept request</button>
             <button ref="button2El" v-roving-item v-if="computedFriendType === 'incoming'"    class="button" @click="deleteFriend">delete request</button>
             <button ref="button1El" v-roving-item v-if="computedFriendType === 'outgoing'"    class="button" @click="deleteFriend">cancel request</button>
@@ -45,7 +62,8 @@ import {
     computed,
     inject,
     onBeforeUnmount,
-    ref
+    ref,
+    watch
 } from 'vue';
 
 import { Friend } from '@/models/friend.js';
@@ -69,8 +87,21 @@ const props = defineProps({
                 'not-friends'
             ].includes(value);
         }
+    },
+
+    variant: {
+        type:    String,
+        default: 'normal',
+        validator(value) {
+            return [
+                'normal',
+                'details'
+            ].includes(value);
+        }
     }
 });
+
+const emit = defineEmits(['showFriendDetails']);
 
 const session = inject(Keys.SessionStore);
 const friends = inject(Keys.FriendsStore);
@@ -87,6 +118,8 @@ const glanceYDelay = ref(`${Math.random() * 28000}ms`);
 const isDeleting  = ref(false);
 let deletingTimer = null;
 
+watch(() => props.friend, () => isDeleting.value = false);
+
 const computedFriendType = computed(() => {
     if (props.friendType !== 'auto-detect')
         return props.friendType;
@@ -100,7 +133,7 @@ const computedFriendType = computed(() => {
 
 const footnoteText = computed(() => {
     switch (computedFriendType.value) {
-    case 'active': return `Since ${props.friend.acceptedOn}`;
+    case 'active': return `Friends since: ${props.friend.acceptedOn}`;
     }
 });
 
@@ -113,6 +146,7 @@ async function deleteFriend() {
 
     await new Promise((resolve => (deletingTimer = setTimeout(resolve, 500))));
     await friends.publishDeleteFriendOrRequest(session, props.friend.user.userID);
+    isDeleting.value = false;
 }
 
 async function requestFriend() {
@@ -126,19 +160,73 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .friends-list-friends-card {
-    contain: content;
-
-    grid-template:
-        "icon username separator buttons" auto 
-        "icon footnote separator buttons" auto /
-         auto auto     1fr       auto;
+    contain:   content;
+    isolation: isolate;
 
     display: grid;
-    gap:     3px 12px;
-    padding: 12px 12px;
+    gap:     12px;
+    padding: 12px;
 
     color:     black;
     font-size: 2.4rem;
+
+    &.friends-list-friends-card--variant-normal {
+        gap: 0 12px;
+
+        grid-template:
+            "icon username separator buttons" 30px /
+            auto auto     1fr        auto;
+
+        & > .icon      { grid-area: icon;      place-self: center start; }
+        & > .username  { grid-area: username;  place-self: center start; }
+        & > .separator { grid-area: separator; place-self: center right; }
+        & > .buttons   { grid-area: buttons;   place-self: center start; }
+    }
+
+    &.friends-list-friends-card--variant-details {
+        gap:     0 15px;
+        padding: 15px 15px 9px;
+
+        grid-template:
+            "icon      username  separator" auto
+            ".         footnote  footnote" 24px
+            ".         .         ."        12px
+            "buttons   buttons buttons"  auto /
+             auto      auto    1fr;
+
+        & > .icon      { grid-area: icon;      place-self: center;}
+        & > .username  { grid-area: username;  place-self: center left; }
+        & > .footnote  { grid-area: footnote;  place-self: end   left; }
+        & > .separator { grid-area: separator; place-self: center; }
+        & > .buttons   { grid-area: buttons;   place-self: center; }
+
+        /*
+            These are variations to the classes defined below.
+
+            When we are showing the details screen, we want
+            to style some classes a bit differently.
+        */
+
+        & > .username {
+            pointer-events: none;
+            font-size:      1.1em;
+        }
+
+        & > .buttons > .button {
+            height:    28px;
+            padding:   0 20px;
+            width:     auto;
+
+            -webkit-text-stroke: var(--text-stroke-s);
+            font-size:           1.9rem;
+            letter-spacing:      0.07em;
+            text-shadow:         none;
+
+            &::after {
+                content: 'UNFRIEND';
+            }
+        }
+    }
 
     &[data-deleting=true] {
         filter:         grayscale(1);
@@ -151,12 +239,6 @@ onBeforeUnmount(() => {
             translate: 0 3px;
         }
     }
-
-    & > .icon      { grid-area: icon;      place-self: center start; }
-    & > .username  { grid-area: username;  place-self: end start; }
-    & > .footnote  { grid-area: footnote;  place-self: start start; }
-    & > .separator { grid-area: separator; place-self: center right; }
-    & > .buttons   { grid-area: buttons;   place-self: center start; }
 }
 
 .icon {
@@ -208,32 +290,30 @@ onBeforeUnmount(() => {
 
 .username,
 .footnote {
-    cursor: default;
+    -webkit-text-stroke: var(--text-stroke-s);
+    filter: drop-shadow(3px 3px var(--col-lt-gray-5));
 
     &.username {
-        line-height: 1;
-        
-        text-shadow:
-            var(--shadow-dist-s)
-            var(--shadow-dist-s)
-            var(--col-lt-gray-2);
+        line-height: 0.85;
+        word-break: break-all;
+
+        &:hover,
+        &:focus-visible,
+        &:active {
+            scale: 1.03;
+        }
     }
 
     &.footnote {
-        margin: -2px -6px;
-        padding: 2px  6px;
-
-        color:       black;
-        font-size:   0.8em;
-        line-height: 0.8;
-
-        border-radius: var(--radius-s);
+        cursor: default;
+        font-size:            0.8em;
+        font-variant-numeric: tabular-nums;
     }
 }
 
 .separator {
     --checker-col-1: var(--col-orange-3);
-    --checker-col-2: var(--col-orange-4);
+    --checker-col-2: var(--col-orange-5);
     --checker-size: 8px;
 
     height: var(--checker-size);
@@ -251,6 +331,8 @@ onBeforeUnmount(() => {
     background-position: right;
     background-size: var(--checker-size) var(--checker-size);
 
+    filter: drop-shadow(3px 3px var(--col-lt-gray-4));
+
     @supports (width: round(down, 100%, 1px)) {
         width: round(down, 100%, var(--checker-size));
     }
@@ -259,47 +341,54 @@ onBeforeUnmount(() => {
 .buttons {
     display:        flex;
     flex-direction: row-reverse;
+}
 
-    & > .button {
-        --press-depth: 0px;
+.button {
+    --hl: brightness(1);
 
-        width:  32px;
-        height: 26px;
+    width:  32px;
+    height: 26px;
 
-        display:       grid;
-        place-content: center;
+    display:       grid;
+    place-content: center;
 
-        padding-left:   1.2px;
-        padding-bottom: 1.4px;
+    padding-left:   1.2px;
+    padding-bottom: 1.4px;
 
-        font-size:      2.1rem;
-        letter-spacing: 0.04em;
+    font-size:      2.1rem;
+    letter-spacing: 0.04em;
 
-        text-shadow:
-             1.5px  1.5px var(--col-red-4),
-            -1.5px -1.5px var(--col-red-1);
+    text-shadow:
+         1.5px  1.5px var(--col-red-4),
+        -1.5px -1.5px var(--col-red-1);
 
-        background:
-            linear-gradient(
-                var(--col-red-2) 50%,
-                var(--col-red-3) 50%);
+    border-radius: var(--radius-s);
+    border:        var(--border-s);
 
-        border-radius: var(--radius-s);
-        border:        var(--border-s);
+    translate:
+        0
+        calc(var(--shdw-dist-elevation) * -1);
 
-        translate:
-            0
-            calc(var(--shdw-dist-elevation) * -1);
+    filter:
+        drop-shadow(3px 3px var(--col-lt-gray-5))
+        var(--hl);
 
-        &:hover,
-        &:active {
-            filter: var(--filter-hl-1);
+    /*
+        Variants
+    */
+    &.button--unfriend {
+        &::after {
+            content: 'x';
         }
+    }
 
-        &:active {
-            translate: 0;
-            --shdw-dist-elevation: 0;
-        }
+    &:hover,
+    &:active {
+        --hl: var(--filter-hl-1);
+    }
+
+    &:active {
+        --shdw-dist-elevation: 0;
     }
 }
 </style>

@@ -1,5 +1,10 @@
 <template>
     <div class="friends-list-friends">
+        <FriendsListDetailsDialog 
+            ref="detailsDialog"
+            :friend="detailedFriend"
+            v-model:is-open="isDetailsOpen" />
+
         <ul v-roving-container>
             <li
                 v-for="friend in friends.pendingIncoming"
@@ -15,9 +20,12 @@
             list-border 
             txtr-diag txtr-diag--orange 
             shdw shdw--inst-orange shdw--elevated-l">
+            <!-- For some reason FF is allowing focus on this ul if I 
+                 don't set tabindex to -1 -->
             <ul class="
                 list 
-                shdw shdw--recessed shdw--otst-orange shdw--inst-white"
+                shdw shdw--recessed shdw--otst-orange shdw--inst-lt-gray"
+                tabindex="-1"
                 v-roving-container>
                 <li
                     v-for="friend in friends.pendingOutgoing"
@@ -34,24 +42,45 @@
                     class="list-item"
                     :friend="friend"
                     friend-type="active"
-                    v-roving-item />
+                    v-roving-item
+                    @show-friend-details="showFriendDetails" />
             </ul>
         </div>
     </div>
 </template>
 
 <script setup>
-import { inject }             from 'vue';
-import FriendsListFriendsCard from './FriendsListFriendsCard.vue';
-import { Keys }               from '@/core/di/keys.js';
+import { 
+    inject,
+    ref
+} from 'vue';
+
+import FriendsListDetailsDialog from './FriendsListDetailsDialog.vue';
+import FriendsListFriendsCard   from './FriendsListFriendsCard.vue';
+import { Keys }                 from '@/core/di/keys.js';
+
 const session = inject(Keys.SessionStore);
 const friends = inject(Keys.FriendsStore);
+
+const isDetailsOpen  = ref(false);
+const detailedFriend = ref(null);
+
+function showFriendDetails(friend) {
+    detailedFriend.value = friend;
+    isDetailsOpen.value  = true;
+}
 </script>
 
 <style scoped>
 .friends-list-friends {
     display:        flex;
     flex-direction: column;
+}
+
+.details-dialog {
+    width: 100px;
+    height: 100px;
+    
 }
 
 .list-border {
@@ -66,16 +95,15 @@ const friends = inject(Keys.FriendsStore);
 
     display:        flex;
     flex-direction: column;
+    gap:            3px;
+    max-height:     max(30vh, 100px);
     overflow:       auto;
     padding:        6px 0;
-    gap:            3px;
-    height:         260px;
     
+    scrollbar-color:  black transparent;
     scrollbar-gutter: stable both-edges;
 
-    scrollbar-color: black transparent;
-
-    background:    white;
+    background:    var(--col-lt-gray-1);
     border-radius: var(--radius-s);
     border:        var(--border-s);
 }
