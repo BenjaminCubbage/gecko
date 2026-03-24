@@ -201,11 +201,6 @@ defineExpose({
     .stroke {
         stroke-width: 62px;
         stroke:       black;
-
-        @supports (-moz-appearance: none) {
-            stroke-linecap:  round;
-            stroke-linejoin: round;
-        }
     }
 
     & > svg > .st0{ fill:#FF0600; }

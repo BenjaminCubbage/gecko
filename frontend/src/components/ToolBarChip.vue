@@ -12,7 +12,7 @@
             tool-bar-chip--hl-style-${highlightStyle}
             tool-bar-chip--disable-style-${disableStyle}`"
         @click="click">
-        <div v-if="iconPlacement !== 'none'" class="icon" aria-hidden="true">
+        <div v-if="iconPlacement !== 'none'" class="icon" aria-hidden>
             <slot name="icon"></slot>
         </div>
 

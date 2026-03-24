@@ -25,6 +25,7 @@ export class Friend {
     }
 
     setAcceptedOnNow() {
+        this.status     = FriendStatus.Active;
         this.acceptedOn = Friend._stringifyDate(new Date());
     }
 

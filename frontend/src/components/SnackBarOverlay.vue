@@ -8,7 +8,7 @@
                 class="snack-bar-content"
                 :data-dismissed-manually="dismissedManually"
                 :key="latestMessage.id">
-                <span aria-hidden="true" style="display: contents">
+                <span style="display: contents" aria-hidden>
                     {{ latestMessage.text }}
                 </span>
 
@@ -184,7 +184,8 @@ function handleFocus(e) {
 
     translate: 0 calc(var(--shadow-dist-s) - var(--shdw-dist-elevation));
 
-    &:hover {
+    &:hover,
+    &:active {
         filter: var(--filter-hl-1);
     }
 

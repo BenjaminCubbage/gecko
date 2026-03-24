@@ -1,44 +1,44 @@
 <template>
     <div class="friends-list-friends">
-        <FriendsListDetailsDialog 
+        <FriendsListDetailsDialog
             ref="detailsDialog"
             :user="detailedFriend?.user"
             v-model:is-open="isDetailsOpen" />
 
-        <ul v-roving-container>
-            <li
-                v-for="friend in friends.pendingIncoming.value"
-                :key="friend.user.userID"
-                v-roving-item>
-                <FriendsListFriendsCard
-                    :user="friend.user" />
-            </li>
-        </ul>
-
         <div class="
-            list-border 
-            txtr-diag txtr-diag--orange 
+            list-border
+            txtr-diag txtr-diag--orange
             shdw shdw--inst-orange shdw--elevated-l">
-            <!-- For some reason FF is allowing focus on this ul if I 
+            <!-- For some reason FF is allowing focus on this ul if I
                  don't set tabindex to -1 -->
             <ul class="
-                list 
+                list
                 shdw shdw--recessed shdw--otst-orange shdw--inst-lt-gray"
                 tabindex="-1"
                 v-roving-container>
-                <li
+                <FriendsListFriendsCard
+                    v-for="friend in friends.pendingIncoming.value"
+                    role="listitem"
+                    class="list-item"
+                    :user="friend.user"
+                    :key="friend.user.userID"
+                    v-roving-item />
+
+                <FriendsListFriendsCard
                     v-for="friend in friends.pendingOutgoing.value"
-                    :key="friend.user.userID">
-                    <FriendsListFriendsCard
-                        :user="friend.user"
-                        v-roving-item />
-                </li>
+                    role="listitem"
+                    class="list-item"
+                    :user="friend.user"
+                    :key="friend.user.userID"
+                    v-roving-item
+                    @show-friend-details="showFriendDetails" />
 
                 <FriendsListFriendsCard
                     v-for="friend in friends.activeFriends.value"
-                    :key="friend.user.userID"
+                    role="listitem"
                     class="list-item"
                     :user="friend.user"
+                    :key="friend.user.userID"
                     v-roving-item
                     @show-friend-details="showFriendDetails" />
             </ul>
@@ -47,7 +47,7 @@
 </template>
 
 <script setup>
-import { 
+import {
     inject,
     ref
 } from 'vue';
@@ -74,12 +74,6 @@ function showFriendDetails(friend) {
     flex-direction: column;
 }
 
-.details-dialog {
-    width: 100px;
-    height: 100px;
-    
-}
-
 .list-border {
     padding: 9px;
 
@@ -93,15 +87,32 @@ function showFriendDetails(friend) {
     display:        flex;
     flex-direction: column;
     gap:            3px;
-    max-height:     max(30vh, 100px);
+    max-height:     max(50vh, 100px);
     overflow:       auto;
-    padding:        6px 0;
-    
-    scrollbar-color:  black transparent;
-    scrollbar-gutter: stable both-edges;
+
+    padding:        var(--shadow-dist-m);
+    scroll-padding: 10px;
+
+    scrollbar-color: var(--col-gray-3) transparent;
 
     background:    var(--col-lt-gray-1);
     border-radius: var(--radius-s);
     border:        var(--border-s);
+
+    & > .list-item {
+        margin: 3px;
+
+        border: var(--border-thickness-s) solid var(--col-gray-4);
+        border-radius: var(--radius-s);
+
+        box-shadow: 
+            0 var(--shadow-dist-s) var(--col-gray-4),
+            3px 6px var(--col-gray-1);
+
+        background: 
+            linear-gradient(
+                var(--col-gray-0) 50%,
+                var(--col-gray-1) 50%);
+    }
 }
 </style>

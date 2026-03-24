@@ -134,11 +134,6 @@ defineExpose({
     & > .st0 {
         fill: var(--col-red-4);
     }
-
-    @supports (-moz-appearance: none) {
-        stroke-linecap:  round;
-        stroke-linejoin: round;
-    }
 }
 
 /*

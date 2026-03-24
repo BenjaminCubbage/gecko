@@ -2,7 +2,6 @@
     <component :is="is" class="clippable-stroked-text">
         <span
             class="text text--back"
-            aria-hidden="true"
             inert>
             <slot />
         </span>

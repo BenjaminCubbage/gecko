@@ -206,8 +206,6 @@ export class FriendsStore {
             });
 
             friend.setAcceptedOnNow();
-            FriendsStore.#removeFromArr(this.#pendingIn, friend);
-            FriendsStore.#pushToArr(this.#active, friend);
         } finally {
             this.#mutex.unlock(friend.user.userID);
         }

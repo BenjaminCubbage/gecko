@@ -52,19 +52,4 @@ defineExpose({
     & > .st0 { fill: #FFFFFF; }
     & > .st1 { fill: #F69DF4; }
 }
-
-/*
-    Firefox uses rounded linejoins for the stroked-text
-    property, and there's no way to change this.
-
-    Set stroke-linejoin to round on FF to make the SVG
-    visually consistent with text-based icons that have
-    strokes set using the property.
-*/
-@supports (-moz-appearance: none) {
-    .icon-svg {
-        stroke-linecap:  round;
-        stroke-linejoin: round;
-    }
-}
 </style>

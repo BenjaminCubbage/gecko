@@ -116,11 +116,6 @@ defineExpose({
     & > .stroke {
         stroke:       black;
         stroke-width: 5.8px;
-
-        @supports (-moz-appearance: none) {
-            stroke-linecap:  round;
-            stroke-linejoin: round;
-        }
     }
 
     & > .st0{ fill: #ff9e01; }

@@ -58,7 +58,7 @@
                 status
                 shdw shdw--inst-lt-gray shdw--elevated-s"
             :class="`status--${selectedOptionStatusLabel?.color ?? 'blue'}`"
-            aria-hidden="true">
+            aria-hidden>
             <template v-if="selectedOptionStatusLabel">
                 <span class="status-dot"></span>
                 <span class="status-text">

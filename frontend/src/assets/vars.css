@@ -75,8 +75,8 @@
     --col-magenta-5: #f348f6;
     --col-magenta-6: #d82ddb;
 
-    --border-thickness-s: 2.5px;
-    --border-thickness-l: 2.5px;
+    --border-thickness-s:  2.5px;
+    --border-thickness-l:  2.5px;
 
     --border-s: var(--border-thickness-s) solid black;
     --border-l: var(--border-thickness-l) solid black;
