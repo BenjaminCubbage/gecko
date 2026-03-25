@@ -29,6 +29,7 @@
                     role="listitem"
                     class="list-item"
                     :user="friend?.user"
+                    :is-expanded="friend != null && isDetailsOpen && detailedFriend.user.userID == friend.user.userID"
                     :key="index"
                     v-roving-item
                     @show-friend-details="showFriendDetails" />

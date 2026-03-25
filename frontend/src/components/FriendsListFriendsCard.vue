@@ -7,6 +7,7 @@
             txtr-vert`"
         :data-deleting="isDeleting"
         :data-variant="variant"
+        :data-expanded="isExpanded"
         :aria-label="itemLabel"
         v-roving-container
         @click="clicked">
@@ -53,10 +54,6 @@
                     txtr-vert txtr-vert--green
                     shdw shdw--inst-green
                     hn hn-check-solid"
-                :class="{
-                    'text-shadow-bevel text-shadow-bevel--green': variant === 'normal',
-                    'text-stroke--s':                             variant === 'details'
-                }"
                 aria-label="Accept request"
                 v-roving-item
                 @click="acceptFriend" />
@@ -66,10 +63,6 @@
                 class="button button--unfriend
                        txtr-vert txtr-vert--red
                        shdw shdw--inst-dk-red"
-                :class="{
-                    'text-shadow-bevel text-shadow-bevel--red': variant === 'normal',
-                    'text-stroke--s':                           variant === 'details'
-                }"
                 aria-label="Unfriend"
                 v-roving-item
                 @click="deleteFriend" />
@@ -110,6 +103,11 @@ const props = defineProps({
                 'details'
             ].includes(value);
         }
+    },
+
+    isExpanded: {
+        type:    Boolean,
+        default: false
     }
 });
 
@@ -226,10 +224,10 @@ onBeforeUnmount(() => {
     border-radius: var(--radius-s);
 
     button&:hover,
-    &:focus-visible {
-        border-color: var(--col-gray-5);
+    &[data-expanded=true] {
+        border-color:      var(--col-gray-5);
         --elevation-color: var(--col-gray-5);
-        --shadow-color: var(--col-gray-4);
+        --shadow-color:    var(--col-gray-4);
         scale: 1.01;
     }
 
@@ -238,6 +236,7 @@ onBeforeUnmount(() => {
         --elevation-color: black;
         --shadow-color: var(--col-gray-4);
         outline: none;
+        scale: 1.01;
     }
 
     & > .user-info { grid-area: user-info; }
@@ -305,26 +304,33 @@ onBeforeUnmount(() => {
 .button {
     --filter-etc: drop-shadow(3px 3px var(--col-lt-gray-5));
 
-    width:  32px;
-    height: 28px;
+    width:  37px;
+    height: 30px;
 
     display:       grid;
     place-content: center;
 
-    &.button--accept {
-        font-size:      0.6em;
-        padding-bottom: 0;
-        padding-left:   1.5px;
-        padding-top:    1.5px;
-    }
+    padding: 0;
 
-    &.button--unfriend {
-        &::after {
-            content:     'x';
-            line-height: 1;
-            translate:   0.5px -1px;
+    &.button--accept {
+        &::before {
+            font-size: 0.85em;
+            color: white;
+            -webkit-text-stroke: 4.4px black;
+            translate: 0.06em 0.065em;
         }
     }
+
+    &.button--unfriend::before {
+        content:     'X';
+        line-height: 1;
+        translate:   0.6px 0.5px;
+
+        color: white;
+        -webkit-text-stroke: 4px black;
+        scale: 1.3 1;
+    }
+
 
     &:hover,
     &:active {
@@ -419,20 +425,6 @@ onBeforeUnmount(() => {
     .username {
         pointer-events: none;
         font-size:      1.1em;
-    }
-
-    .button {
-        height:  auto;
-        width:   auto;
-
-        padding:        3px 16px;
-        letter-spacing: 0.06em;
-        font-size:      0.9em;
-
-        &::before { content: ''; }
-
-        &.button--unfriend::after { content: 'UNFRIEND'; }
-        &.button--accept::after   { content: 'ACCEPT'; }
     }
 
     .separator {
