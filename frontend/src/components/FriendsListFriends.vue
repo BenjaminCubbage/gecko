@@ -9,58 +9,76 @@
             list-border
             txtr-diag txtr-diag--orange
             shdw shdw--inst-orange shdw--elevated-l">
-            <!-- For some reason FF is allowing focus on this ul if I
-                 don't set tabindex to -1 -->
+            <!--
+                For some reason FF is allowing focus on this ul if I
+                don't set tabindex to -1
+            -->
             <ul class="
                 list
                 shdw shdw--recessed shdw--otst-orange shdw--inst-lt-gray"
                 tabindex="-1"
                 v-roving-container>
+                <!--
+                    I am keying by index on purpose. 
+                    
+                    For performance reasons, each slot should salvage as much 
+                    state as possible when flipping between pages.
+                -->
                 <FriendsListFriendsCard
-                    v-for="friend in friends.pendingIncoming.value"
+                    v-for="(friend, index) in pageFriends"
                     role="listitem"
                     class="list-item"
-                    :user="friend.user"
-                    :key="friend.user.userID"
-                    v-roving-item />
-
-                <FriendsListFriendsCard
-                    v-for="friend in friends.pendingOutgoing.value"
-                    role="listitem"
-                    class="list-item"
-                    :user="friend.user"
-                    :key="friend.user.userID"
-                    v-roving-item
-                    @show-friend-details="showFriendDetails" />
-
-                <FriendsListFriendsCard
-                    v-for="friend in friends.activeFriends.value"
-                    role="listitem"
-                    class="list-item"
-                    :user="friend.user"
-                    :key="friend.user.userID"
+                    :user="friend?.user"
+                    :key="index"
                     v-roving-item
                     @show-friend-details="showFriendDetails" />
             </ul>
         </div>
+
+        <FriendsListNavigationArrows
+            class="friends-list-navigation-arrows"
+            :max-value="pageMax"
+            v-model:current-value="currentPage" />
     </div>
 </template>
 
 <script setup>
 import {
+    computed,
     inject,
     ref
 } from 'vue';
 
-import FriendsListDetailsDialog from './FriendsListDetailsDialog.vue';
-import FriendsListFriendsCard   from './FriendsListFriendsCard.vue';
-import { Keys }                 from '@/core/di/keys.js';
+import FriendsListDetailsDialog    from './FriendsListDetailsDialog.vue';
+import FriendsListFriendsCard      from './FriendsListFriendsCard.vue';
+import FriendsListNavigationArrows from './FriendsListNavigationArrows.vue';
+import { Keys }                    from '@/core/di/keys.js';
 
 const session = inject(Keys.SessionStore);
 const friends = inject(Keys.FriendsStore);
 
 const isDetailsOpen  = ref(false);
 const detailedFriend = ref(null);
+
+const cardsPerPage = 5;
+const currentPage  = ref(0);
+
+const pageMax = computed(() => {
+    let maxPage = 0 | friends.allFriends.length / cardsPerPage;
+
+    if (friends.allFriends.length && 
+        friends.allFriends.length % 5 === 0)
+        --maxPage;
+
+    return maxPage;
+});
+
+const pageFriends = computed(() => {
+    const start  = currentPage.value * cardsPerPage;
+    const result = friends.allFriends.slice(start, start + cardsPerPage);
+    result.length = cardsPerPage;
+    return result;
+});
 
 function showFriendDetails(friend) {
     detailedFriend.value = friend;
@@ -72,6 +90,7 @@ function showFriendDetails(friend) {
 .friends-list-friends {
     display:        flex;
     flex-direction: column;
+    gap: 8px;
 }
 
 .list-border {
@@ -86,33 +105,21 @@ function showFriendDetails(friend) {
 
     display:        flex;
     flex-direction: column;
-    gap:            3px;
-    max-height:     max(50vh, 100px);
+    gap:            8px;
     overflow:       auto;
 
-    padding:        var(--shadow-dist-m);
+    padding:        calc(6px + var(--shadow-dist-m));
     scroll-padding: 10px;
 
     scrollbar-color: var(--col-gray-3) transparent;
+    scrollbar-width: thin;
 
     background:    var(--col-lt-gray-1);
     border-radius: var(--radius-s);
     border:        var(--border-s);
+}
 
-    & > .list-item {
-        margin: 3px;
-
-        border: var(--border-thickness-s) solid var(--col-gray-4);
-        border-radius: var(--radius-s);
-
-        box-shadow: 
-            0 var(--shadow-dist-s) var(--col-gray-4),
-            3px 6px var(--col-gray-1);
-
-        background: 
-            linear-gradient(
-                var(--col-gray-0) 50%,
-                var(--col-gray-1) 50%);
-    }
+.friends-list-navigation-arrows {
+    align-self: end;
 }
 </style>

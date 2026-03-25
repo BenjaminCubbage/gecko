@@ -19,9 +19,6 @@ export const deferredContent = {
             delete el[timeoutSymbol];
     },
 
-    updated(el, { value }) {
-    },
-
     beforeUnmount(el) {
         clearTimeout(el[timeoutSymbol]);
     }

@@ -22,12 +22,14 @@ import {
 /*
     Stores the friends associated with a session's active user.
 
-    Contains one main collection, allFriends(), which includes
+    Contains one main collection, allFriends, which includes
     pending incoming and outgoing friendships, as well as three
     derived views:
-         - activeFriends()
-         - pendingIncoming()
-         - pendingOutgoing()
+         - pendingIncoming
+         - pendingOutgoing
+         - activeFriends
+
+    They are stored in that order in the allFriends getter.
 */
 export class FriendsStore {
     #friends;
@@ -106,9 +108,7 @@ export class FriendsStore {
             throw new ResourceLockedError();
 
         if (!session?.activeUser.value) {
-            FriendsStore.#setArr(this.#active,     []);
-            FriendsStore.#setArr(this.#pendingIn,  []);
-            FriendsStore.#setArr(this.#pendingOut, []);
+            FriendsStore.#setArr(this.#friends, []);
             this.#state.value = 'loggedout';
             this.#mutex.unlockAll();
             return;
@@ -134,9 +134,9 @@ export class FriendsStore {
 
             FriendsStore.#setArr(this.#friends,
                 [
-                    ...activeFriends['friends'].map(json => Friend.fromJSON(json, FriendStatus.Active)),
                     ...pendingFriends['friend_requests']['incoming'].map(json => Friend.fromJSON(json, FriendStatus.PendingIncoming)),
-                    ...pendingFriends['friend_requests']['outgoing'].map(json => Friend.fromJSON(json, FriendStatus.PendingOutgoing))
+                    ...pendingFriends['friend_requests']['outgoing'].map(json => Friend.fromJSON(json, FriendStatus.PendingOutgoing)),
+                    ...activeFriends['friends'].map(json => Friend.fromJSON(json, FriendStatus.Active))
                 ]
             );
 

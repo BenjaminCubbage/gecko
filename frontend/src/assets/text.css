@@ -1,0 +1,17 @@
+.text-stroke--xs { -webkit-text-stroke: var(--text-stroke-xs); }
+.text-stroke--s  { -webkit-text-stroke: var(--text-stroke-s); }
+.text-stroke--l  { -webkit-text-stroke: var(--text-stroke-l); }
+
+.text-shadow-bevel {
+    --text-shadow-bevel-col-1: #000;
+    --text-shadow-bevel-col-2: #000;
+
+    --text-shadow-dist: 1.5px;
+
+    text-shadow:
+             var(--text-shadow-dist)            var(--text-shadow-dist)       var(--text-shadow-bevel-col-2),
+        calc(var(--text-shadow-dist) * -1) calc(var(--text-shadow-dist) * -1) var(--text-shadow-bevel-col-1);
+}
+
+.text-shadow-bevel--red   { --text-shadow-bevel-col-1: var(--col-red-1);   --text-shadow-bevel-col-2: var(--col-red-5); }
+.text-shadow-bevel--green { --text-shadow-bevel-col-1: var(--col-green-1); --text-shadow-bevel-col-2: var(--col-green-5); }

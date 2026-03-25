@@ -8,37 +8,38 @@
             shdw shdw--inst-lt-gray shdw--elevated-s"
         v-roving-container
         v-roving-home="selectedTab === 'canvas' ? 0 : 1">
-        <button
-            ref="tabCanvasEl"
-            role="tab"
-            :aria-selected="selectedTab === 'canvas'"
+        <BaseButton
+            behavior="tab"
             :aria-controls="tabPanelIds.canvas"
             class="
                 tab tab--left
                 txtr-diag txtr-diag--green
-                shdw shdw--inst-green shdw--elevated-s"
+                shdw shdw--inst-green
+                text-stroke--s"
+            :is-toggled="selectedTab === 'canvas'"
             @click="selectedTab = 'canvas'"
             v-roving-item>
             canvas
-        </button>
+        </BaseButton>
 
-        <button
-            ref="tabFriendsEl"
-            role="tab"
-            :aria-selected="selectedTab === 'friends'"
+        <BaseButton
+            behavior="tab"
             :aria-controls="tabPanelIds.friends"
             class="
                 tab tab--right
                 txtr-diag txtr-diag--orange
-                shdw shdw--inst-orange shdw--elevated-s"
+                shdw shdw--inst-orange
+                text-stroke--s"
+            :is-toggled="selectedTab === 'friends'"
             @click="selectedTab = 'friends'"
             v-roving-item>
             friends
-        </button>
+        </BaseButton>
     </nav>
 </template>
 
 <script setup>
+import BaseButton               from './BaseButton.vue';
 import { Keys }                 from '@/core/di/keys.js';
 import { useElementIdRegistry } from '@/composables/useElementIdRegistry';
 
@@ -70,36 +71,13 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
     padding:        0 6px 8px 6px;
 
     font-size:   2.2rem;
-    line-height: 1.3;
 
     border:        var(--border-s);
     border-radius: var(--radius-s);
 }
 
 .tab {
-    margin-top: -8px;
-
-    -webkit-text-stroke: var(--text-stroke-s);
-    color:               black;
-    text-transform:      uppercase;
-
-    border:        var(--border-s);
-    border-radius: var(--radius-s);
-
-    translate:
-        0
-        calc(var(--shadow-dist-s) - var(--shdw-dist-elevation));
-
-    &:hover,
-    &:active,
-    &[aria-selected=true] {
-        filter: var(--filter-hl-1);
-    }
-
-    &[aria-selected=true] {
-        --shdw-dist-elevation: 0px;
-        pointer-events:        none;
-    }
+    margin-top: -6px;
 
     &.tab--left  { grid-area: tab-left;  border-radius: var(--radius-s) 0 0 var(--radius-s); }
     &.tab--right { grid-area: tab-right; border-radius: 0 var(--radius-s) var(--radius-s) 0; }

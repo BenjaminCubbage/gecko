@@ -217,7 +217,6 @@ defineExpose({
 
     -webkit-text-stroke:  var(--text-stroke-s);
     font-size:            3rem;
-    font-variant-numeric: tabular-nums;
     letter-spacing:       0.02em;
     line-height:          1;
 

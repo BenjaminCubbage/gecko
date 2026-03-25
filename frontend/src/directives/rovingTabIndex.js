@@ -205,7 +205,11 @@ function containerFocusIn({ currentTarget }) {
 }
 
 function containerFocusOut({ currentTarget, relatedTarget }) {
-    if (!currentTarget.contains(relatedTarget)) {
+    const {
+        items,
+    } = getContainerItems(currentTarget);
+
+    if (!items.includes(relatedTarget)) {
         currentTarget.removeAttribute(Attributes.RovingTabIndexContainerHasFocus);
         resetContainerIndices(currentTarget, false);
     }

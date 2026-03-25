@@ -1,24 +1,13 @@
 <template>
     <dialog
+        v-modal-auto-focus
         ref="innerElement"
         :class="`
             base-dialog
             txtr-diag txtr-diag--${color}
             shdw shdw--inst-${color} shdw--elevated-l`"
         closedby="any"
-        @close="dialogClosed"
-        tabindex="-1">
-        <button
-            ref="closeButtonEl"
-            class="
-                close-button
-                txtr-diag txtr-diag--dk-red
-                shdw shdw--inst-red shdw--elevated-s"
-            aria-label="Hide status"
-            @click="isOpen = false">
-            x
-        </button>
-
+        @close="dialogClosed">
         <div
             :class="`
                 inner-border
@@ -30,12 +19,9 @@
 
 <script setup>
 import {
-    nextTick,
     useTemplateRef,
     watch
 } from 'vue';
-
-import { createFocusableChildrenTreeWalker } from '@/core/dom/focusable';
 
 const props = defineProps({
     color: {
@@ -45,7 +31,6 @@ const props = defineProps({
 });
 
 const innerElement  = useTemplateRef('innerElement');
-const closeButtonEl = useTemplateRef('closeButtonEl');
 
 const isOpen = defineModel('isOpen', {
     type:     Boolean,
@@ -58,21 +43,8 @@ watch([isOpen, innerElement], () => {
 
     const currentlyOpen = innerElement.value.open;
 
-    if (isOpen.value && !currentlyOpen) {
+    if (isOpen.value && !currentlyOpen)
         innerElement.value.showModal();
-
-        nextTick(() => {
-            /*
-                Focus the first focusable child that isn't the close button.
-            */
-            if (innerElement.value != null) {
-                const walker = createFocusableChildrenTreeWalker(innerElement.value);
-                (walker.nextNode() !== closeButtonEl?.value
-                    ? walker.currentNode
-                    : walker.nextNode())?.focus();
-            }
-        });
-    }
     else if (currentlyOpen)
         innerElement.value.close();
 }, {

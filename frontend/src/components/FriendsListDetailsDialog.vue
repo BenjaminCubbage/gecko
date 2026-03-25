@@ -1,11 +1,13 @@
 <template>
-    <BaseDialog 
-        ref="baseDialog" 
+    <BaseDialog
+        aria-label="User details"
         color="orange"
         v-model:is-open="isOpen">
-        <template v-if="user != null">
-            <FriendsListFriendsCard :user="user" variant="details" />
-        </template>
+        <FriendsListFriendsCard 
+            v-if="user != null" 
+            class="friends-list-friends-card" 
+            variant="details"
+            :user="user" />
     </BaseDialog>
 </template>
 
@@ -26,3 +28,9 @@ const props = defineProps({
 
 const isOpen = defineModel('isOpen');
 </script>
+
+<style scoped>
+.friends-list-friends-card {
+    margin: 6px;
+}
+</style>

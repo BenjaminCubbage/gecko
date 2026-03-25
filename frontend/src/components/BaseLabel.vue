@@ -33,7 +33,6 @@ defineProps({
     -webkit-text-stroke:  black var(--text-stroke-width-l);
     color:                transparent;
     font-size:            1.9rem;
-    font-variant-numeric: tabular-nums;
     letter-spacing:       0.05em;
     line-height:          1;
     text-transform:       uppercase;

@@ -107,6 +107,7 @@
 
     --vp-margin: 8px;
 
+    --filter-hl-0: brightness(1.02);
     --filter-hl-1: brightness(1.06);
     --filter-hl-2: brightness(1.08);
 

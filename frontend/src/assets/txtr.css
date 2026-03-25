@@ -1,4 +1,60 @@
 /*
+    vert
+*/
+
+.txtr-vert {
+    --txtr-vert-col-1: transparent;
+    --txtr-vert-col-2: transparent;
+
+    --txtr-vert-stop: 50%;
+
+    background: 
+        linear-gradient(
+            var(--txtr-vert-col-1) var(--txtr-vert-stop),
+            var(--txtr-vert-col-2) var(--txtr-vert-stop));
+}
+
+.txtr-vert--red {
+    --txtr-vert-col-1: var(--col-red-2);
+    --txtr-vert-col-2: var(--col-red-3);
+}
+
+.txtr-vert--dk-red {
+    --txtr-vert-col-1: var(--col-red-3);
+    --txtr-vert-col-2: var(--col-red-4);
+}
+
+.txtr-vert--green {
+    --txtr-vert-col-1: var(--col-green-2);
+    --txtr-vert-col-2: var(--col-green-4);
+}
+
+.txtr-vert--dk-green {
+    --txtr-vert-col-1: var(--col-green-4);
+    --txtr-vert-col-2: var(--col-green-5);
+}
+
+.txtr-vert--orange {
+    --txtr-vert-col-1: var(--col-orange-3);
+    --txtr-vert-col-2: var(--col-orange-5);
+}
+
+.txtr-vert--magenta {
+    --txtr-vert-col-1: var(--col-magenta-2);
+    --txtr-vert-col-2: var(--col-magenta-3);
+}
+
+.txtr-vert--lt-gray {
+    --txtr-vert-col-1: var(--col-lt-gray-2);
+    --txtr-vert-col-2: var(--col-lt-gray-4);
+}
+
+.txtr-vert--gray {
+    --txtr-vert-col-1: var(--col-gray-2);
+    --txtr-vert-col-2: var(--col-gray-3);
+}
+
+/*
     diag
 */
 
@@ -10,7 +66,6 @@
     --stop-3: max(75%, calc(100% - 12px));
 
     background:
-        var(--grad-c4)
         linear-gradient(var(--grad-deg),
             var(--grad-c1) var(--stop-1),
             var(--grad-c2) var(--stop-1) var(--stop-2),
