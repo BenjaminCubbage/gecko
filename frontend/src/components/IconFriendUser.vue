@@ -2,6 +2,7 @@
     <svg
         class="icon-friend-user"
         role="presentation"
+        :data-variant="variant"
         viewBox="3 2 28.3 35.2">
         <path class="st0 stroke" d="M25.3 27.5v-2.4H24v-1.2h-1.2v-1.2h-1.2v-1.2h-9.7v1.2h-1.2v1.2H9.4v1.2H8.2v2.4H7v3.7h1.2v1.2h17v-1.2h1.2v-3.7zM10.7
                 16.6h1.2v1.2h9.7v-1.2h1.2v-1.2H24V8.1h-1.2V6.8h-1.2V5.6h-9.7v1.2h-1.2V8H9.4v7.3h1.2v1.3z" />
@@ -14,8 +15,23 @@
     </svg>
 </template>
 
+<script setup>
+defineProps({
+    variant: {
+        type:    String,
+        default: 'vacant',
+        validator(value) {
+            return [
+                'normal',
+                'vacant'
+            ].includes(value);
+        }
+    }
+});
+</script>
+
 <style scoped>
-.icon-friend-user {
+.icon-friend-user[data-variant=normal] {
     & > .st0 { fill: var(--col-orange-4); }
     & > .st1 { fill: var(--col-orange-8); }
     & > .st2 { fill: var(--col-orange-0); }
@@ -29,6 +45,24 @@
     
     & > .stroke {
         stroke:       black;
+        stroke-width: 4px;
+    }
+}
+
+.icon-friend-user[data-variant=vacant] {
+    & > .st0 { fill: var(--col-lt-gray-0); }
+    & > .st1 { fill: var(--col-lt-gray-0); }
+    & > .st2 { fill: var(--col-lt-gray-0); }
+    
+    & > .st3 {
+        transform-origin: center;
+        scale: 0.9;
+        translate: -1px -1px;
+        fill:#FFFFFF;
+    }
+    
+    & > .stroke {
+        stroke:       var(--col-lt-gray-4);
         stroke-width: 4px;
     }
 }

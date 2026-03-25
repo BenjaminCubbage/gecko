@@ -8,40 +8,47 @@
         :data-deleting="isDeleting"
         :data-variant="variant"
         :data-expanded="isExpanded"
+        :data-vacant="user == null"
         :aria-label="itemLabel"
         v-roving-container
         @click="clicked">
         <div
-            v-if="user != null"
             class="user-info"
             tabindex="-1"
             v-modal-auto-focus-target>
-            <IconFriendUser class="user-icon" />
+            <IconFriendUser 
+                class="user-icon"
+                :variant="
+                    user != null 
+                        ? 'normal'
+                        : 'vacant'" />
 
-            <component
-                :is="variant === 'normal' ? 'button' : 'div'"
-                :aria-label="`Show details for @${user.username}`"
-                class="username text-stroke--s"
-                v-roving-item="variant === 'normal'"
-                @click="clicked"
-                :disabled="variant === 'details'">
-                @{{ user.username }}
-            </component>
+            <template v-if="user != null">
+                <component
+                    :is="variant === 'normal' ? 'button' : 'div'"
+                    :aria-label="`Show details for @${user.username}`"
+                    class="username text-stroke--s"
+                    v-roving-item="variant === 'normal'"
+                    @click="clicked"
+                    :disabled="variant === 'details'">
+                    @{{ user.username }}
+                </component>
 
-            <span class="footnote text-stroke--s">
-                <IconFriendRequestArrow 
-                    v-if="
-                        friend.status === FriendStatus.PendingIncoming ||
-                        friend.status === FriendStatus.PendingOutgoing"
-                    class="footnote-icon"
-                    :variant="friend.status === FriendStatus.PendingIncoming ? 'incoming' : 'outgoing'" />
+                <span class="footnote text-stroke--s">
+                    <IconFriendRequestArrow 
+                        v-if="
+                            friend.status === FriendStatus.PendingIncoming ||
+                            friend.status === FriendStatus.PendingOutgoing"
+                        class="footnote-icon"
+                        :variant="friend.status === FriendStatus.PendingIncoming ? 'incoming' : 'outgoing'" />
 
-                <IconFriendHeart
-                    v-if="friend.status === FriendStatus.Active"
-                    class="footnote-icon" />
+                    <IconFriendHeart
+                        v-if="friend.status === FriendStatus.Active"
+                        class="footnote-icon" />
 
-                {{ footnoteText }}
-            </span>
+                    {{ footnoteText }}
+                </span>
+            </template>
         </div>
 
         <div class="buttons" v-if="user != null">
@@ -59,7 +66,6 @@
                 @click="acceptFriend" />
 
             <BaseButton
-                v-if="friend != null"
                 class="button button--unfriend
                        txtr-vert txtr-vert--red
                        shdw shdw--inst-dk-red"
@@ -223,7 +229,7 @@ onBeforeUnmount(() => {
     border:        var(--border-thickness-s) solid var(--col-gray-4);
     border-radius: var(--radius-s);
 
-    button&:hover,
+    :where(button&:hover),
     &[data-expanded=true] {
         border-color:      var(--col-gray-5);
         --elevation-color: var(--col-gray-5);
@@ -237,6 +243,13 @@ onBeforeUnmount(() => {
         --shadow-color: var(--col-gray-4);
         outline: none;
         scale: 1.01;
+    }
+
+    &:has(.user-info:focus-visible) {
+        & > .user-info {
+            outline: 3px solid black;
+            outline-offset: -3px;
+        }
     }
 
     & > .user-info { grid-area: user-info; }
@@ -432,6 +445,12 @@ onBeforeUnmount(() => {
 
         --checker-col-1: var(--col-lt-gray-5);
         --checker-col-2: var(--col-lt-gray-6);
+    }
+}
+
+.friends-list-friends-card[data-vacant=true] {
+    .user-icon {
+        filter: none;
     }
 }
 </style>
