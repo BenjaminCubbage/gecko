@@ -1,5 +1,5 @@
 <template>
-    <section>
+    <section style="margin-top: 10px;">
         <FriendsList />
     </section>
 </template>

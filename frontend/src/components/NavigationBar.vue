@@ -17,7 +17,7 @@ const selectedTab = defineModel('selectedTab');
     align-items:           center;
     display:               grid;
     grid-template-columns: [links account] 1fr;
-    grid-template-rows:    [links account] 96px;
+    grid-template-rows:    [links account] 82px;
     padding:               0 24px;
 }
 

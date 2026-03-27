@@ -119,3 +119,4 @@
 .shdw-filter--green  > * { --shdw-filter-1: var(--col-green-1); --shdw-filter-2: var(--col-green-6); }
 .shdw-filter--red    > * { --shdw-filter-1: var(--col-red-0);   --shdw-filter-2: var(--col-red-5); }
 .shdw-filter--dk-red > * { --shdw-filter-1: var(--col-red-0);   --shdw-filter-2: var(--col-red-6); }
+.shdw-filter--orange > * { --shdw-filter-1: var(--col-red-0);   --shdw-filter-2: var(--col-red-6); }
