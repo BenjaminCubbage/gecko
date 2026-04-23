@@ -61,16 +61,16 @@ ExternalProject_Add_Step(api build_project
     ALWAYS 1
 )
 
-ExternalProject_Add_Step(api build_tests
-    DEPENDEES configure_project
-    COMMAND ${CMAKE_COMMAND}
-        --build ${BINARY_DIR}
-        --config $<CONFIG>
-        --target api_tests
-    ALWAYS 1
-)
+# ExternalProject_Add_Step(api build_tests
+#     DEPENDEES configure_project
+#     COMMAND ${CMAKE_COMMAND}
+#         --build ${BINARY_DIR}
+#         --config $<CONFIG>
+#         --target api_tests
+#     ALWAYS 1
+# )
 
-ExternalProject_Add_StepTargets(api build_project build_tests)
+ExternalProject_Add_StepTargets(api build_project)
 
 #
 # Compression

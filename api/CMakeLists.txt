@@ -121,6 +121,7 @@ set(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING "" FORCE)
 set(PAHO_BUILD_SHARED   OFF CACHE BOOL "" FORCE)
 set(PAHO_BUILD_STATIC   ON  CACHE BOOL "" FORCE)
 set(PAHO_ENABLE_TESTING OFF CACHE BOOL "" FORCE)
+set(PAHO_WITH_SSL       ON  CACHE BOOL "" FORCE)
 set(BUILD_STATIC        ON  CACHE BOOL "" FORCE)
 set(JSONCPP_WITH_TESTS  OFF CACHE BOOL "" FORCE)
 set(BUILD_SHARED_LIBS   OFF CACHE BOOL "" FORCE)
@@ -183,7 +184,7 @@ target_include_directories(api_core PUBLIC
     ${src_dir}
     ${CMAKE_BINARY_DIR}/include/mysqlx
     ${cpphttplib_SOURCE_DIR}
-    ${pahomqtt_SOURCE_DIR}
+    ${pahomqtt_SOURCE_DIR}/src
 )
 
 target_compile_definitions(api_core PUBLIC

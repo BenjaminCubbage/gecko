@@ -46,13 +46,21 @@ namespace Gecko::API::MQTT
 
         MQTTAsync_createOptions createOpts = MQTTAsync_createOptions_initializer5;
 
-        MQTTAsync_createWithOptions(
-            &m_client,
-            m_address.c_str(),
-            "",
-            MQTTCLIENT_PERSISTENCE_NONE,
-            NULL,
-            &createOpts);
+        if (int r; (r = MQTTAsync_createWithOptions(
+                &m_client,
+                m_address.c_str(),
+                "",
+                MQTTCLIENT_PERSISTENCE_NONE,
+                NULL,
+                &createOpts)) != MQTTASYNC_SUCCESS) {
+            Logger::Error() << "[MQTTClient.Connect]: Couldn't create MQTT client";
+            Logger::Error() << "[MQTTClient.Connect]: ~ Code: " + std::to_string(r);
+
+            m_connectionStatus.store(
+                ConnectionStatus::ConnectionFailed, std::memory_order_relaxed);
+            m_connectionStatus.notify_all();
+            return false;
+        }
 
         MQTTAsync_setCallbacks(
             m_client,
