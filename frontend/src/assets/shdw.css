@@ -59,17 +59,17 @@
 .shdw--inst-white  { --shdw-inst-2: var(--col-lt-gray-2); }
 .shdw--otst-white  { --shdw-otst-2: var(--col-lt-gray-2); }
 
-.shdw--inst-lt-gray { --shdw-inst-1: var(--col-lt-gray-0); --shdw-inst-2: var(--col-lt-gray-6); }
-.shdw--otst-lt-gray { --shdw-otst-1: var(--col-lt-gray-0); --shdw-otst-2: var(--col-lt-gray-5); }
+.shdw--inst-lt-gray, .shdw-after--inst-lt-gray::after { --shdw-inst-1: var(--col-lt-gray-0); --shdw-inst-2: var(--col-lt-gray-6); }
+.shdw--otst-lt-gray, .shdw-after--otst-lt-gray::after { --shdw-otst-1: var(--col-lt-gray-0); --shdw-otst-2: var(--col-lt-gray-5); }
 
-.shdw--inst-gray { --shdw-inst-1: var(--col-gray-0); --shdw-inst-2: var(--col-gray-4); }
-.shdw--otst-gray { --shdw-otst-1: var(--col-gray-0); --shdw-otst-2: var(--col-gray-4); }
+.shdw--inst-gray, .shdw-after--inst-gray::after { --shdw-inst-1: var(--col-gray-0); --shdw-inst-2: var(--col-gray-4); }
+.shdw--otst-gray, .shdw-after--otst-gray::after { --shdw-otst-1: var(--col-gray-0); --shdw-otst-2: var(--col-gray-4); }
 
-.shdw--inst-orange { --shdw-inst-1: var(--col-orange-0); --shdw-inst-2: var(--col-orange-7); }
-.shdw--otst-orange { --shdw-otst-1: var(--col-orange-0); --shdw-otst-2: var(--col-orange-7); }
+.shdw--inst-orange, .shdw-after--inst-orange::after, .shdw-before--inst-orange::before { --shdw-inst-1: var(--col-orange-0); --shdw-inst-2: var(--col-orange-7); }
+.shdw--otst-orange, .shdw-after--otst-orange::after, .shdw-before--otst-orange::before { --shdw-otst-1: var(--col-orange-0); --shdw-otst-2: var(--col-orange-7); }
 
-.shdw--inst-green, .shdw-after--inst-green::after { --shdw-inst-1: var(--col-green-0); --shdw-inst-2: var(--col-green-5); }
-.shdw--otst-green, .shdw-after--otst-green::after { --shdw-otst-1: var(--col-green-0); --shdw-otst-2: var(--col-green-5); }
+.shdw--inst-green, .shdw-after--inst-green::after, .shdw-before--inst-green::before { --shdw-inst-1: var(--col-green-0); --shdw-inst-2: var(--col-green-5); }
+.shdw--otst-green, .shdw-after--otst-green::after, .shdw-before--otst-green::before { --shdw-otst-1: var(--col-green-0); --shdw-otst-2: var(--col-green-5); }
 
 .shdw--inst-dk-green { --shdw-inst-1: var(--col-green-0); --shdw-inst-2: var(--col-green-6); }
 .shdw--otst-dk-green { --shdw-otst-1: var(--col-green-0); --shdw-otst-2: var(--col-green-6); }

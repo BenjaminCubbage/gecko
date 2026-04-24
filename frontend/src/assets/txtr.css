@@ -2,7 +2,9 @@
     vert
 */
 
-.txtr-vert {
+.txtr-vert,
+.txtr-vert-after::after,
+.txtr-vert-before::before {
     --txtr-vert-col-1: transparent;
     --txtr-vert-col-2: transparent;
 
@@ -24,7 +26,8 @@
     --txtr-vert-col-2: var(--col-red-4);
 }
 
-.txtr-vert--green {
+.txtr-vert--green,
+.txtr-vert-before--green::before {
     --txtr-vert-col-1: var(--col-green-2);
     --txtr-vert-col-2: var(--col-green-4);
 }
@@ -34,7 +37,8 @@
     --txtr-vert-col-2: var(--col-green-5);
 }
 
-.txtr-vert--orange {
+.txtr-vert--orange,
+.txtr-vert-before--orange::before {
     --txtr-vert-col-1: var(--col-orange-3);
     --txtr-vert-col-2: var(--col-orange-5);
 }

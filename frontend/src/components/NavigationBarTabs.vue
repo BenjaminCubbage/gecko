@@ -5,20 +5,33 @@
         class="navigation-bar-tabs"
         v-roving-container
         v-roving-home="selectedTab === 'canvas' ? 0 : 1">
-        <div class="slider-bar shdw shdw--inst-lt-gray shdw--elevated-s">
-        </div>
+        <NavigationBarTabButton 
+            class="navigation-bar-tab-button--canvas"
+            title="CANVAS"
+            color="green"
+            :is-selected="selectedTab === 'canvas'"
+            @click="selectedTab = 'canvas'"
+            v-roving-item />
 
-        <button
+        <NavigationBarTabButton 
+            class="navigation-bar-tab-button--friends"
+            title="FRIENDS"
+            color="orange"
+            :is-selected="selectedTab === 'friends'"
+            @click="selectedTab = 'friends'"
+            v-roving-item />
+
+        <!-- <button
             type="button"
             role="tab"
             :aria-controls="tabPanelIds.canvas"
             class="
                 tab tab--canvas
-                shdw shdw--inst-green"
+                txtr-diag txtr-diag--green
+                shdw shdw--inst-green shdw--elevated-s"
             :data-selected="selectedTab === 'canvas'"
             @click="selectedTab = 'canvas'"
             v-roving-item>
-            <IconCanvas class="icon-canvas" />
             <span class="text text-stroke--s">
                 CANVAS
             </span>
@@ -30,22 +43,20 @@
             :aria-controls="tabPanelIds.canvas"
             class="
                 tab tab--friends
-                shdw shdw--inst-orange"
+                txtr-diag txtr-diag--orange
+                shdw shdw--inst-orange shdw--elevated-s"
             :data-selected="selectedTab === 'friends'"
             @click="selectedTab = 'friends'"
             v-roving-item>
-            <IconFriends class="icon-friends" />
             <span class="text text-stroke--s">
                 FRIENDS
             </span>
-        </button>
+        </button> -->
     </nav>
 </template>
 
 <script setup>
-import IconCanvas  from './IconCanvas.vue';
-import IconFriends from './IconFriends.vue';
-
+import NavigationBarTabButton   from './NavigationBarTabButton.vue';
 import { Keys }                 from '@/core/di/keys.js';
 import { useElementIdRegistry } from '@/composables/useElementIdRegistry';
 
@@ -68,137 +79,17 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
     contain:   layout size;
     isolation: isolate;
 
+    height: 60px;
+    width: 220px;
+
     grid-template:
-        "tab-left tab-right" 42px /
-         140px    140px;
+        "tab-left tab-right" 60px /
+         110px    110px;
 
-    display: grid;
+    display:       grid;
     border-radius: var(--radius-s);
-    gap: 6px;
 
-    & > .tab--canvas { grid-area: tab-left; }
-    & > .tab--friends { grid-area: tab-right; }
-}
-
-.tab {
-    justify-self: stretch;
-
-    display:       flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-
-    padding: 6px;
-
-    opacity: 0.7;
-    scale: 1;
-
-    --hl: brightness(1);
-
-    filter:
-        var(--hl);
-
-    &:hover {
-        opacity: 1;
-    }
-
-    &.tab--friends {
-        background:
-            linear-gradient(
-                var(--col-orange-2) 50%,
-                var(--col-orange-4) 50%);
-        
-        & > svg {
-            filter: drop-shadow(var(--shadow-dist-s) var(--shadow-dist-s) var(--col-orange-7));
-        }
-
-        & .text {
-            filter: drop-shadow(3px 3px var(--col-orange-6));
-        }
-    }
-
-    &.tab--canvas {
-        background:
-            linear-gradient(
-                var(--col-green-2) 50%,
-                var(--col-green-4) 50%);
-        
-        & > svg {
-            filter: drop-shadow(var(--shadow-dist-s) var(--shadow-dist-s) var(--col-green-6));
-        }
-
-        & .text {
-            filter: drop-shadow(3px 3px var(--col-green-5));
-        }
-    }
-        border:        var(--border-s);
-        border-radius: var(--radius-s);
-
-    &[data-selected=true] {
-        filter:
-            var(--hl);
-
-        --shdw-etc: 3px 3px var(--col-gray-3);
-
-        &.tab--friends {
-            background:
-                linear-gradient(
-                    var(--col-orange-2) 50%,
-                    var(--col-orange-4) 50%);
-            
-            & > svg {
-                filter: drop-shadow(var(--shadow-dist-s) var(--shadow-dist-s) var(--col-orange-7));
-            }
-
-            & .text {
-                filter: drop-shadow(3px 3px var(--col-orange-6));
-            }
-        }
-
-        &.tab--canvas {
-            background:
-                linear-gradient(
-                    var(--col-green-2) 50%,
-                    var(--col-green-4) 50%);
-            
-            & > svg {
-                filter: drop-shadow(var(--shadow-dist-s) var(--shadow-dist-s) var(--col-green-6));
-            }
-
-            & .text {
-                filter: drop-shadow(3px 3px var(--col-green-5));
-            }
-        }
-
-        opacity: 1;
-    }
-}
-
-.icon-canvas {
-    height: 30px;
-}
-
-.icon-friends {
-    height: 33px;
-}
-
-.text {
-    font-size: 2.3rem;
-    margin-inline-end: 2px;
-}
-
-.slider-bar {
-    grid-area: tab-left / tab-left / tab-right / tab-right;
-    margin: -6px;
-
-    background: 
-        linear-gradient(
-            var(--col-gray-0) 50%,
-            var(--col-gray-1) 50%);
-    border: 3px solid black;
-
-    border-radius: var(--radius-s);
-    --shdw-etc: 
-        0 3px black;
+    & > .navigation-bar-tab-button--canvas  { place-self: center; grid-area: tab-left; }
+    & > .navigation-bar-tab-button--friends { place-self: center; grid-area: tab-right; }
 }
 </style>

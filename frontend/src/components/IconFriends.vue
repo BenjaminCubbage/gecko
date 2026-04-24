@@ -21,7 +21,7 @@
 <style scoped>
 .stroke {
     stroke:       black;
-    stroke-width: 6px;
+    stroke-width: 5.8px;
 }
 
 .heart {

@@ -70,6 +70,6 @@
 <style scoped>
 .stroke {
     stroke: black;
-    stroke-width: 23px;
+    stroke-width: 21px;
 }
 </style>

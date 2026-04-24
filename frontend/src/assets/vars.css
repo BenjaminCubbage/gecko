@@ -75,8 +75,12 @@
     --col-magenta-5: #f348f6;
     --col-magenta-6: #d82ddb;
 
-    --border-thickness-s:  2.5px;
-    --border-thickness-l:  2.5px;
+    --col-gold-0: #feffcf;
+    --col-gold-1: #ffff00;
+    --col-gold-2: #ffd700;
+
+    --border-thickness-s: 3px;
+    --border-thickness-l: 3px;
 
     --border-s: var(--border-thickness-s) solid black;
     --border-l: var(--border-thickness-l) solid black;
