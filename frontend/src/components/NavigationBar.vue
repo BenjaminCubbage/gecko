@@ -22,34 +22,7 @@ const selectedTab = defineModel('selectedTab');
     align-items:           center;
     display:               grid;
     grid-template-columns: [banner links account] 1fr;
-    grid-template-rows:    [banner links account] 82px;
-}
-
-.banner {
-    grid-area:    banner;
-    align-self:   start;
-    justify-self: stretch;
-    
-    margin: -20px 0 0 0;
-    padding: 9px;
-
-    border:        var(--border-s);
-    border-radius: var(--radius-s);
-
-    &::after {
-        content: '';
-        display: block;
-        height:  40px;
-
-        border:        var(--border-s);
-        border-radius: var(--radius-s);
-
-        background:
-            linear-gradient(
-                var(--col-blue-1) 60%,
-                var(--col-blue-2) 60%
-            );
-    }
+    grid-template-rows:    [banner links account] 65px;
 }
 
 .account {

@@ -65,6 +65,9 @@
 .shdw--inst-gray, .shdw-after--inst-gray::after { --shdw-inst-1: var(--col-gray-0); --shdw-inst-2: var(--col-gray-4); }
 .shdw--otst-gray, .shdw-after--otst-gray::after { --shdw-otst-1: var(--col-gray-0); --shdw-otst-2: var(--col-gray-4); }
 
+.shdw--inst-dk-gray { --shdw-inst-1: var(--col-gray-2); --shdw-inst-2: var(--col-gray-7); }
+.shdw--otst-dk-gray { --shdw-otst-1: var(--col-gray-2); --shdw-otst-2: var(--col-gray-7); }
+
 .shdw--inst-orange, .shdw-after--inst-orange::after, .shdw-before--inst-orange::before { --shdw-inst-1: var(--col-orange-0); --shdw-inst-2: var(--col-orange-7); }
 .shdw--otst-orange, .shdw-after--otst-orange::after, .shdw-before--otst-orange::before { --shdw-otst-1: var(--col-orange-0); --shdw-otst-2: var(--col-orange-7); }
 

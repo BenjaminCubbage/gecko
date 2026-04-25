@@ -20,38 +20,6 @@
             :is-selected="selectedTab === 'friends'"
             @click="selectedTab = 'friends'"
             v-roving-item />
-
-        <!-- <button
-            type="button"
-            role="tab"
-            :aria-controls="tabPanelIds.canvas"
-            class="
-                tab tab--canvas
-                txtr-diag txtr-diag--green
-                shdw shdw--inst-green shdw--elevated-s"
-            :data-selected="selectedTab === 'canvas'"
-            @click="selectedTab = 'canvas'"
-            v-roving-item>
-            <span class="text text-stroke--s">
-                CANVAS
-            </span>
-        </button>
-
-        <button
-            type="button"
-            role="tab"
-            :aria-controls="tabPanelIds.canvas"
-            class="
-                tab tab--friends
-                txtr-diag txtr-diag--orange
-                shdw shdw--inst-orange shdw--elevated-s"
-            :data-selected="selectedTab === 'friends'"
-            @click="selectedTab = 'friends'"
-            v-roving-item>
-            <span class="text text-stroke--s">
-                FRIENDS
-            </span>
-        </button> -->
     </nav>
 </template>
 
@@ -84,7 +52,7 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
 
     grid-template:
         "tab-left tab-right" 60px /
-         110px    110px;
+         105px    105px;
 
     display:       grid;
     border-radius: var(--radius-s);
