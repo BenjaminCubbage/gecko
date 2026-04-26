@@ -49,11 +49,11 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
     isolation: isolate;
 
     height: 60px;
-    width: 220px;
+    width: 224px;
 
     grid-template:
-        "tab-left tab-right" 60px /
-         102px    102px;
+        "tab-left tab-right" 1fr /
+         1fr      1fr;
 
     display:       grid;
     border-radius: var(--radius-s);
@@ -64,8 +64,8 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
 
 .rail {
     grid-area: 
-        tab-left / 
-        tab-left / 
+        tab-left  / 
+        tab-left  / 
         tab-right / 
         tab-right;
 

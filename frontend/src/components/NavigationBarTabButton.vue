@@ -37,8 +37,9 @@ const props = defineProps({
 
     display: grid;
 
-    width:  97px;
-    height: 58px;
+    width:      108px;
+    height:     59px;
+    margin-top: 6px;
 
     border:        var(--border-s);
     border-radius: var(--radius-s);
@@ -53,7 +54,7 @@ const props = defineProps({
 
         margin: var(--shadow-dist-m);
 
-        font-size:   2.3rem;
+        font-size:   2.5rem;
         line-height: 0.58;
 
         padding: 5.5px 0 4.5px 0;
@@ -122,10 +123,7 @@ const props = defineProps({
 }
 
 .navigation-bar-tab-button:where(:not([data-selected=true])) {
-    transform-origin: 50% 0;
-    scale:            0.95;
-
-    height:        52px;
+    height:        53px;
     margin-bottom: 6px;
 
     &::before {
