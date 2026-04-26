@@ -106,7 +106,7 @@ const props = defineProps({
         border-bottom-right-radius: var(--radius-s);
 
         &::after {
-            place-self: end center;
+            justify-self: center;
 
             width: calc(
                 round(down, 100% - var(--h-margin) * 2, 9px) - 3px);
@@ -122,9 +122,11 @@ const props = defineProps({
 }
 
 .navigation-bar-tab-button:where(:not([data-selected=true])) {
+    transform-origin: 50% 0;
+    scale:            0.95;
+
     height:        52px;
     margin-bottom: 6px;
-    filter: grayscale(0.5);
 
     &::before {
         background: var(--col-lt-gray-1);

@@ -10,11 +10,12 @@
     <div
         v-else-if="session.state.value === 'ready'"
         class="account-widget account-widget--profile">
-        <DrawerButtonProfile
+        <AccountWidgetDrawerToggle
             ref="toggleEl"
-            v-model="isExpanded"
-            class="drawer-button-profile"
-            :aria-controls="dropdownMenuId" />
+            class="account-widget-drawer-toggle"
+            :is-expanded="isExpanded"
+            :aria-controls="dropdownMenuId"
+            @click="isExpanded = !isExpanded" />
 
         <menu
             ref="drawerEl"
@@ -25,7 +26,7 @@
             <li>
                 <DrawerButtonLogOut
                     ref="logOutButtonEl"
-                    v-model:is-logging-out="isLoggingOut"
+                    :is-pressed="isLoggingOut"
                     @click="logOut" />
             </li>
         </menu>
@@ -45,10 +46,9 @@ import {
 } from 'vue';
 
 import AccountWidgetUsernameBadge from './AccountWidgetUsernameBadge.vue';
-
-import DrawerButtonLogIn   from './DrawerButtonLogIn.vue';
-import DrawerButtonLogOut  from './DrawerButtonLogOut.vue';
-import DrawerButtonProfile from './DrawerButtonProfile.vue';
+import AccountWidgetDrawerToggle  from './AccountWidgetDrawerToggle.vue';
+import DrawerButtonLogIn          from './DrawerButtonLogIn.vue';
+import DrawerButtonLogOut         from './DrawerButtonLogOut.vue';
 
 import { useIsFocusWithin } from '@/composables/useIsFocusWithin.js';
 import { Keys }             from '@/core/di/keys.js';
@@ -88,6 +88,8 @@ watch([isFocusWithinDrawer, isLoggingOut], () => {
 });
 
 async function logOut() {
+    isLoggingOut.value = true;
+
     try {
         await session.requestLogOutAndReload();
     } catch (e) {
@@ -116,30 +118,25 @@ function logIn() {
     &.account-widget--profile {
         display:     grid;
         flex-flow:   row nowrap;
-        gap:         0 7px;
-
         grid-template:
             "profile username"       auto
             "drawer  ."              auto /
             auto    minmax(0, 1fr);
+
+        gap: 0 5px;
     }
 
     &.account-widget--log-in {
         display: grid;
     }
+
+    & > .account-widget-drawer-toggle  { z-index: 1; grid-area: profile;  place-self: center; }
+    & > .account-widget-username-badge { z-index: 0; grid-area: username; place-self: center left; }
 }
 
-.drawer-button-profile {
-    grid-area: profile;
-}
-
-.drawer-button-profile:is(:hover, :active, :focus) ~ .drawer,
+.account-widget-drawer-toggle:is(:hover, :active, :focus) ~ .drawer,
 .drawer[data-expanded=true] {
     will-change: transform opacity;
-}
-
-.account-widget-username-badge {
-    grid-area: username;
 }
 
 .drawer {

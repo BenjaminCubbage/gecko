@@ -19,10 +19,14 @@ const selectedTab = defineModel('selectedTab');
 
 <style scoped>
 .navigation-bar {
+    padding: 0 3px;
+
     align-items:           center;
     display:               grid;
-    grid-template-columns: [banner links account] 1fr;
-    grid-template-rows:    [banner links account] 65px;
+    grid-template-columns: [links account] 1fr;
+    grid-template-rows:    [links account] 80px;
+
+    margin-bottom: 16px;
 }
 
 .account {
@@ -30,9 +34,8 @@ const selectedTab = defineModel('selectedTab');
 }
 
 .navigation {
-    align-self:   center;
     grid-area:    links;
-    justify-self: center;
+    place-self: center;
 }
 
 /*

@@ -16,35 +16,14 @@
         <style>
             body {
                 display: grid;
-
-                margin: 0;
-
-                --col-gray-0: #ffffff;
-                --col-gray-1: #eff3f7;
-                --col-gray-2: #cbd4de;
-                --col-gray-3: #b0b9cc;
-                --col-gray-4: #8e94ac;
-                --col-gray-5: #757a8f;
-                --col-gray-6: #656b82;
-                --col-gray-7: #4d5269;
-                --col-gray-8: #363b50;
-                --col-gray-9: #202536;
-
-                --col-lt-gray-0: #ffffff;
-                --col-lt-gray-1: #f8fafc;
-                --col-lt-gray-2: #edf0f3;
-                --col-lt-gray-3: #eaecf1;
-                --col-lt-gray-4: #dde0e8;
-                --col-lt-gray-5: #c9cfdc;
-                --col-lt-gray-6: #b6bece;
-                --col-lt-gray-7: #a5afc2;
+                margin:  0;
 
                 --col-blue-1: #7298ff;
                 --col-blue-2: #5979c8;
                 --col-blue-3: #486ac1;
                 --col-blue-4: #2c4a95;
 
-                --rays-mask:  rgb(0 0 230 / 0.02);
+                --rays-mask:  rgb(0 0 230 / 0.03);
 
                 --dots-size:      1.6px;
                 --dots-spacing-x: 36px;
@@ -54,53 +33,6 @@
                 --dots-col: var(--col-blue-2);
 
                 background-image:
-                    linear-gradient(
-                        to right,
-                        transparent              0px 19.6px,
-                        var(--col-gray-7)               19.6px 22.4px,
-                        var(--col-lt-gray-5)  22.4px 25.2px,
-                        var(--col-lt-gray-4)  25.2px 28px,
-                        var(--col-gray-7)               28px   30.8px,
-                        transparent           30.8px 36.4px,
-                        var(--col-gray-7)               36.4px 39.2px,
-                        var(--col-lt-gray-5)  39.2px 42px,
-                        var(--col-lt-gray-4)  42px   44.8px,
-                        var(--col-gray-7)               44.8px 47.6px,
-                        transparent           47.6px 53.2px,
-                        var(--col-gray-7)               53.2px 56px,
-                        var(--col-lt-gray-5)  56px   58.8px,
-                        var(--col-lt-gray-4)  58.8px 61.6px,
-                        var(--col-gray-7)               61.6px 64.4px,
-                        transparent           64.4px 70px,
-                        var(--col-gray-7)               70px   72.8px,
-                        var(--col-lt-gray-5)  72.8px 75.6px,
-                        var(--col-lt-gray-4)  75.6px 78.4px,
-                        var(--col-gray-7)               78.4px 81.2px,
-                        transparent           81.2px 100.8px
-                    ),
-                    linear-gradient(
-                        to right,
-                        transparent              0px 19.6px,
-                        var(--col-gray-7)               19.6px 30.8px,
-                        transparent           30.8px 36.4px,
-                        var(--col-gray-7)               36.4px 47.6px,
-                        transparent           47.6px 53.2px,
-                        var(--col-gray-7)               53.2px 64.4px,
-                        transparent           64.4px 70px,
-                        var(--col-gray-7)                 70px 81.2px,
-                        transparent           81.2px 100.8px
-                    ),
-                    linear-gradient(
-                        var(--col-lt-gray-5)  0px  5.6px,
-                        var(--col-lt-gray-1)  5.6px 8.4px,
-                        var(--col-gray-7)     8.4px 11.2px,
-                        var(--col-gray-1)     11.2px 14px,
-                        var(--col-gray-3)     14px 22.4px,
-                        var(--col-gray-4)     22.4px calc(100% - 8.4px),
-                        var(--col-gray-6)     calc(100% - 8.4px) calc(100% - 5.6px),
-                        var(--col-gray-7)     calc(100% - 5.6px) calc(100% - 2.8px),
-                        var(--col-blue-2)     calc(100% - 2.8px)
-                    ),
                     repeating-conic-gradient(from 4.05deg,
                         var(--rays-mask) 0deg    16.2deg,
                         transparent      16.2deg 22.5deg
@@ -109,37 +41,20 @@
                     radial-gradient(circle at calc(0% + var(--dots-size))  calc(50% + var(--dots-size)), var(--dots-col) var(--dots-size), transparent var(--dots-size));
 
                 background-size:
-                    100.8px 11.2px,
-                    100.8px 16.8px,
-                    100%    39.2px,
                     100%,
                     var(--dots-spacing-x) var(--dots-spacing-y),
                     var(--dots-spacing-x) var(--dots-spacing-y);
 
-                background-color:      var(--dots-bg);
+                background-color: var(--dots-bg);
                 background-repeat:
-                    repeat-x,
-                    repeat-x,
-                    no-repeat,
                     no-repeat,
                     repeat,
                     repeat;
 
                 background-blend-mode: 
-                    normal, 
-                    normal, 
-                    normal, 
                     multiply, 
                     normal, 
                     normal;
-
-                background-position: 
-                    center 16.8px, 
-                    center 14px, 
-                    top, 
-                    center, 
-                    center, 
-                    center;
             }
 
             #app {
