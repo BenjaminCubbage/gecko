@@ -19,14 +19,30 @@ const selectedTab = defineModel('selectedTab');
 
 <style scoped>
 .navigation-bar {
-    padding: 0 3px;
-
-    align-items:           center;
-    display:               grid;
-    grid-template-columns: [links account] 1fr;
-    grid-template-rows:    [links account] 80px;
-
+    padding:       0 3px;
     margin-bottom: 16px;
+
+    grid-template:
+        "account links ." 80px /
+         1fr     auto  1fr;
+
+    align-items: center;
+    display:     grid;
+
+    @media (width < 930px) {
+        grid-template: 
+            "account . links" 70px /
+             auto    1fr auto;
+        padding: var(--vp-margin);
+    }
+
+    @media (width < 560px) {
+        grid-template: 
+            "account" 70px 
+            "links"   70px /
+             1fr;
+        padding: var(--vp-margin);
+    }
 }
 
 .account {
@@ -37,18 +53,4 @@ const selectedTab = defineModel('selectedTab');
     grid-area:    links;
     place-self: center;
 }
-
-/*
-@media (760px <= width < 1200px) {
-    .navigation-bar {
-        grid-template-rows: [account] 96px 8px [links] 48px 8px;
-    }
-}
-
-@media (width < 760px) {
-    .navigation-bar {
-        grid-template-rows: [account] 64px 32px [links] 48px 8px;
-        padding: 0 var(--vp-margin);
-    }
-} */
 </style>

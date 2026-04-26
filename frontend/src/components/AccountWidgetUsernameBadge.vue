@@ -239,7 +239,7 @@ async function submit() {
     }
 
     &[data-pressed=true] {
-        width: min(300px, 100%);
+        width: min(250px, 100%);
     }
 
     &[data-pressed=true],
