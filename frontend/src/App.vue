@@ -61,7 +61,7 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry, {
     friends: useId()
 });
 
-const selectedTab = ref('friends');
+const selectedTab = ref('canvas');
 
 const { isFontLoaded: isMainFontLoaded } = useWaitOnFont('--font-main');
 const { isFontLoaded: isIconFontLoaded } = useWaitOnFont('iconfont');

@@ -5,7 +5,8 @@
             drawer-button-log-out
             txtr-vert txtr-vert--dk-red
             shdw shdw--inst-dk-red shdw--elevated-s"
-        :data-pressed="isPressed">
+        :data-pressed="isPressed"
+        aria-label="Log Out">
         <IconLogOut class="icon-log-out" />
     </button>
 </template>

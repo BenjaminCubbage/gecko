@@ -16,6 +16,11 @@
             var(--txtr-vert-col-2) var(--txtr-vert-stop));
 }
 
+.txtr-vert--blue {
+    --txtr-vert-col-1: var(--col-lt-blue-3);
+    --txtr-vert-col-2: var(--col-lt-blue-5);
+}
+
 .txtr-vert--red {
     --txtr-vert-col-1: var(--col-red-2);
     --txtr-vert-col-2: var(--col-red-3);

@@ -7,7 +7,8 @@
             txtr-vert txtr-vert--gray
             txtr-vert-before txtr-vert-before--${color}`"
         :data-selected="isSelected"
-        :data-title="title">
+        :data-title="title"
+        :aria-label="title">
     </button>
 </template>
 
@@ -37,8 +38,8 @@ const props = defineProps({
 
     display: grid;
 
-    width:      108px;
-    height:     59px;
+    width:      115px;
+    height:     69px;
     margin-top: 6px;
 
     border:        var(--border-s);
@@ -57,7 +58,7 @@ const props = defineProps({
         font-size:   2.5rem;
         line-height: 0.58;
 
-        padding: 5.5px 0 4.5px 0;
+        padding: 7.5px 0 6.5px 0;
 
         border:        var(--border-s);
         border-radius: var(--radius-s);
@@ -77,7 +78,7 @@ const props = defineProps({
         --h-margin: calc(var(--shadow-dist-m) * 0.99);
 
         box-sizing: content-box;
-        height:     12px;
+        height:     15px;
         margin:     0 var(--h-margin);
 
         width: calc(
@@ -123,7 +124,7 @@ const props = defineProps({
 }
 
 .navigation-bar-tab-button:where(:not([data-selected=true])) {
-    height:        53px;
+    height:        63px;
     margin-bottom: 6px;
 
     &::before {

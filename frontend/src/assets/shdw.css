@@ -59,6 +59,9 @@
 .shdw--inst-white  { --shdw-inst-2: var(--col-lt-gray-2); }
 .shdw--otst-white  { --shdw-otst-2: var(--col-lt-gray-2); }
 
+.shdw--inst-blue { --shdw-inst-1: var(--col-lt-blue-0); --shdw-inst-2: var(--col-blue-3); }
+.shdw--otst-blue { --shdw-otst-1: var(--col-lt-blue-0); --shdw-otst-2: var(--col-blue-3); }
+
 .shdw--inst-lt-gray, .shdw-after--inst-lt-gray::after { --shdw-inst-1: var(--col-lt-gray-0); --shdw-inst-2: var(--col-lt-gray-6); }
 .shdw--otst-lt-gray, .shdw-after--otst-lt-gray::after { --shdw-otst-1: var(--col-lt-gray-0); --shdw-otst-2: var(--col-lt-gray-5); }
 
@@ -91,10 +94,10 @@
     elevation is mainly for buttons, and large elevation is for
     big content containers.
 */
-.shdw--elevated-xs { --shdw-dist-elevation: var(--shadow-dist-xs); }
-.shdw--elevated-s  { --shdw-dist-elevation: var(--shadow-dist-s); }
-.shdw--elevated-m  { --shdw-dist-elevation: var(--shadow-dist-m); }
-.shdw--elevated-l  { --shdw-dist-elevation: var(--shadow-dist-l); }
+.shdw--elevated-xs                                { --shdw-dist-elevation: var(--shadow-dist-xs); }
+.shdw--elevated-s, .shdw-after--elevated-s::after { --shdw-dist-elevation: var(--shadow-dist-s); }
+.shdw--elevated-m                                 { --shdw-dist-elevation: var(--shadow-dist-m); }
+.shdw--elevated-l                                 { --shdw-dist-elevation: var(--shadow-dist-l); }
 
 /*
     These shadows are mainly for button icons.

@@ -29,7 +29,7 @@ const selectedTab = defineModel('selectedTab');
     align-items: center;
     display:     grid;
 
-    @media (width < 930px) {
+    @media (560px <= width < 930px) {
         grid-template: 
             "account . links" 70px /
              auto    1fr auto;
@@ -38,9 +38,10 @@ const selectedTab = defineModel('selectedTab');
 
     @media (width < 560px) {
         grid-template: 
-            "account" 70px 
+            "account" auto
             "links"   70px /
              1fr;
+        gap: 6px;
         padding: var(--vp-margin);
     }
 }

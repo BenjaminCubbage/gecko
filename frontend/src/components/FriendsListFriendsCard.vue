@@ -263,15 +263,14 @@ onBeforeUnmount(() => {
 
 .username,
 .footnote {
-    filter:
-        drop-shadow(3px 3px var(--col-lt-gray-5));
-
     text-align:  left;
     line-height: 0.85;
 }
 
 .username {
     overflow-wrap: anywhere;
+    filter:
+        drop-shadow(3px 3px var(--col-lt-gray-5));
 }
 
 .footnote {

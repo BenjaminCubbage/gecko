@@ -196,7 +196,7 @@ function tryMoveSelection(by) {
 <style scoped>
 .recipient-select-carousel {
     --ht-label:      14px;
-    --ht-selection:  34px;
+    --ht-selection:  36px;
     --ht-status:     26px;
 
     contain:   content;
@@ -266,7 +266,7 @@ function tryMoveSelection(by) {
     line-height: 0;
 
     border-radius: var(--radius-s);
-    border:        2.5px solid black;
+    border:        var(--border-s);
 
     translate: 
         0 
