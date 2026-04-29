@@ -140,7 +140,7 @@ export class SessionStore {
         if (this.#activeUser.value != null)
             return false;
 
-        window.location.replace('/auth/login');
+        window.location.assign('/auth/login');
         return true;
     }
 
