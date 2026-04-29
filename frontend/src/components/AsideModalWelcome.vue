@@ -9,14 +9,17 @@
 <div style="height:8px;"></div>If you know me, log in and send a friend request to <span class="at-ben">@ben</span>. My device should appear as a recipient once I accept.</template>
 
         <template #buttons>
-            <div class="buttons">
+            <div 
+                class="buttons"
+                v-roving-container>
                 <button class="
                     button button--log-in
                     shdw shdw--inst-green shdw--elevated-s
                     txtr-diag txtr-diag--green"
                     type="button"
                     role="link"
-                    @click="emit('logIn')">
+                    @click="emit('logIn')"
+                    v-roving-item>
                     Log In
                 </button>
 
@@ -27,7 +30,8 @@
                     shdw shdw--inst-lt-gray shdw--elevated-s
                     txtr-vert txtr-vert--lt-gray"
                     type="button"
-                    @click="emit('dismiss')">
+                    @click="emit('dismiss')"
+                    v-roving-item>
                     Dismiss
                 </button>
             </div>

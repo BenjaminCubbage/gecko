@@ -353,7 +353,7 @@ export const rovingTabIndexContainer = {
             (value ? bindContainer : unbindContainer)(el);
     },
 
-    beforeUnmount(el) {
+    unmounted(el) {
         unbindContainer(el);
     }
 };
