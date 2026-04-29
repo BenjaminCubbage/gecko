@@ -3,9 +3,6 @@
         pic-editor 
         txtr-vert txtr-vert--green
         shdw shdw--inst-green shdw--elevated-l">
-        <PicEditorLogInPrompt
-            class="pic-editor-log-in-prompt" />
-
         <PicEditorCanvas
             class="pic-editor-canvas"
             ref="picEditorCanvas"
@@ -30,9 +27,8 @@ import {
     useTemplateRef
 } from 'vue';
 
-import PicEditorCanvas      from './PicEditorCanvas.vue';
-import PicEditorLogInPrompt from './PicEditorLogInPrompt.vue';
-import ToolBar              from './ToolBar.vue';
+import PicEditorCanvas from './PicEditorCanvas.vue';
+import ToolBar         from './ToolBar.vue';
 
 import { Dispatch } from '@/core/dispatch/Dispatch.js';
 import { Keys }     from '@/core/di/keys.js';

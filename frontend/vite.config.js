@@ -5,7 +5,13 @@ import path from "path";
 
 // https://vite.dev/config/
 export default defineConfig({
-    plugins: [ mkcert(), vue() ],
+    plugins: [ mkcert(), vue({
+        template: {
+            compilerOptions: {
+                whitespace: 'preserve'
+            }
+        }
+    }) ],
     //    Development only:
     //    Listen on port 3000. API / Auth Server is expected to be running on 3001.
     resolve: {

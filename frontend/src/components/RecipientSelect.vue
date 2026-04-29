@@ -175,7 +175,7 @@ function getDeviceStatusLabel(device) {
     & > .st2{ fill: var(--col-green-4); }
 
     & > .st0{
-        stroke-width: 6px;
+        stroke-width: 6.5px;
         stroke:       black;
     }
 }
