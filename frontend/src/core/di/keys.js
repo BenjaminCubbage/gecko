@@ -6,5 +6,7 @@ export const Keys = Object.freeze({
     SessionStore:  Symbol('session_store'),
     SnackBarStore: Symbol('snack_bar_store'),
 
-    AppTabPanelIdsRegistry: Symbol('app_tab_panel_ids_registry')
+    AppTabPanelIdsRegistry: Symbol('app_tab_panel_ids_registry'),
+
+    IsDocumentReady: Symbol('is_document_ready')
 });

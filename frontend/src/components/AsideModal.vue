@@ -1,7 +1,13 @@
 <template>
-    <div class="
-        pic-editor-log-in-prompt
-        shdw shdw--elevated-s">
+    <dialog
+        ref="innerEl"
+        class="
+            aside-modal
+            shdw shdw--elevated-s"
+        :aria-label="title"
+        closedby="any"
+        v-modal-auto-focus
+        @close="dialogClosed">
         <div inert class="knobs knobs--left  shdw-after shdw-after--inst-green shdw-after--elevated-s shdw-before shdw-before--inst-green"></div>
         <div inert class="knobs knobs--right shdw-after shdw-after--inst-green shdw-after--elevated-s shdw-before shdw-before--inst-green"></div>
 
@@ -11,29 +17,65 @@
             {{ title }}
         </h1>
 
-        <p class="content">
+        <p
+            class="content"
+            tabindex="-1"
+            v-modal-auto-focus-target>
             <slot name="content"></slot>
         </p>
 
         <slot name="buttons"></slot>
-    </div>
+    </dialog>
 </template>
 
 <script setup>
+import { 
+    useTemplateRef,
+    watch
+} from 'vue';
+
 defineProps({
     title: {
         type:     String,
         required: true
     }
 });
+
+const isOpen = defineModel('isOpen', {
+    type:     Boolean,
+    required: true
+});
+
+const innerElement = useTemplateRef('innerEl');
+
+watch([isOpen, innerElement], () => {
+    if (innerElement.value == null) {
+        isOpen.value = false;
+        return;
+    }
+
+    const currentlyOpen = innerElement.value.open;
+
+    if (isOpen.value && !currentlyOpen)
+        innerElement.value.showModal();
+    else if (currentlyOpen)
+        innerElement.value.close();
+}, {
+    immediate: true
+});
+
+function dialogClosed() {
+    isOpen.value = false;
+}
 </script>
 
 <style scoped>
-.pic-editor-log-in-prompt {
+.aside-modal {
     --aside-padding-x: 18px;
     --aside-padding-y: 18px;
 
-    isolation: isolate;
+    anchor-scope: --content;
+    isolation:    isolate;
 
     padding:
         var(--aside-padding-y)
@@ -42,7 +84,9 @@ defineProps({
     display:        flex;
     flex-direction: column;
     gap:            10px;
-    max-width:      430px;
+    max-width:      min(430px, calc(100dvw - 4 * var(--vp-margin)));
+    max-height:     80dvh;
+    overflow:       visible;
     position:       relative;
 
     --shdw-etc:
@@ -54,6 +98,10 @@ defineProps({
     border-radius: var(--radius-s);
 
     filter: drop-shadow(3px 3px rgb(0 0 0 / 0.15));
+
+    &:not([open]) {
+        display: none;
+    }
 }
 
 .knobs {
@@ -131,12 +179,18 @@ defineProps({
 }
 
 .content {
-    padding: 10px 13px;
+    contain:     none;
+    container:   content / scroll-state;
+    anchor-name: --content;
 
-    white-space: pre-wrap;
-    font-size: 2.2rem;
-    line-height: 1.1;
+    overflow:            auto;
+    overscroll-behavior: contain;
+    padding:             10px 13px;
+
     -webkit-text-stroke: var(--text-stroke-s);
+    font-size:           2.2rem;
+    line-height:         1.1;
+    white-space:         pre-wrap;
 
     background: var(--col-lt-gray-2);
 
@@ -148,5 +202,38 @@ defineProps({
 
     border-radius: var(--radius-s);
     border:        var(--border-s);
+
+    /*
+        Transparent gradient overlay on mobile to indicate content
+        is scrollable, currently doesn't work on Safari.
+    */
+    @supports (anchor-name: --a) {
+        @container content style(--scrollbar-width < 1px) {
+            &::after,
+            &::before {
+                content:    '';
+                visibility: hidden;
+
+                position:        fixed;
+                position-anchor: --content;
+
+                height: 15px;
+            }
+
+            &::after  { inset: auto        anchor(right) anchor(bottom) anchor(left); border-radius: 0 0 var(--radius-s) var(--radius-s); }
+            &::before { inset: anchor(top) anchor(right) auto           anchor(left); border-radius: var(--radius-s) var(--radius-s) 0 0; }
+
+            &::after  { background: linear-gradient(to bottom, transparent, rgb(30 20 40 / 0.15)); }
+            &::before { background: linear-gradient(to top,    transparent, rgb(30 20 40 / 0.15)); }
+
+            @container content scroll-state(scrollable: bottom) {
+                &::after { visibility: visible; }
+            }
+
+            @container content scroll-state(scrollable: top) {
+                &::before { visibility: visible; }
+            }
+        }
+    }
 }
 </style>

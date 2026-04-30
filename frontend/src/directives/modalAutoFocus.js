@@ -1,6 +1,5 @@
-import {
-    nextTick
-} from 'vue';
+import { nextTick } from 'vue';
+import { delay }    from '@/core/async/delay.js';
 
 const Attributes = {
     ModalAutoFocusTarget: 'data-modal-auto-focus-target'
@@ -10,12 +9,11 @@ function isAutoFocusTarget(el) {
     return el.hasAttribute(Attributes.ModalAutoFocusTarget);
 }
 
-function dialogToggled({ currentTarget }) {
+async function dialogToggled({ currentTarget }) {
     if (!currentTarget.open)
         return;
 
     let fallbackTarget = null;
-
     let focusTarget = document.createTreeWalker(
         currentTarget,
         NodeFilter.SHOW_ELEMENT,

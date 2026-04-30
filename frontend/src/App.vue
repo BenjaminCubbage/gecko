@@ -16,6 +16,12 @@
                 role="tabpanel"
                 :id="tabPanelIds.friends" />
         </main>
+        
+        <AsideModalWelcome
+            class="aside-modal-welcome"
+            v-model:is-open="isWelcomeModalOpen"
+            @log-in="session.requestLogIn()"
+            @dismiss="isWelcomeModalOpen = false" />
     </div>
 
     <SnackBarOverlay />
@@ -24,6 +30,7 @@
 <script setup>
 import {
     computed,
+    inject,
     provide,
     ref,
     useId,
@@ -31,10 +38,11 @@ import {
     watch
 } from 'vue';
 
-import CanvasSection   from './sections/CanvasSection.vue';
-import FriendsSection  from './sections/FriendsSection.vue';
-import NavigationBar   from './components/NavigationBar.vue';
-import SnackBarOverlay from './components/SnackBarOverlay.vue';
+import CanvasSection     from './sections/CanvasSection.vue';
+import FriendsSection    from './sections/FriendsSection.vue';
+import NavigationBar     from './components/NavigationBar.vue';
+import SnackBarOverlay   from './components/SnackBarOverlay.vue';
+import AsideModalWelcome from '@/components/AsideModalWelcome.vue';
 
 import { DevicesStore }  from './stores/devicesStore.js';
 import { FriendsStore }  from './stores/friendsStore.js';
@@ -42,9 +50,10 @@ import { SessionStore }  from './stores/sessionStore.js';
 import { SnackBarStore } from './stores/snackBarStore.js';
 import { Keys }          from './core/di/keys.js';
 
-import { useElementIdRegistry } from './composables/useElementIdRegistry.js';
-import { useWaitOnFont }        from './composables/useWaitOnFont.js';
-import { useWaitOnTransition }  from './composables/useWaitOnTransition.js';
+import { useElementIdRegistry }      from './composables/useElementIdRegistry.js';
+import { useWaitOnFont }             from './composables/useWaitOnFont.js';
+import { useWaitOnTransition }       from './composables/useWaitOnTransition.js';
+import { useScrollbarWidthProperty } from './composables/useScrollbarWidthProperty.js';
 
 const session  = new SessionStore();
 const friends  = new FriendsStore();
@@ -56,12 +65,16 @@ provide(Keys.SessionStore,  session);
 provide(Keys.FriendsStore,  friends);
 provide(Keys.SnackBarStore, snackBar);
 
+useScrollbarWidthProperty()
+    .updateScrollbarWidthProperty();
+
 const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry, {
     canvas:  useId(),
     friends: useId()
 });
 
-const selectedTab = ref('canvas');
+const selectedTab        = ref('friends');
+const isWelcomeModalOpen = ref(false);
 
 const { isFontLoaded: isMainFontLoaded } = useWaitOnFont('--font-main');
 const { isFontLoaded: isIconFontLoaded } = useWaitOnFont('iconfont');
@@ -69,6 +82,17 @@ const { isFontLoaded: isIconFontLoaded } = useWaitOnFont('iconfont');
 const fontsLoaded = computed(() => {
     return isMainFontLoaded.value && isIconFontLoaded.value;
 });
+
+watch([ session.state, fontsLoaded ], () => {
+    /*
+        Waiting for document ready so that autofocus works.
+    */
+    if (session.state.value === 'loggedout' && 
+        fontsLoaded.value)
+        isWelcomeModalOpen.value = true;
+});
+
+provide(Keys.IsDocumentReady, fontsLoaded);
 
 (async () => {
     await session.requestResync();
