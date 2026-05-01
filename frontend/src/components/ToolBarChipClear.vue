@@ -2,32 +2,10 @@
     <ToolBarChip
         ref="toolBarChipEl"
         class="tool-bar-chip-clear"
-        color="dk-red"
-        aria-label="Clear"
-        :disable-style="isPressed ? 'none' : 'grayed'"
-        :sr-status="srStatus"
-        :temporarily-disabled="isPressed"
-        :temporarily-pressed="isPressed"
-        :highlight-style="size === 'normal' ? 'shadow' : 'filter'"
+        color="red"
         @click="click">
-        <template v-if="size === 'normal'" #label>
-            <div class="icon-text">
-                <span class="letter letter--1">C</span>
-                <span class="letter letter--2">L</span>
-                <span class="letter letter--3">E</span>
-                <span class="letter letter--4">A</span>
-                <span class="letter letter--5">R</span>
-            </div>
-        </template>
-
-        <template v-else #icon>
-            <svg class="icon-svg" viewBox="0 0 40 40">
-                <path class="st0" d="M34.2,3.9c-0.9,0-2.8,0-3.8,0v1.9h-1.9v1.9h-1.9v1.9h-1.9v1.9h-1.9v1.9H21v1.9c0,0-1.9,0-1.9,0v-1.9h-1.9v-1.9h-1.9V9.6
-                    h-1.9V7.7h-1.9V5.8H9.6V3.9c-1.7,0-4,0-5.7,0c0,1.7,0,4,0,5.7h1.9v1.9h1.9v1.9h1.9v1.9h1.9v1.9h1.9V19h1.9v1.9h-1.9v1.9h-1.9v1.9
-                    H9.6v1.9H7.7v1.9H5.8v1.9H3.9c0,1.7,0,4,0,5.7c1.7,0,4,0,5.7,0v-1.9h1.9v-1.9h1.9v-1.9h1.9v-1.9h1.9v-1.9h1.9v-1.9h1.9v1.9h1.9v1.9
-                    h1.9v1.9h1.9v1.9h1.9v1.9h1.9v1.9c1.7,0,4,0,5.7,0c0-1.7,0-4,0-5.7h-1.9v-1.9h-1.9v-1.9h-1.9v-1.9h-1.9v-1.9h-1.9v-1.9h-1.9V19h1.9
-                    v-1.9h1.9v-1.9h1.9v-1.9h1.9v-1.9h1.9V9.6h1.9c0-1.7,0-4,0-5.7H34.2z"/>
-            </svg>
+        <template #icon>
+            <IconTrash class="icon" />
         </template>
     </ToolBarChip>
 </template>
@@ -41,6 +19,7 @@ import {
 } from 'vue';
 
 import ToolBarChip from './ToolBarChip.vue';
+import IconTrash   from './IconTrash.vue';
 
 defineProps({
     size: {
@@ -89,6 +68,10 @@ defineExpose({
 </script>
 
 <style scoped>
+.icon {
+    height: 47px;
+}
+
 .tool-bar-chip-clear {
     &.tool-bar-chip-clear[data-pressed=true] {
         pointer-events: none;

@@ -2,6 +2,7 @@
     <section
         class="canvas-section">
         <RecipientSelect
+            v-if="session.state.value === 'ready'"
             class="recipient-select"
             @selection-changed="recipientDeviceChanged" />
 
@@ -12,10 +13,16 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { 
+    ref,
+    inject
+} from 'vue';
 
 import PicEditor       from '@/components/PicEditor.vue';
 import RecipientSelect from '@/components/RecipientSelect.vue';
+import { Keys }        from '@/core/di/keys.js';
+
+const session = inject(Keys.SessionStore);
 
 const recipientDevice = ref(null);
 
@@ -25,4 +32,7 @@ function recipientDeviceChanged(device) {
 </script>
 
 <style scoped>
+.canvas-section {
+    margin-top: 24px;
+}
 </style>

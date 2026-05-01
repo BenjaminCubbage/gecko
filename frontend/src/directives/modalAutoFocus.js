@@ -27,7 +27,9 @@ async function dialogToggled({ currentTarget }) {
         }
     ).nextNode() ?? fallbackTarget;
 
-    focusTarget?.focus();
+    focusTarget?.focus({
+        focusVisible: false
+    });
 }
 
 export const modalAutoFocus = {

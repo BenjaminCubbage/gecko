@@ -32,7 +32,8 @@
 }
 
 .txtr-vert--green,
-.txtr-vert-before--green::before {
+.txtr-vert-before--green::before,
+.txtr-vert-after--green::after {
     --txtr-vert-col-1: var(--col-green-2);
     --txtr-vert-col-2: var(--col-green-4);
 }
@@ -51,6 +52,11 @@
 .txtr-vert--magenta {
     --txtr-vert-col-1: var(--col-magenta-2);
     --txtr-vert-col-2: var(--col-magenta-3);
+}
+
+.txtr-vert--yellow {
+    --txtr-vert-col-1: var(--col-yellow-2);
+    --txtr-vert-col-2: var(--col-yellow-3);
 }
 
 .txtr-vert--lt-gray {

@@ -1,18 +1,20 @@
 <template>
-    <div class="
-        pic-editor 
-        txtr-vert txtr-vert--green
-        shdw shdw--inst-green shdw--elevated-l">
-        <PicEditorCanvas
-            class="pic-editor-canvas"
-            ref="picEditorCanvas"
-            :pen-size="penSize"
-            :is-erasing="isErasing"
-            @canvas-changed="canvasChanged" />
+    <div class="pic-editor">
+        <div class="
+            canvas-border
+            txtr-vert txtr-vert--green
+            shdw shdw--inst-green shdw--elevated-l">
+            <PicEditorCanvas
+                class="pic-editor-canvas"
+                ref="picEditorCanvas"
+                :pen-size="penSize"
+                :is-erasing="isErasing"
+                @canvas-changed="canvasChanged" />
+        </div>
 
         <ToolBar
             class="tool-bar"
-            :send-disabled="recipientDevice == null"
+            :is-send-disabled="recipientDevice == null"
             v-model:pen-size="penSize"
             v-model:is-erasing="isErasing"
             @send="send"
@@ -96,38 +98,24 @@ function canvasChanged() {
 
 <style scoped>
 .pic-editor {
-        isolation: isolate;
+    isolation: isolate;
 
-    grid-template:
-        "canvas"   auto
-        "tool-bar" auto /
-         1fr;
+    display:        flex;
+    flex-direction: column;
 
-    display:        grid;
-    gap:            10px;
-    padding:        9px;
+    & > .canvas-border { z-index: 0; align-self: stretch; }
+    & > .tool-bar      { z-index: 1; align-self: center; }
+}
+
+.canvas-border {
+    padding:        12px;
+    padding-bottom: 26px;
 
     border-radius: var(--radius-s);
     border:        var(--border-s);
-
-    & > .canvas   { grid-area: canvas; }
-    & > .tool-bar { grid-area: tool-bar; place-self: stretch; }
-
-    & > .pic-editor-log-in-prompt {
-        z-index: 1;
-        grid-area: 
-            canvas / 
-            canvas / 
-            tool-bar / 
-            tool-bar;
-        place-self: center;
-    }
 }
 
-.pic-editor-log-in-prompt {
-    position: absolute;
-    inset:    0;
-    width:    fit-content;
-    height:   fit-content;
+.tool-bar {
+    translate: 0 -12px;
 }
 </style>

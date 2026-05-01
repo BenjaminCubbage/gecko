@@ -77,9 +77,16 @@
     --col-magenta-5: #f348f6;
     --col-magenta-6: #d82ddb;
 
-    --col-gold-0: #feffcf;
-    --col-gold-1: #ffff00;
-    --col-gold-2: #ffd700;
+    --col-yellow-0: #fffcee;
+    --col-yellow-1: #fff4bf;
+    --col-yellow-2: #ffe783;
+    --col-yellow-3: #ffd94d;
+    --col-yellow-4: #ffc928;
+    --col-yellow-5: #f2b91f;
+    --col-yellow-6: #d99d12;
+    --col-yellow-7: #b97d08;
+    --col-yellow-8: #8f5d04;
+    --col-yellow-9: #5c3900;
 
     --border-thickness-s: 3px;
     --border-thickness-l: 3px;
@@ -92,7 +99,7 @@
 
     --shadow-dist-xs: 1.8px;
     --shadow-dist-s:  2.2px;
-    --shadow-dist-m:  3.0px;
+    --shadow-dist-m:  3.5px;
     --shadow-dist-l:  5.0px;
 
     --shadow-aura-dist: 2px;

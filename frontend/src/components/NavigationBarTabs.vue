@@ -49,7 +49,7 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
     isolation: isolate;
 
     height: 60px;
-    width: 245px;
+    width: 270px;
 
     grid-template:
         "tab-left tab-right" 1fr /

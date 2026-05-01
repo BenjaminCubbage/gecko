@@ -1,12 +1,7 @@
 <template>
     <div class="recipient-select">
-        <RecipientSelectLogInPrompt
-            class="recipient-select-log-in-prompt"
-            v-if="session.state.value === 'loggedout'"
-            key="login" />
-
         <div
-            v-else-if="session.state.value === 'ready'"
+            v-if="session.state.value === 'ready'"
             class="carousels"
             key="carousels">
             <RecipientSelectSpinButton
@@ -61,9 +56,8 @@ import {
     watch
 } from 'vue';
 
-import RecipientSelectSpinButton    from './RecipientSelectSpinButton.vue';
-import RecipientSelectLogInPrompt from './RecipientSelectLogInPrompt.vue';
-import { Keys }                   from '@/core/di/keys.js';
+import RecipientSelectSpinButton from './RecipientSelectSpinButton.vue';
+import { Keys }                  from '@/core/di/keys.js';
 
 const session = inject(Keys.SessionStore);
 const friends = inject(Keys.FriendsStore);

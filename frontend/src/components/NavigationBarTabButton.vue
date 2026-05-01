@@ -38,7 +38,7 @@ const props = defineProps({
 
     display: grid;
 
-    width:      115px;
+    width:      130px;
     height:     69px;
     margin-top: 6px;
 
@@ -89,12 +89,12 @@ const props = defineProps({
 
         background:
             repeating-linear-gradient(to right,
-                var(--col-gold-0) 0 3px,
-                var(--col-gold-0) 3px 6px,
+                var(--col-lt-gray-0) 0 3px,
+                var(--col-lt-gray-0) 3px 6px,
                 black           6px 9px),
             repeating-linear-gradient(to right,
-                var(--col-gold-1) 0 3px,
-                var(--col-gold-2) 3px 6px,
+                var(--col-lt-gray-2) 0 3px,
+                var(--col-lt-gray-5) 3px 6px,
                 black           6px 9px);
 
         background-size:     100% 3px, 100%;
