@@ -10,6 +10,7 @@
             class="navigation-bar-tab-button--canvas"
             title="CANVAS"
             color="green"
+            corner-direction="right"
             :is-selected="selectedTab === 'canvas'"
             @click="selectedTab = 'canvas'"
             v-roving-item />
@@ -18,6 +19,7 @@
             class="navigation-bar-tab-button--friends"
             title="FRIENDS"
             color="orange"
+            corner-direction="left"
             :is-selected="selectedTab === 'friends'"
             @click="selectedTab = 'friends'"
             v-roving-item />
@@ -49,7 +51,7 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
     isolation: isolate;
 
     height: 60px;
-    width: 270px;
+    width: 290px;
 
     grid-template:
         "tab-left tab-right" 1fr /

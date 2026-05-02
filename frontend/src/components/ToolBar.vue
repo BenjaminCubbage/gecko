@@ -6,8 +6,8 @@
         shdw-before shdw-before--inst-gray shdw-before--elevated-m"
         aria-label="Toolbar"
         v-roving-container>
-        <div inert class="knobs knobs--left  shdw-after shdw-after--inst-lt-gray shdw-after--elevated-s shdw-before shdw-before--inst-lt-gray"></div>
-        <div inert class="knobs knobs--right shdw-after shdw-after--inst-lt-gray shdw-after--elevated-s shdw-before shdw-before--inst-lt-gray"></div>
+        <!-- <div inert class="knobs knobs--left  shdw-after shdw-after--inst-lt-gray shdw-after--elevated-s shdw-before shdw-before--inst-lt-gray"></div>
+        <div inert class="knobs knobs--right shdw-after shdw-after--inst-lt-gray shdw-after--elevated-s shdw-before shdw-before--inst-lt-gray"></div> -->
 
         <li><ToolBarChipPenSize v-model="penSize" v-roving-item /></li>
         <li><ToolBarChipEraser  v-model="isErasing" v-roving-item /></li>
@@ -56,7 +56,7 @@ const isErasing = defineModel('isErasing', { type: Boolean, required: true });
         inset -3px -3px var(--col-gray-4);
 }
 
-.knobs {
+/* .knobs {
     position:       absolute;
     inset:          0;
     pointer-events: none;
@@ -83,5 +83,5 @@ const isErasing = defineModel('isErasing', { type: Boolean, required: true });
         &::before { inset: -6px -6px auto auto; border-radius: 0 var(--radius-s) 0 var(--radius-s); }
         &::after  { inset: auto -6px -6px auto; border-radius: var(--radius-s) 0 var(--radius-s) 0; }
     }
-}
+} */
 </style>

@@ -97,8 +97,6 @@ function dialogClosed() {
     border:        var(--border-s);
     border-radius: var(--radius-s);
 
-    filter: drop-shadow(3px 3px rgb(0 0 0 / 0.15));
-
     &:not([open]) {
         display: none;
     }

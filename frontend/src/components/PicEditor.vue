@@ -116,6 +116,6 @@ function canvasChanged() {
 }
 
 .tool-bar {
-    translate: 0 -12px;
+    translate: 0 -8px;
 }
 </style>

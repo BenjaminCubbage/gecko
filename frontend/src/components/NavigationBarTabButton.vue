@@ -2,6 +2,7 @@
     <button
         :class="`
             navigation-bar-tab-button
+            navigation-bar-tab-button--corner-${cornerDirection}
             shdw shdw--inst-gray shdw--elevated-s
             shdw-before shdw-before--inst-${color}
             txtr-vert txtr-vert--gray
@@ -27,6 +28,17 @@ const props = defineProps({
     title: {
         type:     String,
         required: true
+    },
+
+    cornerDirection: {
+        type: String,
+        required: true,
+        validator(value) {
+            return [
+                'left',
+                'right'
+            ].includes(value);
+        }
     }
 });
 </script>
@@ -39,24 +51,31 @@ const props = defineProps({
     display: grid;
 
     width:      130px;
-    height:     69px;
+    height:     60px;
     margin-top: 6px;
 
     border:        var(--border-s);
     border-radius: var(--radius-s);
 
-    border-bottom-right-radius: 22px;
-    corner-bottom-right-shape:  bevel;
+    &:where(.navigation-bar-tab-button--corner-left) {
+        border-bottom-left-radius: 16px;
+        corner-bottom-left-shape:  bevel;
+    }
+    
+    &:where(.navigation-bar-tab-button--corner-right) {
+        border-bottom-right-radius: 16px;
+        corner-bottom-right-shape:  bevel;
+    }
 
     &::before {
         content:    attr(data-title);
         grid-area:  1 / 1;
         place-self: start stretch;
 
-        margin: var(--shadow-dist-m);
+        margin: var(--shadow-dist-m) calc(var(--shadow-dist-m) * 2);
 
         font-size:   2.5rem;
-        line-height: 0.58;
+        line-height: 0.63;
 
         padding: 7.5px 0 6.5px 0;
 
@@ -69,74 +88,37 @@ const props = defineProps({
 
         corner-shape: notch;
     }
-
-    &::after {
-        content:    '';
-        grid-area:  1 / 1;
-        place-self: end left;
-
-        --h-margin: calc(var(--shadow-dist-m) * 0.99);
-
-        box-sizing: content-box;
-        height:     15px;
-        margin:     0 var(--h-margin);
-
-        width: calc(
-            round(down, 100% - var(--h-margin) * 2, 9px) - 12px);
-        
-        border:                     var(--border-s);
-        border-bottom-right-radius: var(--radius-s);
-
-        background:
-            repeating-linear-gradient(to right,
-                var(--col-lt-gray-0) 0 3px,
-                var(--col-lt-gray-0) 3px 6px,
-                black           6px 9px),
-            repeating-linear-gradient(to right,
-                var(--col-lt-gray-2) 0 3px,
-                var(--col-lt-gray-5) 3px 6px,
-                black           6px 9px);
-
-        background-size:     100% 3px, 100%;
-        background-position: top,      center;
-        background-repeat:   no-repeat;
-
-        corner-shape: notch;
-    }
-
-    @supports not (corner-shape: notch) {
-        border-bottom-right-radius: var(--radius-s);
-
-        &::after {
-            justify-self: center;
-
-            width: calc(
-                round(down, 100% - var(--h-margin) * 2, 9px) - 3px);
-
-            border-radius: 0;
-        }
-    }
 }
 
 .navigation-bar-tab-button:hover,
 .navigation-bar-tab-button[data-selected=true] {
     filter: var(--filter-hl-2);
+    scale: 1.02;
+
+    &.navigation-bar-tab-button--corner-left {
+        transform-origin: 0% 0%;
+    }
+
+    &.navigation-bar-tab-button--corner-right {
+        transform-origin: 100% 0px;
+    }
 }
 
 .navigation-bar-tab-button:where(:not([data-selected=true])) {
-    height:        63px;
-    margin-bottom: 6px;
+    height:        50px;
+    margin-bottom: 10px;
+
+    border-bottom-right-radius: var(--radius-s);
+    corner-bottom-right-shape:  notch;
+
+    border-bottom-left-radius: var(--radius-s);
+    corner-bottom-left-shape:  notch;
 
     &::before {
-        background: var(--col-lt-gray-1);
-        box-shadow: 
-            inset  3px  3px var(--col-lt-gray-0),
-            inset -3px -3px var(--col-lt-gray-5),
-            var(--shdw-etc);
-    }
-
-    &::after {
-        height: 6px;
+        background: var(--col-lt-gray-2);
+        box-shadow:
+            inset calc(-1 * var(--shadow-dist-m)) calc(-1 * var(--shadow-dist-m)) var(--col-gray-3),
+            inset           var(--shadow-dist-m)            var(--shadow-dist-m)  var(--col-lt-gray-1);
     }
 }
 </style>

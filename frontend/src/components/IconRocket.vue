@@ -14,7 +14,7 @@
 <style scoped>
 .stroke {
     stroke: black;
-    stroke-width: 20.5px;
+    stroke-width: 19.5px;
 }
 
 .st0 { fill: #fd4d4d; }

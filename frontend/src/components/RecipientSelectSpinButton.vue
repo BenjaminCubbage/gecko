@@ -35,7 +35,8 @@
         <span
             class="
                 selection
-                shdw shdw--inst-gray shdw--elevated-s"
+                shdw shdw--inst-gray shdw--elevated-s
+                txtr-vert txtr-vert--gray"
             ref="spinButtonEl"
             role="spinbutton"
             tabindex="0"
@@ -245,11 +246,6 @@ function tryMoveSelection(by) {
     white-space:         nowrap;
     line-height:         0;
     user-select:         none;
-
-    background:
-        linear-gradient(
-            var(--col-gray-2) 50%,
-            var(--col-gray-3) 50%);
 
     border: var(--border-s);
 }

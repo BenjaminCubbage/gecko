@@ -39,7 +39,7 @@ defineExpose({
     place-items: center;
 
     width:  54px;
-    height: 48px;
+    height: 44px;
 
     grid-template:
         minmax(0, 1fr) /

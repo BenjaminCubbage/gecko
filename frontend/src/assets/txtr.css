@@ -46,7 +46,7 @@
 .txtr-vert--orange,
 .txtr-vert-before--orange::before {
     --txtr-vert-col-1: var(--col-orange-3);
-    --txtr-vert-col-2: var(--col-orange-5);
+    --txtr-vert-col-2: var(--col-orange-4);
 }
 
 .txtr-vert--magenta {

@@ -95,7 +95,7 @@ function showFriendDetails(friend) {
 }
 
 .list-border {
-    padding: 9px;
+    padding: 12px;
 
     border:        var(--border-s);
     border-radius: var(--radius-s);
