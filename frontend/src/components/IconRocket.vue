@@ -55,7 +55,11 @@ defineExpose({ animateLaunch });
 
 <style scoped>
 .icon-rocket {
-    overflow:  visible;
+    overflow: visible;
+
+    transform:
+        perspective(200px) 
+        rotateX(var(--rocket-wiggle-pitch));
 }
 
 .rocket,
@@ -106,6 +110,12 @@ defineExpose({ animateLaunch });
     syntax:        '<angle>';
 }
 
+@property --rocket-wiggle-pitch {
+    initial-value: 0deg;
+    inherits:      true;
+    syntax:        '<angle>';
+}
+
 @keyframes rocket-launch {
     0% {
         translate: 0;
@@ -113,7 +123,7 @@ defineExpose({ animateLaunch });
 
     90% {
         translate: 0 -1000px;
-        scale:     1.1;
+        scale:     1;
     }
 
     90.1% {
@@ -140,18 +150,22 @@ defineExpose({ animateLaunch });
 
 @keyframes rocket-wiggle {
     0% {
+        --rocket-wiggle-pitch:     10deg;
         --rocket-wiggle-rotation: 0deg;
     }
 
     25% {
+        --rocket-wiggle-pitch:     0deg;
         --rocket-wiggle-rotation: -2deg;
     }
 
     75% {
+        --rocket-wiggle-pitch:     -10deg;
         --rocket-wiggle-rotation: 2deg;
     }
 
     100% {
+        --rocket-wiggle-pitch:     0deg;
         --rocket-wiggle-rotation: 0deg;
     }
 }

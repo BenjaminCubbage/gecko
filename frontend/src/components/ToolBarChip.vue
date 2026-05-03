@@ -4,7 +4,8 @@
         class="tool-bar-chip"
         :data-is-pressed="isPressed"
         :data-is-busy="isBusy"
-        :data-pen-size="penSize">
+        :data-pen-size="penSize"
+        @click="click">
         <div :class="`
             border
             txtr-vert txtr-vert--${color}
@@ -26,7 +27,7 @@ import {
     useTemplateRef
 } from 'vue';
 
-defineProps({
+const props = defineProps({
     color: {
         type:    String,
         default: 'gray'
@@ -55,9 +56,12 @@ defineProps({
     }
 });
 
-defineExpose({
-    innerElement: useTemplateRef('toolBarChipEl')
-});
+const emit = defineEmits([ 'click' ]);
+
+function click() {
+    if (!props.isBusy)
+        emit('click');
+}
 </script>
 
 <style scoped>

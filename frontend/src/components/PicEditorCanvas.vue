@@ -262,6 +262,10 @@ defineExpose({
     padding: var(--shadow-dist-m);
     margin:  calc(var(--shadow-dist-m) * -1);
 
+    &:active {
+        cursor: crosshair;
+    }
+
     &[data-disabled=true] {
         pointer-events: none;
     }
