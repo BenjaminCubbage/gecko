@@ -2,13 +2,15 @@
     <ToolBarChip
         ref="toolBarChipEl"
         class="tool-bar-chip-pen-size"
-        :class="`tool-bar-chip-pen-size--size-${size}`"
+        :size="penSize"
         color="yellow"
         :aria-label="`${penSize} brush`"
         @click="cycle"
         v-bind="attrs">
         <template #icon>
-            <IconBrush class="icon" />
+            <IconBrush
+                class="icon"
+                :size="penSize" />
         </template>
     </ToolBarChip>
 </template>
@@ -24,19 +26,6 @@ import ToolBarChip from './ToolBarChip.vue';
 import IconBrush   from './IconBrush.vue';
 
 const attrs = useAttrs();
-
-defineProps({
-    size: {
-        type:    String,
-        required: true,
-        validator(value) {
-            return [
-                'normal',
-                'small'
-            ].includes(value);
-        }
-    }
-});
 
 const penSize = defineModel({
     type: String,

@@ -17,10 +17,10 @@
     stroke-width: 19.5px;
 }
 
-.st0 { fill: #fd4d4d; }
-.st1 { fill: #b60b2d; }
-.st2 { fill: #ffdfdf; }
-.st4 { fill: #8e94ac; }
-.st5 { fill: #eaecf1; }
-.st6 { fill: #eff3f7; }
+.st0 { fill: var(--col-red-3); }
+.st1 { fill: var(--col-red-6); }
+.st2 { fill: var(--col-red-0); }
+.st4 { fill: var(--col-gray-3); }
+.st5 { fill: var(--col-lt-gray-3); }
+.st6 { fill: var(--col-lt-gray-0); }
 </style>

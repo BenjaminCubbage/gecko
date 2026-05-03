@@ -33,6 +33,6 @@ function recipientDeviceChanged(device) {
 
 <style scoped>
 .canvas-section {
-    margin-top: 24px;
+    margin-top: 12px;
 }
 </style>

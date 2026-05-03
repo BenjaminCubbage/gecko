@@ -40,7 +40,7 @@
 
     --col-red-0: #ffeeee;
     --col-red-1: #ffdfdf;
-    --col-red-2: #ffb0b0;
+    --col-red-2: #ffa4a4;
     --col-red-3: #ff7373;
     --col-red-4: #fd4d4d;
     --col-red-5: #f14141;
@@ -94,12 +94,13 @@
     --border-s: var(--border-thickness-s) solid black;
     --border-l: var(--border-thickness-l) solid black;
 
-    --radius-s: 3px;
-    --radius-l: 6px;
+    --radius-xs: 2px;
+    --radius-s:  3px;
+    --radius-l:  6px;
 
     --shadow-dist-xs: 1.8px;
     --shadow-dist-s:  2.2px;
-    --shadow-dist-m:  3.5px;
+    --shadow-dist-m:  3.0px;
     --shadow-dist-l:  5.0px;
 
     --shadow-aura-dist: 2px;
@@ -125,6 +126,8 @@
     --filter-hl-2: brightness(1.08);
 
     @supports not (corner-shape: notch) {
-        --radius-s: 6px;
+        --radius-xs: 3px;
+        --radius-s:  6px;
+        --radius-l:  8px;
     }
 }
