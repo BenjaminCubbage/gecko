@@ -36,6 +36,11 @@ body {
 *,
 *::before,
 *::after {
+    /*
+        transform-origin doesn't seem to default to 'center'
+        on svg geometry
+    */
+    transform-origin:     center;
     box-sizing:           border-box;
     corner-shape:         inherit;
     font-variant-numeric: tabular-nums;
@@ -48,7 +53,7 @@ body {
 }
 
 *:not(
-    a, 
+    a,
     button
 ) {
     contain: layout;
@@ -75,11 +80,11 @@ p {
 
 input,
 p,
-h1, 
-h2, 
-h3, 
-h4, 
-h5, 
+h1,
+h2,
+h3,
+h4,
+h5,
 h6,
 textarea {
     cursor: text;

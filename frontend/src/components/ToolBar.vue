@@ -9,10 +9,10 @@
         <!-- <div inert class="knobs knobs--left  shdw-after shdw-after--inst-lt-gray shdw-after--elevated-s shdw-before shdw-before--inst-lt-gray"></div>
         <div inert class="knobs knobs--right shdw-after shdw-after--inst-lt-gray shdw-after--elevated-s shdw-before shdw-before--inst-lt-gray"></div> -->
 
-        <li><ToolBarChipPenSize v-model="penSize" v-roving-item /></li>
-        <li><ToolBarChipEraser  v-model="isErasing" v-roving-item /></li>
-        <li><ToolBarChipClear   v-roving-item @click="emit('clear')" /></li>
-
+        <li><ToolBarChipPenSize v-model="penSize"      v-roving-item /></li>
+        <li><ToolBarChipEraser  v-model="isErasing"    v-roving-item /></li>
+        <li><ToolBarChipClear   @click="emit('clear')" v-roving-item /></li>
+    
         <li v-if="!isSendDisabled">
             <ToolBarChipSend v-roving-item @click="emit('send')" />
         </li>

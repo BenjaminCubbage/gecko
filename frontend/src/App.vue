@@ -129,8 +129,8 @@ watch(friends.activeFriends, newFriends => {
 
     transition: opacity 300ms 200ms;
 
-    & > .navigation-bar { contain: layout; z-index: 1; }
-    & > .main-content   { contain: layout; z-index: 0; }
+    & > .navigation-bar { contain: layout; z-index: 0; }
+    & > .main-content   { contain: layout; z-index: 1; }
 
     @starting-style {
         opacity: 0.01;

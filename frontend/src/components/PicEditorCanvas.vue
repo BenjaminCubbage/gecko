@@ -1,5 +1,6 @@
 <template>
     <div
+        tabindex="-1"
         class="
             canvas-frame
             shdw-after shdw-after--recessed shdw-after--otst-green"
@@ -11,14 +12,11 @@
         @mouseleave="stopDragging"
         @touchend="stopDragging"
         @mouseup="stopDragging">
-        <canvas ref="canvas" class="canvas" :width="resolutionX" :height="resolutionY"></canvas>
+        <canvas ref="canvasEl" class="canvas" :width="resolutionX" :height="resolutionY"></canvas>
     </div>
 </template>
 
 <script setup>
-const resolutionX = 400;
-const resolutionY = 220;
-
 import {
     computed,
     onMounted,
@@ -34,15 +32,31 @@ import { GIBToCanvas } from '@/core/canvas_gib/gibToCanvas.js';
 import { delay }       from '@/core/async/delay.js';
 
 const props = defineProps({
-    /* 'small' | 'medium' | 'large' */
-    penSize: { type: String, default: 'small' },
-    isErasing: { type: Boolean, default: false }
+    penSize: { 
+        type:    String, 
+        default: 'small',
+        validator(value) {
+            return [
+                'small',
+                'medium',
+                'large'
+            ].includes(value);
+        }
+    },
+
+    isErasing: { 
+        type:    Boolean, 
+        default: false
+    }
 });
 
 const emit = defineEmits([ 'canvasChanged' ]);
 
-const canvas = useTemplateRef('canvas');
-const ctx    = computed(() => canvas.value?.getContext('2d', {
+const resolutionX = 400;
+const resolutionY = 220;
+
+const canvasEl = useTemplateRef('canvasEl');
+const ctx = computed(() => canvasEl.value?.getContext('2d', {
     alpha:              false,
     desynchronized:     false,
     willReadFrequently: true
@@ -97,14 +111,14 @@ onMounted(() => {
 });
 
 function clientToPixelCoords({ clientX, clientY }) {
-    if (!canvas.value)
+    if (!canvasEl.value)
         return { x: -1, y: -1 };
 
-    const rect = canvas.value.getBoundingClientRect();
+    const rect = canvasEl.value.getBoundingClientRect();
 
     return {
-        x: Math.round((clientX - rect.left) * (canvas.value.width  / canvas.value.clientWidth)),
-        y: Math.round((clientY - rect.top)  * (canvas.value.height / canvas.value.clientHeight))
+        x: Math.round((clientX - rect.left) * (canvasEl.value.width  / canvasEl.value.clientWidth)),
+        y: Math.round((clientY - rect.top)  * (canvasEl.value.height / canvasEl.value.clientHeight))
     };
 }
 
@@ -216,20 +230,20 @@ async function clear() {
         return;
 
     isClearing.value = true;
-    CanvasClear.clear1(canvas.value);
+    CanvasClear.clear1(canvasEl.value);
     await delay(50);
-    CanvasClear.clear2(canvas.value);
+    CanvasClear.clear2(canvasEl.value);
     await delay(50);
-    CanvasClear.clear3(canvas.value);
+    CanvasClear.clear3(canvasEl.value);
     isClearing.value = false;
 }
 
 defineExpose({
     getCTX: () => ctx.value,
-    getCanvasElement: () => canvas.value,
+    getCanvasElement: () => canvasEl.value,
     clear,
-    readGIBBlob:  () => CanvasToGIB.readBlob(canvas.value),
-    writeGIBBlob: blob => GIBToCanvas.writeBlob(canvas.value, blob),
+    readGIBBlob:  () => CanvasToGIB.readBlob(canvasEl.value),
+    writeGIBBlob: blob => GIBToCanvas.writeBlob(canvasEl.value, blob),
     isBlank
 });
 </script>

@@ -2,7 +2,8 @@
     <button
         ref="toolBarChipEl"
         class="tool-bar-chip"
-        :data-is-pressed="isPressed",
+        :data-is-pressed="isPressed"
+        :data-is-busy="isBusy"
         :data-pen-size="penSize">
         <div :class="`
             border
@@ -46,6 +47,11 @@ defineProps({
     isPressed: {
         type:    Boolean,
         default: false
+    },
+
+    isBusy: {
+        type:    Boolean,
+        default: false
     }
 });
 
@@ -79,10 +85,17 @@ defineExpose({
     & > .sizes        { z-index: 2; grid-area: 1 / 1; place-self: end    center;}
 
     /*
+        White border around base
+    */
+    &[data-is-busy=true] > .border {
+        --shdw-etc: 0 0 0 var(--shadow-dist-s) white;
+    }
+
+    /*
         White outline
     */
     &[data-is-pressed=true] {
-        --outline: 
+        --outline:
             drop-shadow(0 calc(     var(--shadow-dist-s)) white)
             drop-shadow(0 calc(-1 * var(--shadow-dist-s)) white)
             drop-shadow(calc(     var(--shadow-dist-s)) 0 white)
@@ -92,19 +105,18 @@ defineExpose({
     /*
         Brighten + scale
     */
-    &:hover,
     &:active,
-    &[data-is-pressed=true] {
+    &[data-is-pressed=true],
+    &[data-is-busy=true],
+    &:hover {
         --hl: var(--filter-hl-1);
+    }
 
-        &:not([data-is-pressed=true]) > .icon-wrapper {
-            transform-origin: 50% 70%;
-            scale:            1.04;
-        }
-        
-        &:not([data-is-pressed=true]):active > .icon-wrapper {
-            transform-origin: 50% 70%;
-            scale:            1.02;
+    @media (hover: hover) {
+        &:not([data-is-pressed=true], [data-is-busy=true]):is(:active, :hover) {
+            & > .icon-wrapper {
+                scale: 1.04;
+            }
         }
     }
 
@@ -112,7 +124,8 @@ defineExpose({
         Press down
     */
     &:active,
-    &[data-is-pressed=true] {
+    &[data-is-pressed=true],
+    &[data-is-busy=true] {
         & > .icon-wrapper {
             translate: 0 var(--shadow-dist-s);
         }
@@ -129,17 +142,18 @@ defineExpose({
     border:        var(--border-s);
     border-radius: var(--radius-s);
 
-    transform: 
+    transform:
         translateY(calc(-1 * var(--shdw-dist-elevation)));
 }
 
 .icon-wrapper {
-    transform:   translateY(-18px);
-    line-height: 0;
+    transform-origin: 50% 70%;
+    transform:        translateY(-18px);
+    line-height:      0;
 }
 
 .sizes {
-    translate: 0 20px;
+    translate: 0 19px;
 
     width:  50px;
     height: 24px;
@@ -149,13 +163,13 @@ defineExpose({
     justify-content: center;
 
     border:        var(--border-s);
-    border-radius: 
-        0               0 
+    border-radius:
+        0               0
         var(--radius-s) var(--radius-s);
 
     background: var(--col-lt-gray-3);
 
-    box-shadow: 
+    box-shadow:
         0 var(--shadow-dist-s) black,
         inset           var(--shadow-dist-m)            var(--shadow-dist-m)  var(--col-lt-gray-0),
         inset calc(-1 * var(--shadow-dist-m)) calc(-1 * var(--shadow-dist-m)) var(--col-gray-2);
@@ -177,7 +191,7 @@ defineExpose({
         height: 8px;
 
         border-radius: var(--radius-xs);
-        background:    var(--col-gray-4);
+        background:    var(--col-gray-3);
     }
 
     &::before,

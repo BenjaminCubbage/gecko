@@ -93,7 +93,10 @@ const props = defineProps({
 .navigation-bar-tab-button:hover,
 .navigation-bar-tab-button[data-selected=true] {
     filter: var(--filter-hl-2);
-    scale: 1.02;
+
+    @media (hover: hover) {
+        scale: 1.02;
+    }
 
     &.navigation-bar-tab-button--corner-left {
         transform-origin: 0% 0%;
@@ -115,7 +118,12 @@ const props = defineProps({
     corner-bottom-left-shape:  notch;
 
     &::before {
-        background: var(--col-lt-gray-2);
+        background: 
+            linear-gradient(
+                var(--col-lt-gray-1) 50%,
+                var(--col-lt-gray-2) 50%
+            );
+
         box-shadow:
             inset calc(-1 * var(--shadow-dist-m)) calc(-1 * var(--shadow-dist-m)) var(--col-gray-3),
             inset           var(--shadow-dist-m)            var(--shadow-dist-m)  var(--col-lt-gray-1);

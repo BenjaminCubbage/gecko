@@ -5,7 +5,7 @@
         color="lt-gray"
         @click="isToggled = !isToggled">
         <template #icon>
-            <IconEraser class="icon" />
+            <IconEraser height="47px" />
         </template>
     </ToolBarChip>
 </template>
@@ -27,9 +27,3 @@ defineExpose({
     innerElement: computed(() => toolBarChipEl.value?.innerElement)
 });
 </script>
-
-<style scoped>
-.icon {
-    height: 47px;
-}
-</style>

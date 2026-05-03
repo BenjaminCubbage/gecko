@@ -1,19 +1,16 @@
 <template>
     <ToolBarChip
-        ref="toolBarChipEl"
         class="tool-bar-chip-clear"
         color="red"
-        @click="click">
+        @click="clicked">
         <template #icon>
-            <IconTrash class="icon" />
+            <IconTrash ref="iconEl" height="47px" />
         </template>
     </ToolBarChip>
 </template>
 
 <script setup>
 import {
-    computed,
-    onUnmounted,
     ref,
     useTemplateRef
 } from 'vue';
@@ -21,57 +18,17 @@ import {
 import ToolBarChip from './ToolBarChip.vue';
 import IconTrash   from './IconTrash.vue';
 
-defineProps({
-    size: {
-        type:    String,
-        required: true,
-        validator(value) {
-            return [
-                'normal',
-                'small'
-            ].includes(value);
-        }
-    }
-});
+const emit = defineEmits([ 'click' ]);
 
-const emit = defineEmits([
-    'click'
-]);
+const iconEl = useTemplateRef('iconEl');
 
-const isPressed    = ref(false);
-let unpressTimeout = null;
-
-const toolBarChipEl = useTemplateRef('toolBarChipEl');
-
-const srStatus = computed(() => {
-    return isPressed.value
-        ? 'Clearing Canvas'
-        : null;
-});
-
-function click() {
+function clicked() {
+    iconEl.value?.animateShaking();
     emit('click');
-    isPressed.value = true;
-
-    unpressTimeout = setTimeout(() => {
-        isPressed.value = false;
-    }, 1000);
 }
-
-onUnmounted(() => {
-    clearTimeout(unpressTimeout);
-});
-
-defineExpose({
-    innerElement: computed(() => toolBarChipEl.value?.innerElement)
-});
 </script>
 
 <style scoped>
-.icon {
-    height: 47px;
-}
-
 .tool-bar-chip-clear {
     &.tool-bar-chip-clear[data-pressed=true] {
         pointer-events: none;

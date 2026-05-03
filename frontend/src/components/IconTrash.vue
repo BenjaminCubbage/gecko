@@ -1,6 +1,10 @@
 <template>
-    <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" id="Layer_1" x="0" y="0" version="1.1" viewBox="0 0 155 155">
-        <g class="trash">
+    <svg class="icon-trash" viewBox="0 0 155 155">
+        <g
+            class="trash-bin"
+            :data-animate-shaking="animateShaking"
+            @animationend="animateShaking = false"
+            @animationcancel="animateShaking = false">
             <g class="lid">
                 <path d="M118.3 24.6V19H84.8v-5.6H56.9V19H23.4v5.6h-5.6v16.8H124V24.6z" class="st0 stroke"/>
                 <path d="M112.7 24.6H95.9V19H84.7v5.6H62.3V19h-5.6v5.6h-5.6v5.6H28.7v5.6h89.4V24.6zM68 13.4h5.6V19H68z" class="st1"/>
@@ -13,14 +17,54 @@
     </svg>
 </template>
 
+<script setup>
+import { ref } from 'vue';
+const animateShaking = ref(false);
+defineExpose({
+    animateShaking() {
+        animateShaking.value = true;
+    }
+});
+</script>
+
 <style scoped>
-.trash {
+.icon-trash {
+    overflow: visible;
+}
+
+.trash-bin {
     translate: 4% 2%;
+    rotate:    calc(var(--shaking-degrees) * -0.5);
 }
 
 .lid {
     translate: 0 -2.5%;
+    rotate:    var(--shaking-degrees);
 }
+
+/*
+    Animation
+*/
+
+.trash-bin[data-animate-shaking=true] {
+    animation: shaking 300ms 1 forwards steps(2, start);
+}
+
+@property --shaking-degrees {
+    inherits:      true;
+    initial-value: 0deg;
+    syntax:        '<angle>';
+}
+
+@keyframes shaking {
+    0%   { --shaking-degrees:   0deg; }
+    50%  { --shaking-degrees: -10deg; }
+    100% { --shaking-degrees:  10deg; }
+}
+
+/*
+    Colors
+*/
 
 .stroke {
     stroke:       black;
