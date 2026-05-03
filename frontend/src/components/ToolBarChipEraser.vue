@@ -1,7 +1,7 @@
 <template>
     <ToolBarChip
         ref="toolBarChipEl"
-        :data-pressed="isToggled"
+        :is-pressed="isToggled"
         color="lt-gray"
         @click="isToggled = !isToggled">
         <template #icon>

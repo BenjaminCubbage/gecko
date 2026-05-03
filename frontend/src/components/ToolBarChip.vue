@@ -1,7 +1,9 @@
 <template>
     <button
         ref="toolBarChipEl"
-        class="tool-bar-chip">
+        class="tool-bar-chip"
+        :data-is-pressed="isPressed",
+        :data-pen-size="penSize">
         <div :class="`
             border
             txtr-vert txtr-vert--${color}
@@ -11,10 +13,8 @@
             <slot name="icon"></slot>
         </div>
 
-        <div v-if="size != null" class="sizes">
-            <div class="size size--s"  data-active="true"></div>
-            <div class="size size--m" :data-active="size === 'large' || size === 'medium'"></div>
-            <div class="size size--l" :data-active="size === 'large'"></div>
+        <div class="sizes">
+            <div class="size-dots"></div>
         </div>
     </button>
 </template>
@@ -31,7 +31,7 @@ defineProps({
         default: 'gray'
     },
 
-    size: {
+    penSize: {
         type:     String,
         required: false,
         validator(value) {
@@ -41,6 +41,11 @@ defineProps({
                 'large'
             ].includes(value);
         }
+    },
+
+    isPressed: {
+        type:    Boolean,
+        default: false
     }
 });
 
@@ -76,7 +81,7 @@ defineExpose({
     /*
         White outline
     */
-    &[data-pressed=true] {
+    &[data-is-pressed=true] {
         --outline: 
             drop-shadow(0 calc(     var(--shadow-dist-s)) white)
             drop-shadow(0 calc(-1 * var(--shadow-dist-s)) white)
@@ -89,20 +94,25 @@ defineExpose({
     */
     &:hover,
     &:active,
-    &[data-pressed=true] {
+    &[data-is-pressed=true] {
         --hl: var(--filter-hl-1);
 
-        &:not([data-pressed=true]) > .icon-wrapper {
+        &:not([data-is-pressed=true]) > .icon-wrapper {
             transform-origin: 50% 70%;
             scale:            1.04;
+        }
+        
+        &:not([data-is-pressed=true]):active > .icon-wrapper {
+            transform-origin: 50% 70%;
+            scale:            1.02;
         }
     }
 
     /*
-        Press downward
+        Press down
     */
     &:active,
-    &[data-pressed=true] {
+    &[data-is-pressed=true] {
         & > .icon-wrapper {
             translate: 0 var(--shadow-dist-s);
         }
@@ -136,11 +146,12 @@ defineExpose({
 
     display:         flex;
     align-items:     center;
-    justify-content: space-evenly;
-    gap:             2px;
+    justify-content: center;
 
     border:        var(--border-s);
-    border-radius: var(--radius-s);
+    border-radius: 
+        0               0 
+        var(--radius-s) var(--radius-s);
 
     background: var(--col-lt-gray-3);
 
@@ -150,26 +161,48 @@ defineExpose({
         inset calc(-1 * var(--shadow-dist-m)) calc(-1 * var(--shadow-dist-m)) var(--col-gray-2);
 }
 
-.size {
-    --s: 3px;
+.tool-bar-chip:not([data-pen-size]) > .sizes {
+    display: none;
+}
 
-    width:  8px;
-    height: 8px;
-    background: var(--col-gray-4);
+.size-dots {
+    position:    relative;
+    scale:       1.3;
+    margin-left: -1.5px;
 
-    border-radius: var(--radius-xs);
+    &,
+    &::before,
+    &::after {
+        width:  8px;
+        height: 8px;
 
-    &.size--s { margin-right: -1.5px; }
-    &.size--m { --s: 2.3px; scale: 1.3; }
-    &.size--l { --s: 2px;   scale: 1.5; }
-
-    &[data-active=true] {
-        background: black;
-        filter:
-            drop-shadow(0            var(--s)    white)
-            drop-shadow(0 calc(0px - var(--s))   white)
-            drop-shadow(             var(--s)  0 white)
-            drop-shadow(calc(0px -   var(--s)) 0 white);
+        border-radius: var(--radius-xs);
+        background:    var(--col-gray-4);
     }
+
+    &::before,
+    &::after {
+        content:  '';
+        position: absolute;
+        top:      0;
+        display:  block;
+    }
+
+    &::before {
+        right:      calc(100% + 2px);
+        scale:      calc(1 / 1.3);
+        background: black;
+    }
+
+    &::after {
+        left:  calc(100% + 3px);
+        scale: calc(1.5 / 1.3);
+    }
+}
+
+.tool-bar-chip[data-pen-size=medium] > .sizes > .size-dots,
+.tool-bar-chip[data-pen-size=large]  > .sizes > .size-dots,
+.tool-bar-chip[data-pen-size=large]  > .sizes > .size-dots::after {
+    background: black;
 }
 </style>

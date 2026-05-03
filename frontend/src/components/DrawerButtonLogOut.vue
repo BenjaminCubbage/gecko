@@ -3,7 +3,7 @@
         ref="innerEl"
         class="
             drawer-button-log-out
-            txtr-vert txtr-vert--dk-red
+            txtr-vert txtr-vert--red
             shdw shdw--inst-dk-red shdw--elevated-s"
         :data-pressed="isPressed"
         aria-label="Log Out">

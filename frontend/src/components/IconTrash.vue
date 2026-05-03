@@ -19,7 +19,7 @@
 }
 
 .lid {
-    translate: 0 -2%;
+    translate: 0 -2.5%;
 }
 
 .stroke {

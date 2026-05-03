@@ -2,7 +2,7 @@
     <ToolBarChip
         ref="toolBarChipEl"
         class="tool-bar-chip-pen-size"
-        :size="penSize"
+        :pen-size="penSize"
         color="yellow"
         :aria-label="`${penSize} brush`"
         @click="cycle"
