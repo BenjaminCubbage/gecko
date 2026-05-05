@@ -29,7 +29,7 @@
 </template>
 
 <script setup>
-import { 
+import {
     useTemplateRef,
     watch
 } from 'vue';
@@ -71,8 +71,8 @@ function dialogClosed() {
 
 <style scoped>
 .aside-modal {
-    --aside-padding-x: 18px;
-    --aside-padding-y: 18px;
+    --aside-padding-x: 20px;
+    --aside-padding-y: 20px;
 
     anchor-scope: --content;
     isolation:    isolate;
@@ -83,7 +83,7 @@ function dialogClosed() {
 
     display:        flex;
     flex-direction: column;
-    gap:            10px;
+    gap:            12px;
     max-width:      min(430px, calc(100dvw - 4 * var(--vp-margin)));
     max-height:     80dvh;
     overflow:       visible;
@@ -113,8 +113,8 @@ function dialogClosed() {
         display:  block;
         position: absolute;
 
-        width:  21px;
-        height: 18px;
+        width:  24px;
+        height: 21px;
 
         background:    var(--col-green-4);
         border:        var(--border-s);
@@ -134,7 +134,7 @@ function dialogClosed() {
 .header {
     --cantilever: calc(2 * var(--shadow-dist-m));
 
-    height: 1.3em;
+    height: 1.4em;
 
     margin:  6px calc(-1 * var(--aside-padding-x) - var(--cantilever));
     padding: 0   calc(     var(--aside-padding-x) + var(--cantilever));
@@ -157,23 +157,11 @@ function dialogClosed() {
         inset calc(-1 * var(--shadow-dist-m)) calc(-1 * var(--shadow-dist-m)) var(--col-gray-3),
         inset           var(--shadow-dist-m)            var(--shadow-dist-m)  var(--col-lt-gray-1);
 
-    /*
-        Heading bar's shadow, cast over the modal but not beyond
-        the cantilever.
-    */
-    &::after {
-        content:  '';
-        position: absolute;
-        height:   var(--shadow-dist-m);
-        z-index:  -1;
-
-        inset:
-            auto
-            calc(var(--cantilever) - var(--shadow-dist-m))
-            calc(0px - var(--shadow-dist-m) - var(--border-thickness-s) + 0.5px);
-
-        background: var(--col-gray-4);
-    }
+    filter:
+        drop-shadow(
+            var(--shadow-dist-m)
+            var(--shadow-dist-m)
+            rgb(0 0 0 / 0.15));
 }
 
 .content {

@@ -1,7 +1,7 @@
 <template>
     <AsideModal title="Welcome!">
         <template #icon>
-            <IconSDCardInfo class="icon-sd-card-info" />
+            <IconLightBulb height="47px" />
         </template>
 
         <template #content>Hey. You!
@@ -36,8 +36,9 @@
 </template>
 
 <script setup>
-import AsideModal     from './AsideModal.vue';
-import IconSDCardInfo from './IconSDCardInfo.vue';
+import AsideModal    from './AsideModal.vue';
+import IconLightBulb from './IconLightBulb.vue';
+import IconFriendUser from './IconFriendUser.vue';
 
 const emit = defineEmits([
     'logIn',
@@ -46,14 +47,6 @@ const emit = defineEmits([
 </script>
 
 <style scoped>
-.icon-sd-card-info {
-    height: 46px;
-
-    filter:
-        brightness(1.1)
-        drop-shadow(2px 2px rgb(0 0 0 / 0.15));
-}
-
 .buttons {
     display: grid;
     grid-template:
@@ -71,20 +64,23 @@ const emit = defineEmits([
 .button {
     --hovering-filter: brightness(1);
 
-    padding:    4px 0 5px;
+    padding:    5px 0 6px;
     margin-top: var(--shadow-dist-s);
 
     -webkit-text-stroke: var(--text-stroke-s);
-    font-size: 2.4rem;
-    letter-spacing: 0.05em;
-    line-height: 0.8;
+    font-size:           2.4rem;
+    letter-spacing:      0.05em;
+    line-height:         0.8;
 
-    border: 3px solid black;
+    border:        var(--border-s);
     border-radius: var(--radius-s);
 
     filter:
         var(--hovering-filter)
-        drop-shadow(3px 3px var(--col-lt-gray-6));
+        drop-shadow(
+            var(--shadow-dist-m) 
+            var(--shadow-dist-m) 
+            var(--col-lt-gray-6));
 
     &:hover,
     &:active {
@@ -93,7 +89,7 @@ const emit = defineEmits([
 
     &:active {
         --shdw-dist-elevation: 0;
-        translate: 0 var(--shadow-dist-s);
+        translate:             0 var(--shadow-dist-s);
     }
 }
 
@@ -114,6 +110,6 @@ const emit = defineEmits([
     contain:       none;
     display:       inline-block;
     margin-inline: 1px;
-    color:       #38640C;
+    color:         #38640C;
 }
 </style>
