@@ -5,7 +5,6 @@
         class="navigation-bar-tabs"
         v-roving-container
         v-roving-home="selectedTab === 'canvas' ? 0 : 1">
-
         <NavigationBarTabButton 
             class="navigation-bar-tab-button--canvas"
             title="CANVAS"
@@ -62,31 +61,5 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
 
     & > .navigation-bar-tab-button--canvas  { place-self: center; grid-area: tab-left; }
     & > .navigation-bar-tab-button--friends { place-self: center; grid-area: tab-right; }
-}
-
-.rail {
-    grid-area: 
-        tab-left  / 
-        tab-left  / 
-        tab-right / 
-        tab-right;
-
-    height: 57px;
-    place-self: start stretch;
-
-    margin-top: -12px;
-    margin-left: -6px;
-    margin-right: -6px;
-
-    border:        var(--border-s);
-    border-radius: var(--radius-s);
-
-    border-color: var(--col-gray-7);
-    
-    --txtr-vert-col-1: var(--col-gray-2);
-    --txtr-vert-col-2: var(--col-gray-3);
-
-    --shdw-inst-1: var(--col-gray-1);
-    --shdw-inst-2: var(--col-gray-4);
 }
 </style>

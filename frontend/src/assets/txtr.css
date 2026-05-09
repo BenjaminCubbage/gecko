@@ -54,6 +54,11 @@
     --txtr-vert-col-2: var(--col-magenta-3);
 }
 
+.txtr-vert--lt-yellow {
+    --txtr-vert-col-1: var(--col-yellow-1);
+    --txtr-vert-col-2: var(--col-yellow-2);
+}
+
 .txtr-vert--yellow {
     --txtr-vert-col-1: var(--col-yellow-2);
     --txtr-vert-col-2: var(--col-yellow-3);

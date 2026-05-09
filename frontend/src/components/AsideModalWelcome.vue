@@ -4,9 +4,11 @@
             <IconLightBulb height="47px" />
         </template>
 
-        <template #content>Hey. You!
-<div style="height:8px;"></div>This site lets my friends send images to my E-ink board, and vice-versa.
-<div style="height:8px;"></div>If you know me, log in and send a friend request to <span class="at-ben">@ben</span>. My device should appear as a recipient once I accept.</template>
+        <template #content>
+            <p>Hey! You!</p>
+            <p>This site lets my friends send images to my E-ink board, and vice-versa.</p>
+            <p>If you know me, log in and send a friend request to @ben. My device should appear as a recipient once I accept.</p>
+        </template>
 
         <template #buttons>
             <div class="buttons">
@@ -64,7 +66,7 @@ const emit = defineEmits([
 .button {
     --hovering-filter: brightness(1);
 
-    padding:    5px 0 6px;
+    padding:    6px 0 7px;
     margin-top: var(--shadow-dist-s);
 
     -webkit-text-stroke: var(--text-stroke-s);

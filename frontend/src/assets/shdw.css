@@ -63,10 +63,10 @@
 .shdw--otst-blue { --shdw-otst-1: var(--col-lt-blue-0); --shdw-otst-2: var(--col-blue-3); }
 
 .shdw--inst-lt-gray, .shdw-after--inst-lt-gray::after, .shdw-before--inst-lt-gray::before { --shdw-inst-1: var(--col-lt-gray-0); --shdw-inst-2: var(--col-lt-gray-6); }
-.shdw--otst-lt-gray, .shdw-after--otst-lt-gray::after, .shdw-before--otst-lt-gray::before { --shdw-otst-1: var(--col-lt-gray-0); --shdw-otst-2: var(--col-lt-gray-5); }
+.shdw--otst-lt-gray, .shdw-after--otst-lt-gray::after, .shdw-before--otst-lt-gray::before { --shdw-otst-1: var(--col-lt-gray-0); --shdw-otst-2: var(--col-lt-gray-6); }
 
-.shdw--inst-gray, .shdw-after--inst-gray::after, .shdw-before--inst-gray::before { --shdw-inst-1: var(--col-gray-0); --shdw-inst-2: var(--col-gray-4); }
-.shdw--otst-gray, .shdw-after--otst-gray::after, .shdw-before--otst-gray::before { --shdw-otst-1: var(--col-gray-0); --shdw-otst-2: var(--col-gray-4); }
+.shdw--inst-gray, .shdw-after--inst-gray::after, .shdw-before--inst-gray::before { --shdw-inst-1: var(--col-gray-1); --shdw-inst-2: var(--col-gray-4); }
+.shdw--otst-gray, .shdw-after--otst-gray::after, .shdw-before--otst-gray::before { --shdw-otst-1: var(--col-gray-1); --shdw-otst-2: var(--col-gray-4); }
 
 .shdw--inst-dk-gray { --shdw-inst-1: var(--col-gray-2); --shdw-inst-2: var(--col-gray-7); }
 .shdw--otst-dk-gray { --shdw-otst-1: var(--col-gray-2); --shdw-otst-2: var(--col-gray-7); }
@@ -89,7 +89,8 @@
 .shdw--inst-magenta { --shdw-inst-1: var(--col-magenta-0); --shdw-inst-2: var(--col-magenta-5); }
 .shdw--otst-magenta { --shdw-otst-1: var(--col-magenta-0); --shdw-otst-2: var(--col-magenta-5); }
 
-.shdw--inst-yellow { --shdw-inst-1: var(--col-yellow-0); --shdw-inst-2: var(--col-yellow-6); }
+.shdw--inst-yellow { --shdw-inst-1: var(--col-yellow-0); --shdw-inst-2: var(--col-yellow-5); }
+.shdw--otst-yellow { --shdw-otst-1: var(--col-yellow-0); --shdw-otst-2: var(--col-yellow-5); }
 
 /*
     These are for the bottom black elevation "platform". Small

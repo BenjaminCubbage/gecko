@@ -1,12 +1,11 @@
 :root {
-    font-synthesis:          none;
+    font-synthesis:          weight;
     text-rendering:          optimizeLegibility;
     -webkit-font-smoothing:  antialiased;
     -moz-osx-font-smoothing: grayscale;
 
     font-family: var(--font-main);
     font-size:   62.5%;
-    font-weight: 400;
     line-height: 1;
 
     paint-order:  stroke;
@@ -42,7 +41,7 @@ body {
     */
     transform-origin:     center;
     box-sizing:           border-box;
-    corner-shape:         inherit;
+    corner-shape:         notch;
     font-variant-numeric: tabular-nums;
 
     @media (prefers-reduced-motion: reduce) {
@@ -75,7 +74,9 @@ h4,
 h5,
 h6,
 p {
-    margin: 0;
+    font-size: inherit;
+    margin:  0;
+    padding: 0;
 }
 
 input,
@@ -87,7 +88,8 @@ h4,
 h5,
 h6,
 textarea {
-    cursor: text;
+    font-weight: normal;
+    cursor:      text;
 }
 
 :disabled {
@@ -141,6 +143,15 @@ dialog {
     padding:    0;
     background: transparent;
     border:     0;
+    max-width:  calc(100% - 9px);
+
+    &:not([open]) {
+        display: none !important;
+    }
+}
+
+span, p, li {
+    cursor: text;   
 }
 
 @supports (-moz-appearance: none) {

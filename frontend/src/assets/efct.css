@@ -1,0 +1,32 @@
+.efct-rays-before::before {
+    content:  '';
+    position: absolute;
+    margin:   auto;
+
+    --rays-col:
+        color-mix(in hsl, var(--col-yellow-1), transparent 40%);
+
+    --rays-sz: 90px;
+
+    background:
+        repeating-conic-gradient(from -13.25deg,
+            var(--rays-mask) 0deg  26.5deg,
+            transparent      26.5deg 45deg);
+            
+    mask-image:
+        radial-gradient(white 45%, transparent 65%);
+
+    width:  var(--rays-sz);
+    height: var(--rays-sz);
+
+    inset: calc(50% - var(--rays-sz) / 2);
+}
+
+.efct-rays-before--rotating::before {
+    animation: efct-rays-rotate 20s linear infinite;
+}
+
+@keyframes efct-rays-rotate {
+    from { rotate: 0; }
+    to   { rotate: 1turn; }
+}

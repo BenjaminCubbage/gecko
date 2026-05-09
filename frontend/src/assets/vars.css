@@ -1,10 +1,11 @@
 :root {
-    --font-main: 'Jersey 15';
+    --font-main: 'Jersey 10';
+    --font-scnd: fspixelsans;
 
     --col-gray-0: #ffffff;
     --col-gray-1: #eff3f7;
-    --col-gray-2: #cbd4de;
-    --col-gray-3: #b0b9cc;
+    --col-gray-2: #d4dae5;
+    --col-gray-3: #b8bfd1;
     --col-gray-4: #8e94ac;
     --col-gray-5: #757a8f;
     --col-gray-6: #656b82;
@@ -25,9 +26,10 @@
     --col-blue-1: #7298ff;
     --col-blue-2: #486ac1;
     --col-blue-3: #2c4a95;
-    --col-blue-4: #152e6d;
-    --col-blue-5: #0d2257;
-    --col-blue-6: #07163c;
+    --col-blue-4: #2B3D8C;
+    --col-blue-5: #152e6d;
+    --col-blue-6: #0d2257;
+    --col-blue-7: #07163c;
 
     --col-lt-blue-0: #f2f5ff;
     --col-lt-blue-1: #ccd7f7;
@@ -42,11 +44,11 @@
     --col-red-1: #ffdfdf;
     --col-red-2: #ffa4a4;
     --col-red-3: #ff7373;
-    --col-red-4: #fd4d4d;
+    --col-red-4: #ff6464;
     --col-red-5: #f14141;
-    --col-red-6: #d21138;
-    --col-red-7: #b60b2d;
-    --col-red-8: #9e0826;
+    --col-red-6: #e12047;
+    --col-red-7: #d1143a;
+    --col-red-8: #b00f30;
 
     --col-green-0: #f3f9ee;
     --col-green-1: #d9f0c1;
@@ -88,8 +90,10 @@
     --col-yellow-8: #8f5d04;
     --col-yellow-9: #5c3900;
 
+    --col-shadow-alpha: rgb(0 0 0 / 0.1);
+
     --border-thickness-s: 3px;
-    --border-thickness-l: 3px;
+    --border-thickness-l: 4px;
 
     --border-s: var(--border-thickness-s) solid black;
     --border-l: var(--border-thickness-l) solid black;
@@ -105,19 +109,17 @@
 
     --shadow-aura-dist: 2px;
 
-    --shadow-xs: 0 var(--shadow-dist-xs) 0 black;
-    --shadow-s:  0 var(--shadow-dist-s)  0 black;
-    --shadow-m:  0 var(--shadow-dist-m)  0 black;
-    --shadow-l:  0 var(--shadow-dist-l)  0 black;
     --shadow-aura: 0 0 0 var(--shadow-aura-dist) white;
 
-    --text-stroke-width-xs: 3px;
-    --text-stroke-width-s:  3.5px;
-    --text-stroke-width-l:  4.0px;
+    --text-stroke-width-xs: 3.5px;
+    --text-stroke-width-s:  4px;
+    --text-stroke-width-l:  5px;
+    --text-stroke-width-xl:  6.5px;
 
     --text-stroke-xs: var(--text-stroke-width-xs) white;
     --text-stroke-s:  var(--text-stroke-width-s)  white;
     --text-stroke-l:  var(--text-stroke-width-l)  white;
+    --text-stroke-xl: var(--text-stroke-width-xl) white;
 
     --vp-margin: 8px;
 

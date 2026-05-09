@@ -5,7 +5,7 @@
 
 @font-face {
 	font-family: iconfont;
-	src: url('./iconfont.woff2');
+	src:         url('./iconfont.woff2');
 }
 
 .hn {
@@ -13,9 +13,9 @@
 }
 
 .hn:before {
-    font-family: iconfont !important;
-    font-style: normal;
-    font-weight: normal !important;
+    font-family:    iconfont !important;
+    font-style:     normal;
+    font-weight:    normal !important;
     vertical-align: top;
 }
 

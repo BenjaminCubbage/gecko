@@ -11,3 +11,7 @@
     clip-path: inset(50%);
     clip:      rect(1px, 1px, 1px, 1px);
 }
+
+.util-nowrap {
+    white-space: nowrap;
+}

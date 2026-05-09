@@ -3,28 +3,18 @@
         ref="innerEl"
         class="
             aside-modal
-            shdw shdw--elevated-s"
+            shdw shdw--elevated-l shdw--inst-green
+            txtr-vert txtr-vert--green"
         :aria-label="title"
         closedby="any"
-        v-modal-auto-focus
         @close="dialogClosed">
-        <div inert class="knobs knobs--left  shdw-after shdw-after--inst-green shdw-after--elevated-s shdw-before shdw-before--inst-green"></div>
-        <div inert class="knobs knobs--right shdw-after shdw-after--inst-green shdw-after--elevated-s shdw-before shdw-before--inst-green"></div>
-
-        <h1
-            class="header">
+        <h1 class="
+            header
+            shdw shdw--inst-gray
+            txtr-vert txtr-vert--gray">
             <slot name="icon"></slot>
             {{ title }}
         </h1>
-
-        <p
-            class="content"
-            tabindex="-1"
-            v-modal-auto-focus-target>
-            <slot name="content"></slot>
-        </p>
-
-        <slot name="buttons"></slot>
     </dialog>
 </template>
 
@@ -71,8 +61,8 @@ function dialogClosed() {
 
 <style scoped>
 .aside-modal {
-    --aside-padding-x: 20px;
-    --aside-padding-y: 20px;
+    --aside-padding-x: 12px;
+    --aside-padding-y: 15px;
 
     anchor-scope: --content;
     isolation:    isolate;
@@ -83,17 +73,11 @@ function dialogClosed() {
 
     display:        flex;
     flex-direction: column;
-    gap:            12px;
     max-width:      min(430px, calc(100dvw - 4 * var(--vp-margin)));
     max-height:     80dvh;
     overflow:       visible;
     position:       relative;
 
-    --shdw-etc:
-        inset  3px  3px var(--col-lt-gray-0),
-        inset -3px -3px var(--col-gray-4);
-
-    background:    var(--col-lt-gray-4);
     border:        var(--border-s);
     border-radius: var(--radius-s);
 
@@ -113,8 +97,8 @@ function dialogClosed() {
         display:  block;
         position: absolute;
 
-        width:  24px;
-        height: 21px;
+        width:  27px;
+        height: 23px;
 
         background:    var(--col-green-4);
         border:        var(--border-s);
@@ -132,18 +116,27 @@ function dialogClosed() {
 }
 
 .header {
-    --cantilever: calc(2 * var(--shadow-dist-m));
+    --cantilever: calc(4 * var(--shadow-dist-m));
+
+    align-self:  start;
 
     height: 1.4em;
 
-    margin:  6px calc(-1 * var(--aside-padding-x) - var(--cantilever));
-    padding: 0   calc(     var(--aside-padding-x) + var(--cantilever));
+    margin: 0 calc(-1 * var(--aside-padding-x) - var(--cantilever));
+    padding: 
+        0
+        33px   
+        0
+        calc(var(--aside-padding-x) + var(--cantilever) - var(--shadow-dist-m));
+    
+    margin-top: -6px;
+    margin-bottom: -18px;
 
-    z-index: 0;
+    z-index:     0;
     position:    relative;
     display:     flex;
     align-items: center;
-    gap:         8px;
+    gap:         12px;
 
     -webkit-text-stroke: var(--text-stroke-s);
     font-size:           2.7rem;
@@ -151,11 +144,8 @@ function dialogClosed() {
 
     border:        var(--border-s);
     border-radius: var(--radius-s);
-
-    background: var(--col-lt-gray-2);
-    box-shadow:
-        inset calc(-1 * var(--shadow-dist-m)) calc(-1 * var(--shadow-dist-m)) var(--col-gray-3),
-        inset           var(--shadow-dist-m)            var(--shadow-dist-m)  var(--col-lt-gray-1);
+    border-bottom-right-radius: 16px;
+    corner-bottom-right-shape:  bevel;
 
     filter:
         drop-shadow(
@@ -169,25 +159,26 @@ function dialogClosed() {
     container:   content / scroll-state;
     anchor-name: --content;
 
+    text-indent: 20px;
+
     overflow:            auto;
     overscroll-behavior: contain;
-    padding:             10px 13px;
+    padding:             15px 15px;
+    padding-top: 27px;
 
     -webkit-text-stroke: var(--text-stroke-s);
-    font-size:           2.2rem;
-    line-height:         1.1;
-    white-space:         pre-wrap;
+    font-size:           2.3rem;
+    line-height:         1.12;
+    letter-spacing: 0.02em;
 
-    background: var(--col-lt-gray-2);
-
-    box-shadow:
-        inset      var(--shadow-dist-m)            var(--shadow-dist-m)       var(--col-gray-3),
-        inset calc(var(--shadow-dist-m) * -1) calc(var(--shadow-dist-m) * -1) var(--col-lt-gray-0),
-                   var(--shadow-dist-m)            var(--shadow-dist-m)       var(--col-lt-gray-0),
-              calc(var(--shadow-dist-m) * -1) calc(var(--shadow-dist-m) * -1) var(--col-gray-3);
+    background: white;
 
     border-radius: var(--radius-s);
     border:        var(--border-s);
+
+    display:        flex;
+    flex-direction: column;
+    gap:            12px;
 
     /*
         Transparent gradient overlay on mobile to indicate content

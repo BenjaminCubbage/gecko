@@ -287,7 +287,7 @@ defineExpose({
         --shdw-etc: 
             0 0 0 7px var(--col-green-3);
 
-        border:        var(--border-l);
+        border:        var(--border-s);
         border-radius: var(--radius-s);
     }
 

@@ -17,8 +17,7 @@
                 :id="tabPanelIds.friends" />
         </main>
         
-        <AsideModalWelcome
-            class="aside-modal-welcome"
+        <ModalWelcome
             v-model:is-open="isWelcomeModalOpen"
             @log-in="session.requestLogIn()"
             @dismiss="isWelcomeModalOpen = false" />
@@ -38,11 +37,11 @@ import {
     watch
 } from 'vue';
 
-import CanvasSection     from './sections/CanvasSection.vue';
-import FriendsSection    from './sections/FriendsSection.vue';
-import NavigationBar     from './components/NavigationBar.vue';
-import SnackBarOverlay   from './components/SnackBarOverlay.vue';
-import AsideModalWelcome from '@/components/AsideModalWelcome.vue';
+import CanvasSection   from './sections/CanvasSection.vue';
+import FriendsSection  from './sections/FriendsSection.vue';
+import NavigationBar   from './components/NavigationBar.vue';
+import SnackBarOverlay from './components/SnackBarOverlay.vue';
+import ModalWelcome    from './components/ModalWelcome.vue';
 
 import { DevicesStore }  from './stores/devicesStore.js';
 import { FriendsStore }  from './stores/friendsStore.js';
@@ -77,10 +76,13 @@ const selectedTab        = ref('canvas');
 const isWelcomeModalOpen = ref(false);
 
 const { isFontLoaded: isMainFontLoaded } = useWaitOnFont('--font-main');
+const { isFontLoaded: isScndFontLoaded } = useWaitOnFont('--font-scnd');
 const { isFontLoaded: isIconFontLoaded } = useWaitOnFont('iconfont');
 
 const fontsLoaded = computed(() => {
-    return isMainFontLoaded.value && isIconFontLoaded.value;
+    return isMainFontLoaded.value
+        && isScndFontLoaded.value
+        && isIconFontLoaded.value;
 });
 
 watch([ session.state, fontsLoaded ], () => {
