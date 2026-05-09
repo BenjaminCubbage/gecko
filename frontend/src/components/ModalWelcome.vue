@@ -40,8 +40,8 @@
                 <h2 class="steps-subtitle">If you know me:</h2>
                 <ul class="steps-list">
                     <li>Log in w/ Google</li>
-                    <li>Send a friend request <span class="util-nowrap">to <span class="text-emphasis">@ben</span></span></li>
-                    <li>Once I accept, you'll see me as <span class="util-nowrap">a recipient :)</span></li>
+                    <li>Send a friend request <span class="util-nowrap">to <span class="text-emphasis">@ben </span></span></li>
+                    <li>Once I accept, you'll see me as <span class="util-nowrap">a recipient ☺</span></li>
                 </ul>
             </div>
         </div>
