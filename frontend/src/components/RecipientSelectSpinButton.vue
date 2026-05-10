@@ -196,9 +196,9 @@ function tryMoveSelection(by) {
 
 <style scoped>
 .recipient-select-carousel {
-    --ht-label:      14px;
-    --ht-selection:  36px;
-    --ht-status:     26px;
+    --ht-label:     14px;
+    --ht-selection: 36px;
+    --ht-status:    26px;
 
     contain:   content;
     isolation: isolate;
@@ -246,6 +246,7 @@ function tryMoveSelection(by) {
     white-space:         nowrap;
     line-height:         0;
     user-select:         none;
+    cursor:              default;
 
     border: var(--border-s);
 }
@@ -336,6 +337,7 @@ function tryMoveSelection(by) {
         display: inline-block;
         height:  0.4em;
         width:   0.4em;
+        cursor:  default;
 
         box-shadow:
             0 0
@@ -351,6 +353,10 @@ function tryMoveSelection(by) {
             border-radius: 2px;
             rotate:        45deg;
         }
+    }
+
+    & > .status-text {
+        cursor: default;
     }
 }
 
