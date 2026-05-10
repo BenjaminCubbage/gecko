@@ -234,8 +234,10 @@ async function submit() {
         0 
         calc(var(--shadow-dist-s) - var(--shdw-dist-elevation));
 
-    &:has(> .username-button:hover) {
-        filter: var(--filter-hl-1);
+    @media (hover: hover) {
+        &:has(> .username-button:hover) {
+            filter: var(--filter-hl-1);
+        }
     }
 
     &[data-pressed=true] {

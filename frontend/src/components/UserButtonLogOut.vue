@@ -2,7 +2,7 @@
     <button
         ref="innerEl"
         class="
-            drawer-button-log-out
+            user-button-log-out
             txtr-vert txtr-vert--red
             shdw shdw--inst-dk-red shdw--elevated-s"
         :data-pressed="isPressed"
@@ -28,16 +28,21 @@ defineExpose({
 </script>
 
 <style scoped>
-.drawer-button-log-out {
-    width:  50px;
-    height: 45px;
+.user-button-log-out {
+    width:  var(--user-button-wd);
+    height: var(--user-button-ht);
 
     border:        var(--border-s);
     border-radius: var(--radius-s);
 
     overflow-y: clip;
 
-    &:hover,
+    @media (hover: hover) {
+        &:hover {
+            filter: var(--filter-hl-1);
+        }
+    }
+
     &[data-pressed=true] {
         filter: var(--filter-hl-1);
     }

@@ -54,10 +54,10 @@
     --col-green-1: #d9f0c1;
     --col-green-2: #b3e87d;
     --col-green-3: #a6ed5e;
-    --col-green-4: #91df43;
-    --col-green-5: #7ebd3e;
-    --col-green-6: #629f25;
-    --col-green-7: #4d8119;
+    --col-green-4: #9be056;
+    --col-green-5: #8ac84d;
+    --col-green-6: #6ca334;
+    --col-green-7: #568724;
     --col-green-8: #3c6710;
     --col-green-9: #1e3705;
 
@@ -90,7 +90,7 @@
     --col-yellow-8: #8f5d04;
     --col-yellow-9: #5c3900;
 
-    --col-shadow-alpha: rgb(0 0 0 / 0.1);
+    --col-shadow-alpha: rgb(0 0 0 / 0.13);
 
     --border-thickness-s: 3px;
     --border-thickness-l: 4px;
@@ -126,6 +126,9 @@
     --filter-hl-0: brightness(1.04);
     --filter-hl-1: brightness(1.06);
     --filter-hl-2: brightness(1.08);
+
+    --user-button-wd: 50px;
+    --user-button-ht: 45px;
 
     @supports not (corner-shape: notch) {
         --radius-xs: 3px;

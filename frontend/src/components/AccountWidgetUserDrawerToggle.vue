@@ -2,7 +2,7 @@
     <button 
         ref="innerEl" 
         class="
-            account-widget-drawer-toggle
+            account-widget-user-drawer-toggle
             txtr-vert txtr-vert--green
             shdw shdw--inst-green shdw--elevated-s"
         :data-expanded="isExpanded">
@@ -29,12 +29,12 @@ defineExpose({
 </script>
 
 <style scoped>
-.account-widget-drawer-toggle {
+.account-widget-user-drawer-toggle {
     display:  flex;
     position: relative;
 
-    width:  50px;
-    height: 45px;
+    width:  var(--user-button-wd);
+    height: var(--user-button-ht);
 
     border:        var(--border-s);
     border-radius: var(--radius-s);

@@ -51,11 +51,12 @@
 
         <button
             class="
-                modal-cta
+                modal-log-in-button
                 txtr-vert txtr-vert--green
                 shdw shdw--inst-green shdw--elevated-l
                 shdw-before shdw-before--inst-gray shdw-before--elevated-l
                 shdw-after shdw-after--inst-gray shdw-after--elevated-l"
+            :data-is-pressed="isLoggingIn"
             type="button"
             @click="emit('log-in')">
             Log In
@@ -74,6 +75,13 @@ import {
 import IconLightBulb from './IconLightBulb.vue';
 import IconClose     from './IconClose.vue';
 import IconCloud     from './IconCloud.vue';
+
+defineProps({
+    isLoggingIn: {
+        type:     Boolean,
+        required: true
+    }
+});
 
 const emit = defineEmits([
     'log-in'
@@ -112,11 +120,11 @@ watch([isOpen, dialogEl], () => {
 
     width: 430px;
 
-    & > .modal-header  { z-index: 2; }
-    & > .modal-body    { z-index: 1; }
-    & > .modal-bracket { z-index: 3; }
-    & > .modal-cta     { z-index: 4; }
-    & > .icon-cloud    { z-index: 0; }
+    & > .modal-header        { z-index: 2; }
+    & > .modal-body          { z-index: 1; }
+    & > .modal-bracket       { z-index: 3; }
+    & > .modal-log-in-button { z-index: 4; }
+    & > .icon-cloud          { z-index: 0; }
 }
 
 .modal-header {
@@ -370,8 +378,8 @@ watch([isOpen, dialogEl], () => {
     }
 }
 
-.modal-cta {
-    --hl: brightness(1);
+.modal-log-in-button {
+    --hl:   brightness(1);
     
     align-self:    center;
     margin-top:    -24px;
@@ -409,6 +417,12 @@ watch([isOpen, dialogEl], () => {
 
     &:active {
         --shdw-dist-elevation: calc(var(--shadow-dist-l) * 0.4);
+    }
+
+    &[data-is-pressed=true] {
+        --shdw-dist-elevation: 0px;
+        --shdw-etc:            var(--shadow-aura);
+        --hl: var(--filter-hl-0);
     }
 }
 

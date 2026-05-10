@@ -19,7 +19,8 @@
         
         <ModalWelcome
             v-model:is-open="isWelcomeModalOpen"
-            @log-in="session.requestLogIn()"
+            :is-logging-in="isLoggingIn"
+            @log-in="logIn"
             @dismiss="isWelcomeModalOpen = false" />
     </div>
 
@@ -79,6 +80,8 @@ const { isFontLoaded: isMainFontLoaded } = useWaitOnFont('--font-main');
 const { isFontLoaded: isScndFontLoaded } = useWaitOnFont('--font-scnd');
 const { isFontLoaded: isIconFontLoaded } = useWaitOnFont('iconfont');
 
+const isLoggingIn = ref(false);
+
 const fontsLoaded = computed(() => {
     return isMainFontLoaded.value
         && isScndFontLoaded.value
@@ -114,6 +117,14 @@ watch(friends.activeFriends, newFriends => {
     if (devices.state.value === 'ready')
         devices.requestUpsertUserIDs(newFriends.map(f => f.user.userID));
 });
+
+function logIn() {
+    isLoggingIn.value = true;
+    if (!session.requestLogIn()) {
+        snackBar.pushMessage('Already logged in!');
+        isLoggingIn.value = false;
+    }
+}
 </script>
 
 <style scoped>

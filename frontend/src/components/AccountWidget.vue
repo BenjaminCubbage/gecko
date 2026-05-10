@@ -2,29 +2,29 @@
     <div
         v-if="session.state.value === 'loggedout' || session.state.value === 'error'"
         class="account-widget account-widget--log-in">
-        <DrawerButtonLogIn
-            v-model:is-logging-in="isLoggingIn"
+        <UserButtonLogIn
+            :is-pressed="isLoggingIn"
             @click="logIn" />
     </div>
 
     <div
         v-else-if="session.state.value === 'ready'"
         class="account-widget account-widget--profile">
-        <AccountWidgetDrawerToggle
+        <AccountWidgetUserDrawerToggle
             ref="toggleEl"
-            class="account-widget-drawer-toggle"
+            class="account-widget-user-drawer-toggle"
             :is-expanded="isExpanded"
             :aria-controls="dropdownMenuId"
             @click="isExpanded = !isExpanded" />
 
         <menu
-            ref="drawerEl"
-            class="drawer"
+            ref="userDrawerEl"
+            class="user-drawer"
             :id="dropdownMenuId"
             :data-expanded="isExpanded"
             :inert="!isExpanded">
             <li>
-                <DrawerButtonLogOut
+                <UserButtonLogOut
                     ref="logOutButtonEl"
                     :is-pressed="isLoggingOut"
                     @click="logOut" />
@@ -45,10 +45,10 @@ import {
     watch
 } from 'vue';
 
-import AccountWidgetUsernameBadge from './AccountWidgetUsernameBadge.vue';
-import AccountWidgetDrawerToggle  from './AccountWidgetDrawerToggle.vue';
-import DrawerButtonLogIn          from './DrawerButtonLogIn.vue';
-import DrawerButtonLogOut         from './DrawerButtonLogOut.vue';
+import AccountWidgetUsernameBadge    from './AccountWidgetUsernameBadge.vue';
+import AccountWidgetUserDrawerToggle from './AccountWidgetUserDrawerToggle.vue';
+import UserButtonLogIn               from './UserButtonLogIn.vue';
+import UserButtonLogOut              from './UserButtonLogOut.vue';
 
 import { useIsFocusWithin } from '@/composables/useIsFocusWithin.js';
 import { Keys }             from '@/core/di/keys.js';
@@ -59,19 +59,19 @@ import {
 } from '@/core/errors/errors.js';
 
 const session  = inject(Keys.SessionStore);
-const snackBar = inject(Keys.SnackBarStore)
+const snackBar = inject(Keys.SnackBarStore);
 
 const isExpanded   = ref(false);
 const isLoggingOut = ref(false);
 const isLoggingIn  = ref(false);
 
 const toggleEl       = useTemplateRef('toggleEl');
-const drawerEl       = useTemplateRef('drawerEl');
+const userDrawerEl   = useTemplateRef('userDrawerEl');
 const logOutButtonEl = useTemplateRef('logOutButtonEl');
 
 const {
     isFocusWithin: isFocusWithinDrawer
-} = useIsFocusWithin([() => toggleEl.value?.innerElement, drawerEl]);
+} = useIsFocusWithin([() => toggleEl.value?.innerElement, userDrawerEl]);
 
 const dropdownMenuId = useId();
 
@@ -106,6 +106,7 @@ async function logOut() {
 }
 
 function logIn() {
+    isLoggingIn.value = true;
     if (!session.requestLogIn()) {
         snackBar.pushMessage('Already logged in');
         isLoggingIn.value = false;
@@ -127,19 +128,20 @@ function logIn() {
     }
 
     &.account-widget--log-in {
-        display: grid;
+        display:     grid;
+        place-items: center left;
     }
 
-    & > .account-widget-drawer-toggle  { z-index: 1; grid-area: profile;  place-self: center; }
-    & > .account-widget-username-badge { z-index: 0; grid-area: username; place-self: center left; }
+    & > .account-widget-user-drawer-toggle  { z-index: 1; grid-area: profile;  place-self: center; }
+    & > .account-widget-username-badge      { z-index: 0; grid-area: username; place-self: center left; }
 }
 
-.account-widget-drawer-toggle:is(:hover, :active, :focus) ~ .drawer,
-.drawer[data-expanded=true] {
+.account-widget-user-drawer-toggle:is(:hover, :active, :focus) ~ .user-drawer,
+.user-drawer[data-expanded=true] {
     will-change: transform opacity;
 }
 
-.drawer {
+.user-drawer {
     contain: layout;
 
     position: relative;
@@ -153,14 +155,14 @@ function logIn() {
         scale   100ms;
 }
 
-.drawer[data-expanded=true] {
+.user-drawer[data-expanded=true] {
     pointer-events: all;
     
     scale:   1;
     opacity: 1;
 }
 
-.drawer > * {
+.user-drawer > * {
     position: absolute;
     top:      8px;
 }
