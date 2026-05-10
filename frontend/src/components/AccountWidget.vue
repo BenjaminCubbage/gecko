@@ -1,6 +1,8 @@
 <template>
     <div
-        v-if="session.state.value === 'loggedout' || session.state.value === 'error'"
+        v-if="
+            session.state.value === 'loggedout' || 
+            session.state.value === 'error'"
         class="account-widget account-widget--log-in">
         <UserButtonLogIn
             :is-pressed="isLoggingIn"

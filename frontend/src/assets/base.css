@@ -150,10 +150,6 @@ dialog {
     }
 }
 
-span, p, li {
-    cursor: text;   
-}
-
 @supports (-moz-appearance: none) {
     /*
         Firefox uses rounded linejoins for the stroked-text

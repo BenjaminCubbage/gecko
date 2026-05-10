@@ -25,22 +25,22 @@
                 shdw shdw--elevated-l"
             tabindex="-1"
             v-modal-auto-focus-target>
-            <p class="body-preface">
+            <div class="body-preface">
                 <span class="
                     preface-icon
                     efct-rays-before efct-rays-before--rotating">
                     <IconLightBulb height="50px" role="presentation" />
                 </span>
-                <span class="preface-text">
+                <p class="preface-text">
                     Send black-and-white images to my <span class="text-emphasis util-nowrap">E-Ink Board</span>!
-                </span>
-            </p>
+                </p>
+            </div>
 
             <div class="body-steps">
                 <h2 class="steps-subtitle">If you know me:</h2>
                 <ul class="steps-list">
                     <li>Log in w/ Google</li>
-                    <li>Send a friend request <span class="util-nowrap">to <span class="text-emphasis">@ben </span></span></li>
+                    <li>Send a friend request <span class="util-nowrap">to <span class="text-emphasis">@ben</span></span></li>
                     <li>Once I accept, you'll see me as <span class="util-nowrap">a recipient ☺</span></li>
                 </ul>
             </div>
@@ -297,6 +297,12 @@ watch([isOpen, dialogEl], () => {
     }
 }
 
+.preface-text {
+    &, & span {
+        cursor: text;
+    }
+}
+
 .icon-light-bulb {
     filter:
         drop-shadow(
@@ -336,6 +342,10 @@ watch([isOpen, dialogEl], () => {
 
         padding-left: calc(var(--sz-bullet) * 2);
         padding-top:  2px;
+    }
+
+    &, & > li, & > li span {
+        cursor: text;
     }
 }
 

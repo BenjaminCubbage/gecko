@@ -4,9 +4,9 @@
             <AccountWidget />
         </div>
 
-        <div class="navigation">
+        <!-- <div class="navigation">
             <NavigationBarTabs v-model="selectedTab" class="navigation-bar-tabs" />
-        </div>
+        </div> -->
     </header>
 </template>
 

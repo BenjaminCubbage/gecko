@@ -154,13 +154,15 @@ function logIn() {
     grid-template-columns:
         1fr [main] min(550px, 100%) 1fr;
 
-    display:       grid;
-    place-content: stretch;
+    display:        grid;
+    place-content:  stretch;
+    pointer-events: none;
 
     & > * {
-        grid-column:  main;
-        margin-left:  var(--vp-margin);
-        margin-right: var(--vp-margin);
+        grid-column:    main;
+        margin-left:    var(--vp-margin);
+        margin-right:   var(--vp-margin);
+        pointer-events: auto;
     }
 }
 </style>
