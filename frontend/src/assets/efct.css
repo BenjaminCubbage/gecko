@@ -3,21 +3,23 @@
     position: absolute;
     margin:   auto;
 
-    --rays-col:
-        color-mix(in hsl, var(--col-yellow-1), transparent 40%);
+    width:  var(--rays-sz);
+    height: var(--rays-sz);
+    
+    pointer-events: none;
+
+    --rays-col: white;
+    --rays-alpha: 40%;
 
     --rays-sz: 90px;
 
     background:
         repeating-conic-gradient(from -13.25deg,
-            var(--rays-mask) 0deg  26.5deg,
-            transparent      26.5deg 45deg);
+            color-mix(in hsl, transparent, var(--rays-col) var(--rays-alpha))    0deg 26.5deg,
+            transparent                                                       26.5deg   45deg);
             
     mask-image:
         radial-gradient(white 45%, transparent 65%);
-
-    width:  var(--rays-sz);
-    height: var(--rays-sz);
 
     inset: calc(50% - var(--rays-sz) / 2);
 }

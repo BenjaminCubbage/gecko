@@ -16,12 +16,6 @@
                 role="tabpanel"
                 :id="tabPanelIds.friends" />
         </main>
-        
-        <ModalWelcome
-            v-model:is-open="isWelcomeModalOpen"
-            :is-logging-in="isLoggingIn"
-            @log-in="logIn"
-            @dismiss="isWelcomeModalOpen = false" />
     </div>
 
     <SnackBarOverlay />
@@ -73,28 +67,16 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry, {
     friends: useId()
 });
 
-const selectedTab        = ref('canvas');
-const isWelcomeModalOpen = ref(false);
+const selectedTab = ref('canvas');
 
 const { isFontLoaded: isMainFontLoaded } = useWaitOnFont('--font-main');
 const { isFontLoaded: isScndFontLoaded } = useWaitOnFont('--font-scnd');
 const { isFontLoaded: isIconFontLoaded } = useWaitOnFont('iconfont');
 
-const isLoggingIn = ref(false);
-
 const fontsLoaded = computed(() => {
     return isMainFontLoaded.value
         && isScndFontLoaded.value
         && isIconFontLoaded.value;
-});
-
-watch([ session.state, fontsLoaded ], () => {
-    /*
-        Waiting for document ready so that autofocus works.
-    */
-    if (session.state.value === 'loggedout' && 
-        fontsLoaded.value)
-        isWelcomeModalOpen.value = true;
 });
 
 provide(Keys.IsDocumentReady, fontsLoaded);
@@ -117,14 +99,6 @@ watch(friends.activeFriends, newFriends => {
     if (devices.state.value === 'ready')
         devices.requestUpsertUserIDs(newFriends.map(f => f.user.userID));
 });
-
-function logIn() {
-    isLoggingIn.value = true;
-    if (!session.requestLogIn()) {
-        snackBar.pushMessage('Already logged in!');
-        isLoggingIn.value = false;
-    }
-}
 </script>
 
 <style scoped>

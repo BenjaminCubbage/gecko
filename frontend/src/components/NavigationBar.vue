@@ -2,6 +2,7 @@
     <header class="navigation-bar">
         <div class="account">
             <AccountWidget />
+            <WelcomeBulb />
         </div>
 
         <!-- <div class="navigation">
@@ -13,6 +14,7 @@
 <script setup>
 import AccountWidget     from './AccountWidget.vue';
 import NavigationBarTabs from './NavigationBarTabs.vue';
+import WelcomeBulb       from './WelcomeBulb.vue';
 
 const selectedTab = defineModel('selectedTab');
 </script>
@@ -28,6 +30,9 @@ const selectedTab = defineModel('selectedTab');
 
     align-items: center;
     display:     grid;
+
+    & > .account    { grid-area: account; place-self: center left; }
+    & > .navigation { grid-area: links;   place-self: center; }
 
     @media (560px <= width < 930px) {
         grid-template: 
@@ -47,11 +52,8 @@ const selectedTab = defineModel('selectedTab');
 }
 
 .account {
-    grid-area: account;
-}
-
-.navigation {
-    grid-area:    links;
-    place-self: center;
+    display:     flex;
+    align-items: center;
+    gap: 18px;
 }
 </style>

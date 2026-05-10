@@ -5,7 +5,7 @@
     --col-gray-0: #ffffff;
     --col-gray-1: #eff3f7;
     --col-gray-2: #d4dae5;
-    --col-gray-3: #b8bfd1;
+    --col-gray-3: #bec4d5;
     --col-gray-4: #8e94ac;
     --col-gray-5: #757a8f;
     --col-gray-6: #656b82;
@@ -127,8 +127,8 @@
     --filter-hl-1: brightness(1.06);
     --filter-hl-2: brightness(1.08);
 
-    --user-button-wd: 50px;
-    --user-button-ht: 45px;
+    --user-button-wd: 51px;
+    --user-button-ht: 46px;
 
     @supports not (corner-shape: notch) {
         --radius-xs: 3px;

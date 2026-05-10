@@ -1,9 +1,11 @@
 <template>
     <div
         v-if="
-            session.state.value === 'loggedout' || 
+            session.state.value === 'loggedout' ||
             session.state.value === 'error'"
-        class="account-widget account-widget--log-in">
+        class="
+            account-widget account-widget--log-in
+            shdw-before shdw-before--inst-lt-gray shdw-before--elevated-s">
         <UserButtonLogIn
             :is-pressed="isLoggingIn"
             @click="logIn" />
@@ -11,7 +13,9 @@
 
     <div
         v-else-if="session.state.value === 'ready'"
-        class="account-widget account-widget--profile">
+        class="
+            account-widget account-widget--profile
+            shdw-before shdw-before--inst-lt-gray shdw-before--elevated-s">
         <AccountWidgetUserDrawerToggle
             ref="toggleEl"
             class="account-widget-user-drawer-toggle"
@@ -118,6 +122,14 @@ function logIn() {
 
 <style scoped>
 .account-widget {
+    --platform-padding-x: 21px;
+    --platform-padding-y: 11px;
+    --platform-ht: 39px;
+
+    position: relative;
+    padding: 
+        var(--platform-padding-y) var(--platform-padding-x);
+
     &.account-widget--profile {
         display:     grid;
         flex-flow:   row nowrap;
@@ -126,7 +138,7 @@ function logIn() {
             "drawer  ."              auto /
             auto    minmax(0, 1fr);
 
-        gap: 0 5px;
+        gap: 0 6px;
     }
 
     &.account-widget--log-in {
@@ -134,8 +146,29 @@ function logIn() {
         place-items: center left;
     }
 
-    & > .account-widget-user-drawer-toggle  { z-index: 1; grid-area: profile;  place-self: center; }
-    & > .account-widget-username-badge      { z-index: 0; grid-area: username; place-self: center left; }
+    &::before {
+        content: '';
+
+        position: absolute;
+        height: var(--platform-ht);
+        inset: auto 0 0;
+
+        margin: auto;
+
+        background:
+            linear-gradient(var(--col-gray-4) 0 0)             9px   center / 3px 9px no-repeat,
+            linear-gradient(var(--col-gray-4) 0 0)             6px   center / 9px 3px no-repeat,
+            linear-gradient(var(--col-gray-4) 0 0) calc(100% - 9px)  center / 3px 9px no-repeat,
+            linear-gradient(var(--col-gray-4) 0 0) calc(100% - 6px)  center / 9px 3px no-repeat
+            var(--col-gray-2);
+
+        border:        var(--border-s);
+        border-radius: var(--radius-s);
+    }
+
+    &::before                               { z-index: 0; }
+    & > .account-widget-user-drawer-toggle  { z-index: 1; grid-area: profile;  place-self: end; }
+    & > .account-widget-username-badge      { z-index: 2; grid-area: username; place-self: end left; }
 }
 
 .account-widget-user-drawer-toggle:is(:hover, :active, :focus) ~ .user-drawer,
@@ -147,19 +180,19 @@ function logIn() {
     contain: layout;
 
     position: relative;
-    
+
     pointer-events: none;
     scale:   0.8;
     opacity: 0;
 
-    transition: 
+    transition:
         opacity 100ms,
         scale   100ms;
 }
 
 .user-drawer[data-expanded=true] {
     pointer-events: all;
-    
+
     scale:   1;
     opacity: 1;
 }

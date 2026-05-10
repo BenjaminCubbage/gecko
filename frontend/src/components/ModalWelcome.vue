@@ -246,7 +246,7 @@ watch([isOpen, dialogEl], () => {
 
     --shdw-etc:
         inset calc(-1 * var(--shadow-dist-m)) calc(-1 * var(--shadow-dist-m)) var(--col-gray-3),
-        inset           var(--shadow-dist-m)  0                       var(--col-lt-gray-0);
+        inset           var(--shadow-dist-m)  0                               var(--col-lt-gray-0);
 
     font-family: var(--font-scnd);
 
@@ -283,9 +283,6 @@ watch([isOpen, dialogEl], () => {
 }
 
 .preface-icon {
-    --rays-mask:
-        color-mix(in hsl, var(--col-yellow-1), transparent 40%);
-
     line-height: 0;
     position:    relative;
 

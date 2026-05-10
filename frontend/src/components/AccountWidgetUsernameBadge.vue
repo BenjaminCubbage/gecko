@@ -1,10 +1,10 @@
 <template>
     <div class="account-widget-username-badge">
         <div
-            :class="[
-                'username',
-                'shdw shdw--inst-gray shdw--elevated-s'
-            ]"
+            class="
+                username
+                shdw shdw--inst-gray shdw--elevated-s
+                txtr-vert txtr-vert--gray"
             :data-pressed="isInputActive">
             <div class="username-editor" v-show="isInputActive">
                 <div class="at-symbol">@</div>
@@ -48,10 +48,10 @@
                 @click="edit">
                 <div class="username-text">
                     <template v-if="!isLoading">
-                        @{{ session.activeUser.value.username }}
+                        {{ session.activeUser.value.username }}
                     </template>
                     <template v-else>
-                        @{{ inputText }}
+                        {{ inputText }}
                     </template>
                 </div>
             </button>
@@ -195,14 +195,27 @@ async function submit() {
 
 <style scoped>
 .account-widget-username-badge {
+    /* 
+        Space between @ symbol and first username character 
+    */
+    --at-gap: 2px;
+
     align-items: stretch;
-    display:     flex;
-    height:      36px;
+    display:     grid;
+    height:      calc(var(--user-button-ht) - 7px);
     position:    relative;
 
     font-size:      2.6rem;
     letter-spacing: 0.06em;
     line-height:    1;
+
+    max-width: 250px;
+        
+    filter: 
+        drop-shadow(
+            var(--shadow-dist-m) 
+            var(--shadow-dist-m) 
+            var(--col-shadow-alpha));
 }
 
 .error-message {
@@ -221,11 +234,7 @@ async function submit() {
     grid-auto-columns: minmax(0, 1fr);
     grid-auto-rows:    minmax(0, 1fr);
     justify-items:     start;
-
-    background:
-        linear-gradient(
-            var(--col-gray-2) 50%,
-            var(--col-gray-3) 50%);
+    justify-self:      stretch;
 
     border-radius: var(--radius-s);
     border:        var(--border-s);
@@ -238,10 +247,6 @@ async function submit() {
         &:has(> .username-button:hover) {
             filter: var(--filter-hl-1);
         }
-    }
-
-    &[data-pressed=true] {
-        width: min(250px, 100%);
     }
 
     &[data-pressed=true],
@@ -271,6 +276,12 @@ async function submit() {
     letter-spacing:      0.03em;
     text-overflow:       ellipsis;
     white-space:         nowrap;
+
+    &::before {
+        content:           '@';
+        display:           inline-block;
+        margin-inline-end: var(--at-gap);
+    }
 }
 
 .username-editor {
@@ -290,9 +301,10 @@ async function submit() {
 }
 
 .base-input {
-    margin:  0;
-    padding: 0 4px 0 2.5px;
-    width:   100%;
+    margin:      0;
+    padding:     0 4px 0 2.5px;
+    width:       100%;
+    text-indent: var(--at-gap);
 }
 
 .submit-button {

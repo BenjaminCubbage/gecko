@@ -30,6 +30,10 @@ defineExpose({
 
 <style scoped>
 .account-widget-user-drawer-toggle {
+    --hl: brightness(1);
+
+    position: relative;
+
     display:  flex;
     position: relative;
 
@@ -40,12 +44,18 @@ defineExpose({
     border-radius: var(--radius-s);
 
     justify-content: center;
-
-    overflow: clip;
+    overflow-y:      clip;
+            
+    filter: 
+        var(--hl)
+        drop-shadow(
+            var(--shadow-dist-m) 
+            var(--shadow-dist-m) 
+            var(--col-shadow-alpha));
 
     &:hover,
     &[data-expanded=true] {
-        filter: var(--filter-hl-1);
+        --hl: var(--filter-hl-2);
     }
 
     &[data-expanded=true] {
