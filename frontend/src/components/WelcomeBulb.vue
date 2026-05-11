@@ -14,6 +14,10 @@
 
     <ModalWelcome 
         v-model:is-open="isModalOpen"
+        :variant="
+            session.state.value === 'loggedout'
+                ? 'loggedout'
+                : 'loggedin'"
         :is-logging-in="isLoggingIn"
         @log-in="logIn" />
 </template>

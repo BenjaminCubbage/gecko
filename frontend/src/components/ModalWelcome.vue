@@ -50,17 +50,24 @@
         <div class="modal-bracket modal-bracket--r" inert></div>
 
         <button
+            v-if="variant === 'loggedout'"
             class="
                 modal-log-in-button
                 txtr-vert txtr-vert--green
-                shdw shdw--inst-green shdw--elevated-l
-                shdw-before shdw-before--inst-gray shdw-before--elevated-l
-                shdw-after shdw-after--inst-gray shdw-after--elevated-l"
+                shdw shdw--inst-green shdw--elevated-l"
             :data-is-pressed="isLoggingIn"
             type="button"
             @click="emit('log-in')">
             Log In
         </button>
+
+        <aside v-else
+            class="
+                modal-alt-aside
+                txtr-vert txtr-vert--lt-gray
+                shdw shdw--inst-lt-gray shdw--elevated-s">
+            Already Logged In!
+        </aside>
 
         <IconCloud class="icon-cloud" inert />
     </dialog>
@@ -77,6 +84,17 @@ import IconClose     from './IconClose.vue';
 import IconCloud     from './IconCloud.vue';
 
 defineProps({
+    variant: {
+        type:     String,
+        required: true,
+        validator(value) {
+            return [
+                'loggedin',
+                'loggedout'
+            ].includes(value);
+        }
+    },
+
     isLoggingIn: {
         type:     Boolean,
         required: true
@@ -120,11 +138,12 @@ watch([isOpen, dialogEl], () => {
 
     width: 430px;
 
-    & > .modal-header        { z-index: 2; }
-    & > .modal-body          { z-index: 1; }
-    & > .modal-bracket       { z-index: 3; }
-    & > .modal-log-in-button { z-index: 4; }
-    & > .icon-cloud          { z-index: 0; }
+    & > .modal-log-in-button,
+    & > .modal-alt-aside { z-index: 4; }
+    & > .modal-header    { z-index: 2; }
+    & > .modal-body      { z-index: 1; }
+    & > .modal-bracket   { z-index: 3; }
+    & > .icon-cloud      { z-index: 0; }
 }
 
 .modal-header {
@@ -385,7 +404,8 @@ watch([isOpen, dialogEl], () => {
     }
 }
 
-.modal-log-in-button {
+.modal-log-in-button,
+.modal-alt-aside {
     --hl:   brightness(1);
     
     align-self:    center;
@@ -399,7 +419,6 @@ watch([isOpen, dialogEl], () => {
     -webkit-text-stroke: var(--text-stroke-s);
 
     text-transform: uppercase;
-    font-size:      3.4rem;
 
     border:        var(--border-s);
     border-radius: var(--radius-s);
@@ -414,6 +433,11 @@ watch([isOpen, dialogEl], () => {
     translate: 
         0 
         calc(var(--shadow-dist-l) - var(--shdw-dist-elevation));
+
+}
+
+.modal-log-in-button {
+    font-size: 3.4rem;
 
     @media (hover: hover) {
         &:hover,
@@ -431,6 +455,10 @@ watch([isOpen, dialogEl], () => {
         --shdw-etc:            var(--shadow-aura);
         --hl: var(--filter-hl-0);
     }
+}
+
+.modal-alt-aside {
+    font-size:      2.8rem;
 }
 
 .icon-cloud {

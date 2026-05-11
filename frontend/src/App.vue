@@ -36,7 +36,6 @@ import CanvasSection   from './sections/CanvasSection.vue';
 import FriendsSection  from './sections/FriendsSection.vue';
 import NavigationBar   from './components/NavigationBar.vue';
 import SnackBarOverlay from './components/SnackBarOverlay.vue';
-import ModalWelcome    from './components/ModalWelcome.vue';
 
 import { DevicesStore }  from './stores/devicesStore.js';
 import { FriendsStore }  from './stores/friendsStore.js';
