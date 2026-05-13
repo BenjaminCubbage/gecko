@@ -1,5 +1,5 @@
 :root {
-    --font-main: 'Jersey 10';
+    --font-main: jersey10;
     --font-scnd: fspixelsans;
 
     --col-gray-0: #ffffff;
@@ -59,7 +59,7 @@
     --col-green-6: #6ca334;
     --col-green-7: #568724;
     --col-green-8: #3c6710;
-    --col-green-9: #1e3705;
+    --col-green-9: #465F16;
 
     --col-orange-0: #fff8ef;
     --col-orange-1: #ffe5c3;
@@ -102,7 +102,7 @@
     --radius-s:  3px;
     --radius-l:  6px;
 
-    --shadow-dist-xs: 1.8px;
+    --shadow-dist-xs: 1.6px;
     --shadow-dist-s:  2.2px;
     --shadow-dist-m:  3.0px;
     --shadow-dist-l:  5.0px;

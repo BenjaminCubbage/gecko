@@ -66,9 +66,8 @@ defineExpose({
 }
 
 .icon-friend-user {
-
     align-self: end;
-    height:     50px;
-    translate:  1px 11px;
+    height:     45px;
+    translate:  1px 8px;
 }
 </style>

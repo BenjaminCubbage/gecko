@@ -1,18 +1,25 @@
 <template>
-    <div class="friends-list">
-        <FriendsListSearch />
-        <FriendsListFriends />
+    <div class="
+        friends-list
+        shdw shdw--inst-lt-gray shdw--elevated-l">
+        <FriendsListItem />
     </div>
 </template>
 
 <script setup>
-import FriendsListFriends from './FriendsListFriends.vue';
-import FriendsListSearch  from './FriendsListSearch.vue';
+import FriendsListItem from './FriendsListItem.vue';
 </script>
 
 <style scoped>
 .friends-list {
-    display:        flex;
-    flex-direction: column;
+    display:   flex;
+    flex-flow: column;
+    gap:       20px;
+    padding:   10px;
+    
+    background: var(--col-lt-gray-4);
+
+    border:        var(--border-s);
+    border-radius: var(--radius-s);
 }
 </style>

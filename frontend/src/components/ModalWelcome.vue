@@ -64,7 +64,6 @@
         <aside v-else
             class="
                 modal-alt-aside
-                txtr-vert txtr-vert--lt-gray
                 shdw shdw--inst-lt-gray shdw--elevated-s">
             Already Logged In!
         </aside>
@@ -458,7 +457,8 @@ watch([isOpen, dialogEl], () => {
 }
 
 .modal-alt-aside {
-    font-size:      2.8rem;
+    font-size:  2.8rem;
+    background: var(--col-lt-gray-1);
 }
 
 .icon-cloud {

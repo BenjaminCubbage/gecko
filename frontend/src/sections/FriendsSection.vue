@@ -1,5 +1,5 @@
 <template>
-    <section style="margin-top: 10px;">
+    <section class="friends-section">
         <FriendsList />
     </section>
 </template>
@@ -7,3 +7,9 @@
 <script setup>
 import FriendsList from '@/components/FriendsList.vue';
 </script>
+
+<style scoped>
+.friends-section {
+    margin-top: 12px;
+}
+</style>

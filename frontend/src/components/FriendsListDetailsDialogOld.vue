@@ -13,7 +13,7 @@
 
 <script setup>
 import BaseDialog             from './BaseDialog.vue';
-import FriendsListFriendsCard from './FriendsListFriendsCard.vue';
+import FriendsListFriendsCard from './FriendsListFriendsCardOld.vue';
 import { User }               from '@/models/user.js';
 
 const props = defineProps({

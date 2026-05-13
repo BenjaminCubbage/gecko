@@ -3,7 +3,7 @@
         class="icon-friend-user"
         role="presentation"
         :data-variant="variant"
-        viewBox="3 2 30.3 35.2">
+        viewBox="4.5 3 27.9 32.2">
         <path class="st0 stroke" d="M25.3 27.5v-2.4H24v-1.2h-1.2v-1.2h-1.2v-1.2h-9.7v1.2h-1.2v1.2H9.4v1.2H8.2v2.4H7v3.7h1.2v1.2h17v-1.2h1.2v-3.7zM10.7
                 16.6h1.2v1.2h9.7v-1.2h1.2v-1.2H24V8.1h-1.2V6.8h-1.2V5.6h-9.7v1.2h-1.2V8H9.4v7.3h1.2v1.3z" />
         <path class="st1" d="M25.3 27.5v-2.4H24v-1.2h-1.2v-1.2h-1.2v2.4h1.2v2.4H24v2.4H9.4v1.2H8.2v1.2h17v-1.2h1.2v-3.7h-1.1zM14.3
@@ -19,7 +19,7 @@
 defineProps({
     variant: {
         type:    String,
-        default: 'vacant',
+        default: 'normal',
         validator(value) {
             return [
                 'normal',
@@ -39,7 +39,7 @@ defineProps({
     
     & > .stroke {
         stroke:       black;
-        stroke-width: 4px;
+        stroke-width: 4.3px;
     }
 }
 

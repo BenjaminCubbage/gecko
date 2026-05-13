@@ -29,8 +29,8 @@ defineProps({
 
 <style scoped>
 .clippable-stroked-text {
-    isolation:         isolate;
-    display:           grid;
+    isolation: isolate;
+    display:   grid;
 
     -webkit-text-stroke: var(--text-stroke-s);
 

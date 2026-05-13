@@ -50,9 +50,9 @@ import {
     ref
 } from 'vue';
 
-import FriendsListDetailsDialog    from './FriendsListDetailsDialog.vue';
-import FriendsListFriendsCard      from './FriendsListFriendsCard.vue';
-import FriendsListNavigationArrows from './FriendsListNavigationArrows.vue';
+import FriendsListDetailsDialog    from './FriendsListDetailsDialogOld.vue';
+import FriendsListFriendsCard      from './FriendsListFriendsCardOld.vue';
+import FriendsListNavigationArrows from './FriendsListNavigationArrowsOld.vue';
 import { Keys }                    from '@/core/di/keys.js';
 
 const session = inject(Keys.SessionStore);
