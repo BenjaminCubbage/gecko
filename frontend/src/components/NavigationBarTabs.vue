@@ -6,20 +6,24 @@
         v-roving-container
         v-roving-home="selectedTab === 'canvas' ? 0 : 1">
         <button
+            role="tab"
             class="
                 tabs-btn tabs-btn--canvas
                 txtr-diag txtr-diag--green"
             :data-is-selected="selectedTab == 'canvas'"
+            :aria-controls="tabPanelIds.canvas"
             @click="selectedTab = 'canvas'"
             v-roving-item>
             Canvas
         </button>
 
         <button
+            role="tab"
             class="
                 tabs-btn tabs-btn--friends
                 txtr-diag txtr-diag--orange"
             :data-is-selected="selectedTab == 'friends'"
+            :aria-controls="tabPanelIds.friends"
             @click="selectedTab = 'friends'"
             v-roving-item>
             Friends
@@ -28,7 +32,6 @@
 </template>
 
 <script setup>
-import NavigationBarTabButton   from './NavigationBarTabButton.vue';
 import { Keys }                 from '@/core/di/keys.js';
 import { useElementIdRegistry } from '@/composables/useElementIdRegistry';
 
