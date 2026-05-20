@@ -12,7 +12,6 @@
                 :id="tabPanelIds.canvas" />
 
             <FriendsSection
-                v-show="selectedTab == 'friends'"
                 role="tabpanel"
                 :id="tabPanelIds.friends" />
         </main>

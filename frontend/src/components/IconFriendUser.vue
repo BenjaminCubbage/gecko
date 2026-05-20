@@ -38,7 +38,6 @@ defineProps({
     }
     
     & > .stroke {
-        stroke:       black;
         stroke-width: 4.3px;
     }
 }

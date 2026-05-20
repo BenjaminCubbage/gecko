@@ -64,7 +64,6 @@ function clicked() {
     width: 30px;
 
     stroke-width: 6.9px;
-    stroke:       black;
 
     scale:      0.88;
     transform:  scale(1.2);

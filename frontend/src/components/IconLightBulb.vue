@@ -32,7 +32,6 @@ defineProps({
 <style scoped>
 .icon-light-bulb--variant-normal {
     .stroke {
-        stroke:       black;
         stroke-width: 20px;
     }
 
@@ -46,7 +45,6 @@ defineProps({
 
 .icon-light-bulb--variant-outline {
     .stroke {
-        stroke: black;
         stroke-width: 20px;
     }
 

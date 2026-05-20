@@ -46,7 +46,6 @@ defineProps({
     & > .st2{ fill:var(--col-orange-6); }
 
     & > .stroke {
-        stroke:       black;
         stroke-width: 15.5px;
     }
 }

@@ -175,7 +175,6 @@ defineExpose({ animateLaunch });
 */
 
 .stroke {
-    stroke: black;
     stroke-width: 19.5px;
 }
 

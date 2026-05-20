@@ -20,8 +20,7 @@
     & > .st2 { fill: var(--col-magenta-3); }
 
     & > .stroke {
-        stroke-width: 9px;
-        stroke: black;
+        stroke-width: 12px;
     }
 }
 </style>

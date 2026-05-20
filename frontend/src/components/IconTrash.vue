@@ -67,7 +67,6 @@ defineExpose({
 */
 
 .stroke {
-    stroke:       black;
     stroke-width: 20.5px;
 }
 

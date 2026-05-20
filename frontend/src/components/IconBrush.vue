@@ -33,7 +33,6 @@ defineProps({
 
 <style scoped>
 .stroke {
-    stroke:       black;
     stroke-width: 20px;
 }
 

@@ -18,7 +18,6 @@
 
 <style scoped>
 .stroke {
-    stroke: black;
     stroke-width: 5px;
 }
 

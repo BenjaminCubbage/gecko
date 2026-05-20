@@ -9,7 +9,10 @@
             role="tab"
             class="
                 tabs-btn tabs-btn--canvas
-                txtr-diag txtr-diag--green"
+                txtr-diag txtr-diag--green
+                shdw shdw--inst-green shdw--elevated-m
+                shdw-after shdw-after--inst-lt-gray shdw-after--elevated-m
+                shdw-before shdw-before--inst-lt-gray shdw-before--elevated-m"
             :data-is-selected="selectedTab == 'canvas'"
             :aria-controls="tabPanelIds.canvas"
             @click="selectedTab = 'canvas'"
@@ -21,7 +24,10 @@
             role="tab"
             class="
                 tabs-btn tabs-btn--friends
-                txtr-diag txtr-diag--orange"
+                txtr-diag txtr-diag--orange
+                shdw shdw--inst-orange shdw--elevated-m
+                shdw-after shdw-after--inst-lt-gray shdw-after--elevated-m
+                shdw-before shdw-before--inst-lt-gray shdw-before--elevated-m"
             :data-is-selected="selectedTab == 'friends'"
             :aria-controls="tabPanelIds.friends"
             @click="selectedTab = 'friends'"
@@ -57,10 +63,10 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
     justify-content: center;
     justify-self:    center;
 
-    --pd-x-tabs: 20px;
+    --pd-x-tabs: 16px;
     --pd-y-tabs: 6px;
     --ht-tabs: 42px;
-    --wd-gap:  20px;
+    --wd-gap:  12px;
     --wd-btn:  150px;
 
     grid-template:
@@ -77,7 +83,7 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
 
         height: 27px;
 
-        background:    var(--col-gray-3);
+        background:    var(--col-gray-2);
         border:        var(--border-s);
         border-radius: var(--radius-s);
 
@@ -104,7 +110,6 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
 .tabs-btn {
     --wd-nob:    24px;
     --aura:      drop-shadow(0 0 #0000);
-    --elevation: var(--shadow-dist-m);
 
     -webkit-text-stroke: var(--text-stroke-s);
     font-size:           2.8rem;
@@ -117,26 +122,11 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
 
     border: var(--border-s);
 
-    box-shadow:
-        inset calc(-1 * var(--shadow-dist-m)) calc(-1 * var(--shadow-dist-m)) var(--shadow-2),
-        inset var(--shadow-dist-m) var(--shadow-dist-m) var(--shadow-1),
-        0 var(--elevation) black;
-
     filter:
         var(--aura)
         drop-shadow(3px 3px var(--col-shadow-alpha));
 
     transform: translateY(-2px);
-
-    &.tabs-btn--canvas {
-        --shadow-1: var(--col-green-1);
-        --shadow-2: var(--col-green-5);
-    }
-
-    &.tabs-btn--friends {
-        --shadow-1: var(--col-orange-0);
-        --shadow-2: var(--col-orange-6);
-    }
 
     &[data-is-selected=true] {
         --aura:
@@ -145,7 +135,7 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
             drop-shadow( 2px 0 white)
             drop-shadow(-2px 0 white);
 
-        --elevation: 0px;
+        --shdw-dist-elevation: 0px;
 
         translate: 0 var(--shadow-dist-m);
 
@@ -175,10 +165,10 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
                 linear-gradient(var(--col-gray-4) 0 0) center / 9px 3px no-repeat
                 var(--col-gray-2);
 
-    box-shadow:
+    /* box-shadow:
         inset      var(--shadow-dist-m)            var(--shadow-dist-m)       var(--col-gray-1),
         inset calc(var(--shadow-dist-m) * -1) calc(var(--shadow-dist-m) * -1) var(--col-gray-3),
-        0 var(--shadow-dist-m) black;
+        0 var(--shadow-dist-m) black; */
 }
 
 .tabs-btn::before {

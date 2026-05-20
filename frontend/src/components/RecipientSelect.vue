@@ -170,7 +170,6 @@ function getDeviceStatusLabel(device) {
 
     & > .st0{
         stroke-width: 6.5px;
-        stroke:       black;
     }
 }
 </style>

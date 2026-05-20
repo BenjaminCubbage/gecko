@@ -10,6 +10,9 @@ import FriendsList from '@/components/FriendsList.vue';
 
 <style scoped>
 .friends-section {
-    margin-top: 12px;
+    margin-top:    12px;
+    display:       grid;
+    justify-items: center;
+    gap: 12px;
 }
 </style>

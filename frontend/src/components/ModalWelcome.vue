@@ -381,7 +381,7 @@ watch([isOpen, dialogEl], () => {
         inset  3px 3px  var(--col-gray-1),
         inset -3px -3px var(--col-gray-3),
         inset -2px 2px  var(--col-gray-1),
-        0 6px black;
+        0 var(--shadow-dist-l) black;
 
     border:        var(--border-s);
     border-radius: var(--radius-s);

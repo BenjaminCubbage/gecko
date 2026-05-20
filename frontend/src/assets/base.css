@@ -71,6 +71,15 @@ label {
     user-select: none;
 }
 
+path {
+    stroke:       black;
+    stroke-width: 0;
+}
+
+dl, dd {
+    margin: 0;
+}
+
 h1,
 h2,
 h3,

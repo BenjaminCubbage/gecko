@@ -42,7 +42,6 @@ defineProps({
 .icon-friend-request-arrow {
     & > .stroke {
         stroke-width: 5px;
-        stroke: black;
     }
 
     &[data-variant=incoming] {
