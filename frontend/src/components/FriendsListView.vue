@@ -47,7 +47,7 @@ import IconListArrow from './IconListArrow.vue';
 const names = [
     'Ben',
     'Joey',
-    'Garren',
+    'Gary',
     'Bartholomew',
     'WWWWWWWWWWWWWWWWWW'
 ];

@@ -80,8 +80,8 @@
 .shdw--inst-dk-green { --shdw-inst-1: var(--col-green-0); --shdw-inst-2: var(--col-green-6); }
 .shdw--otst-dk-green { --shdw-otst-1: var(--col-green-0); --shdw-otst-2: var(--col-green-6); }
 
-.shdw--inst-red { --shdw-inst-1: var(--col-red-1); --shdw-inst-2: var(--col-red-6); }
-.shdw--otst-red { --shdw-otst-1: var(--col-red-1); --shdw-otst-2: var(--col-red-6); }
+.shdw--inst-red { --shdw-inst-1: var(--col-red-0); --shdw-inst-2: var(--col-red-6); }
+.shdw--otst-red { --shdw-otst-1: var(--col-red-0); --shdw-otst-2: var(--col-red-6); }
 
 .shdw--inst-dk-red { --shdw-inst-1: var(--col-red-0); --shdw-inst-2: var(--col-red-6); }
 .shdw--otst-dk-red { --shdw-otst-1: var(--col-red-0); --shdw-otst-2: var(--col-red-6); }

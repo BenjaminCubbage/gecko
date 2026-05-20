@@ -61,7 +61,7 @@ import IconFriendRequestArrow from './IconFriendRequestArrow.vue';
 .list-border {
     display:   flex;
     flex-flow: column;
-    gap:       12px;
+    gap:       18px;
 
     border:        var(--border-s);
     border-radius: var(--radius-s);
