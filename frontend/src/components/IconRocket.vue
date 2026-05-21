@@ -122,18 +122,16 @@ defineExpose({ animateLaunch });
     }
 
     90% {
+        --rocket-flame-opacity: 100%;
         translate: 0 -1000px;
         scale:     1;
+        animation-timing-function: steps(1);
     }
 
     90.1% {
-        --rocket-flame-opacity: 100%;
+        --rocket-flame-opacity: 0%;
         translate: 0;
         scale:     0;
-    }
-
-    90.2% {
-        --rocket-flame-opacity: 0%;
     }
 
     100% {
