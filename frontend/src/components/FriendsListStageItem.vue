@@ -1,6 +1,5 @@
 <template>
     <button class="friends-list-item">
-        <!-- <IconFriendHeart class="item-status" /> -->
         <IconFriendUser class="item-icon" />
         <div class="item-spotlight"></div>
     </button>
@@ -9,7 +8,6 @@
 <script setup>
 import BaseClippableStrokedText from './BaseClippableStrokedText.vue';
 import IconFriendUser           from './IconFriendUser.vue';
-import IconArrowOutgoing        from './IconArrowOutgoing.vue';
 import IconFriendHeart          from './IconFriendHeart.vue';
 </script>
 
@@ -27,16 +25,10 @@ import IconFriendHeart          from './IconFriendHeart.vue';
 
     & > .item-icon      { z-index: 1; }
     & > .item-spotlight { z-index: 0; }
-    & > .item-status    { z-index: 2; }
 
     &:hover,
     &:focus {
         filter: none;
-
-        & > .item-status {
-            opacity: 1;
-            filter:  none;
-        }
 
         & > .item-spotlight {
             --spotlight-alpha: 0.8;
@@ -51,14 +43,6 @@ import IconFriendHeart          from './IconFriendHeart.vue';
             scale:            1.05;
         }
     }
-}
-
-.item-status {
-    opacity:  0.7;
-    height:   20px;
-    position: absolute;
-    top:      -24px;
-    filter:   saturate(0.8);
 }
 
 .item-icon {

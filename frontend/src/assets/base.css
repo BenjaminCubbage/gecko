@@ -51,6 +51,10 @@ body {
     }
 }
 
+[inert] {
+    pointer-events: none;
+}
+
 *:not(
     a,
     button
@@ -109,11 +113,12 @@ textarea {
     pointer-events: none;
 }
 
-:where(
-    a,
-    button
-) * {
+a, button {
     cursor: pointer;
+
+    & * {
+        cursor: inherit;
+    }
 }
 
 a,

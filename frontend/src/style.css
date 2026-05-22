@@ -1,9 +1,11 @@
-@import './assets/base.css';
-@import './assets/txtr.css';
-@import './assets/vars.css';
-@import './assets/util.css';
-@import './assets/shdw.css';
-@import './assets/efct.css';
+@layer base, vars, util, txtr, shdw, efct;
+
+@import './assets/base.css' layer(base);
+@import './assets/vars.css' layer(vars);
+@import './assets/util.css' layer(util);
+@import './assets/txtr.css' layer(txtr);
+@import './assets/shdw.css' layer(shdw);
+@import './assets/efct.css' layer(efct);
 
 @import './assets/fonts/iconfont.css';
 @import './assets/fonts/fspixelsans.css';

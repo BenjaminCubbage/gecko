@@ -5,8 +5,6 @@
         <link rel="icon" type="image/svg+xml" href="/vite.svg" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        <script src="wasm/compression.js" crossorigin></script>
-
         <title>Gecko!</title>
 
         <style>
@@ -28,29 +26,21 @@
                 --dots-bg:  var(--col-blue-1);
                 --dots-col: var(--col-blue-2);
 
-                background-image:
+                height: 100dvh;
+                width:  100dvw;
+
+                background:
                     repeating-conic-gradient(from 4.05deg,
                         var(--rays-mask) 0deg    12.2deg,
-                        transparent      12.2deg 22.5deg
-                    ),
-                    radial-gradient(circle at calc(50% + var(--dots-size)) calc(0% + var(--dots-size)),  var(--dots-col) var(--dots-size), transparent var(--dots-size)),
-                    radial-gradient(circle at calc(0% + var(--dots-size))  calc(50% + var(--dots-size)), var(--dots-col) var(--dots-size), transparent var(--dots-size));
+                        transparent      12.2deg 22.5deg) 
+                        center / 100%,
+                    radial-gradient(circle at calc(50% + var(--dots-size)) calc(0% + var(--dots-size)),  var(--dots-col) var(--dots-size), transparent var(--dots-size)) 
+                        center / var(--dots-spacing-x) var(--dots-spacing-y),
+                    radial-gradient(circle at calc(0% + var(--dots-size))  calc(50% + var(--dots-size)), var(--dots-col) var(--dots-size), transparent var(--dots-size)) 
+                        center / var(--dots-spacing-x) var(--dots-spacing-y)
+                    var(--dots-bg);
 
-                background-size:
-                    100%,
-                    var(--dots-spacing-x) var(--dots-spacing-y),
-                    var(--dots-spacing-x) var(--dots-spacing-y);
-
-                background-color: var(--dots-bg);
-                background-repeat:
-                    no-repeat,
-                    repeat,
-                    repeat;
-
-                background-blend-mode: 
-                    multiply, 
-                    normal, 
-                    normal;
+                background-blend-mode: multiply, normal, normal;
             }
 
             #app {
@@ -60,6 +50,7 @@
     </head>
     <body>
         <div id="app"></div>
+        <script src="wasm/compression.js" crossorigin></script>
         <script type="module" src="/src/main.js"></script>
     </body>
 </html>

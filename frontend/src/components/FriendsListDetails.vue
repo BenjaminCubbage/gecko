@@ -12,62 +12,65 @@
         </h1>
 
         <p class="details-status">
-            <IconFriendHeart class="icon-friend-heart" height="20px" /> Wants to be friends
+            <template v-if="status === 'incoming'">
+                <IconFriendQuestion class="status-icon" /> Wants to be friends
+            </template>
+            <template v-else-if="status === 'outgoing'">
+                <IconFriendChevron class="status-icon" /> Friend request sent
+            </template>
+            <template v-else-if="status === 'active'">
+                <IconFriendHeart class="status-icon" /> <span>Friends since <time class="status-date" datetime="02/26/2002">02/26/2002</time></span>
+            </template>
         </p>
 
         <div
             class="
                 details-buttons-tab
-                shdw shdw--inst-lt-gray shdw--elevated-s">
-            <button 
+                shdw shdw--inst-lt-gray shdw--elevated-s"
+            v-roving-container>
+            <button
+                v-if="status === 'incoming'" 
                 class="
                     tab-btn
                     txtr-diag txtr-diag--green
-                    shdw shdw--inst-green shdw--elevated-xs">
+                    shdw shdw--inst-green shdw--elevated-xs"
+                v-roving-item>
                 Accept
             </button>
-            <button 
+            <button
                 class="
                     tab-btn
                     txtr-diag txtr-diag--dk-red
-                    shdw shdw--inst-dk-red shdw--elevated-xs">
-                Reject
+                    shdw shdw--inst-dk-red shdw--elevated-xs"
+                v-roving-item>
+                <template      v-if="status === 'incoming'">Reject</template>
+                <template v-else-if="status === 'outgoing'">Unsend</template>
+                <template v-else-if="status === 'active'"  >Unfriend</template>
             </button>
         </div>
-
-        <!-- <dl class="details-content">
-            <div class="content-row">
-                <dt class="row-term">Username</dt>
-                <dd class="row-desc">@Gary</dd>
-            </div>
-
-            <div class="content-row">
-                <dt class="row-term">Status</dt>
-                <dd class="row-desc">Friends</dd>
-            </div>
-
-            <div class="content-row">
-                <dt class="row-term">Friends Since</dt>
-                <dd class="row-desc">02/26/2002</dd>
-            </div>
-        </dl> -->
     </div>
 </template>
 
 <script setup>
-import IconFriendHeart from './IconFriendHeart.vue';
+import { ref }            from 'vue';
+import IconFriendHeart    from './IconFriendHeart.vue';
+import IconFriendChevron  from './IconFriendChevron.vue';
+import IconFriendQuestion from './IconFriendQuestion.vue';
+
+const status = ref('incoming');
 </script>
 
 <style scoped>
 .friends-list-details {
+    --ht-details:   110px;
     --ht-tab:       36px;
     --ht-tab-btn:   36px;
     --rd-tab-bevel: 9px;
 
     display:     grid;
-    flex-flow:   column;
     place-items: center;
-    gap:         10px;
+
+    height: var(--ht-details);
 
     padding: 
         calc(var(--ht-tab) + 6px) 
@@ -80,8 +83,10 @@ import IconFriendHeart from './IconFriendHeart.vue';
     border-radius: var(--radius-s);
 
     --shdw-etc:
-        inset  8px 0 0 9px var(--col-lt-gray-4),
-        inset -8px 0 0 9px var(--col-lt-gray-4);
+        inset  17px  9px var(--col-lt-gray-4),
+        inset  17px -9px var(--col-lt-gray-4),
+        inset -17px  9px var(--col-lt-gray-4),
+        inset -17px -9px var(--col-lt-gray-4);
 }
 
 .details-username-tab {
@@ -111,17 +116,10 @@ import IconFriendHeart from './IconFriendHeart.vue';
     font-size:           2.8rem;
     letter-spacing:      0.03em;
 
-    filter:
-        drop-shadow(
-            var(--shadow-dist-m)
-            var(--shadow-dist-m)
-            var(--col-shadow-alpha));
-
     &::before,
     &::after {
         content: '';
-
-        width: 36px;
+        width:   36px;
 
         background:
             linear-gradient(var(--col-gray-4) 0 0) center / 3px 9px no-repeat,
@@ -143,10 +141,15 @@ import IconFriendHeart from './IconFriendHeart.vue';
 
     -webkit-text-stroke: var(--text-stroke-s);
     font-size:           1.65rem;
+}
 
-    & > .icon-friend-heart {
-        translate: 0 -1.5px;
-    }
+.status-icon {
+    height:    20px;
+    translate: 0 -1px;
+}
+
+.status-date {
+    color: var(--col-green-9);
 }
 
 .details-buttons-tab {
