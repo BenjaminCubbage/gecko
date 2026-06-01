@@ -52,9 +52,9 @@ defineProps({
         background-image:
             linear-gradient(
                 var(--col-orange-0) 35%,
-                var(--col-orange-2) 35% 50%,
+                var(--col-orange-1) 35% 50%,
                 var(--col-orange-3) 50% 65%,
-                var(--col-orange-5) 65%);
+                var(--col-orange-4) 65%);
     }
 
     &.label--color-bitonal {

@@ -130,10 +130,10 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
 
     &[data-is-selected=true] {
         --aura:
-            drop-shadow(0  2px white)
-            drop-shadow(0 -2px white)
-            drop-shadow( 2px 0 white)
-            drop-shadow(-2px 0 white);
+            drop-shadow(0           var(--shadow-aura-dist)  white)
+            drop-shadow(0 calc(-1 * var(--shadow-aura-dist)) white)
+            drop-shadow(          var(--shadow-aura-dist)  0 white)
+            drop-shadow(calc(-1 * var(--shadow-aura-dist)) 0 white);
 
         --shdw-dist-elevation: 0px;
 
@@ -172,12 +172,12 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
 }
 
 .tabs-btn::before {
-  left: calc(-1 * var(--wd-nob));
+  left:          calc(-1 * var(--wd-nob));
   border-radius: var(--radius-s) 0 0 var(--radius-s);
 }
 
 .tabs-btn::after {
-  right: calc(-1 * var(--wd-nob));
+  right:         calc(-1 * var(--wd-nob));
   border-radius: 0 var(--radius-s) var(--radius-s) 0;
 }
 </style>

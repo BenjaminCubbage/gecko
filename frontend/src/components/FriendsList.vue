@@ -7,26 +7,40 @@
                 list-border
                 txtr-vert txtr-vert--orange
                 shdw shdw--inst-orange shdw--elevated-l">
-            <FriendsListDetails class="border-details" />
+            <FriendsListModeTabs 
+                class="border-tabs" />
+
+            <FriendsListDetails 
+                class="border-details"
+                :friend="selectedFriend" />
+
             <FriendsListView
                 class="border-list-view"
                 :friends="friends"
                 v-model:selected-friend="selectedFriend" />
-        </div>
 
-        <FriendsListPageSelect class="list-page-select" />
+            <div class="border-foot">
+                <FriendsListRequestsToggle />
+                <FriendsListPageSelect />
+            </div>
+        </div>
     </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
 
-import FriendsListStage      from './FriendsListStage.vue';
-import FriendsListDetails    from './FriendsListDetails.vue';
-import FriendsListView       from './FriendsListView.vue';
-import FriendsListPageSelect from './FriendsListPageSelect.vue';
+import FriendsListDetails        from './FriendsListDetails.vue';
+import FriendsListModeTabs       from './FriendsListModeTabs.vue';
+import FriendsListPageSelect     from './FriendsListPageSelect.vue';
+import FriendsListStage          from './FriendsListStage.vue';
+import FriendsListView           from './FriendsListView.vue';
+import FriendsListRequestsToggle from './FriendsListRequestsToggle.vue';
 
-import { Friend, FriendStatus } from '@/models/friend.js';
+import { 
+    Friend, 
+    FriendStatus 
+} from '@/models/friend.js';
 
 const friends = ref([
     Friend.fromJSON({
@@ -80,14 +94,24 @@ const selectedFriend = ref(friends.value[0]);
     border:        var(--border-s);
     border-radius: var(--radius-s);
 
-    padding: 30px 12px 20px;
+    padding: 30px 12px 9px;
 
-    & > .border-details     { align-self: stretch; }
-    & > .border-list-view   { align-self: stretch; margin-top: 18px; }
+    & > .border-tabs      { z-index: 1; }
+    & > .border-details   { z-index: 0; align-self: stretch; }
+    & > .border-list-view { z-index: 0; align-self: stretch; margin-top: 18px; }
+    & > .border-foot      { z-index: 0; align-self: stretch; margin-top: 9px; }
 }
 
-.list-page-select {
-    margin-top: -16px;
+.border-tabs {
+    position: absolute;
+    top:  -16px;
+    left: -16px;
+}
+
+.border-foot {
+    display:         flex;
+    justify-content: space-between;
+    align-items:     center;
 }
 
 .stage-view {

@@ -96,7 +96,11 @@ p {
     padding: 0;
 }
 
-input,
+input {
+    margin: 0;
+}
+
+input[type=text],
 p,
 h1,
 h2,
@@ -113,7 +117,10 @@ textarea {
     pointer-events: none;
 }
 
-a, button {
+a, 
+button, 
+input[type=checkbox], 
+label:has(> input[type=checkbox]) {
     cursor: pointer;
 
     & * {

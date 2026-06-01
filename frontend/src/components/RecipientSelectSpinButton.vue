@@ -252,15 +252,16 @@ function tryMoveSelection(by) {
 }
 
 .arrow {
-    width: 1.9em;
+    width: 2.2em;
 
     text-shadow:
         -1.5px -1.5px 0 var(--col-green-1),
          1.5px  1.5px 0 var(--col-green-5);
 
     color:       black;
-    font-size:   2.3rem;
+    font-size:   2rem;
     line-height: 0;
+    font-weight: bold;
 
     border-radius: var(--radius-s);
     border:        var(--border-s);

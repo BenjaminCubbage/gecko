@@ -18,7 +18,7 @@
                 v-for="friend in friends"
                 class="outer-item"
                 :data-state="
-                    friend ?
+                    friend != null ?
                         friend === selectedFriend 
                             ? 'selected' 
                             : 'unselected' 
@@ -40,7 +40,8 @@
                 <span 
                     class="
                         item-inner
-                        shdw shdw--inst-orange">
+                        shdw shdw--inst-orange
+                        txtr-vert txtr-vert--orange">
                     <span v-if="friend != null" class="item-text">
                         @{{ friend.user.username }}
                     </span>
@@ -185,14 +186,15 @@ const selectedIndex = ref(2);
         & > .item-inner  { border-bottom: 3px solid var(--col-gray-3); }
     }
 
-    &:where(:not([data-state='empty']):hover) > .item-inner {
+    &:where(:not([data-state=empty]):hover) > .item-inner {
         background: rgb(0 0 0 / 0.05); 
     }
 
-    &[data-state='selected'] {
+    &[data-state=selected] {
         translate: 0 calc(-1 * var(--ht-elevation));
 
         filter:
+            var(--filter-hl-1)
             drop-shadow(
                 0
                 var(--shadow-dist-m)
@@ -207,22 +209,20 @@ const selectedIndex = ref(2);
         }
 
         & > .item-inner {
-            background: var(--col-orange-2);
+            background: revert-layer;
             box-shadow: revert-layer;
 
             --shdw-etc:
                 0 0 0 var(--ht-elevation) black;
         }
-    }
 
-    &[data-state='selected'] {
         & > .item-gutter,
         & > .item-inner {
             border-bottom-color: black;
         }
     }
 
-    &[data-state='empty'] {
+    &[data-state=empty] {
         cursor: default;
     }
 
@@ -258,6 +258,7 @@ const selectedIndex = ref(2);
     padding: 0 12px;
     margin:  0 calc(var(--shadow-dist-m) * 0.95);
 
+    background: revert;
     box-shadow:
         calc(-1 * var(--shadow-dist-m)) 0 black,
                   var(--shadow-dist-m)  0 black;

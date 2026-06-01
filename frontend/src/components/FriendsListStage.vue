@@ -22,6 +22,8 @@ import FriendsListStageItem from './FriendsListStageItem.vue';
     --ht-stage-body:    42px;
     --ht-stage-content: 80px;
 
+    position: relative;
+
     display:       grid;
     align-content: end;
 
@@ -38,7 +40,7 @@ import FriendsListStageItem from './FriendsListStageItem.vue';
     height: var(--ht-stage-content);
 
     display: flex;
-    padding: 16px 26px 8px;
+    padding: 16px 20px 8px;
     gap:     20px;
 
     justify-content: space-evenly;

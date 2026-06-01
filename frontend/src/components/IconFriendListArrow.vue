@@ -64,15 +64,15 @@ defineProps({
         }
 
         &[data-direction=right] {
-            .st0 { fill: var(--col-gray-1); }
-            .st1 { fill: var(--col-gray-0); }
-            .st2 { fill: var(--col-gray-2); }
+            .st0 { fill: var(--col-lt-gray-3); }
+            .st1 { fill: var(--col-lt-gray-0); }
+            .st2 { fill: var(--col-lt-gray-5); }
         }
 
         &[data-direction=left] {
-            .st0 { fill: var(--col-gray-1); }
-            .st1 { fill: var(--col-gray-2); }
-            .st2 { fill: var(--col-gray-0); }
+            .st0 { fill: var(--col-lt-gray-3); }
+            .st1 { fill: var(--col-lt-gray-5); }
+            .st2 { fill: var(--col-lt-gray-0); }
         }
     }
 }
