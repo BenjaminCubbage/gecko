@@ -7,13 +7,14 @@
                 list-border
                 txtr-vert txtr-vert--orange
                 shdw shdw--inst-orange shdw--elevated-l">
-            <FriendsListModeTabs 
+            <FriendsListModeTabs
                 class="border-tabs"
                 v-model:mode="mode" />
 
-            <FriendsListDetails 
+            <FriendsListDetails
                 class="border-details"
-                :friend="selectedFriend" />
+                :friend="selectedFriend"
+                :transitionDirection="detailsTransitionDirection" />
 
             <template v-if="mode === 'list'">
                 <FriendsListView
@@ -35,7 +36,11 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import {
+    computed,
+    ref,
+    watch
+} from 'vue';
 
 import FriendsListDetails        from './FriendsListDetails.vue';
 import FriendsListModeTabs       from './FriendsListModeTabs.vue';
@@ -45,9 +50,9 @@ import FriendsListView           from './FriendsListView.vue';
 import FriendsListRequestsToggle from './FriendsListRequestsToggle.vue';
 import FriendsListSearchView     from './FriendsListSearchView.vue';
 
-import { 
-    Friend, 
-    FriendStatus 
+import {
+    Friend,
+    FriendStatus
 } from '@/models/friend.js';
 
 const friends = ref([
@@ -61,14 +66,14 @@ const friends = ref([
     Friend.fromJSON({
         'user': {
             'username': 'Jim',
-            'user_id':  1
+            'user_id':  2
         },
         'accepted_on': '12/21/2002'
     }, FriendStatus.PendingOutgoing),
     Friend.fromJSON({
         'user': {
             'username': 'Larry',
-            'user_id':  1
+            'user_id':  3
         },
         'accepted_on': '12/21/2002'
     }, FriendStatus.Active),
@@ -77,6 +82,17 @@ const friends = ref([
 ]);
 
 const selectedFriend = ref(friends.value[0]);
+const previousIndex  = ref(0);
+
+const currentIndex = computed(() =>
+    friends.value?.indexOf(selectedFriend.value));
+
+const detailsTransitionDirection = ref('normal');
+
+watch(currentIndex, (value, previousValue) => {
+    detailsTransitionDirection.value =
+        previousValue > value ? 'forwards' : 'backwards';
+});
 
 /* List view or search view. */
 const mode = ref('list');

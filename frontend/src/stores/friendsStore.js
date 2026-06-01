@@ -17,7 +17,7 @@ import { MultiResourceMutex } from '@/core/async/mutex.js';
 
 import { 
     FriendStatus, Friend 
-} from '@//models/friend.js';
+} from '@/models/friend.js';
 
 /*
     Stores the friends associated with a session's active user.

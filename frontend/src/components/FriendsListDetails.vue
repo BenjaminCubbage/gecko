@@ -1,69 +1,82 @@
 <template>
     <div class="friends-list-details">
-        <div class="
-            details-border
-            shdw shdw--otst-orange shdw--inst-lt-gray shdw--recessed">
-            <h1 class="border-username">
-                <template v-if="friend != null">
-                    @{{ friend.user.username }}
-                </template>
-
-                <template v-else>
-                    [NO FRIENDS]
-                </template>
-            </h1>
-
-            <p class="border-status">
-                <template v-if="friend?.status === FriendStatus.PendingIncoming">
-                    <IconFriendQuestion class="status-icon" /> Wants to be friends
-                </template>
-
-                <template v-else-if="friend?.status === FriendStatus.PendingOutgoing">
-                    <IconFriendChevron class="status-icon" /> Friend request sent
-                </template>
-
-                <template v-else-if="friend?.status === FriendStatus.Active">
-                    <IconFriendHeart class="status-icon" />
-                    <span>
-                        Friends since
-                        <time
-                            class="status-date"
-                            :datetime="friend.acceptedOn">
-                            {{ friend.acceptedOn }}
-                        </time>
-                    </span>
-                </template>
-
-                <template v-else>
-                    <IconFriendHeart class="status-icon" /> Maybe someday
-                </template>
-            </p>
-
+        <transition 
+            name="details-border-transition"
+            :enter-active-class="`details-border-transition--${transitionDirection}-enter-active`"
+            :leave-active-class="`details-border-transition--${transitionDirection}-leave-active`"
+            mode="out-in">
             <div 
-                v-if="friend != null"
-                class="border-btns"
-                v-roving-container>
-                <button
-                    v-if="friend.status === FriendStatus.PendingIncoming"
-                    class="btn"
-                    v-roving-item
-                    @click="$emit('accept-friend', friend)">
-                    [Accept]
-                </button>
+                ref="detailsBorderEl"
+                class="
+                    details-border
+                    shdw shdw--otst-orange shdw--inst-lt-gray shdw--recessed"
+                :key="friend.user.userID">
+                <h1 class="border-username">
+                    <template v-if="friend != null">
+                        @{{ friend.user.username }}
+                    </template>
 
-                <button
-                    class="btn"
-                    v-roving-item
-                    @click="$emit(actionEvent, friend)">
-                    [{{ actionLabel }}]
-                </button>
+                    <template v-else>
+                        [NO FRIENDS]
+                    </template>
+                </h1>
+
+                <p class="border-status">
+                    <template v-if="friend?.status === FriendStatus.PendingIncoming">
+                        Wants to be friends
+                    </template>
+
+                    <template v-else-if="friend?.status === FriendStatus.PendingOutgoing">
+                        Friend request sent
+                    </template>
+
+                    <template v-else-if="friend?.status === FriendStatus.Active">
+                        <span>
+                            Friends since
+                            <time
+                                class="status-date"
+                                :datetime="friend.acceptedOn">
+                                {{ friend.acceptedOn }}
+                            </time>
+                        </span>
+                    </template>
+
+                    <template v-else>
+                        Maybe someday
+                    </template>
+                </p>
+
+                <div 
+                    v-if="friend != null"
+                    class="border-btns"
+                    v-roving-container>
+                    <button
+                        v-if="friend.status === FriendStatus.PendingIncoming"
+                        class="btn btn--green"
+                        v-roving-item
+                        @click="$emit('accept-friend', friend)">
+                        [Accept]
+                    </button>
+
+                    <button
+                        class="btn btn--red"
+                        v-roving-item
+                        @click="$emit(actionEvent, friend)">
+                        [{{ actionLabel }}]
+                    </button>
+                </div>
             </div>
-        </div>
+        </transition>
     </div>
 </template>
 
 <script setup>
-import { computed }             from 'vue';
+import { 
+    computed,
+    useTemplateRef,
+    watch
+} from 'vue';
+
 import IconFriendHeart          from './IconFriendHeart.vue';
 import IconFriendChevron        from './IconFriendChevron.vue';
 import IconFriendQuestion       from './IconFriendQuestion.vue';
@@ -86,6 +99,16 @@ const props = defineProps({
         validator(value) {
             return value == null || value instanceof Friend;
         }
+    },
+
+    transitionDirection: {
+        required: true,
+        validator(value) {
+            return [
+                'forwards',
+                'backwards'
+            ].includes(value);
+        }
     }
 });
 
@@ -95,6 +118,8 @@ defineEmits([
     'unsend-friend-request',
     'unfriend'
 ]);
+
+const detailsBorderEl = useTemplateRef('detailsBorderEl');
 
 const actionLabel = computed(() => {
     switch (props.friend.status) {
@@ -111,12 +136,29 @@ const actionEvent = computed(() => {
         case FriendStatus.Active:          return 'unfriend';
     }
 });
+
+watch(() => props.transitionDirection, () => {
+    console.log(props.transitionDirection);
+});
 </script>
 
 <style scoped>
 .friends-list-details {
     display:   flex;
     flex-flow: column;
+
+    &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: 999;
+        background:
+            repeating-linear-gradient(
+                rgb(0 0 0 / 0.01) 0   3px,
+                #0000             3px 6px);
+
+        pointer-events: none;
+    }
 
     & > .details-username-plate { z-index: 1; }
     & > .details-border         { z-index: 0; }
@@ -136,24 +178,13 @@ const actionEvent = computed(() => {
     border:        var(--border-s);
     border-radius: var(--radius-s);
 
+    overflow: clip;
+
     --shdw-etc:
         inset  17px  9px var(--col-lt-gray-4),
         inset  17px -9px var(--col-lt-gray-4),
         inset -17px  9px var(--col-lt-gray-4),
         inset -17px -9px var(--col-lt-gray-4);
-
-    &::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        z-index: 999;
-        background:
-            repeating-linear-gradient(
-                rgb(0 0 0 / 0.01) 0   3px,
-                #0000             3px 6px);
-
-        pointer-events: none;
-    }
 
     & > .border-username { align-self: stretch; }
     & > .border-status   { align-self: center; }
@@ -223,7 +254,7 @@ const actionEvent = computed(() => {
 
 .border-btns {
     display: flex;
-    gap:     24px;
+    gap:     36px;
 
     margin-top: 9px;
 }
@@ -242,14 +273,26 @@ const actionEvent = computed(() => {
 
     background:
         linear-gradient(
-            var(--col-red-2) 50%,
-            var(--col-red-3) 50%);
+            var(--col-grad-1) 50%,
+            var(--col-grad-2) 50%);
 
     border-radius: 3px;
 
     filter: 
-        drop-shadow(0 4px var(--col-red-5))
+        drop-shadow(0 4px var(--col-elevation))
         var(--hl, brightness(1));
+
+    &.btn--green {
+        --col-grad-1:    var(--col-green-3);
+        --col-grad-2:    var(--col-green-4);
+        --col-elevation: var(--col-green-5);
+    }
+
+    &.btn--red {
+        --col-grad-1:    var(--col-red-2);
+        --col-grad-2:    var(--col-red-3);
+        --col-elevation: var(--col-red-5);
+    }
 
     @media (hover: hover) {
         &:hover {
@@ -309,4 +352,28 @@ const actionEvent = computed(() => {
         linear-gradient(var(--col-orange-4) 0 0) var(--orn-inner-x) var(--orn-y) / 66.6%  66.6% no-repeat,
         linear-gradient(var(--col-orange-4) 0 0) var(--orn-inner-x) var(--orn-y) / 99.9% 33.3% no-repeat;
 }
+
+/*
+    Slide animation
+*/
+
+.border-username,
+.border-status,
+.border-btns {
+    translate: 0 var(--details-slide);
+}
+
+.details-border-transition--forwards-enter-active  { animation: details-border-up   180ms steps(4); }
+.details-border-transition--forwards-leave-active  { animation: details-border-down 180ms steps(4); }
+.details-border-transition--backwards-enter-active { animation: details-border-down 180ms steps(4) reverse; }
+.details-border-transition--backwards-leave-active { animation: details-border-up   180ms steps(4) reverse; }
+
+@property --details-slide {
+    initial-value: 0px;
+    syntax:        '<length>';
+    inherits:      true;
+}
+
+@keyframes details-border-up   { from { --details-slide: -120px; } to { --details-slide: 0px; } }
+@keyframes details-border-down { from { --details-slide: 0px; }    to { --details-slide: 120px; } }
 </style>
