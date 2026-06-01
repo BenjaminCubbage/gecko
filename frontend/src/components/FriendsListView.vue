@@ -1,14 +1,14 @@
 <template>
-    <div 
+    <div
         class="
             friends-list-view
             shdw shdw--otst-orange">
-        <div 
+        <div
             class="
                 view-outer
                 shdw-after  shdw-after--inst-gray
                 shdw-before shdw-before--inst-gray">
-            <span 
+            <span
                 class="
                     outer-bg
                     shdw shdw--inst-lt-gray">
@@ -19,15 +19,16 @@
                 class="outer-item"
                 :data-state="
                     friend != null ?
-                        friend === selectedFriend 
-                            ? 'selected' 
-                            : 'unselected' 
+                        friend === selectedFriend
+                            ? 'selected'
+                            : 'unselected'
                         : 'empty'"
                 @click="friend != null && (selectedFriend = friend)">
-                <span 
+                <span
                     class="
                         item-gutter item-gutter--l
-                        shdw shdw--inst-lt-gray">
+                        txtr-vert txtr-vert--gray
+                        shdw shdw--inst-gray">
                     <IconListArrow
                         v-if="friend != null"
                         height="19px"
@@ -37,7 +38,7 @@
                         inert />
                 </span>
 
-                <span 
+                <span
                     class="
                         item-inner
                         shdw shdw--inst-orange
@@ -47,10 +48,11 @@
                     </span>
                 </span>
 
-                <span 
+                <span
                     class="
                         item-gutter item-gutter--r
-                        shdw shdw--inst-lt-gray">
+                        shdw shdw--inst-lt-gray
+                        txtr-vert txtr-vert--gray">
                     <IconListArrow
                         v-if="friend != null"
                         height="19px"
@@ -65,9 +67,9 @@
 </template>
 
 <script setup>
-import { 
+import {
     ref,
-    watch 
+    watch
 } from 'vue';
 
 import IconListArrow from './IconFriendListArrow.vue';
@@ -149,15 +151,15 @@ const selectedIndex = ref(2);
 
 .outer-bg {
     position: absolute;
-    
+
     inset:  0;
     margin: 0 auto;
 
     height: 100%;
-    width:  
+    width:
         calc(100% - 2 * (var(--wd-outer-gutter) + var(--border-thickness-s)) + 0.5px);
 
-    background: var(--col-lt-gray-1);
+    background: var(--col-lt-gray-2);
 
     cursor: pointer;
 }
@@ -187,7 +189,10 @@ const selectedIndex = ref(2);
     }
 
     &:where(:not([data-state=empty]):hover) > .item-inner {
-        background: rgb(0 0 0 / 0.05); 
+        background:
+            linear-gradient(
+                rgb(0 0 0 / 0.01) 50%,
+                rgb(0 0 0 / 0.04) 50%);
     }
 
     &[data-state=selected] {
@@ -201,7 +206,7 @@ const selectedIndex = ref(2);
                 var(--col-shadow-alpha));
 
         & > .item-gutter {
-            background: var(--col-lt-gray-4);
+            background: revert-layer;
             box-shadow: revert-layer;
 
             --shdw-etc:
@@ -241,7 +246,11 @@ const selectedIndex = ref(2);
     display: grid;
     place-items: center;
 
-    background: transparent;
+    background:
+        linear-gradient(
+            rgb(255 255 255 / 0.4) 50%,
+            #0000                  50%)
+        center / calc(100% - 2 * var(--shadow-dist-m)) 100% no-repeat;
     box-shadow: none;
 }
 
@@ -258,7 +267,11 @@ const selectedIndex = ref(2);
     padding: 0 12px;
     margin:  0 calc(var(--shadow-dist-m) * 0.95);
 
-    background: revert;
+    background:
+        linear-gradient(
+            rgb(255 255 255 / 0.4) 50%,
+            #0000                  50%) 
+        center / calc(100% - 2 * var(--shadow-dist-m)) 100% no-repeat;
     box-shadow:
         calc(-1 * var(--shadow-dist-m)) 0 black,
                   var(--shadow-dist-m)  0 black;

@@ -33,8 +33,6 @@ const isChecked = defineModel('isChecked');
 }
 
 .toggle-input {
-    appearance: none;
-
     display:       grid;
     place-content: center;
 

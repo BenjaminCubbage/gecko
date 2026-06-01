@@ -12,6 +12,7 @@
         <div
             class="
                 select-display
+                txtr-vert txtr-vert--lt-gray
                 shdw shdw--inst-lt-gray shdw--elevated-m">
             1 / 1
         </div>
@@ -32,8 +33,8 @@ import IconArrow from './IconArrow.vue';
 <style scoped>
 .friends-list-page-select {
     --ht-page-select: 34px;
-    --wd-page-select: 170px;
-    --wd-nav-btn:     40.5px;
+    --wd-page-select: 150px;
+    --wd-nav-btn:     38px;
 
     display: grid;
     grid-template:
@@ -45,9 +46,16 @@ import IconArrow from './IconArrow.vue';
 
     border-radius: var(--radius-s);
 
-    & > .select-btn--left  { grid-area: left; }
-    & > .select-display    { grid-area: display; }
-    & > .select-btn--right { grid-area: right; }
+    & > .select-btn--left  { z-index: 2; grid-area: left; }
+    & > .select-display    { z-index: 1; grid-area: display; }
+    & > .select-btn--right { z-index: 0; grid-area: right; }
+
+    & > * {
+        --shdw-etc: 
+            calc(-1 * var(--shadow-dist-m)) 
+            calc(-1 * var(--shadow-dist-m)) 
+            var(--col-orange-0);
+    }
 }
 
 .select-btn {
@@ -66,6 +74,11 @@ import IconArrow from './IconArrow.vue';
     translate: 
         0 calc(-1 * var(--shdw-dist-elevation));
 
+    &:active {
+        --shdw-dist-elevation: 0px;
+        filter:                var(--filter-hl-1);
+    }
+
     &.select-btn--left::after  { content: '<'; }
     &.select-btn--right::after { content: '>'; }
 
@@ -77,8 +90,7 @@ import IconArrow from './IconArrow.vue';
     display:       grid;
     place-content: center;
 
-    background: var(--col-lt-gray-1);
-    border:     var(--border-s);
+    border: var(--border-s);
 
     -webkit-text-stroke: var(--text-stroke-s);
     font-size:           2rem;

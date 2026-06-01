@@ -8,21 +8,28 @@
                 txtr-vert txtr-vert--orange
                 shdw shdw--inst-orange shdw--elevated-l">
             <FriendsListModeTabs 
-                class="border-tabs" />
+                class="border-tabs"
+                v-model:mode="mode" />
 
             <FriendsListDetails 
                 class="border-details"
                 :friend="selectedFriend" />
 
-            <FriendsListView
-                class="border-list-view"
-                :friends="friends"
-                v-model:selected-friend="selectedFriend" />
+            <template v-if="mode === 'list'">
+                <FriendsListView
+                    class="border-list-view"
+                    :friends="friends"
+                    v-model:selected-friend="selectedFriend" />
 
-            <div class="border-foot">
-                <FriendsListRequestsToggle />
-                <FriendsListPageSelect />
-            </div>
+                <div class="border-foot">
+                    <FriendsListRequestsToggle />
+                    <FriendsListPageSelect />
+                </div>
+            </template>
+
+            <template v-else>
+                <FriendsListSearchView />
+            </template>
         </div>
     </div>
 </template>
@@ -36,6 +43,7 @@ import FriendsListPageSelect     from './FriendsListPageSelect.vue';
 import FriendsListStage          from './FriendsListStage.vue';
 import FriendsListView           from './FriendsListView.vue';
 import FriendsListRequestsToggle from './FriendsListRequestsToggle.vue';
+import FriendsListSearchView     from './FriendsListSearchView.vue';
 
 import { 
     Friend, 
@@ -69,6 +77,9 @@ const friends = ref([
 ]);
 
 const selectedFriend = ref(friends.value[0]);
+
+/* List view or search view. */
+const mode = ref('list');
 </script>
 
 <style scoped>
@@ -104,8 +115,8 @@ const selectedFriend = ref(friends.value[0]);
 
 .border-tabs {
     position: absolute;
-    top:  -16px;
-    left: -16px;
+    top:  -18px;
+    left: -18px;
 }
 
 .border-foot {

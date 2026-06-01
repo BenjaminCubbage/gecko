@@ -110,6 +110,7 @@ defineExpose({
     font-size:           inherit;
     letter-spacing:      0.03em;
     outline:             none;
+    border:              0;
 
     &.base-input--variant-normal {
         height:  36px;

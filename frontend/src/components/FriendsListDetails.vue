@@ -1,75 +1,63 @@
 <template>
-    <div class="
-        friends-list-details
-        shdw shdw--otst-orange shdw--inst-lt-gray shdw--recessed">
-        <h1
-            class="
-                details-username-tab
-                txtr-vert txtr-vert--lt-gray
-                shdw shdw--inst-lt-gray shdw--elevated-xs
-                shdw-before shdw-before--inst-gray
-                shdw-after  shdw-after--inst-gray">
-            <template v-if="friend != null">
-                @{{ friend.user.username }}
-            </template>
+    <div class="friends-list-details">
+        <div class="
+            details-border
+            shdw shdw--otst-orange shdw--inst-lt-gray shdw--recessed">
+            <h1 class="border-username">
+                <template v-if="friend != null">
+                    @{{ friend.user.username }}
+                </template>
 
-            <template v-else>
-                [NO FRIENDS]
-            </template>
-        </h1>
+                <template v-else>
+                    [NO FRIENDS]
+                </template>
+            </h1>
 
-        <p class="details-status">
-            <template v-if="friend?.status === FriendStatus.PendingIncoming">
-                <IconFriendQuestion class="status-icon" /> Wants to be friends
-            </template>
+            <p class="border-status">
+                <template v-if="friend?.status === FriendStatus.PendingIncoming">
+                    <IconFriendQuestion class="status-icon" /> Wants to be friends
+                </template>
 
-            <template v-else-if="friend?.status === FriendStatus.PendingOutgoing">
-                <IconFriendChevron class="status-icon" /> Friend request sent
-            </template>
+                <template v-else-if="friend?.status === FriendStatus.PendingOutgoing">
+                    <IconFriendChevron class="status-icon" /> Friend request sent
+                </template>
 
-            <template v-else-if="friend?.status === FriendStatus.Active">
-                <IconFriendHeart class="status-icon" />
-                <span>
-                    Friends since
-                    <time
-                        class="status-date"
-                        :datetime="friend.acceptedOn">
-                        {{ friend.acceptedOn }}
-                    </time>
-                </span>
-            </template>
+                <template v-else-if="friend?.status === FriendStatus.Active">
+                    <IconFriendHeart class="status-icon" />
+                    <span>
+                        Friends since
+                        <time
+                            class="status-date"
+                            :datetime="friend.acceptedOn">
+                            {{ friend.acceptedOn }}
+                        </time>
+                    </span>
+                </template>
 
-            <template v-else>
-                <IconFriendHeart class="status-icon" /> Maybe someday
-            </template>
-        </p>
+                <template v-else>
+                    <IconFriendHeart class="status-icon" /> Maybe someday
+                </template>
+            </p>
 
-        <div
-            v-if="friend != null"
-            class="
-                details-buttons-tab
-                shdw shdw--inst-lt-gray shdw--elevated-s"
-            v-roving-container>
-            <button
-                v-if="friend.status === FriendStatus.PendingIncoming"
-                class="
-                    tab-btn
-                    txtr-vert txtr-vert--green
-                    shdw shdw--inst-green shdw--elevated-s"
-                v-roving-item
-                @click="$emit('accept-friend', friend)">
-                Accept
-            </button>
+            <div 
+                v-if="friend != null"
+                class="border-btns"
+                v-roving-container>
+                <button
+                    v-if="friend.status === FriendStatus.PendingIncoming"
+                    class="btn"
+                    v-roving-item
+                    @click="$emit('accept-friend', friend)">
+                    [Accept]
+                </button>
 
-            <button
-                class="
-                    tab-btn
-                    txtr-vert txtr-vert--red
-                    shdw shdw--inst-red shdw--elevated-s"
-                v-roving-item
-                @click="$emit(actionEvent, friend)">
-                {{ actionLabel }}
-            </button>
+                <button
+                    class="btn"
+                    v-roving-item
+                    @click="$emit(actionEvent, friend)">
+                    [{{ actionLabel }}]
+                </button>
+            </div>
         </div>
     </div>
 </template>
@@ -127,21 +115,21 @@ const actionEvent = computed(() => {
 
 <style scoped>
 .friends-list-details {
-    --ht-details:   116px;
-    --ht-tab:       36px;
-    --ht-tab-btn:   37px;
-    --rd-tab-bevel: 9px;
+    display:   flex;
+    flex-flow: column;
 
-    position:    relative;
-    display:     grid;
-    place-items: center;
+    & > .details-username-plate { z-index: 1; }
+    & > .details-border         { z-index: 0; }
+}
 
-    height: var(--ht-details);
+.details-border {
+    position: relative;
 
-    padding:
-        calc(var(--ht-tab) + 6px)
-        0
-        calc(var(--ht-tab-btn) + 4px);
+    display:   flex;
+    flex-flow: column;
+
+    padding: 24px 0 24px;
+    gap:     6px;
 
     background: var(--col-lt-gray-1);
 
@@ -153,57 +141,65 @@ const actionEvent = computed(() => {
         inset  17px -9px var(--col-lt-gray-4),
         inset -17px  9px var(--col-lt-gray-4),
         inset -17px -9px var(--col-lt-gray-4);
+
+    &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: 999;
+        background:
+            repeating-linear-gradient(
+                rgb(0 0 0 / 0.01) 0   3px,
+                #0000             3px 6px);
+
+        pointer-events: none;
+    }
+
+    & > .border-username { align-self: stretch; }
+    & > .border-status   { align-self: center; }
+    & > .border-btns     { align-self: center; }
 }
 
-.details-username-tab {
-    min-width: 240px;
-
-    position: absolute;
-    top:      calc(-3 * var(--border-thickness-s));
-
-    display:     grid;
-    place-items: center;
-    gap:         24px;
-
+.border-username {
+    display: grid;
     grid-template:
-        "bracket-l text bracket-r" auto /
-         auto      1fr  auto;
+        "l   .    r" auto /
+         1fr auto 1fr;
 
-    height: var(--ht-tab);
+    align-items: center;
+    gap:         9px;
+    margin:      0 20px;
 
-    overflow: clip;
-
-    border: var(--border-s);
-    border-radius:
-        var(--radius-s)
-        var(--radius-s)
-        var(--rd-tab-bevel)
-        var(--rd-tab-bevel);
-    corner-shape: notch notch bevel bevel;
-
-    line-height:         1.05;
-    -webkit-text-stroke: var(--text-stroke-s);
-    font-size:           2.8rem;
-    letter-spacing:      0.03em;
+    font-size:      2.8rem;
+    letter-spacing: 0.03em;
+    line-height:    0.8;
 
     &::before,
     &::after {
         content: '';
-        width:   36px;
 
-        background:
-            linear-gradient(var(--col-gray-4) 0 0) center / 9px 9px no-repeat,
-            linear-gradient(
-                var(--col-gray-2) 50%,
-                var(--col-gray-3) 50%
-            );
+        height: 12px;
+        width:  100%;
+
+        filter: drop-shadow(0 -3px var(--col-orange-2));
     }
 
-    &::before { grid-area: bracket-l; border-right: var(--border-s); align-self: stretch; border-bottom-left-radius:  calc(var(--rd-tab-bevel) * 0.6); corner-bottom-left-shape:  bevel; }
-    &::after  { grid-area: bracket-r; border-left:  var(--border-s); align-self: stretch; border-bottom-right-radius: calc(var(--rd-tab-bevel) * 0.6); corner-bottom-right-shape: bevel; }
+    &::before {
+        grid-area:      l;
+        --orn-edge-x:  right;
+        --orn-inner-x: calc(100% - 2px);
+        --orn-y:       0%;
+    }
+
+    &::after {
+        grid-area:     r;
+        --orn-edge-x:  left;
+        --orn-inner-x: 2px;
+        --orn-y:       0%;
+    }
 }
 
-.details-status {
+.border-status {
     display:     flex;
     align-items: center;
     gap:         8px;
@@ -211,8 +207,7 @@ const actionEvent = computed(() => {
     font-family: var(--font-scnd);
     font-weight: bold;
 
-    -webkit-text-stroke: var(--text-stroke-s);
-    font-size:           1.65rem;
+    font-size: 1.65rem;
 }
 
 .status-icon {
@@ -226,50 +221,92 @@ const actionEvent = computed(() => {
     color: var(--col-green-9);
 }
 
-.details-buttons-tab {
-    position: absolute;
-    display:  flex;
+.border-btns {
+    display: flex;
+    gap:     24px;
 
-    justify-content: end;
-    place-items:     end center;
+    margin-top: 9px;
+}
 
-    bottom: calc(-4 * var(--border-thickness-s));
-    height: var(--ht-tab);
+.btn {
+    position: relative;
 
-    padding: 0 9px 6px;
-    gap:     8px;
+    padding: 4px 20px;
+
+    -webkit-text-stroke: 4px white;
+
+    font-size:      2.55rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    line-height:    0.8;
 
     background:
         linear-gradient(
-            var(--col-gray-2) 50%,
-            var(--col-gray-3) 50%);
+            var(--col-red-2) 50%,
+            var(--col-red-3) 50%);
 
-    border: var(--border-s);
-    border-radius:
-        var(--rd-tab-bevel)
-        var(--rd-tab-bevel)
-        var(--radius-s)
-        var(--radius-s);
+    border-radius: 3px;
 
-    corner-shape: bevel bevel notch notch;
+    filter: 
+        drop-shadow(0 4px var(--col-red-5))
+        var(--hl, brightness(1));
+
+    @media (hover: hover) {
+        &:hover {
+            --hl: var(--filter-hl-1);
+
+            &::before,
+            &::after {
+                --inst: -7px;
+            }
+        }
+    }
+
+    &::before,
+    &::after {
+        --inst: -10px;
+
+        content:  '';
+        position: absolute;
+
+        width:  18px;
+        height: 15px;
+
+        top:    0;
+        bottom: 0;
+        margin: auto 0;
+
+        filter: drop-shadow(0 -2.5px var(--col-orange-1));
+    }
+
+    &::before {
+        left: var(--inst);
+
+        --orn-edge-x:  left;
+        --orn-inner-x: 2px;
+        --orn-y:       center;
+    }
+
+    &::after {
+        right: var(--inst);
+
+        --orn-edge-x:  right;
+        --orn-inner-x: calc(100% - 2px);
+        --orn-y:       center;
+    }
 }
 
-.tab-btn {
-    width:  118px;
-    height: var(--ht-tab-btn);
-
-    -webkit-text-stroke: var(--text-stroke-xs);
-    font-size:           2.55rem;
-    letter-spacing:      0.06em;
-    text-transform:      uppercase;
-
-    border:        var(--border-s);
-    border-radius: var(--radius-s);
-
-    filter:
-        drop-shadow(
-            var(--shadow-dist-m)
-            var(--shadow-dist-m)
-            var(--col-shadow-alpha));
+/*
+    Ornament
+*/
+.border-username::before,
+.border-username::after,
+.btn::before,
+.btn::after {
+    background:
+        linear-gradient(var(--col-orange-4) 0 0) var(--orn-edge-x)               / 4px  66.6% no-repeat,
+        linear-gradient(var(--col-orange-4) 0 0) var(--orn-inner-x) var(--orn-y) / 33.3%  100%  no-repeat,
+        linear-gradient(var(--col-orange-4) 0 0) var(--orn-inner-x) var(--orn-y) / 66.6%  66.6% no-repeat,
+        linear-gradient(var(--col-orange-4) 0 0) var(--orn-inner-x) var(--orn-y) / 99.9% 33.3% no-repeat;
 }
 </style>

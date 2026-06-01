@@ -101,6 +101,7 @@ input {
 }
 
 input[type=text],
+input:not([type]),
 p,
 h1,
 h2,
@@ -109,12 +110,16 @@ h4,
 h5,
 h6,
 textarea {
-    font-weight: normal;
-    cursor:      text;
+    font:   inherit;
+    cursor: text;
 }
 
 :disabled {
     pointer-events: none;
+}
+
+input {
+    appearance: none;
 }
 
 a, 

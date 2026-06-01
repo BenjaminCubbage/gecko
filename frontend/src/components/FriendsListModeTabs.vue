@@ -3,7 +3,7 @@
         <button 
             class="
                 tab tab--list
-                shdw shdw--inst-yellow"
+                shdw shdw--inst-orange"
             :data-is-selected="mode === 'list'"
             @click="mode = 'list'">
         </button>
@@ -33,7 +33,7 @@ const mode = defineModel('mode', {
 
 <style scoped>
 .friends-list-mode-tabs {
-    --sz-tab:  32px;
+    --sz-tab:  34px;
     --pd-tabs: calc((hypot(var(--sz-tab), var(--sz-tab)) - var(--sz-tab)) / 2);
 
     isolation: isolate;
@@ -84,7 +84,7 @@ const mode = defineModel('mode', {
                       var(--shadow-dist-xs)            var(--shadow-dist-xs)  var(--col-shdw-2);
     }
 
-    &.tab--list   { --col-grad-1: var(--col-yellow-3); --col-grad-2: var(--col-yellow-4); --col-shdw-1: var(--col-yellow-1); --col-shdw-2: var(--col-yellow-5); }
+    &.tab--list   { --col-grad-1: var(--col-orange-3); --col-grad-2: var(--col-orange-4); --col-shdw-1: var(--col-orange-1); --col-shdw-2: var(--col-orange-5); }
     &.tab--search { --col-grad-1: var(--col-green-2);  --col-grad-2: var(--col-green-3);  --col-shdw-1: var(--col-green-1);  --col-shdw-2: var(--col-green-5); }
 
     &.tab--list::after   { content: '\F50E'; }
@@ -93,6 +93,7 @@ const mode = defineModel('mode', {
     &[data-is-selected=true] {
         --shdw-etc: var(--shadow-aura);
         translate:  0 var(--shadow-dist-xs);
+        filter:     var(--filter-hl-2);
     }
 
     &:nth-child(1)      { border-bottom-right-radius: 8px; corner-bottom-right-shape: bevel; }
