@@ -111,10 +111,10 @@
 
     --shadow-aura: 0 0 0 var(--shadow-aura-dist) white;
 
-    --text-stroke-width-xs: 3.5px;
+    --text-stroke-width-xs: 3px;
     --text-stroke-width-s:  4px;
     --text-stroke-width-l:  5px;
-    --text-stroke-width-xl:  6.5px;
+    --text-stroke-width-xl: 6.5px;
 
     --text-stroke-xs: var(--text-stroke-width-xs) white;
     --text-stroke-s:  var(--text-stroke-width-s)  white;

@@ -13,7 +13,5 @@ import FriendsList from '@/components/FriendsList.vue';
     margin-top: 12px;
     display:    grid;
     gap:        15px;
-
-    justify-self: center;
 }
 </style>

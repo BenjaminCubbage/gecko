@@ -1,37 +1,31 @@
 <template>
-    <div class="friends-list">
-        <FriendsListStage class="list-stage" />
-
-        <div
-            class="
-                list-border
+    <div class="friends-list
                 txtr-vert txtr-vert--orange
                 shdw shdw--inst-orange shdw--elevated-l">
-            <FriendsListModeTabs
-                class="border-tabs"
-                v-model:mode="mode" />
+        <FriendsListModeTabs
+            class="list-tabs"
+            v-model:mode="mode" />
 
-            <FriendsListDetails
-                class="border-details"
-                :friend="selectedFriend"
-                :transitionDirection="detailsTransitionDirection" />
+        <FriendsListDetails
+            class="list-details"
+            :friend="selectedFriend"
+            :transitionDirection="detailsTransitionDirection" />
 
-            <template v-if="mode === 'list'">
-                <FriendsListView
-                    class="border-list-view"
-                    :friends="friends"
-                    v-model:selected-friend="selectedFriend" />
+        <template v-if="mode === 'list'">
+            <FriendsListView
+                class="list-list-view"
+                :friends="friends"
+                v-model:selected-friend="selectedFriend" />
 
-                <div class="border-foot">
-                    <FriendsListRequestsToggle />
-                    <FriendsListPageSelect />
-                </div>
-            </template>
+            <div class="list-foot">
+                <FriendsListRequestsToggle />
+                <FriendsListPageSelect />
+            </div>
+        </template>
 
-            <template v-else>
-                <FriendsListSearchView />
-            </template>
-        </div>
+        <template v-else>
+            <FriendsListSearchView />
+        </template>
     </div>
 </template>
 
@@ -45,7 +39,6 @@ import {
 import FriendsListDetails        from './FriendsListDetails.vue';
 import FriendsListModeTabs       from './FriendsListModeTabs.vue';
 import FriendsListPageSelect     from './FriendsListPageSelect.vue';
-import FriendsListStage          from './FriendsListStage.vue';
 import FriendsListView           from './FriendsListView.vue';
 import FriendsListRequestsToggle from './FriendsListRequestsToggle.vue';
 import FriendsListSearchView     from './FriendsListSearchView.vue';
@@ -100,48 +93,36 @@ const mode = ref('list');
 
 <style scoped>
 .friends-list {
+    --overhang-x-tabs: -18px;
+    --overhang-y-tabs: -24px;
+
     display:   flex;
     flex-flow: column;
 
-    width: 520px;
+    padding: 27px 12px 9px;
+    margin-top: calc(-1 * var(--overhang-y-tabs));
 
-    & > .list-stage       { z-index: 1; place-self: center  stretch; }
-    & > .list-border      { z-index: 0; place-self: stretch stretch; }
-    & > .list-page-select { z-index: 1; place-self: center; }
-}
-
-.list-stage {
-    margin-bottom: -20px;
-}
-
-.list-border {
     display:   flex;
     flex-flow: column;
 
     border:        var(--border-s);
     border-radius: var(--radius-s);
 
-    padding: 30px 12px 9px;
-
-    & > .border-tabs      { z-index: 1; }
-    & > .border-details   { z-index: 0; align-self: stretch; }
-    & > .border-list-view { z-index: 0; align-self: stretch; margin-top: 18px; }
-    & > .border-foot      { z-index: 0; align-self: stretch; margin-top: 9px; }
+    & > .list-tabs      { z-index: 1; }
+    & > .list-details   { z-index: 0; align-self: stretch; }
+    & > .list-list-view { z-index: 0; align-self: stretch; margin-top: 18px; }
+    & > .list-foot      { z-index: 0; align-self: stretch; margin-top: 9px; }
 }
 
-.border-tabs {
+.list-tabs {
     position: absolute;
-    top:  -18px;
-    left: -18px;
+    left: var(--overhang-x-tabs);
+    top:  var(--overhang-y-tabs);
 }
 
-.border-foot {
+.list-foot {
     display:         flex;
     justify-content: space-between;
     align-items:     center;
-}
-
-.stage-view {
-    margin: 15px;
 }
 </style>

@@ -363,10 +363,10 @@ watch(() => props.transitionDirection, () => {
     translate: 0 var(--details-slide);
 }
 
-.details-border-transition--forwards-enter-active  { animation: details-border-up   180ms steps(4); }
-.details-border-transition--forwards-leave-active  { animation: details-border-down 180ms steps(4); }
-.details-border-transition--backwards-enter-active { animation: details-border-down 180ms steps(4) reverse; }
-.details-border-transition--backwards-leave-active { animation: details-border-up   180ms steps(4) reverse; }
+.details-border-transition--forwards-enter-active  { animation: details-border-up   140ms steps(4); }
+.details-border-transition--forwards-leave-active  { animation: details-border-down 140ms steps(4); }
+.details-border-transition--backwards-enter-active { animation: details-border-down 140ms steps(4) reverse; }
+.details-border-transition--backwards-leave-active { animation: details-border-up   140ms steps(4) reverse; }
 
 @property --details-slide {
     initial-value: 0px;
