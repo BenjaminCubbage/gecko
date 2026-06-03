@@ -8,10 +8,13 @@
 
         <FriendsListDetails
             class="list-details"
-            :user="selectedFriend?.user"
+            :user="detailsUser"
             :state="detailsState"
             :slide-direction="detailsSlideDirection"
-            :isLoading="isLoadingAnything" />
+            :isLoading="isLoading"
+            @send-request="sendRequest"
+            @reject="reject"
+            @unsend="unsend" />
 
         <template v-if="selectedTab === 'list'">
             <FriendsListView
@@ -27,7 +30,9 @@
 
         <template v-else>
             <FriendsListSearchView 
-                :isLoading="isLoadingSearchResult" />
+                v-model:search-input="searchInput"
+                :isLoading="isLoadingSearchResult"
+                @search-submitted="searchSubmitted" />
         </template>
     </div>
 </template>
@@ -47,7 +52,9 @@ import FriendsListView           from './FriendsListView.vue';
 import FriendsListRequestsToggle from './FriendsListRequestsToggle.vue';
 import FriendsListSearchView     from './FriendsListSearchView.vue';
 
-import { Keys } from '@/core/di/keys.js';
+import { Keys }     from '@/core/di/keys.js';
+import { Dispatch } from '@/core/dispatch/Dispatch.js';
+import { User }     from '@/models/user.js';
 
 import {
     Friend,
@@ -55,6 +62,7 @@ import {
 } from '@/models/friend.js';
 
 const friends = inject(Keys.FriendsStore);
+const session = inject(Keys.SessionStore);
 
 const selectedTab = ref('list');
 
@@ -68,16 +76,17 @@ const detailsSlideDirection = ref('forwards');
 */
 const hasSearchedYet  = ref(false);
 const searchResult    = ref(null);
+const searchInput     = ref('');
 
 /*
     Loading anything?
 */
 const isLoadingSearchResult = ref(false);
-const isLoadingFriends = computed(() =>
-    friends.state.value === 'loading');
-
-const isLoadingAnything = computed(() =>
+const isLoadingFriendAction = ref(false);
+const isLoadingFriends = computed(() => friends.state.value === 'loading');
+const isLoading = computed(() =>
     isLoadingSearchResult.value || 
+    isLoadingFriendAction.value ||
     isLoadingFriends.value);
 
 const friendsPage = computed(() => {
@@ -101,7 +110,7 @@ const detailsState = computed(() => {
         case 'search':
             return !hasSearchedYet.value
                 ? 'search'
-                : searchResult == null
+                : searchResult.value == null
                     ? 'searchnotfound'
                     : 'userresult';
     }
@@ -129,6 +138,77 @@ watch(selectedIndex, (value, previousValue) => {
     detailsSlideDirection.value =
         previousValue > value ? 'forwards' : 'backwards';
 });
+
+function searchSubmitted() {
+    /*
+        If we have a friend with this username or we searched
+        for ourself then we can return immediately. 
+    */
+    const cachedResult = friends.getFriendByUsername(searchInput.value)?.user 
+        ?? (searchInput.value === session.activeUser.value.username ? session.activeUser.value : null)
+        ?? (searchInput.value === searchResult.value?.username      ? searchResult.value       : null);
+
+    if (cachedResult != null) {
+        hasSearchedYet.value = true;
+        searchResult.value   = cachedResult;
+        return;
+    }
+
+    isLoadingSearchResult.value = true;
+    Dispatch.Get_UserByUsername(searchInput.value)
+        .onSuccess(body => {
+            hasSearchedYet.value        = true;
+            searchResult.value          = User.fromJSON(body.user);
+            isLoadingSearchResult.value = false;
+        })
+        .onHttpError((body, status) => {
+            if (status === 404) {
+                hasSearchedYet.value = true;
+                searchResult.value   = null;
+            } 
+        })
+        .onError(() => { 
+            isLoadingSearchResult.value = false 
+        });
+}
+
+/*
+    Friendship actions
+*/
+
+async function sendRequest(user, resolve) {
+    try {
+        isLoadingFriendAction.value = true;
+        await friends.publishCreateFriendRequest(session, user);
+    } finally {
+        isLoadingFriendAction.value = false;
+        resolve();
+    }
+}
+
+async function unfriend(user, resolve) {
+    try {
+        isLoadingFriendAction.value = true;
+        await friends.publishDeleteFriendOrRequest(session, user.userID);
+    } finally {
+        isLoadingFriendAction.value = false;
+        resolve();
+    }
+}
+
+async function accept(user, resolve) {
+    try {
+        isLoadingFriendAction.value = true;
+        await friends.publishAcceptFriendRequest(session, user.userID);
+    } finally {
+        isLoadingFriendAction.value = false;
+        resolve();
+    }
+}
+
+/* These are the same for now */
+const unsend = unfriend;
+const reject = unfriend;
 </script>
 
 <style scoped>

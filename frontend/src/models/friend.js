@@ -17,8 +17,9 @@ export class Friend {
         return friend;
     }
 
-    static fromOptimistic(user, acceptedOnDate = null) {
+    static fromUser(user, status, acceptedOnDate = null) {
         const friend      = new Friend();
+        friend.status     = status;
         friend.acceptedOn = Friend._stringifyDate(acceptedOnDate);
         friend.user       = user;
         return friend;

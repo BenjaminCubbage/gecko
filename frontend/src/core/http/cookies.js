@@ -4,11 +4,10 @@ export const CookieNames = Object.freeze({
 
 export class Cookies {
     static getByName(name) {
-        var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-
-        return match && match.length === 3
-            ? match[2]
-            : null;
+        return document.cookie
+            .split('; ')
+            .find(r => r.startsWith(`${name}=`))
+            .split('=')[1];
     }
 
     static getXSRFToken() {

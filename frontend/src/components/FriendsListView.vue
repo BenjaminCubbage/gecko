@@ -88,7 +88,7 @@ const props = defineProps({
 const selectedFriend = defineModel('selectedFriend', {
     required: true,
     validator(value, props) {
-        return value == null || props.friends.includes(value);
+        return value == null || value instanceof Friend;
     }
 });
 
@@ -100,16 +100,6 @@ watch(() => props.friends, () => {
 }, {
     immediate: true
 });
-
-const names = [
-    'Ben',
-    'Joey',
-    'Gary',
-    'Bartholomew',
-    'WWWWWWWWWWWWWWWWWW'
-];
-
-const selectedIndex = ref(2);
 </script>
 
 <style scoped>

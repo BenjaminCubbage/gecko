@@ -16,11 +16,12 @@
                     shdw shdw--inst-lt-gray shdw--elevated-m">
                 <BaseInput
                     class="field-input"
-                    v-model="usernameInput"
+                    v-model="searchInput"
                     :maxlength="maxUsernameLength"
                     :char-predicate="isValidUsernameChar"
                     variant="no-box"
-                    placeholder="username" />
+                    placeholder="username"
+                    @keydown.enter="trySubmit" />
             </div>
 
             <button
@@ -30,6 +31,7 @@
                     txtr-vert txtr-vert--green"
                 :data-is-loading="isLoading"
                 :disabled="!isValidInput"
+                @click="trySubmit"
                 type="button">
             </button>
         </div>
@@ -51,20 +53,27 @@ import {
     maxUsernameLength
 } from '@/core/validation/validateUsername.js';
 
-defineProps({
+const props = defineProps({
     isLoading: {
         type:     Boolean,
         required: true
     }
 });
 
-const emit = defineEmits(['search']);
+const emit = defineEmits([
+    'searchSubmitted'
+]);
 
-const usernameInput = ref('');
-const isValidInput  = computed(() => isValidUsername(usernameInput.value));
+const searchInput = defineModel('searchInput', {
+    type:     String,
+    required: true
+});
 
-function submit() {
-    emit('search', usernameInput.value);
+const isValidInput = computed(() => isValidUsername(searchInput.value));
+
+function trySubmit() {
+    if (isValidInput.value && !props.isLoading)
+        emit('searchSubmitted');
 }
 </script>
 
@@ -151,7 +160,7 @@ function submit() {
         Text indent (not padding) because otherwise text stroke
         gets clipped
     */
-    text-indent: 5px;
+    text-indent: 3px;
 }
 
 .bar-btn {
@@ -200,7 +209,8 @@ function submit() {
 
     @media (hover: hover) {
         &:hover,
-        &:active {
+        &:active,
+        &[data-is-loading=true] {
             filter: var(--filter-hl-1);
         }
     }

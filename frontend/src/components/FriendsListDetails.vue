@@ -1,6 +1,6 @@
 <template>
     <div class="friends-list-details">
-        <div 
+        <div
             v-if="isLoading"
             class="details-loading"
             inert>
@@ -28,21 +28,23 @@
                     </p>
 
                     <div
-                        v-if="friend != null"
+                        v-if="user != null && !isUserMe"
                         class="border-btns"
                         v-roving-container>
                         <button
-                            v-if="friend.status === FriendStatus.PendingIncoming"
+                            v-if="friend != null && friend.status === FriendStatus.PendingIncoming"
                             class="btn btn--green"
-                            v-roving-item
-                            @click="$emit('accept-friend', friend)">
+                            :data-is-pressed="isAction1Pressed"
+                            @click="emitAction1"
+                            v-roving-item>
                             [Accept]
                         </button>
 
                         <button
-                            class="btn btn--red"
-                            v-roving-item
-                            @click="$emit(actionEvent, friend)">
+                            :class="`btn btn--${actionColor}`"
+                            :data-is-pressed="isAction2Pressed"
+                            @click="emitAction2"
+                            v-roving-item>
                             [{{ actionLabel }}]
                         </button>
                     </div>
@@ -67,6 +69,7 @@
 import {
     computed,
     inject,
+    ref,
     useTemplateRef,
     watch
 } from 'vue';
@@ -120,24 +123,32 @@ const props = defineProps({
     }
 });
 
-defineEmits([
-    'accept-friend',
-    'reject-friend',
-    'unsend-friend-request',
-    'unfriend'
+const emit = defineEmits([
+    'accept',
+    'reject',
+    'unsend',
+    'unfriend',
+    'sendRequest'
 ]);
 
 const friends = inject(Keys.FriendsStore);
+const session = inject(Keys.SessionStore);
 
 /*
     If the user is a friend, this will hold
     the associated friend object
 */
 const friend = computed(() => {
-    return props.user 
+    return props.user
         ? friends.getFriendByUserID(props.user.userID)
         : null;
 });
+
+const isUserMe = computed(() =>
+    props.user.userID === session.activeUserID);
+
+const isAction1Pressed = ref(false);
+const isAction2Pressed = ref(false);
 
 const titleIcon = computed(() => {
     switch (props.state) {
@@ -157,8 +168,9 @@ const titleText = computed(() => {
         case 'nofriends':  return 'My Friends';
         case 'loadfailed': return "Couldn't Connect"
         case 'search':
-        case 'searchnotfound': 
             return 'Search Users';
+        case 'searchnotfound':
+            return 'No Results';
     }
     return null;
 });
@@ -166,8 +178,11 @@ const titleText = computed(() => {
 const statusText = computed(() => {
     switch (props.state) {
         case 'userresult':
+            if (isUserMe.value)
+                return 'You earned the "search for myself" award please redeem at any Arby\'s';
+
             if (friend.value == null)
-                return 'Not friends'
+                return 'Not friends';
 
             switch (friend.value.status) {
                 case FriendStatus.PendingIncoming: return 'Wants to be friends';
@@ -183,28 +198,55 @@ const statusText = computed(() => {
 });
 
 const actionLabel = computed(() => {
-    if (friend.value == null) return null;
+    if (props.state !== 'userresult' || isUserMe.value)
+        return null;
 
-    switch (friend.value.status) {
-        case FriendStatus.PendingIncoming: return 'Reject';
-        case FriendStatus.PendingOutgoing: return 'Unsend';
-        case FriendStatus.Active:          return 'Unfriend';
-    }
+    if (friend.value != null) {
+        switch (friend.value.status) {
+            case FriendStatus.PendingIncoming: return 'Reject';
+            case FriendStatus.PendingOutgoing: return 'Unsend';
+            case FriendStatus.Active:          return 'Unfriend';
+        }
+    } else
+        return 'Send Request'
+});
+
+const actionColor = computed(() => {
+    if (props.state !== 'userresult' || isUserMe.value)
+        return null;
+
+    return friend.value != null
+        ? 'red'
+        : 'green';
 });
 
 const actionEvent = computed(() => {
-    if (friend.value == null) return null;
+    if (props.state !== 'userresult' || isUserMe.value)
+        return null;
 
-    switch (friend.value.status) {
-        case FriendStatus.PendingIncoming: return 'reject-friend';
-        case FriendStatus.PendingOutgoing: return 'unsend-friend-request';
-        case FriendStatus.Active:          return 'unfriend';
-    }
+    if (friend.value != null) {
+        switch (friend.value.status) {
+            case FriendStatus.PendingIncoming: return 'reject';
+            case FriendStatus.PendingOutgoing: return 'unsend';
+            case FriendStatus.Active:          return 'unfriend';
+        }
+    } else
+        return 'sendRequest';
 });
 
-watch(() => props.transitionDirection, () => {
-    console.log(props.transitionDirection);
-});
+/*
+    Emit the action, and track whether the action is done yet
+    (pressed state)
+*/
+function emitAction1() {
+    isAction1Pressed.value = true;
+    emit('accept-friend', props.user, () => isAction1Pressed.value = false);
+}
+
+function emitAction2() {
+    isAction2Pressed.value = true;
+    emit(actionEvent.value, props.user, () => isAction2Pressed.value = false);
+}
 </script>
 
 <style scoped>
@@ -215,10 +257,11 @@ watch(() => props.transitionDirection, () => {
     flex-flow: column;
 
     &::after {
-        content: '';
+        content:  '';
         position: absolute;
-        inset: 0;
-        z-index: 999;
+        inset:    0;
+        z-index:  999;
+
         background:
             repeating-linear-gradient(
                 rgb(0 0 0 / 0.01) 0   3px,
@@ -257,8 +300,8 @@ watch(() => props.transitionDirection, () => {
         inset -17px -9px var(--col-lt-gray-4);
 
     align-items: center;
-    & > .border-title { 
-        align-self: stretch; 
+    & > .border-title {
+        align-self: stretch;
     }
 
     & > *               { z-index: 0; }
@@ -272,7 +315,7 @@ watch(() => props.transitionDirection, () => {
 
     bottom: var(--inset);
     right:  var(--inset);
-    
+
     display:   flex;
     flex-flow: column;
 
@@ -297,7 +340,7 @@ watch(() => props.transitionDirection, () => {
     font-size:      2.8rem;
     letter-spacing: 0.03em;
     line-height:    0.8;
-    
+
     display:     flex;
     align-items: center;
     gap:         9px;
@@ -358,16 +401,16 @@ watch(() => props.transitionDirection, () => {
 }
 
 .btn {
-    position: relative;
+    --elevation-dist: 4px;
 
-    padding: 4px 20px;
+    position: relative;
+    padding:  4px 20px;
 
     -webkit-text-stroke: 4px white;
-
-    font-size:      2.55rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    line-height:    0.8;
+    font-size:           2.55rem;
+    letter-spacing:      0.05em;
+    text-transform:      uppercase;
+    line-height:         0.8;
 
     background:
         linear-gradient(
@@ -377,8 +420,13 @@ watch(() => props.transitionDirection, () => {
     border-radius: 3px;
 
     filter:
-        drop-shadow(0 4px var(--col-elevation))
+        drop-shadow(
+            0 
+            var(--elevation-dist) 
+            var(--col-elevation))
         var(--hl, brightness(1));
+
+    translate: 0 calc(-1 * var(--elevation-dist));
 
     &.btn--green {
         --col-grad-1:    var(--col-green-3);
@@ -393,7 +441,9 @@ watch(() => props.transitionDirection, () => {
     }
 
     @media (hover: hover) {
-        &:hover {
+        &:hover,
+        &:active,
+        &[data-is-pressed=true] {
             --hl: var(--filter-hl-1);
 
             &::before,
@@ -401,6 +451,15 @@ watch(() => props.transitionDirection, () => {
                 --inst: -7px;
             }
         }
+    }
+
+    &:active,
+    &[data-is-pressed=true] {
+        --elevation-dist: 2px;
+    }
+
+    &[data-is-pressed=true] {
+        pointer-events: none;
     }
 
     &::before,

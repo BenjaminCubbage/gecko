@@ -2,7 +2,8 @@ import {
     computed,
     reactive,
     readonly,
-    ref
+    ref,
+    toRaw
 } from 'vue';
 
 import {
@@ -16,7 +17,8 @@ import { equalsIgnoreCase }   from '@/core/string/equalsIgnoreCase.js';
 import { MultiResourceMutex } from '@/core/async/mutex.js';
 
 import { 
-    FriendStatus, Friend 
+    FriendStatus, 
+    Friend 
 } from '@/models/friend.js';
 
 /*
@@ -83,6 +85,10 @@ export class FriendsStore {
     */
     getFriendByUserID(userID) {
         return this.#friends.find(f => f.user.userID === userID);
+    }
+
+    getFriendByUsername(username) {
+        return this.#friends.find(f => f.user.username.toLowerCase() === username.toLowerCase());
     }
 
     /*
@@ -153,6 +159,8 @@ export class FriendsStore {
         Asks server to send a friend request to the target user.
     */
     async publishCreateFriendRequest(session, targetUser) {
+        targetUser = toRaw(targetUser);
+
         if (!session?.activeUser.value)
             throw new Error('[FriendsStore]: User not logged in');
 
@@ -163,7 +171,7 @@ export class FriendsStore {
             throw new Error(`[FriendsStore]: Can't friend self`);
 
         if (this.#friends.some(f => f.user.userID === targetUser.userID))
-            throw new Error('[FriendsStore]: Friendship or friend request with that userID already exists in cache');
+            throw new Error('[FriendsStore]: Friendship or request with that userID already exists in cache');
 
         if (!this.#mutex.tryLock(targetUser.userID))
             throw new ResourceLockedError();
@@ -176,7 +184,9 @@ export class FriendsStore {
                     .onNetworkError(()             => reject(new NetworkError()));
             });
 
-            FriendsStore.#unshiftToArr(this.#pendingOut, Friend.fromOptimistic(targetUser, new Date()));
+            FriendsStore.#unshiftToArr(
+                this.#friends, 
+                Friend.fromUser(targetUser, FriendStatus.PendingOutgoing));
         } finally {
             this.#mutex.unlock(targetUser.userID);
         }
