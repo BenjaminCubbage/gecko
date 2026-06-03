@@ -11,14 +11,16 @@
             name="details-border-transition"
             :enter-active-class="`details-border-transition--${slideDirection}-enter-active`"
             :leave-active-class="`details-border-transition--${slideDirection}-leave-active`"
-            mode="out-in">
+            mode="out-in"
+            @before-leave="isTransitionLeaving = true"
+            @after-leave="isTransitionLeaving = false, ++detailsBorderMemoVersion">
             <div
                 class="
                     details-border
                     shdw shdw--otst-orange shdw--inst-lt-gray shdw--recessed"
-                :key="`${state}---${user?.userID}`">
-
-                <template v-if="state === 'userresult'">
+                :key="detailsBorderKey">
+                <template 
+                    v-if="state === 'userresult'">
                     <h1 class="border-title border-title--username">
                         {{ titleText }}
                     </h1>
@@ -30,7 +32,12 @@
                     <div
                         v-if="user != null && !isUserMe"
                         class="border-btns"
-                        v-roving-container>
+                        v-roving-container
+                        v-memo="[
+                            detailsBorderKey,
+                            isAction1Pressed,
+                            isAction2Pressed,
+                            detailsBorderMemoVersion]">
                         <button
                             v-if="friend != null && friend.status === FriendStatus.PendingIncoming"
                             class="btn btn--green"
@@ -69,6 +76,7 @@
 import {
     computed,
     inject,
+    nextTick,
     ref,
     useTemplateRef,
     watch
@@ -134,6 +142,11 @@ const emit = defineEmits([
 const friends = inject(Keys.FriendsStore);
 const session = inject(Keys.SessionStore);
 
+const detailsBorderKey = computed(() =>
+    `${props.state}:${props.user?.userID}`);
+
+const detailsBorderMemoVersion = ref(0);
+
 /*
     If the user is a friend, this will hold
     the associated friend object
@@ -146,6 +159,12 @@ const friend = computed(() => {
 
 const isUserMe = computed(() =>
     props.user.userID === session.activeUserID);
+
+/*
+    If the transition is leaving we don't want to update
+    the DOM
+*/
+const isTransitionLeaving = ref(false);
 
 const isAction1Pressed = ref(false);
 const isAction2Pressed = ref(false);
@@ -192,7 +211,7 @@ const statusText = computed(() => {
             break;
         case 'searchnotfound': return 'User not found';
         case 'nofriends':      return 'It\'s lonely here, but that can change';
-        case 'loadfailed':     return 'Try again later';
+        case 'loadfailed':     return 'I don\'t freaking know okay';
     }
     return null;
 });
@@ -233,6 +252,14 @@ const actionEvent = computed(() => {
     } else
         return 'sendRequest';
 });
+
+watch([actionEvent, actionColor, actionLabel], () => {
+    /* 
+        Defer DOM update if transitioning away to avoid flicker as it flies away. 
+    */
+    if (!isTransitionLeaving.value)
+        ++detailsBorderMemoVersion.value;
+}, { flush: 'post' });
 
 /*
     Emit the action, and track whether the action is done yet
@@ -421,8 +448,8 @@ function emitAction2() {
 
     filter:
         drop-shadow(
-            0 
-            var(--elevation-dist) 
+            0
+            var(--elevation-dist)
             var(--col-elevation))
         var(--hl, brightness(1));
 

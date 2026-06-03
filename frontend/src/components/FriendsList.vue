@@ -74,9 +74,9 @@ const detailsSlideDirection = ref('forwards');
     the default search title. Otherwise we can show
     no results.
 */
-const hasSearchedYet  = ref(false);
-const searchResult    = ref(null);
-const searchInput     = ref('');
+const hasSearchedYet = ref(false);
+const searchResult   = ref(null);
+const searchInput    = ref('');
 
 /*
     Loading anything?
@@ -88,6 +88,12 @@ const isLoading = computed(() =>
     isLoadingSearchResult.value || 
     isLoadingFriendAction.value ||
     isLoadingFriends.value);
+    
+/*
+    Connection failed?
+*/
+const didSearchConnFail  = ref(false);
+const didFriendsConnFail = computed(() => friends.state.value === 'error');
 
 const friendsPage = computed(() => {
     return friends.allFriends
@@ -103,16 +109,20 @@ const detailsState = computed(() => {
         case 'list':
             return friends.state.value !== 'ready'
                 ? 'empty'
-                : selectedFriend.value == null
-                    ? 'nofriends'
-                    : 'userresult';
+                : didFriendsConnFail.value
+                    ? 'loadfailed'
+                    : selectedFriend.value == null
+                        ? 'nofriends'
+                        : 'userresult';
 
         case 'search':
             return !hasSearchedYet.value
                 ? 'search'
-                : searchResult.value == null
-                    ? 'searchnotfound'
-                    : 'userresult';
+                : didFriendsConnFail.value || didSearchConnFail.value
+                    ? 'loadfailed'
+                    : searchResult.value == null
+                        ? 'searchnotfound'
+                        : 'userresult';
     }
 });
 
@@ -145,8 +155,8 @@ function searchSubmitted() {
         for ourself then we can return immediately. 
     */
     const cachedResult = friends.getFriendByUsername(searchInput.value)?.user 
-        ?? (searchInput.value === session.activeUser.value.username ? session.activeUser.value : null)
-        ?? (searchInput.value === searchResult.value?.username      ? searchResult.value       : null);
+        ?? (searchInput.value.toLowerCase() === session.activeUser.value.username.toLowerCase() ? session.activeUser.value : null)
+        ?? (searchInput.value.toLowerCase() === searchResult.value?.username.toLowerCase()      ? searchResult.value       : null);
 
     if (cachedResult != null) {
         hasSearchedYet.value = true;
@@ -157,15 +167,21 @@ function searchSubmitted() {
     isLoadingSearchResult.value = true;
     Dispatch.Get_UserByUsername(searchInput.value)
         .onSuccess(body => {
+            didSearchConnFail.value     = false;
             hasSearchedYet.value        = true;
             searchResult.value          = User.fromJSON(body.user);
             isLoadingSearchResult.value = false;
         })
         .onHttpError((body, status) => {
+            didSearchConnFail.value = false;
+            
             if (status === 404) {
                 hasSearchedYet.value = true;
                 searchResult.value   = null;
             } 
+        })
+        .onNetworkError(() => {
+            didSearchConnFail.value = true;
         })
         .onError(() => { 
             isLoadingSearchResult.value = false 
