@@ -23,21 +23,24 @@ import {
 */
 export function useThrottledRef(source, ms) {
     let timeOfLastFlush = -Infinity;
+
+    let unwatch = null;
     let timeout = null;
     let value   = source.value;
 
-    onScopeDispose(() => {
+    function cancelTimeout() {
         clearTimeout(timeout);
+        timeout = null;
+    }
+
+    onScopeDispose(() => {
+        unwatch();
+        cancelTimeout();
     });
 
     return customRef((track, trigger) => {
-        function cancelTimeout() {
-            clearTimeout(timeout);
-            timeout = null;
-        }
-
         function flushNow(newValue) {
-            const valueChanged = Object.is(newValue, value);
+            const valueChanged = !Object.is(newValue, value);
 
             timeOfLastFlush = performance.now();
             value           = newValue;
@@ -65,7 +68,7 @@ export function useThrottledRef(source, ms) {
             }
         }
 
-        watch(source, () => {
+        unwatch = watch(source, () => {
             if (timeout == null)
                 flushWithTimeout();
         });

@@ -38,9 +38,7 @@
                             isAction1Pressed,
                             isAction2Pressed,
                             detailsBorderMemoVersion]"
-                        :data-is-animating="areButtonsAnimating"
-                        @animationend="areButtonsAnimating = false"
-                        @animationcancel="areButtonsAnimating = false">
+                        :data-is-animating="areButtonsAnimating">
                         <button
                             v-if="friend != null && friend.status === FriendStatus.PendingIncoming"
                             class="btn btn--green"
@@ -271,11 +269,13 @@ watch([actionEvent, actionColor, actionLabel], () => {
 }, { flush: 'post' });
 
 /*
-    Emit the action, and track whether the action is done yet
-    (pressed state)
+    Emit the actions, and track whether the action is done yet
+    (pressed state / animation trigger)
 */
+
 function emitAction1() {
-    isAction1Pressed.value = true;
+    isAction1Pressed.value    = true;
+    areButtonsAnimating.value = false;
     emit('accept-friend', props.user, () => {
         isAction1Pressed.value    = false;
         areButtonsAnimating.value = true;
@@ -283,7 +283,8 @@ function emitAction1() {
 }
 
 function emitAction2() {
-    isAction2Pressed.value = true;
+    isAction2Pressed.value    = true;
+    areButtonsAnimating.value = false;
     emit(actionEvent.value, props.user, () => {
         isAction2Pressed.value    = false;
         areButtonsAnimating.value = true;
@@ -436,10 +437,11 @@ function emitAction2() {
 }
 
 .border-btns {
-    display: flex;
-    gap:     36px;
-
+    display:    flex;
+    gap:        36px;
     margin-top: 9px;
+
+    transform-origin: bottom;
 }
 
 .btn {
@@ -578,17 +580,17 @@ function emitAction2() {
 @keyframes details-border-down { from { --details-border-slide: 0px; }    to { --details-border-slide: 120px; } }
 
 /*
-
+    Buttons bounce
 */
 
 .border-btns[data-is-animating=true] {
-    animation: details-btns-bounce 110ms steps(3);
+    animation: details-btns-bounce 180ms steps(3);
 }
 
 @keyframes details-btns-bounce {
     from { scale: 1; }
-    50%  { scale: 1.1; }
-    to   { scale: 0.9; }
+    50%  { scale: 1.02; }
+    to   { scale: 0.98; }
 
 }
 </style>
