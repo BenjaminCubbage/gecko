@@ -43,7 +43,6 @@ body {
     box-sizing:            border-box;
     corner-shape:          notch;
     font-variant-numeric:  tabular-nums;
-    animation-composition: add;
 
     @media (prefers-reduced-motion: reduce) {
         transition:                none   !important;

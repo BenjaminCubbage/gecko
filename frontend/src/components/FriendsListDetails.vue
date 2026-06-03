@@ -219,7 +219,7 @@ const statusText = computed(() => {
             }
             break;
         case 'searchnotfound': return 'User not found';
-        case 'nofriends':      return 'It\'s lonely here, but that can change';
+        case 'nofriends':      return 'It\'s lonely here, but it\'s not forever';
         case 'loadfailed':     return 'I don\'t freaking know okay';
     }
     return null;

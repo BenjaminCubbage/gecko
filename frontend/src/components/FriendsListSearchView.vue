@@ -29,7 +29,7 @@
                     bar-btn
                     shdw shdw--inst-green shdw--elevated-m
                     txtr-vert txtr-vert--green"
-                :data-is-loading="isLoading"
+                :data-is-loading="showIsLoading"
                 :disabled="!isValidInput"
                 @click="trySubmit"
                 type="button">
@@ -41,11 +41,15 @@
 <script setup>
 import {
     computed,
-    ref
+    ref,
+    toRef,
+    watch
 } from 'vue';
 
 import IconFriendListArrow from './IconFriendListArrow.vue';
 import BaseInput           from './BaseInput.vue';
+
+import { useThrottledRef } from '@/composables/useThrottledRef';
 
 import {
     isValidUsername,
@@ -63,6 +67,13 @@ const props = defineProps({
 const emit = defineEmits([
     'searchSubmitted'
 ]);
+
+const showIsLoading = useThrottledRef(toRef(props, 'isLoading'), 200);
+
+watch(() => props.isLoading, newValue => {
+    if (newValue)
+        showIsLoading.value = newValue;
+}, { flush: 'post' });
 
 const searchInput = defineModel('searchInput', {
     type:     String,
