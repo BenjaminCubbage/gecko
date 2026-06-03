@@ -1,53 +1,71 @@
 <template>
     <div class="friends-list-search-view">
         <div class="view-arrows">
-            <span class="arrow" :data-active="active === 0">&#x25B2;</span>
-            <span class="arrow" :data-active="active === 1">&#x25B2;</span>
-            <span class="arrow" :data-active="active === 2">&#x25B2;</span>
-            <span class="arrow" :data-active="active === 3">&#x25B2;</span>
+            <span class="arrow">&#x25B2;</span>
+            <span class="arrow">&#x25B2;</span>
+            <span class="arrow">&#x25B2;</span>
         </div>
 
-        <div 
+        <div
             class="
                 view-bar
                 shdw shdw--otst-orange">
-            <div 
+            <div
                 class="bar-field
                     txtr-vert txtr-vert--lt-gray
                     shdw shdw--inst-lt-gray shdw--elevated-m">
-                <div class="field-at-symbol" inert>
-                    @
-                </div>
-
-                <BaseInput 
-                    class="field-input" 
-                    variant="no-box" 
+                <BaseInput
+                    class="field-input"
+                    v-model="usernameInput"
+                    :maxlength="maxUsernameLength"
+                    :char-predicate="isValidUsernameChar"
+                    variant="no-box"
                     placeholder="username" />
             </div>
 
-            <button 
+            <button
                 class="
                     bar-btn
                     shdw shdw--inst-green shdw--elevated-m
                     txtr-vert txtr-vert--green"
+                :data-is-loading="isLoading"
+                :disabled="!isValidInput"
                 type="button">
-                &#xF50D;
             </button>
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref }             from 'vue';
+import {
+    computed,
+    ref
+} from 'vue';
+
 import IconFriendListArrow from './IconFriendListArrow.vue';
 import BaseInput           from './BaseInput.vue';
 
-const active = ref(0);
+import {
+    isValidUsername,
+    isValidUsernameChar,
+    maxUsernameLength
+} from '@/core/validation/validateUsername.js';
 
-(function stepActive() {
-    active.value = (active.value + 1) % 4;
-    setTimeout(stepActive, 180);
-})();
+defineProps({
+    isLoading: {
+        type:     Boolean,
+        required: true
+    }
+});
+
+const emit = defineEmits(['search']);
+
+const usernameInput = ref('');
+const isValidInput  = computed(() => isValidUsername(usernameInput.value));
+
+function submit() {
+    emit('search', usernameInput.value);
+}
 </script>
 
 <style scoped>
@@ -59,6 +77,7 @@ const active = ref(0);
     flex-flow: column;
     gap:       6px;
 
+    & > *            { align-self: stretch; }
     & > .view-arrows { align-self: center; }
 }
 
@@ -73,10 +92,6 @@ const active = ref(0);
     word-spacing: 0em;
 
     padding-inline-start: 0.1em;
-}
-
-.arrow[data-active=true] {
-    translate: 0 -2px;
 }
 
 .view-bar {
@@ -99,12 +114,11 @@ const active = ref(0);
     padding: 0 9px;
 
     border: var(--border-s);
-    border-radius: 
-        var(--radius-s) 
-        0 
+    border-radius:
+        var(--radius-s)
+        0
         0
         var(--radius-s);
-        
 
     -webkit-text-stroke: var(--text-stroke-s);
     font-family:         var(--font-scnd);
@@ -112,33 +126,38 @@ const active = ref(0);
     font-weight:         bold;
     line-height:         1.2;
 
-    translate: 
+    translate:
         0 calc(-1 * var(--shdw-dist-elevation));
 
-    --shdw-etc: 
-        calc(-1 * var(--shadow-dist-m)) 
-        calc(-1 * var(--shadow-dist-m)) 
+    --shdw-etc:
+        calc(-1 * var(--shadow-dist-m))
+        calc(-1 * var(--shadow-dist-m))
         var(--col-orange-0);
 
     &:focus-visible {
         outline: none;
     }
-}
 
-.field-at-symbol {
-    display:       grid;
-    place-content: center;
+    &::before {
+        content: '@';
+
+        display:       grid;
+        place-content: center;
+    }
 }
 
 .field-input {
-    /* Text indent because otherwise text stroke gets clipped */
-    text-indent: 3px;
+    /*
+        Text indent (not padding) because otherwise text stroke
+        gets clipped
+    */
+    text-indent: 5px;
 }
 
 .bar-btn {
     border: var(--border-s);
-    border-radius: 
-        0 
+    border-radius:
+        0
         var(--radius-s)
         var(--radius-s)
         0;
@@ -152,17 +171,49 @@ const active = ref(0);
     place-content: center;
 
     padding-bottom: 0.03em;
-        
-    text-shadow: 
+
+    text-shadow:
         calc(-1 * var(--shadow-dist-xs)) calc(-1 * var(--shadow-dist-xs)) var(--col-green-1),
                   var(--shadow-dist-xs)            var(--shadow-dist-xs)  var(--col-green-5);
 
-    margin-left: 
+    margin-left:
         calc(-1 * var(--border-thickness-s));
 
-    translate: 
+    translate:
         0 calc(-1 * var(--shdw-dist-elevation));
-        
+
     --shdw-etc: -3px -3px var(--col-orange-0);
+
+    &[data-is-loading=false] {
+        &::after          { content: '\F50D'; }
+        &:disabled::after { opacity: 30%; }
+    }
+
+    &[data-is-loading=true] {
+        pointer-events: none;
+
+        &::after {
+            content:   '\F510';
+            animation: friends-search-loading 300ms steps(1) infinite;
+        }
+    }
+
+    @media (hover: hover) {
+        &:hover,
+        &:active {
+            filter: var(--filter-hl-1);
+        }
+    }
+
+    &:active,
+    &[data-is-loading=true] {
+        --shdw-dist-elevation: 0px;
+    }
+}
+
+@keyframes friends-search-loading {
+    0%  { content: '\F510'; }
+    33% { content: '\F511'; }
+    66% { content: '\F512'; }
 }
 </style>

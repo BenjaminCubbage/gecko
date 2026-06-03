@@ -4,17 +4,19 @@
                 shdw shdw--inst-orange shdw--elevated-l">
         <FriendsListModeTabs
             class="list-tabs"
-            v-model:mode="mode" />
+            v-model:mode="selectedTab" />
 
         <FriendsListDetails
             class="list-details"
-            :friend="selectedFriend"
-            :transitionDirection="detailsTransitionDirection" />
+            :user="selectedFriend?.user"
+            :state="detailsState"
+            :slide-direction="detailsSlideDirection"
+            :isLoading="isLoadingAnything" />
 
-        <template v-if="mode === 'list'">
+        <template v-if="selectedTab === 'list'">
             <FriendsListView
                 class="list-list-view"
-                :friends="friends"
+                :friends="friendsPage"
                 v-model:selected-friend="selectedFriend" />
 
             <div class="list-foot">
@@ -24,7 +26,8 @@
         </template>
 
         <template v-else>
-            <FriendsListSearchView />
+            <FriendsListSearchView 
+                :isLoading="isLoadingSearchResult" />
         </template>
     </div>
 </template>
@@ -32,6 +35,7 @@
 <script setup>
 import {
     computed,
+    inject,
     ref,
     watch
 } from 'vue';
@@ -43,52 +47,88 @@ import FriendsListView           from './FriendsListView.vue';
 import FriendsListRequestsToggle from './FriendsListRequestsToggle.vue';
 import FriendsListSearchView     from './FriendsListSearchView.vue';
 
+import { Keys } from '@/core/di/keys.js';
+
 import {
     Friend,
     FriendStatus
 } from '@/models/friend.js';
 
-const friends = ref([
-    Friend.fromJSON({
-        'user': {
-            'username': 'Bob',
-            'user_id':  1
-        },
-        'accepted_on': '12/21/2002'
-    }, FriendStatus.PendingIncoming),
-    Friend.fromJSON({
-        'user': {
-            'username': 'Jim',
-            'user_id':  2
-        },
-        'accepted_on': '12/21/2002'
-    }, FriendStatus.PendingOutgoing),
-    Friend.fromJSON({
-        'user': {
-            'username': 'Larry',
-            'user_id':  3
-        },
-        'accepted_on': '12/21/2002'
-    }, FriendStatus.Active),
-    null,
-    null
-]);
+const friends = inject(Keys.FriendsStore);
 
-const selectedFriend = ref(friends.value[0]);
-const previousIndex  = ref(0);
+const selectedTab = ref('list');
 
-const currentIndex = computed(() =>
-    friends.value?.indexOf(selectedFriend.value));
+const selectedFriend        = ref(null);
+const detailsSlideDirection = ref('forwards');
 
-const detailsTransitionDirection = ref('normal');
+/*
+    If user hasn't searched yet we want to show
+    the default search title. Otherwise we can show
+    no results.
+*/
+const hasSearchedYet  = ref(false);
+const searchResult    = ref(null);
 
-watch(currentIndex, (value, previousValue) => {
-    detailsTransitionDirection.value =
-        previousValue > value ? 'forwards' : 'backwards';
+/*
+    Loading anything?
+*/
+const isLoadingSearchResult = ref(false);
+const isLoadingFriends = computed(() =>
+    friends.state.value === 'loading');
+
+const isLoadingAnything = computed(() =>
+    isLoadingSearchResult.value || 
+    isLoadingFriends.value);
+
+const friendsPage = computed(() => {
+    return friends.allFriends
+        .concat(Array(5))
+        .slice(0, 5);
 });
 
-/* List view or search view. */
-const mode = ref('list');
+const selectedIndex = computed(() =>
+    friendsPage.value?.indexOf(selectedFriend.value) ?? -1);
+
+const detailsState = computed(() => {
+    switch (selectedTab.value) {
+        case 'list':
+            return friends.state.value !== 'ready'
+                ? 'empty'
+                : selectedFriend.value == null
+                    ? 'nofriends'
+                    : 'userresult';
+
+        case 'search':
+            return !hasSearchedYet.value
+                ? 'search'
+                : searchResult == null
+                    ? 'searchnotfound'
+                    : 'userresult';
+    }
+});
+
+const detailsUser = computed(() => {
+    return selectedTab.value === 'list'
+        ? selectedFriend.value?.user
+        : searchResult.value;
+});
+
+watch(friendsPage, () => {
+    if (friendsPage.value.length > 0 && selectedFriend.value == null)
+        selectedFriend.value = friendsPage.value[0];
+}, { immediate: true });
+
+watch(selectedTab, () => {
+    detailsSlideDirection.value = 
+        selectedTab.value === 'list'
+            ? detailsSlideDirection.value = 'forwards'
+            : detailsSlideDirection.value = 'backwards';
+});
+
+watch(selectedIndex, (value, previousValue) => {
+    detailsSlideDirection.value =
+        previousValue > value ? 'forwards' : 'backwards';
+});
 </script>
 
 <style scoped>

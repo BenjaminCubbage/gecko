@@ -1,107 +1,115 @@
 <template>
     <div class="friends-list-details">
-        <transition 
+        <div 
+            v-if="isLoading"
+            class="details-loading"
+            inert>
+            <span class="loading-dots"></span>
+        </div>
+
+        <transition
             name="details-border-transition"
-            :enter-active-class="`details-border-transition--${transitionDirection}-enter-active`"
-            :leave-active-class="`details-border-transition--${transitionDirection}-leave-active`"
+            :enter-active-class="`details-border-transition--${slideDirection}-enter-active`"
+            :leave-active-class="`details-border-transition--${slideDirection}-leave-active`"
             mode="out-in">
-            <div 
-                ref="detailsBorderEl"
+            <div
                 class="
                     details-border
                     shdw shdw--otst-orange shdw--inst-lt-gray shdw--recessed"
-                :key="friend.user.userID">
-                <h1 class="border-username">
-                    <template v-if="friend != null">
-                        @{{ friend.user.username }}
-                    </template>
+                :key="`${state}---${user?.userID}`">
 
-                    <template v-else>
-                        [NO FRIENDS]
-                    </template>
-                </h1>
+                <template v-if="state === 'userresult'">
+                    <h1 class="border-title border-title--username">
+                        {{ titleText }}
+                    </h1>
 
-                <p class="border-status">
-                    <template v-if="friend?.status === FriendStatus.PendingIncoming">
-                        Wants to be friends
-                    </template>
+                    <p class="border-status">
+                        {{ statusText }}
+                    </p>
 
-                    <template v-else-if="friend?.status === FriendStatus.PendingOutgoing">
-                        Friend request sent
-                    </template>
+                    <div
+                        v-if="friend != null"
+                        class="border-btns"
+                        v-roving-container>
+                        <button
+                            v-if="friend.status === FriendStatus.PendingIncoming"
+                            class="btn btn--green"
+                            v-roving-item
+                            @click="$emit('accept-friend', friend)">
+                            [Accept]
+                        </button>
 
-                    <template v-else-if="friend?.status === FriendStatus.Active">
-                        <span>
-                            Friends since
-                            <time
-                                class="status-date"
-                                :datetime="friend.acceptedOn">
-                                {{ friend.acceptedOn }}
-                            </time>
+                        <button
+                            class="btn btn--red"
+                            v-roving-item
+                            @click="$emit(actionEvent, friend)">
+                            [{{ actionLabel }}]
+                        </button>
+                    </div>
+                </template>
+                <template v-else-if="state !== 'empty'">
+                    <h1 class="border-title">
+                        <span class="title-icon" inert>
+                            {{ titleIcon }}
                         </span>
-                    </template>
-
-                    <template v-else>
-                        Maybe someday
-                    </template>
-                </p>
-
-                <div 
-                    v-if="friend != null"
-                    class="border-btns"
-                    v-roving-container>
-                    <button
-                        v-if="friend.status === FriendStatus.PendingIncoming"
-                        class="btn btn--green"
-                        v-roving-item
-                        @click="$emit('accept-friend', friend)">
-                        [Accept]
-                    </button>
-
-                    <button
-                        class="btn btn--red"
-                        v-roving-item
-                        @click="$emit(actionEvent, friend)">
-                        [{{ actionLabel }}]
-                    </button>
-                </div>
+                        {{ titleText }}
+                    </h1>
+                    <p v-if="statusText?.length" class="border-status">
+                        {{ statusText }}
+                    </p>
+                </template>
             </div>
         </transition>
     </div>
 </template>
 
 <script setup>
-import { 
+import {
     computed,
+    inject,
     useTemplateRef,
     watch
 } from 'vue';
 
-import IconFriendHeart          from './IconFriendHeart.vue';
-import IconFriendChevron        from './IconFriendChevron.vue';
-import IconFriendQuestion       from './IconFriendQuestion.vue';
-import { Friend, FriendStatus } from '@/models/friend.js';
+import IconFriendHeart    from './IconFriendHeart.vue';
+import IconFriendChevron  from './IconFriendChevron.vue';
+import IconFriendQuestion from './IconFriendQuestion.vue';
+import { FriendStatus }   from '@/models/friend.js';
+import { User }           from '@/models/user.js'
+import { Keys }           from '@/core/di/keys.js';
 
 const props = defineProps({
     state: {
         type:     String,
         required: true,
-        validator(value) {
+        validator(value, props) {
+            if (value === 'userresult' && props.user == null)
+                return false;
+
             return [
-                'loading',
-                'ready'
+                'empty',
+                'loadfailed',
+                'nofriends',
+                'search',
+                'searchnotfound',
+                'userresult'
             ].includes(value);
         }
     },
 
-    friend: {
+    isLoading: {
+        type:     Boolean,
+        required: true
+    },
+
+    user: {
         required: true,
         validator(value) {
-            return value == null || value instanceof Friend;
+            return value == null || value instanceof User;
         }
     },
 
-    transitionDirection: {
+    slideDirection: {
         required: true,
         validator(value) {
             return [
@@ -119,10 +127,65 @@ defineEmits([
     'unfriend'
 ]);
 
-const detailsBorderEl = useTemplateRef('detailsBorderEl');
+const friends = inject(Keys.FriendsStore);
+
+/*
+    If the user is a friend, this will hold
+    the associated friend object
+*/
+const friend = computed(() => {
+    return props.user 
+        ? friends.getFriendByUserID(props.user.userID)
+        : null;
+});
+
+const titleIcon = computed(() => {
+    switch (props.state) {
+        case 'loadfailed':
+        case 'nofriends':
+            return '\uF50F';
+        case 'search':
+        case 'searchnotfound':
+            return '\uF50D';
+    }
+    return null;
+});
+
+const titleText = computed(() => {
+    switch (props.state) {
+        case 'userresult': return `@${props.user.username}`;
+        case 'nofriends':  return 'My Friends';
+        case 'loadfailed': return "Couldn't Connect"
+        case 'search':
+        case 'searchnotfound': 
+            return 'Search Users';
+    }
+    return null;
+});
+
+const statusText = computed(() => {
+    switch (props.state) {
+        case 'userresult':
+            if (friend.value == null)
+                return 'Not friends'
+
+            switch (friend.value.status) {
+                case FriendStatus.PendingIncoming: return 'Wants to be friends';
+                case FriendStatus.PendingOutgoing: return 'Friend request sent';
+                case FriendStatus.Active:          return `Friends since ${friend.value.acceptedOn}`;
+            }
+            break;
+        case 'searchnotfound': return 'User not found';
+        case 'nofriends':      return 'It\'s lonely here, but that can change';
+        case 'loadfailed':     return 'Try again later';
+    }
+    return null;
+});
 
 const actionLabel = computed(() => {
-    switch (props.friend.status) {
+    if (friend.value == null) return null;
+
+    switch (friend.value.status) {
         case FriendStatus.PendingIncoming: return 'Reject';
         case FriendStatus.PendingOutgoing: return 'Unsend';
         case FriendStatus.Active:          return 'Unfriend';
@@ -130,7 +193,9 @@ const actionLabel = computed(() => {
 });
 
 const actionEvent = computed(() => {
-    switch (props.friend.status) {
+    if (friend.value == null) return null;
+
+    switch (friend.value.status) {
         case FriendStatus.PendingIncoming: return 'reject-friend';
         case FriendStatus.PendingOutgoing: return 'unsend-friend-request';
         case FriendStatus.Active:          return 'unfriend';
@@ -144,6 +209,8 @@ watch(() => props.transitionDirection, () => {
 
 <style scoped>
 .friends-list-details {
+    position: relative;
+
     display:   flex;
     flex-flow: column;
 
@@ -160,18 +227,21 @@ watch(() => props.transitionDirection, () => {
         pointer-events: none;
     }
 
+    & > .details-loading        { z-index: 2; }
     & > .details-username-plate { z-index: 1; }
     & > .details-border         { z-index: 0; }
 }
 
 .details-border {
+    contain:  strict;
     position: relative;
 
-    display:   flex;
-    flex-flow: column;
+    display:         flex;
+    flex-flow:       column;
+    justify-content: center;
+    gap:             6px;
 
-    padding: 24px 0 24px;
-    gap:     6px;
+    height: 142px;
 
     background: var(--col-lt-gray-1);
 
@@ -186,24 +256,52 @@ watch(() => props.transitionDirection, () => {
         inset -17px  9px var(--col-lt-gray-4),
         inset -17px -9px var(--col-lt-gray-4);
 
-    & > .border-username { align-self: stretch; }
-    & > .border-status   { align-self: center; }
-    & > .border-btns     { align-self: center; }
+    align-items: center;
+    & > .border-title { 
+        align-self: stretch; 
+    }
+
+    & > *               { z-index: 0; }
+    & > .details-loading { z-index: 1; }
 }
 
-.border-username {
-    display: grid;
-    grid-template:
-        "l   .    r" auto /
-         1fr auto 1fr;
+.details-loading {
+    --inset: 18px;
 
-    align-items: center;
-    gap:         9px;
-    margin:      0 20px;
+    position: absolute;
 
+    bottom: var(--inset);
+    right:  var(--inset);
+    
+    display:   flex;
+    flex-flow: column;
+
+    font-size:   3.3rem;
+    line-height: 0.18;
+
+    color: var(--col-orange-7);
+
+    &::before,
+    & > .loading-dots::before,
+    &::after {
+        content: '\f510';
+        animation: details-loading-spinner 800ms calc(100ms * var(--i)) steps(2, end) infinite;
+    }
+
+    &::before                 { --i: 0; color: var(--col-orange-4) }
+    & > .loading-dots::before { --i: 1; color: var(--col-orange-5) }
+    &::after                  { --i: 2; color: var(--col-orange-6) }
+}
+
+.border-title {
     font-size:      2.8rem;
     letter-spacing: 0.03em;
     line-height:    0.8;
+    
+    display:     flex;
+    align-items: center;
+    gap:         9px;
+    margin:      0 20px;
 
     &::before,
     &::after {
@@ -212,28 +310,28 @@ watch(() => props.transitionDirection, () => {
         height: 12px;
         width:  100%;
 
-        filter: drop-shadow(0 -3px var(--col-orange-2));
+        --orn-col: var(--col-orange-4);
+        --orn-y:   50%;
     }
 
-    &::before {
-        grid-area:      l;
-        --orn-edge-x:  right;
-        --orn-inner-x: calc(100% - 2px);
-        --orn-y:       0%;
-    }
+    &::before { flex: 1 0 0; grid-area: l; --orn-edge-x: right; --orn-inner-x: calc(100% - 2px); }
+    &::after  { flex: 1 0 0; grid-area: r; --orn-edge-x: left;  --orn-inner-x:  2px;             }
 
-    &::after {
-        grid-area:     r;
-        --orn-edge-x:  left;
-        --orn-inner-x: 2px;
-        --orn-y:       0%;
+    &.border-title--username::before,
+    &.border-title--username::after {
+        --orn-col: var(--col-orange-4);
+        --orn-y:   0%;
     }
 }
 
+.title-icon {
+    font-size:   4rem;
+    translate:   0 -1px;
+    line-height: 0.5;
+}
+
 .border-status {
-    display:     flex;
-    align-items: center;
-    gap:         8px;
+    text-align: center;
 
     font-family: var(--font-scnd);
     font-weight: bold;
@@ -278,7 +376,7 @@ watch(() => props.transitionDirection, () => {
 
     border-radius: 3px;
 
-    filter: 
+    filter:
         drop-shadow(0 4px var(--col-elevation))
         var(--hl, brightness(1));
 
@@ -319,48 +417,48 @@ watch(() => props.transitionDirection, () => {
         bottom: 0;
         margin: auto 0;
 
-        filter: drop-shadow(0 -2.5px var(--col-orange-1));
+        --orn-col: var(--col-orange-4);
     }
 
-    &::before {
-        left: var(--inst);
-
-        --orn-edge-x:  left;
-        --orn-inner-x: 2px;
-        --orn-y:       center;
-    }
-
-    &::after {
-        right: var(--inst);
-
-        --orn-edge-x:  right;
-        --orn-inner-x: calc(100% - 2px);
-        --orn-y:       center;
-    }
+    &::before { left:  var(--inst); --orn-edge-x:  left;  --orn-inner-x: 2px;              --orn-y: center; }
+    &::after  { right: var(--inst); --orn-edge-x:  right; --orn-inner-x: calc(100% - 2px); --orn-y: center; }
 }
 
 /*
     Ornament
 */
-.border-username::before,
-.border-username::after,
+.border-title::before,
+.border-title::after,
 .btn::before,
 .btn::after {
+    translate: 0 1.5px;
+    filter:    drop-shadow(0 -3px color-mix(in oklab, var(--orn-col), white 40%));
+
     background:
-        linear-gradient(var(--col-orange-4) 0 0) var(--orn-edge-x)               / 4px  66.6% no-repeat,
-        linear-gradient(var(--col-orange-4) 0 0) var(--orn-inner-x) var(--orn-y) / 33.3%  100%  no-repeat,
-        linear-gradient(var(--col-orange-4) 0 0) var(--orn-inner-x) var(--orn-y) / 66.6%  66.6% no-repeat,
-        linear-gradient(var(--col-orange-4) 0 0) var(--orn-inner-x) var(--orn-y) / 99.9% 33.3% no-repeat;
+        linear-gradient(var(--orn-col) 0 0) var(--orn-edge-x)               / 4px  66.6% no-repeat,
+        linear-gradient(var(--orn-col) 0 0) var(--orn-inner-x) var(--orn-y) / 33.3%  100%  no-repeat,
+        linear-gradient(var(--orn-col) 0 0) var(--orn-inner-x) var(--orn-y) / 66.6%  66.6% no-repeat,
+        linear-gradient(var(--orn-col) 0 0) var(--orn-inner-x) var(--orn-y) / 99.9% 33.3% no-repeat;
+}
+
+/*
+    Loading spinner animation
+*/
+
+@keyframes details-loading-spinner {
+    0%  { content: '\f510'; }
+    30% { content: '\f511'; }
+    55% { content: '\f512'; }
 }
 
 /*
     Slide animation
 */
 
-.border-username,
+.border-title,
 .border-status,
 .border-btns {
-    translate: 0 var(--details-slide);
+    translate: 0 var(--details-border-slide);
 }
 
 .details-border-transition--forwards-enter-active  { animation: details-border-up   140ms steps(4); }
@@ -368,12 +466,12 @@ watch(() => props.transitionDirection, () => {
 .details-border-transition--backwards-enter-active { animation: details-border-down 140ms steps(4) reverse; }
 .details-border-transition--backwards-leave-active { animation: details-border-up   140ms steps(4) reverse; }
 
-@property --details-slide {
+@property --details-border-slide {
     initial-value: 0px;
     syntax:        '<length>';
     inherits:      true;
 }
 
-@keyframes details-border-up   { from { --details-slide: -120px; } to { --details-slide: 0px; } }
-@keyframes details-border-down { from { --details-slide: 0px; }    to { --details-slide: 120px; } }
+@keyframes details-border-up   { from { --details-border-slide: -120px; } to { --details-border-slide: 0px; } }
+@keyframes details-border-down { from { --details-border-slide: 0px; }    to { --details-border-slide: 120px; } }
 </style>

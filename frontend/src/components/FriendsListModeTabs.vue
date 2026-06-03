@@ -8,7 +8,7 @@
             <span class="tab-text shdw shdw--inst-orange txtr-vert txtr-vert--orange">My Friends</span>
         </button>
 
-        <button 
+        <button
             class="tab tab--search"
             :data-is-selected="mode === 'search'"
             @click="mode = 'search'">
