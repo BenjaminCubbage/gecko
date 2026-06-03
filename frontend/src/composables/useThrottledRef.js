@@ -74,7 +74,7 @@ export function useThrottledRef(source, ms) {
         });
 
         return {
-            get: () => {
+            get() {
                 track();
                 return value;
             },
@@ -83,7 +83,7 @@ export function useThrottledRef(source, ms) {
                 [!] This flushes the value immediately. Usually newValue
                 should be === source.value.
             */
-            set: (newValue) => {
+            set(newValue) {
                 flushNow(newValue);
             }
         }

@@ -29,7 +29,7 @@
                     bar-btn
                     shdw shdw--inst-green shdw--elevated-m
                     txtr-vert txtr-vert--green"
-                :data-is-loading="showIsLoading"
+                :data-is-loading="isLoading"
                 :disabled="!isValidInput"
                 @click="trySubmit"
                 type="button">
@@ -67,13 +67,6 @@ const props = defineProps({
 const emit = defineEmits([
     'searchSubmitted'
 ]);
-
-const showIsLoading = useThrottledRef(toRef(props, 'isLoading'), 200);
-
-watch(() => props.isLoading, newValue => {
-    if (newValue)
-        showIsLoading.value = newValue;
-}, { flush: 'post' });
 
 const searchInput = defineModel('searchInput', {
     type:     String,

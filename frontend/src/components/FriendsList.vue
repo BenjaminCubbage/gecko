@@ -11,7 +11,7 @@
             :user="detailsUser"
             :state="detailsState"
             :slide-direction="detailsSlideDirection"
-            :isLoading="isLoading"
+            :isLoading="showIsLoading"
             @send-request="sendRequest"
             @reject="reject"
             @unsend="unsend" />
@@ -31,7 +31,7 @@
         <template v-else>
             <FriendsListSearchView
                 v-model:search-input="searchInput"
-                :isLoading="isLoadingSearchResult"
+                :isLoading="showIsLoadingSearchResult"
                 @search-submitted="searchSubmitted" />
         </template>
     </div>
@@ -51,6 +51,8 @@ import FriendsListPageSelect     from './FriendsListPageSelect.vue';
 import FriendsListView           from './FriendsListView.vue';
 import FriendsListRequestsToggle from './FriendsListRequestsToggle.vue';
 import FriendsListSearchView     from './FriendsListSearchView.vue';
+
+import { useThrottledRef } from '@/composables/useThrottledRef.js';
 
 import { Keys }     from '@/core/di/keys.js';
 import { Dispatch } from '@/core/dispatch/Dispatch.js';
@@ -92,6 +94,17 @@ const isLoading = computed(() =>
     isLoadingSearchResult.value ||
     isLoadingFriendAction.value ||
     isLoadingFriends.value);
+
+/*
+    Throttled loading indicators
+*/
+const loadingThrottleMS = 200;
+const showIsLoading             = useThrottledRef(isLoading,             loadingThrottleMS);
+const showIsLoadingSearchResult = useThrottledRef(isLoadingSearchResult, loadingThrottleMS);
+
+/* Don't throttle entrance to loading state */
+watch(isLoading,             v => v ? (showIsLoading.value = v)             : {});
+watch(isLoadingSearchResult, v => v ? (showIsLoadingSearchResult.value = v) : {});
 
 /*
     Connection failed?
