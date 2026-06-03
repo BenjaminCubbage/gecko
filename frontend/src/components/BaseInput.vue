@@ -6,7 +6,7 @@
         type="text"
         :value="inputText"
         :disabled="disabled"
-        :data-disabled="disabled || temporarilyDisabled"
+        :data-is-disabled="disabled || temporarilyDisabled"
         spellcheck="false"
         @keydown="keyDown"
         @input="input" />
@@ -96,7 +96,7 @@ defineExpose({
 });
 </script>
 
-<style scope>
+<style scoped>
 .base-input {
     -webkit-appearance: none;
     appearance:         none;
@@ -122,7 +122,7 @@ defineExpose({
         border:  0;
     }
 
-    &[data-disabled=true] {
+    &[data-is-disabled=true] {
         caret-color: transparent;
     }
 }

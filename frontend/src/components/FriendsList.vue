@@ -29,7 +29,7 @@
         </template>
 
         <template v-else>
-            <FriendsListSearchView 
+            <FriendsListSearchView
                 v-model:search-input="searchInput"
                 :isLoading="isLoadingSearchResult"
                 @search-submitted="searchSubmitted" />
@@ -70,13 +70,17 @@ const selectedFriend        = ref(null);
 const detailsSlideDirection = ref('forwards');
 
 /*
-    If user hasn't searched yet we want to show
-    the default search title. Otherwise we can show
-    no results.
+    If user hasn't searched yet we want to show the default
+    search title. Otherwise we can show no results.
+
+    hasSearchResultChanged tracks whether we'd gotten
+    a search result back since the last time we entered
+    the search tab.
 */
-const hasSearchedYet = ref(false);
-const searchResult   = ref(null);
-const searchInput    = ref('');
+const hasSearchedYet         = ref(false);
+const searchResult           = ref(null);
+const searchInput            = ref('');
+const hasSearchResultChanged = ref(false);
 
 /*
     Loading anything?
@@ -85,10 +89,10 @@ const isLoadingSearchResult = ref(false);
 const isLoadingFriendAction = ref(false);
 const isLoadingFriends = computed(() => friends.state.value === 'loading');
 const isLoading = computed(() =>
-    isLoadingSearchResult.value || 
+    isLoadingSearchResult.value ||
     isLoadingFriendAction.value ||
     isLoadingFriends.value);
-    
+
 /*
     Connection failed?
 */
@@ -137,11 +141,27 @@ watch(friendsPage, () => {
         selectedFriend.value = friendsPage.value[0];
 }, { immediate: true });
 
+watch(searchResult, () =>
+    hasSearchResultChanged.value = true);
+
 watch(selectedTab, () => {
-    detailsSlideDirection.value = 
+    detailsSlideDirection.value =
         selectedTab.value === 'list'
             ? detailsSlideDirection.value = 'forwards'
             : detailsSlideDirection.value = 'backwards';
+
+    if (selectedTab.value === 'list' &&
+        searchResult.value &&
+        hasSearchResultChanged.value) {
+        /*
+            If the we just got a search result back and it was in the
+            friends list, select it.
+        */
+        selectedFriend.value =
+            friends.getFriendByUserID(searchResult.value.userID) ??
+            selectedFriend.value;
+    } else if (selectedTab.value === 'search')
+        hasSearchResultChanged.value = false;
 });
 
 watch(selectedIndex, (value, previousValue) => {
@@ -152,9 +172,9 @@ watch(selectedIndex, (value, previousValue) => {
 function searchSubmitted() {
     /*
         If we have a friend with this username or we searched
-        for ourself then we can return immediately. 
+        for ourself then we can return immediately.
     */
-    const cachedResult = friends.getFriendByUsername(searchInput.value)?.user 
+    const cachedResult = friends.getFriendByUsername(searchInput.value)?.user
         ?? (searchInput.value.toLowerCase() === session.activeUser.value.username.toLowerCase() ? session.activeUser.value : null)
         ?? (searchInput.value.toLowerCase() === searchResult.value?.username.toLowerCase()      ? searchResult.value       : null);
 
@@ -174,17 +194,17 @@ function searchSubmitted() {
         })
         .onHttpError((body, status) => {
             didSearchConnFail.value = false;
-            
+
             if (status === 404) {
                 hasSearchedYet.value = true;
                 searchResult.value   = null;
-            } 
+            }
         })
         .onNetworkError(() => {
             didSearchConnFail.value = true;
         })
-        .onError(() => { 
-            isLoadingSearchResult.value = false 
+        .onError(() => {
+            isLoadingSearchResult.value = false
         });
 }
 

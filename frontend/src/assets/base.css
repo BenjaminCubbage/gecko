@@ -39,10 +39,11 @@ body {
         transform-origin doesn't seem to default to 'center'
         on svg geometry
     */
-    transform-origin:     center;
-    box-sizing:           border-box;
-    corner-shape:         notch;
-    font-variant-numeric: tabular-nums;
+    transform-origin:      center;
+    box-sizing:            border-box;
+    corner-shape:          notch;
+    font-variant-numeric:  tabular-nums;
+    animation-composition: add;
 
     @media (prefers-reduced-motion: reduce) {
         transition:                none   !important;

@@ -37,7 +37,10 @@
                             detailsBorderKey,
                             isAction1Pressed,
                             isAction2Pressed,
-                            detailsBorderMemoVersion]">
+                            detailsBorderMemoVersion]"
+                        :data-is-animating="areButtonsAnimating"
+                        @animationend="areButtonsAnimating = false"
+                        @animationcancel="areButtonsAnimating = false">
                         <button
                             v-if="friend != null && friend.status === FriendStatus.PendingIncoming"
                             class="btn btn--green"
@@ -145,7 +148,15 @@ const session = inject(Keys.SessionStore);
 const detailsBorderKey = computed(() =>
     `${props.state}:${props.user?.userID}`);
 
+/*
+    Increment this to trigger the v-memo
+*/
 const detailsBorderMemoVersion = ref(0);
+
+/*
+    Bounce animation
+*/
+const areButtonsAnimating = ref(false);
 
 /*
     If the user is a friend, this will hold
@@ -183,13 +194,11 @@ const titleIcon = computed(() => {
 
 const titleText = computed(() => {
     switch (props.state) {
-        case 'userresult': return `@${props.user.username}`;
-        case 'nofriends':  return 'My Friends';
-        case 'loadfailed': return "Couldn't Connect"
-        case 'search':
-            return 'Search Users';
-        case 'searchnotfound':
-            return 'No Results';
+        case 'userresult':     return `@${props.user.username}`;
+        case 'nofriends':      return 'My Friends';
+        case 'loadfailed':     return "Couldn't Connect"
+        case 'search':         return 'Search Users';
+        case 'searchnotfound': return 'No Results';
     }
     return null;
 });
@@ -255,7 +264,7 @@ const actionEvent = computed(() => {
 
 watch([actionEvent, actionColor, actionLabel], () => {
     /* 
-        Defer DOM update if transitioning away to avoid flicker as it flies away. 
+        Defer DOM updates during slide transition.
     */
     if (!isTransitionLeaving.value)
         ++detailsBorderMemoVersion.value;
@@ -267,12 +276,18 @@ watch([actionEvent, actionColor, actionLabel], () => {
 */
 function emitAction1() {
     isAction1Pressed.value = true;
-    emit('accept-friend', props.user, () => isAction1Pressed.value = false);
+    emit('accept-friend', props.user, () => {
+        isAction1Pressed.value    = false;
+        areButtonsAnimating.value = true;
+    });
 }
 
 function emitAction2() {
     isAction2Pressed.value = true;
-    emit(actionEvent.value, props.user, () => isAction2Pressed.value = false);
+    emit(actionEvent.value, props.user, () => {
+        isAction2Pressed.value    = false;
+        areButtonsAnimating.value = true;
+    });
 }
 </script>
 
@@ -513,6 +528,7 @@ function emitAction2() {
 /*
     Ornament
 */
+
 .border-title::before,
 .border-title::after,
 .btn::before,
@@ -560,4 +576,19 @@ function emitAction2() {
 
 @keyframes details-border-up   { from { --details-border-slide: -120px; } to { --details-border-slide: 0px; } }
 @keyframes details-border-down { from { --details-border-slide: 0px; }    to { --details-border-slide: 120px; } }
+
+/*
+
+*/
+
+.border-btns[data-is-animating=true] {
+    animation: details-btns-bounce 110ms steps(3);
+}
+
+@keyframes details-btns-bounce {
+    from { scale: 1; }
+    50%  { scale: 1.1; }
+    to   { scale: 0.9; }
+
+}
 </style>
