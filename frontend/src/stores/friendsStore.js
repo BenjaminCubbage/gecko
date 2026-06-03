@@ -161,17 +161,19 @@ export class FriendsStore {
     async publishCreateFriendRequest(session, targetUser) {
         targetUser = toRaw(targetUser);
 
-        if (!session?.activeUser.value)
-            throw new Error('[FriendsStore]: User not logged in');
+        if (import.meta.env.DEV) {
+            if (!session?.activeUser.value)
+                throw new Error('[FriendsStore]: User not logged in');
 
-        if (targetUser == null)
-            throw new Error('[FriendsStore]: User was null or undefined');
+            if (targetUser == null)
+                throw new Error('[FriendsStore]: User was null or undefined');
 
-        if (session.activeUser.value.userID === targetUser.userID)
-            throw new Error(`[FriendsStore]: Can't friend self`);
+            if (session.activeUser.value.userID === targetUser.userID)
+                throw new Error(`[FriendsStore]: Can't friend self`);
 
-        if (this.#friends.some(f => f.user.userID === targetUser.userID))
-            throw new Error('[FriendsStore]: Friendship or request with that userID already exists in cache');
+            if (this.#friends.some(f => f.user.userID === targetUser.userID))
+                throw new Error('[FriendsStore]: Friendship or request with that userID already exists in cache');
+        }
 
         if (!this.#mutex.tryLock(targetUser.userID))
             throw new ResourceLockedError();
@@ -196,13 +198,15 @@ export class FriendsStore {
         Asks server to accept an incoming friend request.
     */
     async publishAcceptFriendRequest(session, userID) {
-        if (!session?.activeUser.value)
-            throw new Error('[FriendsStore]: User not logged in');
-
         const friend = this.getFriendByUserID(userID);
 
-        if (friend == null || friend.status !== FriendStatus.PendingIncoming)
-            throw new Error(`[FriendsStore]: User ${userID} has no associate incoming friend request in cache`);
+        if (import.meta.env.DEV) {
+            if (!session?.activeUser.value)
+                throw new Error('[FriendsStore]: User not logged in');
+
+            if (friend == null || friend.status !== FriendStatus.PendingIncoming)
+                throw new Error(`[FriendsStore]: User ID ${userID} has no associate incoming friend request in cache`);
+        }
 
         if (!this.#mutex.tryLock(friend.user.userID))
             throw new ResourceLockedError();
@@ -227,8 +231,10 @@ export class FriendsStore {
     async publishDeleteFriendOrRequest(session, userID) {
         const friend = this.getFriendByUserID(userID);
 
-        if (!friend)
-            throw new Error(`[FriendsStore]: User ${userID} is not a pending or active friend`);
+        if (import.meta.env.DEV) {
+            if (!friend)
+                throw new Error(`[FriendsStore]: User ${userID} is not a pending or active friend`);
+        }
 
         if (!this.#mutex.tryLock(userID))
             throw new ResourceLockedError();
