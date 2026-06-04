@@ -97,9 +97,7 @@ watch(() => props.friends, () => {
         !props.friends.includes(selectedFriend.value)) {
         selectedFriend.value = props.friends.find(f => f != null);
     }
-}, {
-    immediate: true
-});
+}, { immediate: true });
 </script>
 
 <style scoped>

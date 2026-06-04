@@ -2,39 +2,72 @@
     <div class="
         friends-list-page-select
         shdw shdw--otst-orange">
-        <button 
+        <button
             class="
                 select-btn select-btn--left
                 shdw shdw--inst-orange shdw--elevated-m
-                txtr-vert txtr-vert--orange">
+                txtr-diag txtr-diag--orange"
+            :disabled="!hasPrev"
+            @click="pagePrev">
         </button>
 
-        <div
+        <span
             class="
                 select-display
                 txtr-vert txtr-vert--lt-gray
                 shdw shdw--inst-lt-gray shdw--elevated-m">
-            1 / 1
-        </div>
+            {{ selectedPage + 1 }} / {{ pageCount }}
+        </span>
 
-        <button 
+        <button
             class="
                 select-btn select-btn--right
                 shdw shdw--inst-orange shdw--elevated-m
-                txtr-vert txtr-vert--orange">
+                txtr-diag txtr-diag--orange"
+            :disabled="!hasNext"
+            @click="pageNext">
         </button>
     </div>
 </template>
 
 <script setup>
-import IconArrow from './IconArrow.vue';
+import {
+    computed,
+    watch
+} from 'vue';
+
+const props = defineProps({
+    pageCount: {
+        type: Number,
+        validator(value) {
+            return value >= 1;
+        }
+    }
+});
+
+/* Zero-indexed */
+const selectedPage = defineModel('selectedPage', {
+    required: true,
+    validator(value, props) {
+        return value < props.pageCount;
+    }
+});
+
+watch(() => props.pageCount, newValue =>
+    selectedPage.value = Math.min(selectedPage.value, newValue - 1));
+
+const hasPrev = computed(() => selectedPage.value > 0);
+const hasNext = computed(() => selectedPage.value < props.pageCount - 1);
+
+function pagePrev() { selectedPage.value = Math.max(selectedPage.value - 1, 0); }
+function pageNext() { selectedPage.value = Math.min(selectedPage.value + 1, props.pageCount - 1); }
 </script>
 
 <style scoped>
 .friends-list-page-select {
     --ht-page-select: 34px;
-    --wd-page-select: 150px;
-    --wd-nav-btn:     38px;
+    --wd-page-select: 160px;
+    --wd-nav-btn:     40.8px;
 
     display: grid;
     grid-template:
@@ -51,9 +84,9 @@ import IconArrow from './IconArrow.vue';
     & > .select-btn--right { z-index: 0; grid-area: right; }
 
     & > * {
-        --shdw-etc: 
-            calc(-1 * var(--shadow-dist-m)) 
-            calc(-1 * var(--shadow-dist-m)) 
+        --shdw-etc:
+            calc(-1 * var(--shadow-dist-m))
+            calc(-1 * var(--shadow-dist-m))
             var(--col-orange-0);
     }
 }
@@ -66,17 +99,21 @@ import IconArrow from './IconArrow.vue';
 
     font-size:   2rem;
     font-weight: bold;
-    
-    text-shadow: 
+
+    text-shadow:
         calc(-1 * var(--shadow-dist-xs)) calc(-1 * var(--shadow-dist-xs)) var(--col-orange-0),
                   var(--shadow-dist-xs)            var(--shadow-dist-xs)  var(--col-orange-5);
 
-    translate: 
+    translate:
         0 calc(-1 * var(--shdw-dist-elevation));
 
     &:active {
         --shdw-dist-elevation: 0px;
         filter:                var(--filter-hl-1);
+    }
+
+    &:disabled::after {
+        opacity: 0.5;
     }
 
     &.select-btn--left::after  { content: '<'; }
@@ -94,11 +131,11 @@ import IconArrow from './IconArrow.vue';
 
     -webkit-text-stroke: var(--text-stroke-s);
     font-size:           2rem;
-    word-spacing:        0.2em;
+    word-spacing:        0.1em;
 
     font-weight: bold;
-    
-    translate: 
+
+    translate:
         0 calc(-1 * var(--shdw-dist-elevation));
 }
 </style>

@@ -26,7 +26,9 @@
 
             <div class="list-foot">
                 <FriendsListRequestsToggle />
-                <FriendsListPageSelect />
+                <FriendsListPageSelect
+                    :pageCount="pageCount"
+                    v-model:selectedPage="selectedPage" />
             </div>
         </template>
 
@@ -44,6 +46,7 @@ import {
     computed,
     inject,
     ref,
+    toRaw,
     watch
 } from 'vue';
 
@@ -74,6 +77,40 @@ const selectedFriend        = ref(null);
 const detailsSlideDirection = ref('forwards');
 
 /*
+    Pagination / indices
+*/
+
+const pageSize     = 5;
+const selectedPage = ref(0);
+
+const pageCount = computed(() => {
+    return 1 + (0 | ((friends.allFriends.length - 1) / pageSize));
+});
+
+const friendsPage = computed(oldValue => {
+    let page = friends.allFriends
+        .slice(
+            pageSize * selectedPage.value,
+            pageSize * selectedPage.value + pageSize);
+
+    if (page.length < pageSize)
+        page = page.concat(Array(pageSize - page.length).fill(null));
+
+    if (page.length === oldValue?.length &&
+        oldValue.every((v, i) => v === page[i])) {
+        return oldValue;
+    }
+
+    return page;
+});
+
+const selectedIndex = computed(() =>
+    friendsPage.value?.indexOf(selectedFriend.value) ?? -1);
+
+const absoluteSelectedIndex = computed(() => 
+    friends.allFriends.indexOf(selectedFriend.value) ?? -1);
+
+/*
     If user hasn't searched yet we want to show the default
     search title. Otherwise we can show no results.
 
@@ -92,7 +129,7 @@ const hasSearchResultChanged = ref(false);
 const isLoadingSearchResult = ref(false);
 const isLoadingFriendAction = ref(false);
 const isLoadingFriends = computed(() => friends.state.value === 'loading');
-const isLoading = computed(() =>
+const isLoading        = computed(() =>
     isLoadingSearchResult.value ||
     isLoadingFriendAction.value ||
     isLoadingFriends.value);
@@ -100,7 +137,7 @@ const isLoading = computed(() =>
 /*
     Throttled loading indicators
 */
-const loadingThrottleMS = 200;
+const loadingThrottleMS         = 200;
 const showIsLoading             = useThrottledRef(isLoading,             loadingThrottleMS);
 const showIsLoadingSearchResult = useThrottledRef(isLoadingSearchResult, loadingThrottleMS);
 
@@ -113,15 +150,6 @@ watch(isLoadingSearchResult, v => v ? (showIsLoadingSearchResult.value = v) : {}
 */
 const didSearchConnFail  = ref(false);
 const didFriendsConnFail = computed(() => friends.state.value === 'error');
-
-const friendsPage = computed(() => {
-    return friends.allFriends
-        .concat(Array(5))
-        .slice(0, 5);
-});
-
-const selectedIndex = computed(() =>
-    friendsPage.value?.indexOf(selectedFriend.value) ?? -1);
 
 const detailsState = computed(() => {
     switch (selectedTab.value) {
@@ -149,6 +177,14 @@ const detailsUser = computed(() => {
     return selectedTab.value === 'list'
         ? selectedFriend.value?.user
         : searchResult.value;
+});
+
+watch(absoluteSelectedIndex, (newValue, oldValue) => {
+    if (newValue === -1) {
+        selectedFriend.value = friendsPage.value
+            .filter(f => f != null)
+            .findLast(f => friends.allFriends.indexOf(toRaw(f)) <= oldValue);
+    }
 });
 
 watch(friendsPage, () => {
@@ -179,10 +215,19 @@ watch(selectedTab, () => {
         hasSearchResultChanged.value = false;
 });
 
-watch(selectedIndex, (value, previousValue) => {
-    detailsSlideDirection.value =
-        previousValue > value ? 'forwards' : 'backwards';
-});
+watch([selectedIndex, selectedPage], (
+    [newIndex, newPage], 
+    [oldIndex, oldPage]) => {
+        /* Normalize -1 -> 0 */
+        oldIndex = Math.max(oldIndex, 0);
+
+        if (newPage != oldPage) 
+            detailsSlideDirection.value = newPage < oldPage 
+                ? 'forwards' : 'backwards';
+        else if (newIndex != oldIndex)
+            detailsSlideDirection.value = newIndex < oldIndex
+                ? 'forwards' : 'backwards';
+    });
 
 function searchSubmitted() {
     /*
@@ -204,8 +249,8 @@ function searchSubmitted() {
         .onSuccess(body => {
             didSearchConnFail.value     = false;
             hasSearchedYet.value        = true;
-            searchResult.value          = User.fromJSON(body.user);
             isLoadingSearchResult.value = false;
+            searchResult.value          = User.fromJSON(body.user);
         })
         .onHttpError((body, status) => {
             didSearchConnFail.value = false;
@@ -215,12 +260,8 @@ function searchSubmitted() {
                 searchResult.value   = null;
             }
         })
-        .onNetworkError(() => {
-            didSearchConnFail.value = true;
-        })
-        .onError(() => {
-            isLoadingSearchResult.value = false
-        });
+        .onNetworkError(() => didSearchConnFail.value     = true)
+        .onError       (() => isLoadingSearchResult.value = false);
 }
 
 /*

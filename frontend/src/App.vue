@@ -7,11 +7,12 @@
 
         <main class="main-content">
             <CanvasSection
-                v-show="selectedTab == 'canvas'"
+                v-show="selectedTab === 'canvas'"
                 role="tabpanel"
                 :id="tabPanelIds.canvas" />
 
             <FriendsSection
+                v-show="selectedTab === 'friends'"
                 role="tabpanel"
                 :id="tabPanelIds.friends" />
         </main>
