@@ -124,19 +124,19 @@ const selectedIndex = computed(() =>
 const detailsState = computed(() => {
     switch (selectedTab.value) {
         case 'list':
-            return friends.state.value !== 'ready'
-                ? 'empty'
-                : didFriendsConnFail.value
-                    ? 'loadfailed'
+            return didFriendsConnFail.value
+                ? 'loadfailed'
+                : friends.state.value !== 'ready'
+                    ? 'empty'
                     : selectedFriend.value == null
                         ? 'nofriends'
                         : 'userresult';
 
         case 'search':
-            return !hasSearchedYet.value
-                ? 'search'
-                : didFriendsConnFail.value || didSearchConnFail.value
-                    ? 'loadfailed'
+            return didFriendsConnFail.value || didSearchConnFail.value
+                ? 'loadfailed'
+                : !hasSearchedYet.value
+                    ? 'search'
                     : searchResult.value == null
                         ? 'searchnotfound'
                         : 'userresult';

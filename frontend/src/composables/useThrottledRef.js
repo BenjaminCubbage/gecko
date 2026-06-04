@@ -64,7 +64,7 @@ export function useThrottledRef(source, ms) {
                 timeout = setTimeout(() => {
                     timeout = null;
                     flushNow(source.value);
-                }, ms - (now - timeOfLastFlush));
+                }, ms - now + timeOfLastFlush);
             }
         }
 
