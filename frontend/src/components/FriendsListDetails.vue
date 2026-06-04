@@ -37,23 +37,24 @@
                             detailsBorderKey,
                             isAction1Pressed,
                             isAction2Pressed,
-                            detailsBorderMemoVersion]"
+                            detailsBorderMemoVersion,
+                            areButtonsAnimating]"
                         :data-is-animating="areButtonsAnimating">
                         <button
                             v-if="friend != null && friend.status === FriendStatus.PendingIncoming"
-                            class="btn btn--green"
+                            :class="`btn btn--${action1Color}`"
                             :data-is-pressed="isAction1Pressed"
                             @click="emitAction1"
                             v-roving-item>
-                            [Accept]
+                            [{{ action1Label }}]
                         </button>
 
                         <button
-                            :class="`btn btn--${actionColor}`"
+                            :class="`btn btn--${action2Color}`"
                             :data-is-pressed="isAction2Pressed"
                             @click="emitAction2"
                             v-roving-item>
-                            [{{ actionLabel }}]
+                            [{{ action2Label }}]
                         </button>
                     </div>
                 </template>
@@ -224,7 +225,11 @@ const statusText = computed(() => {
     return null;
 });
 
-const actionLabel = computed(() => {
+const action1Label = ref('Accept');
+const action1Color = ref('green');
+const action1Event = ref('accept');
+
+const action2Label = computed(() => {
     if (props.state !== 'userresult' || isUserMe.value)
         return null;
 
@@ -238,7 +243,7 @@ const actionLabel = computed(() => {
         return 'Send Request'
 });
 
-const actionColor = computed(() => {
+const action2Color = computed(() => {
     if (props.state !== 'userresult' || isUserMe.value)
         return null;
 
@@ -247,7 +252,7 @@ const actionColor = computed(() => {
         : 'green';
 });
 
-const actionEvent = computed(() => {
+const action2Event = computed(() => {
     if (props.state !== 'userresult' || isUserMe.value)
         return null;
 
@@ -261,7 +266,7 @@ const actionEvent = computed(() => {
         return 'sendRequest';
 });
 
-watch([actionEvent, actionColor, actionLabel], () => {
+watch([action2Event, action2Color, action2Label], () => {
     /* 
         Defer DOM updates during slide transition.
     */
@@ -277,7 +282,7 @@ watch([actionEvent, actionColor, actionLabel], () => {
 function emitAction1() {
     isAction1Pressed.value    = true;
     areButtonsAnimating.value = false;
-    emit('accept-friend', props.user, () => {
+    emit(action1Event.value, props.user, () => {
         isAction1Pressed.value    = false;
         areButtonsAnimating.value = true;
     });
@@ -286,7 +291,7 @@ function emitAction1() {
 function emitAction2() {
     isAction2Pressed.value    = true;
     areButtonsAnimating.value = false;
-    emit(actionEvent.value, props.user, () => {
+    emit(action2Event.value, props.user, () => {
         isAction2Pressed.value    = false;
         areButtonsAnimating.value = true;
     });
@@ -443,6 +448,11 @@ function emitAction2() {
     margin-top: 9px;
 
     transform-origin: bottom;
+
+    /* Disable all buttons if one is pressed. */
+    &:has(.btn[data-is-pressed=true]) {
+        pointer-events: none;
+    }
 }
 
 .btn {
@@ -592,6 +602,5 @@ function emitAction2() {
     from { scale: 1; }
     50%  { scale: 1.02; }
     to   { scale: 0.98; }
-
 }
 </style>

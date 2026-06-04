@@ -60,7 +60,7 @@ const mode = defineModel('mode', {
     --elevation:
         drop-shadow(
             0
-            var(--shadow-dist-xs)
+            var(--shadow-dist-m)
             black);
 
     &.tab--list   { --col-grad-1: var(--col-orange-3); --col-grad-2: var(--col-orange-4); --col-shdw-1: var(--col-orange-1); --col-shdw-2: var(--col-orange-5); }

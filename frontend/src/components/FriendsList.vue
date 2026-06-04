@@ -14,7 +14,9 @@
             :isLoading="showIsLoading"
             @send-request="sendRequest"
             @reject="reject"
-            @unsend="unsend" />
+            @unsend="unsend"
+            @unfriend="unfriend"
+            @accept="accept" />
 
         <template v-if="selectedTab === 'list'">
             <FriendsListView

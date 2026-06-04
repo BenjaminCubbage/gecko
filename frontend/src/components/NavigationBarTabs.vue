@@ -2,7 +2,9 @@
     <nav
         ref="tabListEl"
         role="tablist"
-        class="navigation-bar-tabs"
+        class="
+            navigation-bar-tabs
+            shdw-before shdw-before--elevated-m shdw-before--inst-lt-gray"
         v-roving-container
         v-roving-home="selectedTab === 'canvas' ? 0 : 1">
         <button
@@ -86,10 +88,6 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
         background:    var(--col-gray-2);
         border:        var(--border-s);
         border-radius: var(--radius-s);
-
-        box-shadow:
-            inset var(--shadow-dist-m) var(--shadow-dist-m) var(--col-gray-1),
-            0 var(--shadow-dist-m) black;
     }
 
     & > .tabs-btn--canvas  { grid-area: btn-canvas; }
@@ -164,11 +162,6 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
                 linear-gradient(var(--col-gray-4) 0 0) center / 3px 9px no-repeat,
                 linear-gradient(var(--col-gray-4) 0 0) center / 9px 3px no-repeat
                 var(--col-gray-2);
-
-    /* box-shadow:
-        inset      var(--shadow-dist-m)            var(--shadow-dist-m)       var(--col-gray-1),
-        inset calc(var(--shadow-dist-m) * -1) calc(var(--shadow-dist-m) * -1) var(--col-gray-3),
-        0 var(--shadow-dist-m) black; */
 }
 
 .tabs-btn::before {
