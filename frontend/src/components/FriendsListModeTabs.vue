@@ -5,7 +5,7 @@
             :data-is-selected="mode === 'list'"
             @click="mode = 'list'">
             <span class="tab-icon shdw shdw--inst-orange"></span>
-            <span class="tab-text shdw shdw--inst-orange txtr-vert txtr-vert--orange">My Friends</span>
+            <span class="tab-text tab-text--friends shdw shdw--inst-orange txtr-vert txtr-vert--orange">Friends</span>
         </button>
 
         <button
@@ -13,7 +13,7 @@
             :data-is-selected="mode === 'search'"
             @click="mode = 'search'">
             <span class="tab-icon shdw shdw--inst-green"></span>
-            <span class="tab-text shdw shdw--inst-green txtr-vert txtr-vert--green">Add / Search</span>
+            <span class="tab-text tab-text--search shdw shdw--inst-green txtr-vert txtr-vert--green">Search</span>
         </button>
     </div>
 </template>
@@ -33,8 +33,10 @@ const mode = defineModel('mode', {
 
 <style scoped>
 .friends-list-mode-tabs {
-    --sz-tab:  34px;
+    --sz-tab:  35px;
     --pd-tabs: calc((hypot(var(--sz-tab), var(--sz-tab)) - var(--sz-tab)) / 2);
+
+    container: friends-list-mode-tabs / inline-size;
 
     isolation: isolate;
 
@@ -122,7 +124,7 @@ const mode = defineModel('mode', {
 }
 
 .tab-text {
-    padding: 2px 8px;
+    padding: 3px 8px;
 
     border: var(--border-s);
     border-radius: 
@@ -138,5 +140,10 @@ const mode = defineModel('mode', {
     font-size:      2.2rem;
     text-transform: uppercase;
     letter-spacing: 0.025em;
+
+    @container friends-list-mode-tabs (width > 400px) {
+        &.tab-text--friends::before { content: 'My ' }
+        &.tab-text--search::before  { content: 'Add / ' }
+    }
 }
 </style>

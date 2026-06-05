@@ -305,6 +305,9 @@ const reject = unfriend;
 
 <style scoped>
 .friends-list {
+    /* justify-self: center;
+    width: 324px; */
+
     --overhang-x-tabs: -18px;
     --overhang-y-tabs: -24px;
 
@@ -324,12 +327,15 @@ const reject = unfriend;
     & > .list-details   { z-index: 0; align-self: stretch; }
     & > .list-list-view { z-index: 0; align-self: stretch; margin-top: 18px; }
     & > .list-foot      { z-index: 0; align-self: stretch; margin-top: 9px; }
+
+    @media (width < 600px) {
+        --overhang-x-tabs: -10px;
+    }
 }
 
 .list-tabs {
     position: absolute;
-    left: var(--overhang-x-tabs);
-    top:  var(--overhang-y-tabs);
+    inset: var(--overhang-y-tabs) var(--overhang-x-tabs) auto;
 }
 
 .list-foot {
