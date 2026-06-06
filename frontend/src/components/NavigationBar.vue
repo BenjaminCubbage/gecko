@@ -1,38 +1,29 @@
 <template>
     <header class="navigation-bar">
-        <div class="account">
-            <AccountWidget />
-            <WelcomeBulb />
-        </div>
-
-        <div class="navigation">
-            <NavigationBarTabs v-model="selectedTab" class="navigation-bar-tabs" />
-        </div>
+        <AccountWidget     class="widget" />
+        <NavigationBarTabs class="tabs" v-model="selectedTab" />
     </header>
 </template>
 
 <script setup>
 import AccountWidget     from './AccountWidget.vue';
 import NavigationBarTabs from './NavigationBarTabs.vue';
-import WelcomeBulb       from './WelcomeBulb.vue';
 
 const selectedTab = defineModel('selectedTab');
 </script>
 
 <style scoped>
 .navigation-bar {
-    padding:       0 3px;
-    margin-bottom: 16px;
-
-    grid-template:
-        "account links ." 80px /
-         1fr     auto  1fr;
-
+    display:     flex;
+    flex-flow: row wrap;
     align-items: center;
-    display:     grid;
 
-    & > .account    { grid-area: account; place-self: center left; }
-    & > .navigation { grid-area: links;   place-self: center; }
+    padding: 8px 0;
+    gap:     8px;
+
+    & > .widget { margin: 0 auto; flex: 1 0 0; min-width: max-content; }
+    & > .tabs   { margin: auto; flex: 0 0 auto; }
+    &::after    { flex: 1 1 0; content: ''; }
 
     @media (560px <= width < 930px) {
         grid-template: 
@@ -49,11 +40,5 @@ const selectedTab = defineModel('selectedTab');
         gap: 6px;
         padding: var(--vp-margin);
     }
-}
-
-.account {
-    display:     flex;
-    align-items: center;
-    gap: 18px;
 }
 </style>

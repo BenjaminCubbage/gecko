@@ -54,7 +54,8 @@ const selectedPage = defineModel('selectedPage', {
 });
 
 watch(() => props.pageCount, newValue =>
-    selectedPage.value = Math.min(selectedPage.value, newValue - 1));
+    selectedPage.value = Math.min(selectedPage.value, newValue - 1), 
+    { immediate: true });
 
 const hasPrev = computed(() => selectedPage.value > 0);
 const hasNext = computed(() => selectedPage.value < props.pageCount - 1);

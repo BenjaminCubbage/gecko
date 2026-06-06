@@ -113,15 +113,10 @@ const absoluteSelectedIndex = computed(() =>
 /*
     If user hasn't searched yet we want to show the default
     search title. Otherwise we can show no results.
-
-    hasSearchResultChanged tracks whether we'd gotten
-    a search result back since the last time we entered
-    the search tab.
 */
 const hasSearchedYet         = ref(false);
 const searchResult           = ref(null);
 const searchInput            = ref('');
-const hasSearchResultChanged = ref(false);
 
 /*
     Loading anything?
@@ -192,27 +187,11 @@ watch(friendsPage, () => {
         selectedFriend.value = friendsPage.value[0];
 }, { immediate: true });
 
-watch(searchResult, () =>
-    hasSearchResultChanged.value = true);
-
 watch(selectedTab, () => {
     detailsSlideDirection.value =
         selectedTab.value === 'list'
             ? detailsSlideDirection.value = 'forwards'
             : detailsSlideDirection.value = 'backwards';
-
-    if (selectedTab.value === 'list' &&
-        searchResult.value &&
-        hasSearchResultChanged.value) {
-        /*
-            If the we just got a search result back and it was in the
-            friends list, select it.
-        */
-        selectedFriend.value =
-            friends.getFriendByUserID(searchResult.value.userID) ??
-            selectedFriend.value;
-    } else if (selectedTab.value === 'search')
-        hasSearchResultChanged.value = false;
 });
 
 watch([selectedIndex, selectedPage], (
@@ -314,7 +293,7 @@ const reject = unfriend;
     display:   flex;
     flex-flow: column;
 
-    padding: 27px 12px 9px;
+    padding:    27px 12px 9px;
     margin-top: calc(-1 * var(--overhang-y-tabs));
 
     display:   flex;

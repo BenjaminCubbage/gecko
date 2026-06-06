@@ -22,7 +22,9 @@
                 <template 
                     v-if="state === 'userresult'">
                     <h1 class="border-title border-title--username">
-                        {{ titleText }}
+                        <span class="title-text">
+                            {{ titleText }}
+                        </span>
                     </h1>
 
                     <p class="border-status">
@@ -39,7 +41,9 @@
                             isAction2Pressed,
                             detailsBorderMemoVersion,
                             areButtonsAnimating]"
-                        :data-is-animating="areButtonsAnimating">
+                        :data-is-animating="areButtonsAnimating"
+                        @animationend="areButtonsAnimating = false"
+                        @animationcancel="areButtonsAnimating = false">
                         <button
                             v-if="friend != null && friend.status === FriendStatus.PendingIncoming"
                             :class="`btn btn--${action1Color}`"
@@ -63,7 +67,9 @@
                         <span class="title-icon" inert>
                             {{ titleIcon }}
                         </span>
-                        {{ titleText }}
+                        <span class="title-text">
+                            {{ titleText }}
+                        </span>
                     </h1>
                     <p v-if="statusText?.length" class="border-status">
                         {{ statusText }}
@@ -390,7 +396,8 @@ function emitAction2() {
     letter-spacing: 0.03em;
     line-height:    0.8;
 
-    display:     flex;
+    display: flex;
+
     align-items: center;
     gap:         9px;
     margin:      0 20px;
@@ -402,17 +409,17 @@ function emitAction2() {
         height: 12px;
         width:  100%;
 
-        --orn-col: var(--col-orange-4);
-        --orn-y:   50%;
+        --wing-col: var(--col-orange-4);
+        --wing-y:   50%;
     }
 
-    &::before { flex: 1 0 0; grid-area: l; --orn-edge-x: right; --orn-inner-x: calc(100% - 2px); }
-    &::after  { flex: 1 0 0; grid-area: r; --orn-edge-x: left;  --orn-inner-x:  2px;             }
+    &::before { flex: 1 0 20px; --wing-edge-x: right; --wing-inner-x: calc(100% - 2px); }
+    &::after  { flex: 1 0 20px; --wing-edge-x: left;  --wing-inner-x:  2px;             }
 
     &.border-title--username::before,
     &.border-title--username::after {
-        --orn-col: var(--col-orange-4);
-        --orn-y:   0%;
+        --wing-col: var(--col-orange-4);
+        --wing-y:   0%;
     }
 }
 
@@ -420,6 +427,13 @@ function emitAction2() {
     font-size:   4rem;
     translate:   0 -1px;
     line-height: 0.5;
+}
+
+.title-text {
+    min-width:     0;
+    line-height:   0.6;
+    overflow-wrap: anywhere;
+    text-align:    center;
 }
 
 .border-status {
@@ -531,15 +545,15 @@ function emitAction2() {
         bottom: 0;
         margin: auto 0;
 
-        --orn-col: var(--col-orange-4);
+        --wing-col: var(--col-orange-4);
     }
 
-    &::before { left:  var(--inst); --orn-edge-x:  left;  --orn-inner-x: 2px;              --orn-y: center; }
-    &::after  { right: var(--inst); --orn-edge-x:  right; --orn-inner-x: calc(100% - 2px); --orn-y: center; }
+    &::before { left:  var(--inst); --wing-edge-x:  left;  --wing-inner-x: 2px;              --wing-y: center; }
+    &::after  { right: var(--inst); --wing-edge-x:  right; --wing-inner-x: calc(100% - 2px); --wing-y: center; }
 }
 
 /*
-    Ornament
+    Wings ornament
 */
 
 .border-title::before,
@@ -547,13 +561,13 @@ function emitAction2() {
 .btn::before,
 .btn::after {
     translate: 0 1.5px;
-    filter:    drop-shadow(0 -3px color-mix(in oklab, var(--orn-col), white 40%));
+    filter:    drop-shadow(0 -3px color-mix(in oklab, var(--wing-col), white 40%));
 
     background:
-        linear-gradient(var(--orn-col) 0 0) var(--orn-edge-x)               / 4px  66.6% no-repeat,
-        linear-gradient(var(--orn-col) 0 0) var(--orn-inner-x) var(--orn-y) / 33.3%  100%  no-repeat,
-        linear-gradient(var(--orn-col) 0 0) var(--orn-inner-x) var(--orn-y) / 66.6%  66.6% no-repeat,
-        linear-gradient(var(--orn-col) 0 0) var(--orn-inner-x) var(--orn-y) / 99.9% 33.3% no-repeat;
+        linear-gradient(var(--wing-col) 0 0) var(--wing-edge-x)               / 4px  66.6% no-repeat,
+        linear-gradient(var(--wing-col) 0 0) var(--wing-inner-x) var(--wing-y) / 33.3%  100%  no-repeat,
+        linear-gradient(var(--wing-col) 0 0) var(--wing-inner-x) var(--wing-y) / 66.6%  66.6% no-repeat,
+        linear-gradient(var(--wing-col) 0 0) var(--wing-inner-x) var(--wing-y) / 99.9% 33.3% no-repeat;
 }
 
 /*

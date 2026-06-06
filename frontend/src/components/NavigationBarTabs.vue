@@ -159,8 +159,8 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
     border: var(--border-s);
 
     background:
-                linear-gradient(var(--col-gray-4) 0 0) center / 3px 9px no-repeat,
-                linear-gradient(var(--col-gray-4) 0 0) center / 9px 3px no-repeat
+                linear-gradient(var(--col-gray-5) 0 0) center / 3px 9px no-repeat,
+                linear-gradient(var(--col-gray-5) 0 0) center / 9px 3px no-repeat
                 var(--col-gray-2);
 }
 

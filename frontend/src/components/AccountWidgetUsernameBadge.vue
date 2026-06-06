@@ -202,14 +202,14 @@ async function submit() {
 
     align-items: stretch;
     display:     grid;
-    height:      calc(var(--user-button-ht) - 7px);
+    height:      calc(var(--user-button-ht) - 8px);
     position:    relative;
 
     font-size:      2.6rem;
     letter-spacing: 0.06em;
     line-height:    1;
 
-    max-width: 250px;
+    max-width: 200px;
         
     filter: 
         drop-shadow(

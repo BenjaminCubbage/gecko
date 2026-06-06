@@ -157,8 +157,8 @@ watch(() => props.friends, () => {
 
     display: grid;
     grid-template:
-        "gutter-l               inner gutter-r" var(--ht-list-item) /
-         var(--wd-outer-gutter) 1fr   var(--wd-outer-gutter);
+        "gutter-l               inner            gutter-r" var(--ht-list-item) /
+         var(--wd-outer-gutter) minmax(0, 1fr)   var(--wd-outer-gutter);
 
     padding: 0;
     border:  0;
@@ -231,7 +231,7 @@ watch(() => props.friends, () => {
 }
 
 .item-gutter {
-    display: grid;
+    display:     grid;
     place-items: center;
 
     background:
@@ -245,15 +245,19 @@ watch(() => props.friends, () => {
 .item-inner {
     height: var(--ht-list-item);
 
+    padding: 0 12px;
+    margin:  0 calc(var(--shadow-dist-m) * 0.95);
+
     font-family: var(--font-scnd);
     font-size:   1.7rem;
     font-weight: bold;
 
-    display:     grid;
-    place-items: center left;
+    line-height: var(--ht-list-item);
 
-    padding: 0 12px;
-    margin:  0 calc(var(--shadow-dist-m) * 0.95);
+    text-align: left;
+    white-space:   nowrap;
+    overflow:      hidden;
+    text-overflow: ellipsis;
 
     background:
         linear-gradient(
