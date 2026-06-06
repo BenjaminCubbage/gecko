@@ -7,7 +7,7 @@ export class Cookies {
         return document.cookie
             .split('; ')
             .find(r => r.startsWith(`${name}=`))
-            .split('=')[1];
+            ?.split('=')[1];
     }
 
     static getXSRFToken() {

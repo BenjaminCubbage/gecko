@@ -284,9 +284,6 @@ const reject = unfriend;
 
 <style scoped>
 .friends-list {
-    /* justify-self: center;
-    width: 324px; */
-
     --overhang-x-tabs: -18px;
     --overhang-y-tabs: -24px;
 

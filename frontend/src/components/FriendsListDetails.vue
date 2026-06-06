@@ -432,17 +432,18 @@ function emitAction2() {
 .title-text {
     min-width:     0;
     line-height:   0.6;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
     text-align:    center;
 }
 
 .border-status {
+    padding:   0 10px;
+
     text-align: center;
-
-    font-family: var(--font-scnd);
-    font-weight: bold;
-
-    font-size: 1.65rem;
+    font:
+        bold
+        1.65rem
+        var(--font-scnd);
 }
 
 .status-icon {
