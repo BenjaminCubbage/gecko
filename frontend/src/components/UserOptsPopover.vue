@@ -95,7 +95,8 @@ function logOut() {
 
     margin-top: 12px;
 
-    translate: -50%;
+    translate:   -50%;
+    will-change: transform;
 
     filter:
         drop-shadow(
@@ -105,7 +106,7 @@ function logOut() {
         var(--filter-hl-1);
 
     transition:
-        scale   80ms steps(4, end),
+        scale   80ms,
         display 80ms allow-discrete;
 
     transform-origin: 50% calc(-3 * var(--border-thickness-s));
