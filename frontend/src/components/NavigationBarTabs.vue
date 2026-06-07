@@ -63,13 +63,12 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
 
     display:         grid;
     justify-content: center;
-    justify-self:    center;
 
     --pd-x-tabs: 16px;
     --pd-y-tabs: 6px;
-    --ht-tabs: 42px;
-    --wd-gap:  12px;
-    --wd-btn:  150px;
+    --ht-tabs:   42px;
+    --wd-gap:    12px;
+    --wd-btn:    150px;
 
     grid-template:
         ".                btn-canvas    .             btn-friends    ." var(--ht-tabs) /
@@ -92,7 +91,7 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
 
     & > .tabs-btn--canvas  { grid-area: btn-canvas; }
     & > .tabs-btn--friends { grid-area: btn-friends; }
-    &::before              { grid-area: 1 / 1 / 1 / 6; place-self: center stretch; }
+    &::before              { grid-area: 1 / 1 / 1 / 6; align-self: center; }
 
     @media (width < 400px) {
         --wd-gap:    8px;
@@ -100,7 +99,7 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
         margin: 0 calc(-1 * var(--pd-x-tabs));
 
         &::before {
-            display: none;
+            margin: 0 9px;
         }
     }
 }
@@ -113,6 +112,9 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
     font-size:           2.8rem;
     letter-spacing:      0.03em;
     text-transform:      uppercase;
+
+    /* Center text a bit better */
+    text-indent: 0.1em;
 
     margin:
         0
@@ -159,9 +161,9 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
     border: var(--border-s);
 
     background:
-                linear-gradient(var(--col-gray-5) 0 0) center / 3px 9px no-repeat,
-                linear-gradient(var(--col-gray-5) 0 0) center / 9px 3px no-repeat
-                var(--col-gray-2);
+        linear-gradient(var(--col-gray-5) 0 0) center / 3px 9px no-repeat,
+        linear-gradient(var(--col-gray-5) 0 0) center / 9px 3px no-repeat
+        var(--col-gray-2);
 }
 
 .tabs-btn::before {

@@ -86,9 +86,7 @@ function logIn() {
 
     gap: 8px;
 
-    & > .account-widget-user-drawer-toggle  { grid-area: profile; }
-    & > .account-widget-username-badge      { grid-area: username; }
+    & > .account-widget-user-drawer-toggle { flex: none; }
+    & > .account-widget-username-badge     { flex: 0 1 auto; }
 }
-
-
 </style>

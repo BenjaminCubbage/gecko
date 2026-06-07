@@ -27,6 +27,8 @@
     --shdw-dist-elevation: 0px;
     --shdw-dist-mult:      1;
     --shdw-dist:           var(--shadow-dist-m);
+    
+    --shdw-col-elevation: black;
 
     --shdw-otst-1: #0000;
     --shdw-otst-2: #0000;
@@ -41,7 +43,7 @@
         calc(var(--shdw-dist) * var(--shdw-dist-mult) * -1) calc(var(--shdw-dist) * var(--shdw-dist-mult) * -1) var(--shdw-otst-1),
         calc(var(--shdw-dist) * var(--shdw-dist-mult))      calc(var(--shdw-dist) * var(--shdw-dist-mult))      var(--shdw-otst-2),
 
-        0 var(--shdw-dist-elevation) black,
+        0 var(--shdw-dist-elevation) var(--shdw-col-elevation),
         
         var(--shdw-etc);
 }
@@ -101,27 +103,3 @@
 .shdw--elevated-s, .shdw-after--elevated-s::after, .shdw-before--elevated-s::before { --shdw-dist-elevation: var(--shadow-dist-s); }
 .shdw--elevated-m, .shdw-after--elevated-m::after, .shdw-before--elevated-m::before { --shdw-dist-elevation: var(--shadow-dist-m); }
 .shdw--elevated-l, .shdw-after--elevated-l::after, .shdw-before--elevated-l::before { --shdw-dist-elevation: var(--shadow-dist-l); }
-
-/*
-    These shadows are mainly for button icons.
-*/
-
-.shdw-filter > * {
-    --shdw-filter-dist: var(--shadow-dist-m);
-    --shdw-filter-1: #0000;
-    --shdw-filter-2: #0000;
-
-    filter:
-        drop-shadow(     var(--shdw-filter-dist)            var(--shdw-filter-dist)       var(--shdw-filter-2))
-        drop-shadow(calc(var(--shdw-filter-dist) * -1) calc(var(--shdw-filter-dist) * -1) var(--shdw-filter-1));
-}
-
-.shdw-filter--xs > * { --shdw-filter-dist: var(--shadow-dist-xs); }
-.shdw-filter--s  > * { --shdw-filter-dist: var(--shadow-dist-s); }
-.shdw-filter--m  > * { --shdw-filter-dist: var(--shadow-dist-m); }
-.shdw-filter--l  > * { --shdw-filter-dist: var(--shadow-dist-l); }
-
-.shdw-filter--green  > * { --shdw-filter-1: var(--col-green-1); --shdw-filter-2: var(--col-green-6); }
-.shdw-filter--red    > * { --shdw-filter-1: var(--col-red-0);   --shdw-filter-2: var(--col-red-5); }
-.shdw-filter--dk-red > * { --shdw-filter-1: var(--col-red-0);   --shdw-filter-2: var(--col-red-6); }
-.shdw-filter--orange > * { --shdw-filter-1: var(--col-red-0);   --shdw-filter-2: var(--col-red-6); }

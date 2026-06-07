@@ -32,10 +32,7 @@ defineExpose({
 .account-widget-user-drawer-toggle {
     --hl: brightness(1);
 
-    position: relative;
-
-    display:  flex;
-    position: relative;
+    display: grid;
 
     width:  var(--user-button-wd);
     height: var(--user-button-ht);
@@ -68,6 +65,6 @@ defineExpose({
 .icon-friend-user {
     align-self: end;
     height:     45px;
-    translate:  1px 8px;
+    translate:  1px 4px;
 }
 </style>

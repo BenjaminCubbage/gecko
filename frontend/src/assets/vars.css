@@ -127,6 +127,12 @@
     --filter-hl-1: brightness(1.06);
     --filter-hl-2: brightness(1.08);
 
+    --filter-aura:
+        drop-shadow(0           var(--shadow-aura-dist)  white)
+        drop-shadow(0 calc(-1 * var(--shadow-aura-dist)) white)
+        drop-shadow(          var(--shadow-aura-dist)  0 white)
+        drop-shadow(calc(-1 * var(--shadow-aura-dist)) 0 white);
+
     --user-button-wd: 51px;
     --user-button-ht: 46px;
 

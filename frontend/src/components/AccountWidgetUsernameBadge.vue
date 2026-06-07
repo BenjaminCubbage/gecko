@@ -1,13 +1,15 @@
 <template>
     <div class="account-widget-username-badge">
         <div
-            class="
-                username
-                shdw shdw--inst-gray shdw--elevated-s
-                txtr-vert txtr-vert--gray"
+            class="username"
             :data-pressed="isInputActive">
-            <div class="username-editor" v-show="isInputActive">
-                <div class="at-symbol">@</div>
+            <div
+                v-show="isInputActive"
+                class="
+                    username-editor
+                    shdw shdw--inst-gray shdw--elevated-s
+                    txtr-vert txtr-vert--gray">
+                <span class="at-symbol">@</span>
 
                 <BaseInput
                     v-model="inputText"
@@ -22,27 +24,29 @@
                     @blur="blur"
                     @keydown.enter="submit"
                     @keydown.esc="cancel" />
-
-                <button
-                    ref="submitButtonEl"
-                    class="
-                        submit-button
-                        shdw shdw--inst-green
-                        shdw-filter shdw-filter--xs shdw-filter--green"
-                    :data-pressed="isLoading"
-                    :disabled="!isValidInput || isLoading"
-                    aria-label="Submit username"
-                    @blur="blur"
-                    @click="submit">
-                    <LoadingSpinner v-if="isSpinning" class="loading-spinner" />
-                    <i v-else class="submit-icon hn hn-check-solid"></i>
-                </button>
             </div>
+
+            <button
+                v-show="isInputActive"
+                ref="submitButtonEl"
+                class="
+                    submit-button
+                    shdw shdw--inst-green shdw--elevated-s"
+                :data-pressed="isLoading"
+                :disabled="!isValidInput || isLoading"
+                :data-is-spinning="isSpinning"
+                aria-label="Submit username"
+                @blur="blur"
+                @click="submit">
+            </button>
 
             <button
                 v-show="!isInputActive"
                 ref="editButtonEl"
-                class="username-button"
+                class="
+                    username-button
+                    shdw shdw--inst-gray shdw--elevated-s
+                    txtr-vert txtr-vert--gray"
                 :aria-label="`Edit username ${session.activeUser.value.username}`"
                 :disabled="isLoading"
                 @click="edit">
@@ -195,8 +199,8 @@ async function submit() {
 
 <style scoped>
 .account-widget-username-badge {
-    /* 
-        Space between @ symbol and first username character 
+    /*
+        Space between @ symbol and first username character
     */
     --at-gap: 2px;
 
@@ -209,12 +213,12 @@ async function submit() {
     letter-spacing: 0.06em;
     line-height:    1;
 
-    max-width: 200px;
-        
-    filter: 
+    max-width: 240px;
+
+    filter:
         drop-shadow(
-            var(--shadow-dist-m) 
-            var(--shadow-dist-m) 
+            var(--shadow-dist-m)
+            var(--shadow-dist-m)
             var(--col-shadow-alpha));
 }
 
@@ -230,29 +234,21 @@ async function submit() {
 }
 
 .username {
-    display:           grid;
-    grid-auto-columns: minmax(0, 1fr);
-    grid-auto-rows:    minmax(0, 1fr);
-    justify-items:     start;
-    justify-self:      stretch;
+    display: flex;
 
-    border-radius: var(--radius-s);
-    border:        var(--border-s);
-
-    translate: 
-        0 
-        calc(var(--shadow-dist-s) - var(--shdw-dist-elevation));
+    filter:
+        var(--_fx-aura,)
+        var(--_fx-hl,);
 
     @media (hover: hover) {
         &:has(> .username-button:hover) {
-            filter: var(--filter-hl-1);
+            --_fx-hl: var(--filter-hl-1);
         }
     }
 
-    &[data-pressed=true],
-    &[data-pressed=true]:has(> .username-button:hover) {
-        --shdw-dist-elevation: 0px;
-        --shdw-etc: var(--shadow-aura);
+    &[data-pressed=true] {
+        --_fx-hl:   var(--filter-hl-1);
+        --_fx-aura: var(--filter-aura);
     }
 
     & > .username-button,
@@ -265,6 +261,9 @@ async function submit() {
     padding-right: 16px;
     position:      relative;
     width:         100%;
+
+    border-radius: var(--radius-s);
+    border:        var(--border-s);
 }
 
 .username-text {
@@ -289,22 +288,27 @@ async function submit() {
     display:      flex;
     flex-flow:    row nowrap;
     padding-left: 16px;
+
+    border: var(--border-s);
+
+    border-radius:
+        var(--radius-s) 0 0
+        var(--radius-s);
 }
 
 .at-symbol {
-    align-self:          center;
-    cursor:              default;
-    margin-right:        -3px;
+    align-self:   center;
+    cursor:       default;
+    margin-right: -3px;
 
     -webkit-text-stroke: var(--text-stroke-s);
     color:               black;
 }
 
 .base-input {
-    margin:      0;
-    padding:     0 4px 0 2.5px;
-    width:       100%;
-    text-indent: var(--at-gap);
+    margin-right: 3px;
+    width:        100%;
+    text-indent:  calc(var(--at-gap) + 2.2px);
 }
 
 .submit-button {
@@ -314,15 +318,15 @@ async function submit() {
     place-items:     center;
     width:           60px;
 
-    color:     var(--col-green-9);
-    font-size: 2.4rem;
+    font: 3rem var(--font-main);
 
     background:
         linear-gradient(
             var(--col-green-2) 50%,
             var(--col-green-4) 50%);
 
-    border-left: var(--border-s);
+    border:      var(--border-s);
+    border-left: 0;
 
     border-radius:
         0
@@ -338,22 +342,41 @@ async function submit() {
             0;
     }
 
-    &:active,
-    &[data-pressed=true] {
-        --shdw-dist-mult: -1;
+    @media (hover: hover) {
+        &:hover,
+        &:active,
+        &[data-pressed=true] {
+            filter: var(--filter-hl-0);
+        }
     }
 
-    &:disabled > .submit-icon {
+    &:active,
+    &[data-pressed=true] {
+        translate: 0 var(--shadow-dist-s);
+        --shdw-dist-elevation: 0;
+    }
+
+    &:disabled:not([data-is-spinning=true])::after {
         opacity: 0.3;
     }
 
-    & > .submit-icon {
-        font-size: 1.8rem;
-        translate: 1px 1.5px;
+    &[data-is-spinning=true]::after {
+        animation: username-submit-loading 300ms steps(1) infinite;
     }
 
-    & > .loading-spinner {
-        font-size: 3.2rem;
+    &::after {
+        content:   '\F514';
+        translate: 1px 0;
+
+        text-shadow:
+            calc(-1 * var(--shadow-dist-xs)) calc(-1 * var(--shadow-dist-xs)) var(--col-green-1),
+                        var(--shadow-dist-xs)            var(--shadow-dist-xs)  var(--col-green-5);
     }
+}
+
+@keyframes username-submit-loading {
+    0%  { content: '\F510'; }
+    33% { content: '\F511'; }
+    66% { content: '\F512'; }
 }
 </style>

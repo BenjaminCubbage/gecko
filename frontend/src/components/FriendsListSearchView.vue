@@ -13,7 +13,7 @@
             <div
                 class="bar-field
                     txtr-vert txtr-vert--lt-gray
-                    shdw shdw--inst-lt-gray shdw--elevated-m">
+                    shdw shdw--inst-lt-gray shdw--elevated-s">
                 <BaseInput
                     class="field-input"
                     v-model="searchInput"
@@ -27,7 +27,7 @@
             <button
                 class="
                     bar-btn
-                    shdw shdw--inst-green shdw--elevated-m
+                    shdw shdw--inst-green shdw--elevated-s
                     txtr-vert txtr-vert--green"
                 :data-is-loading="isLoading"
                 :disabled="!isValidInput"

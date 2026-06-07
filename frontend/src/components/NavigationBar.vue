@@ -14,31 +14,29 @@ const selectedTab = defineModel('selectedTab');
 
 <style scoped>
 .navigation-bar {
-    display:     flex;
-    flex-flow: row wrap;
-    align-items: center;
+    display: grid;
 
-    padding: 8px 0;
+    padding: 8px var(--vp-margin);
     gap:     8px;
 
-    & > .widget { margin: 0 auto; flex: 1 0 0; min-width: max-content; }
-    & > .tabs   { margin: auto; flex: 0 0 auto; }
-    &::after    { flex: 1 1 0; content: ''; }
+    grid-template: 
+        "widget tabs ." auto /
+         1fr    auto 1fr;
 
-    @media (560px <= width < 930px) {
+    & > .widget { grid-area: widget; }
+    & > .tabs   { grid-area: tabs; }
+
+    @media (width < 920px) {
         grid-template: 
-            "account . links" 70px /
-             auto    1fr auto;
-        padding: var(--vp-margin);
+            "widget tabs" auto /
+            1fr    auto;
     }
 
-    @media (width < 560px) {
+    @media (width < 720px) {
         grid-template: 
-            "account" auto
-            "links"   70px /
+            "widget" auto 
+            "tabs"   auto /
              1fr;
-        gap: 6px;
-        padding: var(--vp-margin);
     }
 }
 </style>

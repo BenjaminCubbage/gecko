@@ -99,7 +99,7 @@ const mode = defineModel('mode', {
     
     text-shadow: 
         calc(-1 * var(--shadow-dist-xs)) calc(-1 * var(--shadow-dist-xs)) var(--col-shdw-1),
-                    var(--shadow-dist-xs)            var(--shadow-dist-xs)  var(--col-shdw-2);
+                  var(--shadow-dist-xs)            var(--shadow-dist-xs)  var(--col-shdw-2);
                         
     display:       grid;
     place-content: center;
