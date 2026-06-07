@@ -15,6 +15,10 @@ import {
     modalAutoFocusTarget
 } from './directives/modalAutoFocus.js';
 
+import {
+    clickedOutside
+} from './directives/clickedOutside.js';
+
 import './style.css';
 import App from './App.vue';
 
@@ -25,4 +29,5 @@ createApp(App)
     .directive('deferred-content',        deferredContent)
     .directive('modal-auto-focus',        modalAutoFocus)
     .directive('modal-auto-focus-target', modalAutoFocusTarget)
+    .directive('clicked-outside',         clickedOutside)
     .mount('#app');

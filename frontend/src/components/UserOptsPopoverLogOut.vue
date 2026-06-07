@@ -7,7 +7,9 @@
             shdw shdw--inst-dk-red shdw--elevated-s"
         :data-pressed="isPressed"
         aria-label="Log Out">
-        <IconLogOut class="icon-log-out" />
+        <span class="icon-boundary">
+            <IconLogOut class="icon-log-out" />
+        </span>
     </button>
 </template>
 
@@ -29,13 +31,13 @@ defineExpose({
 
 <style scoped>
 .user-button-log-out {
+    position: relative;
+
     width:  var(--user-button-wd);
     height: var(--user-button-ht);
 
     border:        var(--border-s);
     border-radius: var(--radius-s);
-
-    overflow-y: clip;
 
     @media (hover: hover) {
         &:hover {
@@ -53,6 +55,40 @@ defineExpose({
 
         translate: 0 var(--shadow-dist-s);
     }
+
+    /* Caret */
+    &::before {
+        content: '';
+
+        position:   absolute;
+        box-sizing: content-box;
+
+        inset:
+            calc(-3 * var(--border-thickness-s) - 0.8px)
+            0
+            auto;
+
+        width:  calc(3 * var(--border-thickness-s));
+        height: calc(2 * var(--border-thickness-s) + 1px);
+        margin: 0 auto;
+
+        border:        var(--border-s);
+        border-bottom: 0;
+
+        border-radius:
+            var(--radius-s)
+            var(--radius-s) 0 0;
+
+        background: var(--col-red-0);
+    }
+}
+
+/* Clip boundary */
+.icon-boundary {
+    display:    grid;
+    width:      100%;
+    height:     100%;
+    overflow-y: clip;
 }
 
 .icon-log-out {

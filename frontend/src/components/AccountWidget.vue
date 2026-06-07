@@ -16,10 +16,15 @@
         class="
             account-widget account-widget--profile
             shdw-before shdw-before--inst-lt-gray shdw-before--elevated-s">
-        <AccountWidgetProfileDropdown
+        <AccountWidgetUserOptsToggle
             ref="toggleEl"
             class="account-widget-user-drawer-toggle"
             @click="isExpanded = !isExpanded" />
+
+        <UserOptsPopover
+            class="user-opts-popover"
+            v-model:is-expanded="isExpanded"
+            :popoverTarget="toggleEl?.innerElement" />
 
         <AccountWidgetUsernameBadge class="account-widget-username-badge" />
     </div>
@@ -35,10 +40,10 @@ import {
     watch
 } from 'vue';
 
-import AccountWidgetUsernameBadge   from './AccountWidgetUsernameBadge.vue';
-import AccountWidgetProfileDropdown from './AccountWidgetProfileDropdown.vue';
-import UserButtonLogIn              from './UserButtonLogIn.vue';
-import UserButtonLogOut             from './UserButtonLogOut.vue';
+import AccountWidgetUsernameBadge  from './AccountWidgetUsernameBadge.vue';
+import AccountWidgetUserOptsToggle from './AccountWidgetUserOptsToggle.vue';
+import UserButtonLogIn             from './UserButtonLogIn.vue';
+import UserOptsPopover             from './UserOptsPopover.vue';
 
 import { Keys } from '@/core/di/keys.js';
 
@@ -49,6 +54,10 @@ import {
 
 const session  = inject(Keys.SessionStore);
 const snackBar = inject(Keys.SnackBarStore);
+
+const toggleEl = useTemplateRef('toggleEl');
+
+const isExpanded = ref(false);
 
 async function logOut() {
     isLoggingOut.value = true;
@@ -88,5 +97,9 @@ function logIn() {
 
     & > .account-widget-user-drawer-toggle { flex: none; }
     & > .account-widget-username-badge     { flex: 0 1 auto; }
+}
+
+.user-opts-popover {
+    
 }
 </style>
