@@ -5,9 +5,13 @@
             role="menu"
             class="user-opts-popover"
             :hidden="!isExpanded"
-            :aria-expanded="isExpanded"
-            v-clicked-outside="clickedOutside">
-            <UserOptsPopoverLogOut />
+            v-clicked-outside="clickedOutside"
+            v-clicked-outside-except="popoverTarget">
+            <li>
+                <UserOptsPopoverLogOut
+                    :is-pressed="isLoggingOut"
+                    @click="logOut" />
+            </li>
         </div>
     </teleport>
 </template>
@@ -39,10 +43,19 @@ const isExpanded = defineModel('is-expanded', {
     default: true
 });
 
+const emit = defineEmits([ 
+    'logOut' 
+]);
+
 const attrs = useAttrs();
 
+/* 
+    Popover position (bottom-center of target) in px 
+*/
 const clientLeft = ref(0);
 const clientTop  = ref(0);
+
+const isLoggingOut = ref(false);
 
 watch([ isExpanded, () => props.popoverTarget ], () => {
     const clientRect = props.popoverTarget?.getBoundingClientRect();
@@ -58,7 +71,17 @@ watch([ isExpanded, () => props.popoverTarget ], () => {
 });
 
 function clickedOutside() {
-    isExpanded.value = false;
+    if (!isLoggingOut.value)
+        isExpanded.value = false;
+}
+
+function logOut() {
+    if (isLoggingOut.value)
+        return;
+
+    isLoggingOut.value = true;
+    emit('logOut', () => 
+        isLoggingOut.value = false);
 }
 </script>
 
@@ -78,7 +101,8 @@ function clickedOutside() {
         drop-shadow(
             var(--shadow-dist-m)
             var(--shadow-dist-m)
-            var(--col-shadow-alpha));
+            var(--col-shadow-alpha))
+        var(--filter-hl-1);
 
     transition:
         scale   80ms steps(4, end),
@@ -86,7 +110,13 @@ function clickedOutside() {
 
     transform-origin: 50% calc(-3 * var(--border-thickness-s));
 
+    will-change: transform;
+
     &[hidden]       { scale: 0; }
     @starting-style { scale: 0; }
+
+    & > li {
+        list-style: none;
+    }
 }
 </style>

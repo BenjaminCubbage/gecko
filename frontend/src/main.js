@@ -16,7 +16,8 @@ import {
 } from './directives/modalAutoFocus.js';
 
 import {
-    clickedOutside
+    clickedOutside,
+    clickedOutsideExcept
 } from './directives/clickedOutside.js';
 
 import './style.css';
@@ -30,4 +31,5 @@ createApp(App)
     .directive('modal-auto-focus',        modalAutoFocus)
     .directive('modal-auto-focus-target', modalAutoFocusTarget)
     .directive('clicked-outside',         clickedOutside)
+    .directive('clicked-outside-except',  clickedOutsideExcept)
     .mount('#app');

@@ -19,12 +19,14 @@
         <AccountWidgetUserOptsToggle
             ref="toggleEl"
             class="account-widget-user-drawer-toggle"
+            :is-expanded="isExpanded"
             @click="isExpanded = !isExpanded" />
 
         <UserOptsPopover
             class="user-opts-popover"
             v-model:is-expanded="isExpanded"
-            :popoverTarget="toggleEl?.innerElement" />
+            :popoverTarget="toggleEl?.innerElement"
+            @log-out="logOut" />
 
         <AccountWidgetUsernameBadge class="account-widget-username-badge" />
     </div>
@@ -59,9 +61,7 @@ const toggleEl = useTemplateRef('toggleEl');
 
 const isExpanded = ref(false);
 
-async function logOut() {
-    isLoggingOut.value = true;
-
+async function logOut(resolve) {
     try {
         await session.requestLogOutAndReload();
     } catch (e) {
@@ -73,16 +73,13 @@ async function logOut() {
                     : `Unexpected error while logging out`;
 
         snackBar.pushMessage(errorMessage);
-        isLoggingOut.value = false;
+        resolve();
     }
 }
 
 function logIn() {
-    isLoggingIn.value = true;
-    if (!session.requestLogIn()) {
+    if (!session.requestLogIn())
         snackBar.pushMessage('Already logged in');
-        isLoggingIn.value = false;
-    }
 }
 </script>
 

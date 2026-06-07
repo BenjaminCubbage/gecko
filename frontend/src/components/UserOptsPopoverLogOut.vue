@@ -39,19 +39,23 @@ defineExpose({
     border:        var(--border-s);
     border-radius: var(--radius-s);
 
+    filter:
+        var(--_fx-aura,)
+        var(--_fx-hl,);
+
     @media (hover: hover) {
         &:hover {
-            filter: var(--filter-hl-1);
+            --_fx-hl: var(--filter-hl-1);
         }
     }
 
     &[data-pressed=true] {
-        filter: var(--filter-hl-1);
+        --_fx-hl: var(--filter-hl-1);
     }
 
     &[data-pressed=true] {
         --shdw-dist-elevation: 0;
-        --shdw-etc:            var(--shadow-aura);
+        --_fx-aura:            var(--filter-aura);
 
         translate: 0 var(--shadow-dist-s);
     }
@@ -64,7 +68,7 @@ defineExpose({
         box-sizing: content-box;
 
         inset:
-            calc(-3 * var(--border-thickness-s) - 0.8px)
+            calc(-3 * var(--border-thickness-s) - 0.5px)
             0
             auto;
 
@@ -78,6 +82,20 @@ defineExpose({
         border-radius:
             var(--radius-s)
             var(--radius-s) 0 0;
+
+        background: var(--col-red-0);
+    }
+
+    &::after {
+        content: '';
+
+        position:   absolute;
+
+        inset: -1px 0 auto;
+
+        width:  calc(3 * var(--border-thickness-s));
+        height: 2px;
+        margin: 0 auto;
 
         background: var(--col-red-0);
     }
