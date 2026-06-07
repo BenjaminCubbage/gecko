@@ -86,12 +86,12 @@ defineExpose({
         background: var(--col-red-0);
     }
 
+    /* Caret flush */
     &::after {
         content: '';
 
-        position:   absolute;
-
-        inset: -1px 0 auto;
+        position: absolute;
+        inset:    -1px 0 auto;
 
         width:  calc(3 * var(--border-thickness-s));
         height: 2px;
@@ -110,7 +110,7 @@ defineExpose({
 }
 
 .icon-log-out {
-    height: 45px;
+    height:    45px;
     translate: -6px 3px;
 }
 </style>

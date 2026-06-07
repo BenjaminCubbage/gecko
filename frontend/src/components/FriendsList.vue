@@ -18,26 +18,27 @@
             @unfriend="unfriend"
             @accept="accept" />
 
-        <template v-if="selectedTab === 'list'">
-            <FriendsListView
-                class="list-list-view"
-                :friends="friendsPage"
-                v-model:selected-friend="selectedFriend" />
+        <FriendsListView
+            v-show="selectedTab === 'list'"
+            class="list-list-view"
+            :friends="friendsPage"
+            v-model:selected-friend="selectedFriend" />
 
-            <div class="list-foot">
-                <FriendsListRequestsToggle />
-                <FriendsListPageSelect
-                    :pageCount="pageCount"
-                    v-model:selectedPage="selectedPage" />
-            </div>
-        </template>
+        <div
+            v-show="selectedTab === 'list'"
+            class="list-foot">
+            <FriendsListRequestsToggle
+                v-model:is-checked="hideRequests" />
+            <FriendsListPageSelect
+                :pageCount="pageCount"
+                v-model:selectedPage="selectedPage" />
+        </div>
 
-        <template v-else>
-            <FriendsListSearchView
-                v-model:search-input="searchInput"
-                :isLoading="showIsLoadingSearchResult"
-                @search-submitted="searchSubmitted" />
-        </template>
+        <FriendsListSearchView
+            v-show="selectedTab === 'search'"
+            v-model:search-input="searchInput"
+            :isLoading="showIsLoadingSearchResult"
+            @search-submitted="searchSubmitted" />
     </div>
 </template>
 
@@ -76,19 +77,27 @@ const selectedTab = ref('list');
 const selectedFriend        = ref(null);
 const detailsSlideDirection = ref('forwards');
 
+const hideRequests = ref(false);
+
 /*
-    Pagination / indices
+    Filters / pagination / indices
 */
 
 const pageSize     = 5;
 const selectedPage = ref(0);
 
+const filteredFriends = computed(() => {
+    return !hideRequests.value
+        ? friends.allFriends
+        : friends.allFriends.filter(f => f.status === FriendStatus.Active);
+});
+
 const pageCount = computed(() => {
-    return 1 + (0 | ((friends.allFriends.length - 1) / pageSize));
+    return 1 + (0 | ((filteredFriends.value.length - 1) / pageSize));
 });
 
 const friendsPage = computed(oldValue => {
-    let page = friends.allFriends
+    let page = filteredFriends.value
         .slice(
             pageSize * selectedPage.value,
             pageSize * selectedPage.value + pageSize);
@@ -108,7 +117,7 @@ const selectedIndex = computed(() =>
     friendsPage.value?.indexOf(selectedFriend.value) ?? -1);
 
 const absoluteSelectedIndex = computed(() => 
-    friends.allFriends.indexOf(selectedFriend.value) ?? -1);
+    filteredFriends.value.indexOf(selectedFriend.value) ?? -1);
 
 /*
     If user hasn't searched yet we want to show the default
@@ -178,7 +187,7 @@ watch(absoluteSelectedIndex, (newValue, oldValue) => {
     if (newValue === -1) {
         selectedFriend.value = friendsPage.value
             .filter(f => f != null)
-            .findLast(f => friends.allFriends.indexOf(toRaw(f)) <= oldValue);
+            .findLast(f => filteredFriends.value.indexOf(toRaw(f)) <= oldValue);
     }
 });
 

@@ -67,7 +67,7 @@ watch([ isExpanded, () => props.popoverTarget ], () => {
     }
 
     clientLeft.value = clientRect.width / 2  + clientRect.left;
-    clientTop.value  = clientRect.height + clientRect.top;
+    clientTop.value  = clientRect.height     + clientRect.top;
 });
 
 function clickedOutside() {

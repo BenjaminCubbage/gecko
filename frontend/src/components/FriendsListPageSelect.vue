@@ -131,10 +131,9 @@ function pageNext() { selectedPage.value = Math.min(selectedPage.value + 1, prop
     border: var(--border-s);
 
     -webkit-text-stroke: var(--text-stroke-s);
-    font-size:           2rem;
+    font:                bold 2rem var(--font-main);
     word-spacing:        0.1em;
-
-    font-weight: bold;
+    user-select:         none;
 
     translate:
         0 calc(-1 * var(--shdw-dist-elevation));

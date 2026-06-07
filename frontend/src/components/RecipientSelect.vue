@@ -133,7 +133,7 @@ function getDeviceStatusLabel(device) {
 
     align-items:   center;
     display:       grid;
-    height:        140px;
+    height:        150px;
 
     & > .carousels                      { place-self: stretch; }
     & > .recipient-select-log-in-prompt { place-self: center; }

@@ -5,13 +5,16 @@
                 toggle-input
                 shdw shdw--inst-white shdw--otst-orange shdw--recessed"
             v-model="isChecked"
-            type="checkbox"  />
-        Show requests
+            type="checkbox" />
+        Hide requests
     </label>
 </template>
 
 <script setup>
-const isChecked = defineModel('isChecked');
+const isChecked = defineModel('isChecked', {
+    type:     Boolean,
+    required: true
+});
 </script>
 
 <style scoped>
@@ -30,6 +33,12 @@ const isChecked = defineModel('isChecked');
     font-size:   1.6rem;
 
     translate: 0 var(--ofst-y-txt);
+    
+    @media (hover: hover) {
+        &:hover > .toggle-input {
+            background: var(--col-lt-gray-3);        
+        }   
+    }
 }
 
 .toggle-input {
@@ -45,7 +54,7 @@ const isChecked = defineModel('isChecked');
     background: var(--col-lt-gray-1);
 
     translate: 0 calc(-1 * var(--ofst-y-txt));
-    
+
     &:checked::after {
         content: '✓';
 
@@ -53,7 +62,7 @@ const isChecked = defineModel('isChecked');
         font-size:   2.5rem;
         line-height: 0.5;
 
-        translate: 0.12em -0.06em;
+        translate: 0.06em -0.02em;
     }
 }
 </style>

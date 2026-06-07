@@ -224,7 +224,7 @@ function tryMoveSelection(by) {
     .label      { place-self: end left;     z-index: 2; }
     .selection  { place-self: stretch;      z-index: 1; }
     .arrow      { place-self: stretch;      z-index: 1; }
-    .status     { place-self: start center; z-index: 0; }
+    .status     { place-self: stretch center; z-index: 0; }
 }
 
 .label {
@@ -305,22 +305,16 @@ function tryMoveSelection(by) {
     display:         flex;
     gap:             6px;
     justify-content: center;
-    padding-bottom:  4px;
-    padding-top:     calc(3px + var(--shadow-dist-m));
     width:           110px;
-    height:          100%;
     user-select:     none;
 
     -webkit-text-stroke: var(--text-stroke-s);
-    font-size:           1.7rem;
-    letter-spacing:      0.04em;
+    font-size:           1.88rem;
+    letter-spacing:      0.05em;
     line-height:         0.8;
     text-transform:      uppercase;
 
-    background:
-        linear-gradient(
-            var(--col-lt-gray-2) 50%,
-            var(--col-lt-gray-4) 50%);
+    background: var(--col-lt-gray-3);
 
     border-radius:
         0               0
@@ -328,16 +322,14 @@ function tryMoveSelection(by) {
 
     border: var(--border-s);
 
-    translate: 0 calc(var(--shadow-dist-m) * -1 - 0.5px);
-
     &.status--red   { color: var(--col-red-7); }
     &.status--green { color: var(--col-green-7); }
     &.status--blue  { color: var(--col-blue-4); }
 
     & > .status-dot {
         display: inline-block;
-        height:  0.4em;
-        width:   0.4em;
+        height:  0.5em;
+        width:   0.5em;
         cursor:  default;
 
         box-shadow:
@@ -345,7 +337,7 @@ function tryMoveSelection(by) {
             0 calc(var(--text-stroke-width-s) / 2) white;
 
         background:    currentColor;
-        border-radius: 1.5px;
+        border-radius: 2.3px;
 
         @supports not (corner-shape: notch) {
             height: 0.35em;

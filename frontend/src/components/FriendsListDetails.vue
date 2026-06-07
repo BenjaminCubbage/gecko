@@ -591,10 +591,10 @@ function emitAction2() {
     translate: 0 var(--details-border-slide);
 }
 
-.details-border-transition--forwards-enter-active  { animation: details-border-up   140ms steps(4); }
-.details-border-transition--forwards-leave-active  { animation: details-border-down 140ms steps(4); }
-.details-border-transition--backwards-enter-active { animation: details-border-down 140ms steps(4) reverse; }
-.details-border-transition--backwards-leave-active { animation: details-border-up   140ms steps(4) reverse; }
+.details-border-transition--forwards-enter-active  { animation: details-border-up   100ms steps(5); }
+.details-border-transition--forwards-leave-active  { animation: details-border-down 100ms steps(5); }
+.details-border-transition--backwards-enter-active { animation: details-border-down 100ms steps(5) reverse; }
+.details-border-transition--backwards-leave-active { animation: details-border-up   100ms steps(5) reverse; }
 
 @property --details-border-slide {
     initial-value: 0px;
