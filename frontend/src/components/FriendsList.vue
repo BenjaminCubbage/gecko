@@ -327,5 +327,6 @@ const reject = unfriend;
     display:         flex;
     justify-content: space-between;
     align-items:     center;
+    gap:             9px;
 }
 </style>

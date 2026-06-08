@@ -6,7 +6,7 @@
         class="
             account-widget account-widget--log-in
             shdw-before shdw-before--inst-lt-gray shdw-before--elevated-s">
-        <UserButtonLogIn
+        <AccountWidgetLogInButton
             :is-pressed="isLoggingIn"
             @click="logIn" />
     </div>
@@ -44,7 +44,7 @@ import {
 
 import AccountWidgetUsernameBadge  from './AccountWidgetUsernameBadge.vue';
 import AccountWidgetUserOptsToggle from './AccountWidgetUserOptsToggle.vue';
-import UserButtonLogIn             from './UserButtonLogIn.vue';
+import AccountWidgetLogInButton    from './AccountWidgetLogInButton.vue';
 import UserOptsPopover             from './UserOptsPopover.vue';
 
 import { Keys } from '@/core/di/keys.js';

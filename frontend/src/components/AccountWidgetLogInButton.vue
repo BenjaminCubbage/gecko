@@ -1,18 +1,14 @@
 <template>
     <button
-        class="
-            user-button-log-in
-            txtr-vert txtr-vert--green
-            shdw shdw--inst-green"
+        class="user-button-log-in shdw shdw--elevated-s"
         :data-pressed="isPressed"
         aria-label="Log Out">
-        <IconGoogle height="45px" class="icon-google" />
-        Log In
+        <IconGoogleLogo height="20px" class="icon-google" />
     </button>
 </template>
 
 <script setup>
-import IconGoogle from './IconGoogle.vue';
+import IconGoogleLogo from './IconGoogleLogo.vue';
 
 defineProps({
     isPressed: {
@@ -33,42 +29,31 @@ const isPressed = defineModel('isPressed', {
     --hl:             brightness(1);
     --aura:           drop-shadow(0 0 #0000);
 
-    display: flex;
+    background: white;
 
-    align-items: center;
-    gap:         10px;
-    
-    padding: 0 18px 0 0;
-    height:  calc(var(--user-button-ht) - 3px);
+    height: 35px;
+
+    padding: 0 14px;
+
+    zoom: 1.2;
 
     -webkit-text-stroke: var(--text-stroke-s);
     font-family:         var(--font-main);
     font-size:           3rem;
     letter-spacing:      0.02em;
+    line-height:         0;
 
     text-transform: uppercase;
     
-    border:        var(--border-s);
-    border-radius: var(--radius-s);
+    border:        2px solid black;
+    border-radius: 8px;
+    corner-shape:  squircle;
 
-    corner-top-left-shape:    round;
-    corner-bottom-left-shape: round;
-
-    border-top-left-radius:    20px;
-    border-bottom-left-radius: 20px;
+    --shdw-etc:
+        var(--shadow-dist-m)
+        calc(2 * var(--shadow-dist-m))
+        var(--col-shadow-alpha);
     
-    filter: 
-        drop-shadow(
-            0
-            var(--elevation-dist)
-            black)
-        var(--aura)
-        drop-shadow(
-            var(--shadow-dist-m)
-            var(--shadow-dist-m)
-            var(--col-shadow-alpha))
-        var(--hl);
-
     translate: 0 calc(var(--shadow-dist-m) - var(--elevation-dist));
 
     @media (hover: hover) {
@@ -91,9 +76,5 @@ const isPressed = defineModel('isPressed', {
             drop-shadow(0      var(--shadow-aura-dist)       white)
             drop-shadow(0 calc(var(--shadow-aura-dist) * -1) white);
     }
-}
-
-.icon-google {
-    margin-left: -6px;
 }
 </style>
