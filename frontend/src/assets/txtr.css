@@ -64,7 +64,8 @@
     --txtr-vert-col-2: var(--col-yellow-3);
 }
 
-.txtr-vert--lt-gray {
+.txtr-vert--lt-gray,
+.txtr-vert-after--lt-gray::after {
     --txtr-vert-col-1: var(--col-lt-gray-2);
     --txtr-vert-col-2: var(--col-lt-gray-4);
 }

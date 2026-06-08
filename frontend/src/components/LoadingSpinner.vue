@@ -1,6 +1,5 @@
 <template>
     <span class="spinner" v-bind="attrs">
-        <span role="status" class="util-sr-only" v-deferred-content="'Loading'"></span>
     </span>
 </template>
 

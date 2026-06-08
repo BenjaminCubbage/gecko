@@ -66,7 +66,7 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry, {
     friends: useId()
 });
 
-const selectedTab = ref('friends');
+const selectedTab = ref('canvas');
 
 const { isFontLoaded: isMainFontLoaded } = useWaitOnFont('--font-main');
 const { isFontLoaded: isScndFontLoaded } = useWaitOnFont('--font-scnd');
@@ -112,8 +112,6 @@ watch(friends.activeFriends, newFriends => {
     display:        flex;
     flex-flow:      column nowrap;
     padding-bottom: calc(var(--shadow-dist-l) * 2);
-
-    transition: opacity 300ms 200ms;
 
     & > .navigation-bar { contain: layout; z-index: 0; }
     & > .main-content   { contain: layout; z-index: 1; }

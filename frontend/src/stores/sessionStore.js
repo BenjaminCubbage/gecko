@@ -9,6 +9,7 @@ import {
     HttpError
 } from '@/core/errors/errors.js';
 
+import { AuthHints }     from '@/core/local_storage/authHints.js';
 import { Cookies }       from '@/core/http/cookies.js';
 import { Dispatch }      from '@/core/dispatch/Dispatch.js';
 import { ResourceMutex } from '@/core/async/mutex.js';
@@ -63,6 +64,14 @@ export class SessionStore {
         the user was logged in.
     */
     async requestResync() {
+        if (!AuthHints.getIsPossiblyAuthenticatedHint()) {
+            /* 
+                Don't enter loading state if we haven't authenticated.
+            */
+            this.#state.value = 'loggedout';
+            return false;
+        }
+
         this.#state.value = 'loading';
 
         try {
@@ -73,6 +82,9 @@ export class SessionStore {
             this.#state.value = isLoggedIn
                 ? 'ready'
                 : 'loggedout';
+
+            if (isLoggedIn)
+                AuthHints.setIsPossiblyAuthenticatedHint(true);
 
             return isLoggedIn;
         } catch (e) {
@@ -122,6 +134,7 @@ export class SessionStore {
                     .onNetworkError(() => reject(new NetworkError()));
             });
 
+            AuthHints.setIsPossiblyAuthenticatedHint(false);
             window.location.reload();
         } catch (e) {
             /*
@@ -140,6 +153,7 @@ export class SessionStore {
         if (this.#activeUser.value != null)
             return false;
 
+        AuthHints.setIsPossiblyAuthenticatedHint(true);
         window.location.assign('/auth/login');
         return true;
     }

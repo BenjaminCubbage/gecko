@@ -54,15 +54,15 @@ const mode = defineModel('mode', {
     filter: 
         var(--elevation, brightness(1))
         drop-shadow(
-            var(--shadow-dist-m)
-            var(--shadow-dist-m)
+            var(--shadow-dist-s)
+            var(--shadow-dist-s)
             var(--col-shadow-alpha))
         var(--hl, brightness(1));
 
     --elevation:
         drop-shadow(
             0
-            var(--shadow-dist-m)
+            var(--shadow-dist-s)
             black);
 
     &.tab--list   { --col-grad-1: var(--col-orange-3); --col-grad-2: var(--col-orange-4); --col-shdw-1: var(--col-orange-1); --col-shdw-2: var(--col-orange-5); }

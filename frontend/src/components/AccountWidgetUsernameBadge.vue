@@ -80,8 +80,7 @@ import {
     watch
 } from 'vue';
 
-import BaseInput      from './BaseInput.vue';
-import LoadingSpinner from './LoadingSpinner.vue';
+import BaseInput from './BaseInput.vue';
 
 import { useAutoHighlightTextInput } from '@/composables/useAutoHighlightTextInput.js';
 import { useLoadingState }           from '@/composables/useLoadingState.js';
