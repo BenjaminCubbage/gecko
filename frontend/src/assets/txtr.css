@@ -79,6 +79,11 @@
     --txtr-vert-col-2: var(--col-gray-5);
 }
 
+.txtr-vert--white {
+    --txtr-vert-col-1: var(--col-lt-gray-1);
+    --txtr-vert-col-2: var(--col-lt-gray-3);
+}
+
 /*
     diag
 */

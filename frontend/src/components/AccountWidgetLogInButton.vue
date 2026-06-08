@@ -1,9 +1,12 @@
 <template>
     <button
-        class="user-button-log-in shdw shdw--elevated-s"
-        :data-pressed="isPressed"
+        class="
+            user-button-log-in
+            shdw shdw--inst-lt-gray shdw--elevated-s
+            txtr-vert txtr-vert--white"
+        :data-is-pressed="isPressed"
         aria-label="Log Out">
-        <IconGoogleLogo height="20px" class="icon-google" />
+        <IconGoogleLogo height="26px" class="icon-google" />
     </button>
 </template>
 
@@ -16,26 +19,19 @@ defineProps({
         required: true
     }
 });
-
-const isPressed = defineModel('isPressed', {
-    required: true,
-    type:     Boolean
-});
 </script>
 
 <style scoped>
 .user-button-log-in {
     --elevation-dist: var(--shadow-dist-m);
-    --hl:             brightness(1);
-    --aura:           drop-shadow(0 0 #0000);
 
-    background: white;
+    position: relative;
 
-    height: 35px;
+    display:       grid;
+    place-content: center;
 
-    padding: 0 14px;
-
-    zoom: 1.2;
+    height:  44px;
+    padding: 0 16px 0 14px;
 
     -webkit-text-stroke: var(--text-stroke-s);
     font-family:         var(--font-main);
@@ -44,37 +40,34 @@ const isPressed = defineModel('isPressed', {
     line-height:         0;
 
     text-transform: uppercase;
-    
-    border:        2px solid black;
-    border-radius: 8px;
-    corner-shape:  squircle;
 
-    --shdw-etc:
-        var(--shadow-dist-m)
-        calc(2 * var(--shadow-dist-m))
-        var(--col-shadow-alpha);
-    
-    translate: 0 calc(var(--shadow-dist-m) - var(--elevation-dist));
+    border:        var(--border-s);
+    border-radius: var(--radius-s);
+
+    translate: 0 calc(-1 * var(--shdw-dist-elevation));
+
+    filter:
+        var(--_fx-hl,)
+        drop-shadow(
+            var(--shadow-dist-m) 
+            var(--shadow-dist-m) 
+            var(--col-shadow-alpha));
 
     @media (hover: hover) {
         &:hover,
         &:active {
-            --hl: var(--filter-hl-1);
+            --_fx-hl: var(--filter-hl-0);
         }
     }
 
     &:active,
-    &[data-pressed=true] {
-        --elevation-dist: 0px;
+    &[data-is-pressed=true] {
+        --shdw-dist-elevation: 0px;
+        --shdw-etc: var(--shadow-aura);
     }
 
-    &[data-pressed=true] {
-        --hl: var(--filter-hl-1);
-        --aura:
-            drop-shadow(     var(--shadow-aura-dist)       0 white)
-            drop-shadow(calc(var(--shadow-aura-dist) * -1) 0 white)
-            drop-shadow(0      var(--shadow-aura-dist)       white)
-            drop-shadow(0 calc(var(--shadow-aura-dist) * -1) white);
+    &[data-is-pressed=true] {
+        --_fx-hl: var(--filter-hl-1);
     }
 }
 </style>

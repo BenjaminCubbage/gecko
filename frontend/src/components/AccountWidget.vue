@@ -59,7 +59,8 @@ const snackBar = inject(Keys.SnackBarStore);
 
 const toggleEl = useTemplateRef('toggleEl');
 
-const isExpanded = ref(false);
+const isExpanded  = ref(false);
+const isLoggingIn = ref(false);
 
 async function logOut(resolve) {
     try {
@@ -78,8 +79,11 @@ async function logOut(resolve) {
 }
 
 function logIn() {
-    if (!session.requestLogIn())
+    isLoggingIn.value = true;
+    if (!session.requestLogIn()) {
         snackBar.pushMessage('Already logged in');
+        isLoggingIn.value = false;
+    }
 }
 </script>
 
