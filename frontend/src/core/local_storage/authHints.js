@@ -5,7 +5,7 @@ const keys = Object.create({
 export class AuthHints {
     /*
         isPossiblyAuthenticatedHint: Indicates if the user
-        could theoretically be logged in.
+        could possibly be logged in.
     */
     static getIsPossiblyAuthenticatedHint(b) {
         return localStorage.getItem(

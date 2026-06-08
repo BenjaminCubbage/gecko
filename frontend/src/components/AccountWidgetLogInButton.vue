@@ -6,7 +6,21 @@
             txtr-vert txtr-vert--lt-gray"
         :data-is-pressed="isPressed"
         aria-label="Log Out">
-        <IconGoogleLogo height="26px" class="icon-google" />
+        <span 
+            class="
+                white-border
+                lt-gray-border 
+                txtr-vert txtr-vert--lt-gray
+                shdw shdw--inst-lt-gray">
+            <IconGoogleLogo height="25px" class="icon-google" />
+        </span>
+        <span 
+            class="
+                blue-border 
+                txtr-vert txtr-vert--blue
+                shdw shdw--inst-blue">
+            Sign in with Google
+        </span>
     </button>
 </template>
 
@@ -25,17 +39,14 @@ defineProps({
 .user-button-log-in {
     --elevation-dist: var(--shadow-dist-m);
 
+    contain:  paint;
     position: relative;
+    overflow: clip;
 
-    display:       grid;
-    place-content: center;
+    display:     flex;
+    align-items: stretch;
 
-    height:  44px;
-    padding: 0 16px 0 14px;
-
-    line-height: 0;
-
-    text-transform: uppercase;
+    height: 43px;
 
     border:        var(--border-s);
     border-radius: var(--radius-s);
@@ -52,7 +63,7 @@ defineProps({
     @media (hover: hover) {
         &:hover,
         &:active {
-            --_fx-hl: var(--filter-hl-0);
+            --_fx-hl: var(--filter-hl-1);
         }
     }
 
@@ -64,5 +75,25 @@ defineProps({
     &[data-is-pressed=true] {
         --_fx-hl: var(--filter-hl-1);
     }
+}
+
+.white-border {
+    display:       grid;
+    place-content: center;
+
+    padding: 0 8px 0 9px;
+
+    border-right: var(--border-s);
+}
+
+.blue-border {
+    display:       grid;
+    place-content: center;
+
+    -webkit-text-stroke: var(--text-stroke-s);
+    font:                2.4rem var(--font-main);
+    letter-spacing:      0.02em;
+
+    padding: 0 16px;
 }
 </style>

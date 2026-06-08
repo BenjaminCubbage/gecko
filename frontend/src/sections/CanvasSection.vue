@@ -1,6 +1,5 @@
 <template>
-    <section
-        class="canvas-section">
+    <section>
         <RecipientSelect
             v-if="session.state.value === 'ready'"
             class="recipient-select"
@@ -30,9 +29,3 @@ function recipientDeviceChanged(device) {
     recipientDevice.value = device;
 }
 </script>
-
-<style scoped>
-.canvas-section {
-    margin-top: 12px;
-}
-</style>

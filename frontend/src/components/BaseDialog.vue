@@ -61,7 +61,7 @@ function dialogClosed() {
     --transition-dur: 100ms;
 
     overflow: visible;
-    max-width: calc(100dvw - var(--vp-margin));
+    max-width: calc(100svw - var(--vp-margin));
 
     padding:       9px;
     border:        var(--border-s);

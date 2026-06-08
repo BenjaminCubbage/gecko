@@ -2,7 +2,11 @@
     <div
         v-show="fontsLoaded"
         ref="layoutEl"
-        class="layout">
+        class="layout"
+        :inert="isLoading"
+        :style="{
+            'opacity': isLoading ? '0.01' : '1'
+        }">
         <NavigationBar class="navigation-bar" v-model:selected-tab="selectedTab" />
 
         <main class="main-content">
@@ -37,26 +41,12 @@ import FriendsSection  from './sections/FriendsSection.vue';
 import NavigationBar   from './components/NavigationBar.vue';
 import SnackBarOverlay from './components/SnackBarOverlay.vue';
 
-import { DevicesStore }  from './stores/devicesStore.js';
-import { FriendsStore }  from './stores/friendsStore.js';
-import { SessionStore }  from './stores/sessionStore.js';
-import { SnackBarStore } from './stores/snackBarStore.js';
-import { Keys }          from './core/di/keys.js';
-
 import { useElementIdRegistry }      from './composables/useElementIdRegistry.js';
 import { useWaitOnFont }             from './composables/useWaitOnFont.js';
 import { useWaitOnTransition }       from './composables/useWaitOnTransition.js';
 import { useScrollbarWidthProperty } from './composables/useScrollbarWidthProperty.js';
 
-const session  = new SessionStore();
-const friends  = new FriendsStore();
-const devices  = new DevicesStore();
-const snackBar = new SnackBarStore();
-
-provide(Keys.DevicesStore,  devices);
-provide(Keys.SessionStore,  session);
-provide(Keys.FriendsStore,  friends);
-provide(Keys.SnackBarStore, snackBar);
+import { Keys } from './core/di/keys.js';
 
 useScrollbarWidthProperty()
     .updateScrollbarWidthProperty();
@@ -66,7 +56,14 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry, {
     friends: useId()
 });
 
+const friends = inject(Keys.FriendsStore);
+const session = inject(Keys.SessionStore);
+const devices = inject(Keys.DevicesStore);
+
 const selectedTab = ref('canvas');
+
+const isLoading = computed(() =>
+    session.state.value === 'loading');
 
 const { isFontLoaded: isMainFontLoaded } = useWaitOnFont('--font-main');
 const { isFontLoaded: isScndFontLoaded } = useWaitOnFont('--font-scnd');
@@ -79,46 +76,26 @@ const fontsLoaded = computed(() => {
 });
 
 provide(Keys.IsDocumentReady, fontsLoaded);
-
-(async () => {
-    await session.requestResync();
-    await friends.requestResync(session);
-    await devices.requestResync(session, friends);
-})();
-
-watch(session.state, (newState, oldState) => {
-    if ((newState === 'loggedout' && oldState === 'ready') ||
-        (oldState === 'loggedout' && newState === 'ready')) {
-        friends.requestResync(session);
-        devices.requestResync(session, friends);
-    }
-});
-
-watch(friends.activeFriends, newFriends => {
-    if (devices.state.value === 'ready')
-        devices.requestUpsertUserIDs(newFriends.map(f => f.user.userID));
-});
 </script>
 
 <style scoped>
 .layout {
     contain: content;
 
-    height:           100dvh;
+    height:           100svh;
     overflow:         auto;
     scrollbar-gutter: stable both-edges;
 
     align-content:  center;
     display:        flex;
-    flex-flow:      column nowrap;
-    padding-bottom: calc(var(--shadow-dist-l) * 2);
+    flex-flow:      column;
+    padding-bottom: calc(var(--shadow-dist-l) * 4);
 
-    & > .navigation-bar { contain: layout; z-index: 0; }
-    & > .main-content   { contain: layout; z-index: 1; }
+    & > .navigation-bar { order: 0; z-index: 0; }
+    & > .main-content   { order: 2; z-index: 1; }
 
-    @starting-style {
-        opacity: 0.01;
-    }
+    /* Flex spacer */
+    &::before { order: 1; content: ''; flex: 0 1 20px; }
 }
 
 .main-content {

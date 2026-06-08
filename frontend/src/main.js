@@ -1,4 +1,7 @@
-import { createApp } from 'vue';
+import { 
+    createApp,
+    watch
+} from 'vue';
 
 import {
     rovingTabIndexHomeIndex,
@@ -11,13 +14,52 @@ import {
     clickedOutsideExcept
 } from './directives/clickedOutside.js';
 
+import { DevicesStore }  from './stores/devicesStore.js';
+import { FriendsStore }  from './stores/friendsStore.js';
+import { SessionStore }  from './stores/sessionStore.js';
+import { SnackBarStore } from './stores/snackBarStore.js';
+import { Keys }          from './core/di/keys.js';
+
 import './style.css';
 import App from './App.vue';
 
-createApp(App)
-    .directive('roving-container',        rovingTabIndexContainer)
-    .directive('roving-item',             rovingTabIndexItem)
-    .directive('roving-home',             rovingTabIndexHomeIndex)
-    .directive('clicked-outside',         clickedOutside)
-    .directive('clicked-outside-except',  clickedOutsideExcept)
-    .mount('#app');
+const session  = new SessionStore();
+const friends  = new FriendsStore();
+const devices  = new DevicesStore();
+const snackBar = new SnackBarStore();
+
+(async () => {
+    await session.requestResync();
+    await friends.requestResync(session);
+    await devices.requestResync(session, friends);
+})();
+
+const app = createApp(App)
+    .directive('roving-container',       rovingTabIndexContainer)
+    .directive('roving-item',            rovingTabIndexItem)
+    .directive('roving-home',            rovingTabIndexHomeIndex)
+    .directive('clicked-outside',        clickedOutside)
+    .directive('clicked-outside-except', clickedOutsideExcept)
+    .provide(Keys.DevicesStore,  devices)
+    .provide(Keys.SessionStore,  session)
+    .provide(Keys.FriendsStore,  friends)
+    .provide(Keys.SnackBarStore, snackBar);
+
+/*
+    Resync when friends / session changes
+*/
+
+watch(session.state, (newState, oldState) => {
+    if ((newState === 'loggedout' && oldState === 'ready') ||
+        (oldState === 'loggedout' && newState === 'ready')) {
+        friends.requestResync(session);
+        devices.requestResync(session, friends);
+    }
+});
+
+watch(friends.activeFriends, newFriends => {
+    if (devices.state.value === 'ready')
+        devices.requestUpsertUserIDs(newFriends.map(f => f.user.userID));
+});
+
+app.mount('body');

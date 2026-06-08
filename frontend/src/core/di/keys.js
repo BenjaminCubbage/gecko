@@ -1,12 +1,12 @@
 export const Keys = Object.freeze({
     __proto__: null,
 
-    DevicesStore:  Symbol('devices_store'),
-    FriendsStore:  Symbol('friends_store'),
-    SessionStore:  Symbol('session_store'),
-    SnackBarStore: Symbol('snack_bar_store'),
+    DevicesStore:  Symbol(),
+    FriendsStore:  Symbol(),
+    SessionStore:  Symbol(),
+    SnackBarStore: Symbol(),
 
-    AppTabPanelIdsRegistry: Symbol('app_tab_panel_ids_registry'),
+    AppTabPanelIdsRegistry: Symbol(),
 
-    IsDocumentReady: Symbol('is_document_ready')
+    IsDocumentReady: Symbol()
 });

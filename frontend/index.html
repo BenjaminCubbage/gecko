@@ -26,8 +26,8 @@
                 --dots-bg:  var(--col-blue-1);
                 --dots-col: var(--col-blue-2);
 
-                height: 100dvh;
-                width:  100dvw;
+                height: 100svh;
+                width:  100svw;
 
                 background:
                     repeating-conic-gradient(from 4.05deg,
@@ -42,16 +42,10 @@
 
                 background-blend-mode: multiply, normal, normal;
             }
-
-            #app {
-                display: contents;
-            }
         </style>
         
         <script src="wasm/compression.js" defer crossorigin></script>
         <script type="module" src="/src/main.js" defer></script>
     </head>
-    <body>
-        <div id="app"></div>
-    </body>
+    <body></body>
 </html>
