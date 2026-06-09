@@ -59,8 +59,6 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
 
 <style scoped>
 .navigation-bar-tabs {
-    contain: content;
-
     display:         grid;
     justify-content: center;
 
@@ -127,6 +125,11 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
         drop-shadow(3px 3px var(--col-shadow-alpha));
 
     transform: translateY(-2px);
+
+    &::before,
+    &::after {
+        z-index: -1;
+    }
 
     &[data-is-selected=true] {
         --aura:

@@ -23,7 +23,7 @@ body {
 }
 
 :focus-visible {
-    outline:        6px groove;
+    outline:        6px groove black;
     outline-offset: 3px;
 }
 

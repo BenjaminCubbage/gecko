@@ -200,7 +200,6 @@ function tryMoveSelection(by) {
     --ht-selection: 36px;
     --ht-status:    26px;
 
-    contain:   content;
     isolation: isolate;
 
     display:        grid;
