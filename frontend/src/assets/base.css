@@ -22,6 +22,11 @@ body {
     padding: 0;
 }
 
+:focus-visible {
+    outline:        6px groove;
+    outline-offset: 3px;
+}
+
 ::selection {
     background:  rgb(103, 179, 255);
     color:       black;

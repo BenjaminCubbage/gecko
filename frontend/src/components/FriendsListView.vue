@@ -3,7 +3,8 @@
         class="
             friends-list-view
             shdw shdw--otst-orange"
-        v-roving-container>
+        v-roving-container
+        v-roving-home="selectedIndex">
         <div
             class="
                 view-outer
@@ -31,8 +32,9 @@
                         : 'empty'"
                 @click="friend != null && (selectedFriend = friend)"
                 :tabindex=    "friend != null || index === 0 ? 0 : -1"
-                v-roving-item="friend != null || index === 0"
-                :aria-label=  "friend != null ? `@${friend.user.username}` : 'Empty friend slot'">
+                :aria-label=  "friend != null ? `@${friend.user.username}` : 'Empty friend slot'"
+                :aria-current="friend === selectedFriend"
+                v-roving-item>
                 <span
                     class="
                         item-gutter item-gutter--l
@@ -77,6 +79,7 @@
 
 <script setup>
 import {
+    computed,
     ref,
     watch
 } from 'vue';
@@ -99,6 +102,11 @@ const selectedFriend = defineModel('selectedFriend', {
     validator(value, props) {
         return value == null || value instanceof Friend;
     }
+});
+
+const selectedIndex = computed(() => {
+    const i = props.friends.indexOf(selectedFriend.value);
+    return i === -1 ? 0 : i;
 });
 
 watch(() => props.friends, () => {

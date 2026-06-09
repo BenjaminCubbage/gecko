@@ -91,11 +91,6 @@ const mode = defineModel('mode', {
     > .tab-icon { z-index: 1; }
     > .tab-text { z-index: 0; }
 
-    &:focus-visible {
-        outline:        3px solid white;
-        outline-offset: 2px;
-    }
-
     &[data-is-selected=true] {
         translate:   0 var(--shadow-dist-xs);
         --elevation: unset;

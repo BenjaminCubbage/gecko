@@ -48,17 +48,6 @@
 */
 
 /*
-    Constants
-*/
-
-const Attributes = {
-    RovingTabIndexContainer:         'data-roving-tab-index-container',
-    RovingTabIndexItem:              'data-roving-tab-index-item',
-    RovingTabIndexHomeIndex:         'data-roving-tab-index-home-index',
-    RovingTabIndexContainerHasFocus: 'data-roving-tab-index-container-has-focus'
-};
-
-/*
     Utilities
 */
 
@@ -77,11 +66,11 @@ function findAncestorElement(el, predicate) {
 }
 
 function isItem(el) {
-    return el?.hasAttribute?.(Attributes.RovingTabIndexItem) ?? false;
+    return el?.dataset?.rovingTabIndexItem ?? false;
 }
 
 function isContainer(el) {
-    return el?.hasAttribute?.(Attributes.RovingTabIndexContainer) ?? false;
+    return el?.dataset?.rovingTabIndexContainer ?? false;
 }
 
 function getItemContainer(el) {
@@ -123,7 +112,7 @@ function getContainerItems(container) {
     for (let node = walker.nextNode(); node; node = walker.nextNode())
         items.push(node);
 
-    let homeIndex = 0|container?.getAttribute(Attributes.RovingTabIndexHomeIndex);
+    let homeIndex = 0|container?.dataset?.rovingTabIndexHomeIndex;;
     homeIndex = Math.max(homeIndex, 0);
     homeIndex = Math.min(homeIndex, items.length - 1);
 
@@ -188,7 +177,7 @@ function resetContainerIndices(container, checkFocus = true) {
         homeIndex
     } = getContainerItems(container);
 
-    if (!checkFocus || !container.hasAttribute(Attributes.RovingTabIndexContainerHasFocus)) {
+    if (!checkFocus || !container.dataset.rovingTabIndexContainerHasFocus) {
         items.forEach(s => s.tabIndex = -1);
 
         if (homeIndex !== -1 && !isContainerSubcontainer(container))
@@ -201,7 +190,7 @@ function resetContainerIndices(container, checkFocus = true) {
 */
 
 function containerFocusIn({ currentTarget }) {
-    currentTarget.setAttribute(Attributes.RovingTabIndexContainerHasFocus, true);
+    currentTarget.dataset.rovingTabIndexContainerHasFocus = true;
 }
 
 function containerFocusOut({ currentTarget, relatedTarget }) {
@@ -210,7 +199,7 @@ function containerFocusOut({ currentTarget, relatedTarget }) {
     } = getContainerItems(currentTarget);
 
     if (!items.includes(relatedTarget)) {
-        currentTarget.removeAttribute(Attributes.RovingTabIndexContainerHasFocus);
+        delete currentTarget.dataset.rovingTabIndexContainerHasFocus;
         resetContainerIndices(currentTarget, false);
     }
 }
@@ -305,13 +294,13 @@ function itemKeyDown(e) {
 function bindContainer(container) {
     container.addEventListener('focusin',  containerFocusIn);
     container.addEventListener('focusout', containerFocusOut);
-    container.setAttribute(Attributes.RovingTabIndexContainer, true);
+    container.dataset.rovingTabIndexContainer = true;
 }
 
 function unbindContainer(container) {
     container.removeEventListener('focusin',  containerFocusIn);
     container.removeEventListener('focusout', containerFocusOut);
-    container.removeAttribute(Attributes.RovingTabIndexContainer);
+    delete container.dataset.rovingTabIndexContainer;
 }
 
 function bindItem(el) {
@@ -319,7 +308,7 @@ function bindItem(el) {
     el.addEventListener('keydown',  itemKeyDown);
     el.addEventListener('focusin',  itemFocusIn);
     el.addEventListener('focusout', itemFocusOut);
-    el.setAttribute(Attributes.RovingTabIndexItem, true);
+    el.dataset.rovingTabIndexItem = true;
     resetContainerIndices(getItemContainer(el));
 }
 
@@ -332,7 +321,7 @@ function unbindItem(el) {
     el.removeEventListener('keydown',  itemKeyDown);
     el.removeEventListener('focusin',  itemFocusIn);
     el.removeEventListener('focusout', itemFocusOut);
-    el.removeAttribute(Attributes.RovingTabIndexItem);
+    delete el.dataset.rovingTabIndexItem;
 
     resetContainerIndices(getItemContainer(el), wasFocused);
     newFocusEl?.focus();
@@ -376,9 +365,9 @@ export const rovingTabIndexItem = {
 
 export const rovingTabIndexHomeIndex = (el, { value = null }) => {
     if (value != null)
-        el.setAttribute(Attributes.RovingTabIndexHomeIndex, value);
+        el.dataset.rovingTabIndexHomeIndex = value;
     else
-        el.removeAttribute(Attributes.RovingTabIndexHomeIndex);
+        delete el.dataset.rovingTabIndexHomeIndex;
 
     resetContainerIndices(el);
 };

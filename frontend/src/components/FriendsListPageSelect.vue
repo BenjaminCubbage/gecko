@@ -152,9 +152,7 @@ function pageNext() { selectedPage.value = Math.min(selectedPage.value + 1, prop
         0 calc(-1 * var(--shdw-dist-elevation));
 
     &:focus-visible {
-        z-index:        3;
-        outline:        3px solid white;
-        outline-offset: 3px;
+        z-index: 3;
     }
 }
 </style>

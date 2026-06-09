@@ -1,5 +1,5 @@
 <template>
-    <div class="friends-list-details">
+    <section class="friends-list-details">
         <div
             v-if="isLoading"
             class="details-loading"
@@ -77,7 +77,7 @@
                 </template>
             </div>
         </transition>
-    </div>
+    </section>
 </template>
 
 <script setup>
