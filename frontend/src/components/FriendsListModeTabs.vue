@@ -71,16 +71,16 @@ const mode = defineModel('mode', {
     &.tab--list   > .tab-icon::before { content: '\F50E'; }
     &.tab--search > .tab-icon::before { content: '\F50D'; }
 
-    & > .tab-icon { z-index: 1; }
-    & > .tab-text { z-index: 0; }
+    > .tab-icon { z-index: 1; }
+    > .tab-text { z-index: 0; }
 
     &[data-is-selected=true] {
         translate:   0 var(--shadow-dist-xs);
         --elevation: unset;
         --hl:        var(--filter-hl-1);
         
-        & > .tab-icon,
-        & > .tab-text {
+        > .tab-icon,
+        > .tab-text {
             --shdw-etc: var(--shadow-aura);
         }
     }

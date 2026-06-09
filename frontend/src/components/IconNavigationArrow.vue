@@ -41,11 +41,11 @@ defineProps({
 
 <style scoped>
 .icon-navigation-arrow {
-    & > .st0{ fill:var(--col-orange-3); }
-    & > .st1{ fill:var(--col-orange-0); }
-    & > .st2{ fill:var(--col-orange-6); }
+    > .st0{ fill:var(--col-orange-3); }
+    > .st1{ fill:var(--col-orange-0); }
+    > .st2{ fill:var(--col-orange-6); }
 
-    & > .stroke {
+    > .stroke {
         stroke-width: 15.5px;
     }
 }

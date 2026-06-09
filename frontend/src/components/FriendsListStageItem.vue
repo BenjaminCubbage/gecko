@@ -23,22 +23,22 @@ import IconFriendHeart          from './IconFriendHeart.vue';
 
     filter: brightness(0.9);
 
-    & > .item-icon      { z-index: 1; }
-    & > .item-spotlight { z-index: 0; }
+    > .item-icon      { z-index: 1; }
+    > .item-spotlight { z-index: 0; }
 
     &:hover,
     &:focus {
         filter: none;
 
-        & > .item-spotlight {
+        > .item-spotlight {
             --spotlight-alpha: 0.8;
         }
 
-        & > .item-spotlight::after {
+        > .item-spotlight::after {
             opacity: 1;
         }
 
-        & > .item-icon {
+        > .item-icon {
             transform-origin: bottom;
             scale:            1.05;
         }

@@ -5,18 +5,19 @@
             shdw shdw--inst-lt-gray shdw--elevated-s
             txtr-vert txtr-vert--lt-gray"
         :data-is-pressed="isPressed"
-        aria-label="Log Out">
-        <span 
+        aria-label="Log Out"
+        type="button">
+        <span
             class="
                 white-border
-                lt-gray-border 
+                lt-gray-border
                 txtr-vert txtr-vert--lt-gray
                 shdw shdw--inst-lt-gray">
             <IconGoogleLogo height="25px" class="icon-google" />
         </span>
-        <span 
+        <span
             class="
-                blue-border 
+                blue-border
                 txtr-vert txtr-vert--blue
                 shdw shdw--inst-blue">
             Sign in with Google
@@ -56,8 +57,8 @@ defineProps({
     filter:
         var(--_fx-hl,)
         drop-shadow(
-            var(--shadow-dist-m) 
-            var(--shadow-dist-m) 
+            var(--shadow-dist-m)
+            var(--shadow-dist-m)
             var(--col-shadow-alpha));
 
     @media (hover: hover) {

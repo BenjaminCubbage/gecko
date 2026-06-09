@@ -137,12 +137,12 @@ watch([isOpen, dialogEl], () => {
 
     width: 430px;
 
-    & > .modal-log-in-button,
-    & > .modal-alt-aside { z-index: 4; }
-    & > .modal-header    { z-index: 2; }
-    & > .modal-body      { z-index: 1; }
-    & > .modal-bracket   { z-index: 3; }
-    & > .icon-cloud      { z-index: 0; }
+    > .modal-log-in-button,
+    > .modal-alt-aside { z-index: 4; }
+    > .modal-header    { z-index: 2; }
+    > .modal-body      { z-index: 1; }
+    > .modal-bracket   { z-index: 3; }
+    > .icon-cloud      { z-index: 0; }
 }
 
 .modal-header {
@@ -165,8 +165,8 @@ watch([isOpen, dialogEl], () => {
             var(--shadow-dist-m)
             var(--col-shadow-alpha));
 
-    & > .header-title { grid-area: 1 / 1; place-self: center; }
-    & > .header-close { grid-area: 1 / 1; place-self: end; }
+    > .header-title { grid-area: 1 / 1; place-self: center; }
+    > .header-close { grid-area: 1 / 1; place-self: end; }
 }
 
 .header-title {
@@ -290,8 +290,8 @@ watch([isOpen, dialogEl], () => {
     font-size:   1.8rem;
     line-height: 1.3;
 
-    & > .preface-icon { grid-area: icon; }
-    & > .preface-text { grid-area: text; }
+    > .preface-icon { grid-area: icon; }
+    > .preface-text { grid-area: text; }
     
     padding: 18px 28px 12px;
     @container modal-welcome (width < 400px) {
@@ -348,7 +348,7 @@ watch([isOpen, dialogEl], () => {
     gap:         2px;
     padding-top: 3px;
 
-    & > li {
+    > li {
         --sz-bullet: 7px;
 
         background:
@@ -359,7 +359,7 @@ watch([isOpen, dialogEl], () => {
         padding-top:  2px;
     }
 
-    &, & > li, & > li span {
+    &, > li, > li span {
         cursor: text;
     }
 }

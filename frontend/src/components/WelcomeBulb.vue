@@ -68,7 +68,7 @@ function logIn() {
                 --rays-alpha: 35%;
             }
 
-            & > .icon-light-bulb {
+            > .icon-light-bulb {
                 scale: 1.05;
             }
         }

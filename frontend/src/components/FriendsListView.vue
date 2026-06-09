@@ -122,7 +122,7 @@ watch(() => props.friends, () => {
 
     &::before       { z-index: 0; }
     &::after        { z-index: 0; }
-    & > .outer-item { z-index: 1; }
+    > .outer-item { z-index: 1; }
 
     &::before,
     &::after {
@@ -167,13 +167,13 @@ watch(() => props.friends, () => {
     font:       inherit;
     background: transparent;
 
-    & > .item-gutter--l { grid-area: gutter-l; }
-    & > .item-inner     { grid-area: inner; }
-    & > .item-gutter--r { grid-area: gutter-r; }
+    > .item-gutter--l { grid-area: gutter-l; }
+    > .item-inner     { grid-area: inner; }
+    > .item-gutter--r { grid-area: gutter-r; }
 
     &:has(~ .outer-item) {
-        & > .item-gutter { border-bottom: 3px solid var(--col-gray-4); }
-        & > .item-inner  { border-bottom: 3px solid var(--col-gray-3); }
+        > .item-gutter { border-bottom: 3px solid var(--col-gray-4); }
+        > .item-inner  { border-bottom: 3px solid var(--col-gray-3); }
     }
 
     &:where(:not([data-state=empty]):hover) > .item-inner {
@@ -193,7 +193,7 @@ watch(() => props.friends, () => {
                 var(--shadow-dist-m)
                 var(--col-shadow-alpha));
 
-        & > .item-gutter {
+        > .item-gutter {
             background: revert-layer;
             box-shadow: revert-layer;
 
@@ -201,7 +201,7 @@ watch(() => props.friends, () => {
                 0 0 0 var(--border-thickness-s) black;
         }
 
-        & > .item-inner {
+        > .item-inner {
             background: revert-layer;
             box-shadow: revert-layer;
 
@@ -209,8 +209,8 @@ watch(() => props.friends, () => {
                 0 0 0 var(--ht-elevation) black;
         }
 
-        & > .item-gutter,
-        & > .item-inner {
+        > .item-gutter,
+        > .item-inner {
             border-bottom-color: black;
         }
     }
@@ -220,13 +220,13 @@ watch(() => props.friends, () => {
     }
 
     &:nth-child(1 of .outer-item) {
-        & > .item-gutter--l { border-radius: var(--radius-s) 0 0 0; }
-        & > .item-gutter--r { border-radius: 0 var(--radius-s) 0 0; }
+        > .item-gutter--l { border-radius: var(--radius-s) 0 0 0; }
+        > .item-gutter--r { border-radius: 0 var(--radius-s) 0 0; }
     }
 
     &:nth-last-child(1 of .outer-item) {
-        & > .item-gutter--l { border-radius: 0 0 0 var(--radius-s); }
-        & > .item-gutter--r { border-radius: 0 0 var(--radius-s) 0; }
+        > .item-gutter--l { border-radius: 0 0 0 var(--radius-s); }
+        > .item-gutter--r { border-radius: 0 0 var(--radius-s) 0; }
     }
 }
 

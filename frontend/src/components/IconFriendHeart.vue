@@ -15,11 +15,11 @@
 
 <style scoped>
 .icon-friend-heart {
-    & > .st0 { fill: var(--col-magenta-1); }
-    & > .st1 { fill: var(--col-magenta-6); }
-    & > .st2 { fill: var(--col-magenta-3); }
+    > .st0 { fill: var(--col-magenta-1); }
+    > .st1 { fill: var(--col-magenta-6); }
+    > .st2 { fill: var(--col-magenta-3); }
 
-    & > .stroke {
+    > .stroke {
         stroke-width: 12px;
     }
 }

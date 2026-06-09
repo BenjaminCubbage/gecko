@@ -103,8 +103,8 @@ function canvasChanged() {
     display:        flex;
     flex-direction: column;
 
-    & > .canvas-border { z-index: 0; align-self: stretch; }
-    & > .tool-bar      { z-index: 1; align-self: center; }
+    > .canvas-border { z-index: 0; align-self: stretch; }
+    > .tool-bar      { z-index: 1; align-self: center; }
 }
 
 .canvas-border {

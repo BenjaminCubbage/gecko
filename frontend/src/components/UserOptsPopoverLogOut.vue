@@ -55,7 +55,7 @@ defineExpose({
 
     &[data-pressed=true] {
         --shdw-dist-elevation: 0;
-        --_fx-aura:            var(--filter-aura);
+        --_fx-aura:            var(--filter-aura-s);
 
         translate: 0 var(--shadow-dist-s);
     }

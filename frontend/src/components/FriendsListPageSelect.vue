@@ -80,11 +80,11 @@ function pageNext() { selectedPage.value = Math.min(selectedPage.value + 1, prop
 
     border-radius: var(--radius-s);
 
-    & > .select-btn--left  { z-index: 2; grid-area: left; }
-    & > .select-display    { z-index: 1; grid-area: display; }
-    & > .select-btn--right { z-index: 0; grid-area: right; }
+    > .select-btn--left  { z-index: 2; grid-area: left; }
+    > .select-display    { z-index: 1; grid-area: display; }
+    > .select-btn--right { z-index: 0; grid-area: right; }
 
-    & > * {
+    > * {
         --shdw-etc:
             calc(-1 * var(--shadow-dist-m))
             calc(-1 * var(--shadow-dist-m))

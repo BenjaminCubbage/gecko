@@ -9,18 +9,22 @@
         <div
             class="
                 view-bar
-                shdw shdw--otst-orange">
+                shdw shdw--otst-orange"
+            :data-is-focused="isFocused">
             <div
                 class="bar-field
                     txtr-vert txtr-vert--lt-gray
                     shdw shdw--inst-lt-gray shdw--elevated-s">
                 <BaseInput
+                    ref="inputEl"
                     class="field-input"
                     v-model="searchInput"
                     :maxlength="maxUsernameLength"
                     :char-predicate="isValidUsernameChar"
                     variant="no-box"
                     placeholder="username"
+                    @focusin=" isInputFocused = true"
+                    @focusout="isInputFocused = false"
                     @keydown.enter="trySubmit" />
             </div>
 
@@ -31,8 +35,10 @@
                     txtr-vert txtr-vert--green"
                 :data-is-loading="isLoading"
                 :disabled="!isValidInput"
-                @click="trySubmit"
-                type="button">
+                type="button"
+                @focusin=" isButtonFocused = true"
+                @focusout="isButtonFocused = false"
+                @click="trySubmit">
             </button>
         </div>
     </div>
@@ -42,13 +48,12 @@
 import {
     computed,
     ref,
-    toRef,
+    useTemplateRef,
     watch
 } from 'vue';
 
 import IconFriendListArrow from './IconFriendListArrow.vue';
 import BaseInput           from './BaseInput.vue';
-
 import { useThrottledRef } from '@/composables/useThrottledRef';
 
 import {
@@ -73,11 +78,22 @@ const searchInput = defineModel('searchInput', {
     required: true
 });
 
-const isValidInput = computed(() => isValidUsername(searchInput.value));
+const inputEl = useTemplateRef('inputEl');
+
+const isButtonFocused = ref(false);
+const isInputFocused  = ref(false);
+
+const isFocused = computed(() =>
+    isButtonFocused.value || isInputFocused.value);
+
+const isValidInput = computed(() => 
+    isValidUsername(searchInput.value));
 
 function trySubmit() {
     if (isValidInput.value && !props.isLoading)
         emit('searchSubmitted');
+
+    inputEl.value?.innerElement?.focus();
 }
 </script>
 
@@ -90,8 +106,8 @@ function trySubmit() {
     flex-flow: column;
     gap:       6px;
 
-    & > *            { align-self: stretch; }
-    & > .view-arrows { align-self: center; }
+    > *            { align-self: stretch; }
+    > .view-arrows { align-self: center; }
 }
 
 .view-arrows {
@@ -117,8 +133,18 @@ function trySubmit() {
 
     border-radius: var(--radius-s);
 
-    & > .bar-field { z-index: 1; grid-area: input; }
-    & > .bar-btn   { z-index: 0; grid-area: btn; }
+    &[data-is-focused=true] {
+        > .bar-field, 
+        > .bar-btn {
+            --shdw-etc: revert-layer;
+        }
+
+        box-shadow: none;
+        filter:     var(--filter-aura-l);
+    }
+
+    > .bar-field { z-index: 1; grid-area: input; }
+    > .bar-btn   { z-index: 0; grid-area: btn; }
 }
 
 .bar-field {
@@ -195,20 +221,19 @@ function trySubmit() {
     translate:
         0 calc(-1 * var(--shdw-dist-elevation));
 
-    --shdw-etc: -3px -3px var(--col-orange-0);
+    --shdw-etc:
+        calc(-1 * var(--shadow-dist-m))
+        calc(-1 * var(--shadow-dist-m))
+        var(--col-orange-0);
 
     &[data-is-loading=false] {
         &::after          { content: '\F50D'; }
         &:disabled::after { opacity: 30%; }
     }
 
-    &[data-is-loading=true] {
-        pointer-events: none;
-
-        &::after {
-            content:   '\F510';
-            animation: friends-search-loading 300ms steps(1) infinite;
-        }
+    &[data-is-loading=true]::after {
+        content:   '\F510';
+        animation: friends-search-loading 300ms steps(1) infinite;
     }
 
     @media (hover: hover) {

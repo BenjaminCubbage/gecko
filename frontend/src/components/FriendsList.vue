@@ -296,22 +296,20 @@ const reject = unfriend;
     --overhang-x-tabs: -18px;
     --overhang-y-tabs: -24px;
 
+    position:  relative;
     display:   flex;
     flex-flow: column;
 
     padding:    27px 12px 9px;
     margin-top: calc(-1 * var(--overhang-y-tabs));
 
-    display:   flex;
-    flex-flow: column;
-
     border:        var(--border-s);
     border-radius: var(--radius-s);
 
-    & > .list-tabs      { z-index: 1; }
-    & > .list-details   { z-index: 0; align-self: stretch; }
-    & > .list-list-view { z-index: 0; align-self: stretch; margin-top: 18px; }
-    & > .list-foot      { z-index: 0; align-self: stretch; margin-top: 9px; }
+    > .list-tabs      { z-index: 1; }
+    > .list-details   { z-index: 0; align-self: stretch; }
+    > .list-list-view { z-index: 0; align-self: stretch; margin-top: 18px; }
+    > .list-foot      { z-index: 0; align-self: stretch; margin-top: 9px; }
 
     @media (width < 600px) {
         --overhang-x-tabs: -10px;

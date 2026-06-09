@@ -40,20 +40,20 @@ defineProps({
 
 <style scoped>
 .icon-friend-request-arrow {
-    & > .stroke {
+    > .stroke {
         stroke-width: 5px;
     }
 
     &[data-variant=incoming] {
-        & > .st0 { fill: var(--col-green-0); }
-        & > .st1 { fill: var(--col-green-3); }
-        & > .st2 { fill: var(--col-green-5); }
+        > .st0 { fill: var(--col-green-0); }
+        > .st1 { fill: var(--col-green-3); }
+        > .st2 { fill: var(--col-green-5); }
     }
 
     &[data-variant=outgoing] {
-        & > .st0 { fill: var(--col-lt-blue-1); }
-        & > .st1 { fill: var(--col-lt-blue-4); }
-        & > .st2 { fill: var(--col-lt-blue-7); }
+        > .st0 { fill: var(--col-lt-blue-1); }
+        > .st1 { fill: var(--col-lt-blue-4); }
+        > .st2 { fill: var(--col-lt-blue-7); }
         
         scale: -1 1;
     }

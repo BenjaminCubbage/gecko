@@ -21,6 +21,7 @@
                     :char-predicate="isValidUsernameChar"
                     name="username"
                     autocomplete="off"
+                    v-auto-highlight
                     @blur="blur"
                     @keydown.enter="submit"
                     @keydown.esc="cancel" />
@@ -82,8 +83,7 @@ import {
 
 import BaseInput from './BaseInput.vue';
 
-import { useAutoHighlightTextInput } from '@/composables/useAutoHighlightTextInput.js';
-import { useLoadingState }           from '@/composables/useLoadingState.js';
+import { useLoadingState } from '@/composables/useLoadingState.js';
 
 import {
     HttpError,
@@ -108,8 +108,6 @@ const errorMessage = ref('');
 const submitButtonEl = useTemplateRef('submitButtonEl');
 const inputEl        = useTemplateRef('inputEl');
 const editButtonEl   = useTemplateRef('editButtonEl');
-
-useAutoHighlightTextInput(() => inputEl.value?.innerElement);
 
 const {
     isLoading,
@@ -247,11 +245,11 @@ async function submit() {
 
     &[data-pressed=true] {
         --_fx-hl:   var(--filter-hl-1);
-        --_fx-aura: var(--filter-aura);
+        --_fx-aura: var(--filter-aura-s);
     }
 
-    & > .username-button,
-    & > .username-editor {
+    > .username-button,
+    > .username-editor {
         grid-area: 1 / 1;
     }
 }

@@ -115,7 +115,7 @@ function handleFocus(e) {
     height:         var(--container-height);
     padding-bottom: calc(var(--vp-margin) + var(--shadow-dist-l));
 
-    & > .snack-bar-content {
+    > .snack-bar-content {
         pointer-events: auto;
     }
 }

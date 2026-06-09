@@ -67,8 +67,8 @@ function dialogClosed() {
     border:        var(--border-s);
     border-radius: var(--radius-s);
 
-    & > .inner-border { z-index: 0; }
-    & > .close-button { z-index: 1; }
+    > .inner-border { z-index: 0; }
+    > .close-button { z-index: 1; }
 }
 
 .inner-border {

@@ -89,13 +89,13 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
         border-radius: var(--radius-s);
     }
 
-    & > .tabs-btn--canvas  { grid-area: btn-canvas; }
-    & > .tabs-btn--friends { grid-area: btn-friends; }
+    > .tabs-btn--canvas  { grid-area: btn-canvas; }
+    > .tabs-btn--friends { grid-area: btn-friends; }
     &::before              { grid-area: 1 / 1 / 1 / 6; align-self: center; }
 
     @media (width < 400px) {
         --wd-gap:    8px;
-        --pd-x-tabs: calc(var(--shadow-aura-dist) + var(--shadow-dist-m));
+        --pd-x-tabs: calc(var(--shadow-aura-dist-s) + var(--shadow-dist-m));
         margin: 0 calc(-1 * var(--pd-x-tabs));
 
         &::before {
@@ -130,10 +130,10 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
 
     &[data-is-selected=true] {
         --aura:
-            drop-shadow(0           var(--shadow-aura-dist)  white)
-            drop-shadow(0 calc(-1 * var(--shadow-aura-dist)) white)
-            drop-shadow(          var(--shadow-aura-dist)  0 white)
-            drop-shadow(calc(-1 * var(--shadow-aura-dist)) 0 white);
+            drop-shadow(0           var(--shadow-aura-dist-s)  white)
+            drop-shadow(0 calc(-1 * var(--shadow-aura-dist-s)) white)
+            drop-shadow(          var(--shadow-aura-dist-s)  0 white)
+            drop-shadow(calc(-1 * var(--shadow-aura-dist-s)) 0 white);
 
         --shdw-dist-elevation: 0px;
 

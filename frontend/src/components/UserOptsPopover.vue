@@ -1,18 +1,25 @@
 <template>
     <teleport to="body">
-        <div
-            v-bind="attrs"
-            role="menu"
-            class="user-opts-popover"
-            :hidden="!isExpanded"
-            v-clicked-outside="clickedOutside"
-            v-clicked-outside-except="popoverTarget">
-            <li>
-                <UserOptsPopoverLogOut
-                    :is-pressed="isLoggingOut"
-                    @click="logOut" />
-            </li>
-        </div>
+        <transition name="popover-appear">
+            <menu
+                v-if="isExpanded"
+                v-bind="attrs"
+                class="user-opts-popover"
+                :aria-expanded="isExpanded"
+                v-clicked-outside="tryCollapse"
+                v-clicked-outside-except="popoverTarget"
+                v-roving-container
+                @keydown.tab.exact="tabNext"
+                @keydown.tab.shift="tabPrev">
+                <li>
+                    <UserOptsPopoverLogOut
+                        :is-pressed="isLoggingOut"
+                        @click="logOut"
+                        v-roving-item
+                        v-auto-focus />
+                </li>
+            </menu>
+        </transition>
     </teleport>
 </template>
 
@@ -23,7 +30,8 @@ import {
     watch
 } from 'vue';
 
-import UserOptsPopoverLogOut from './UserOptsPopoverLogOut.vue';
+import UserOptsPopoverLogOut       from './UserOptsPopoverLogOut.vue';
+import { getNextFocusableElement } from '@/core/dom/focusable.js';
 
 defineOptions({
     inheritAttrs: false
@@ -68,11 +76,26 @@ watch([ isExpanded, () => props.popoverTarget ], () => {
 
     clientLeft.value = clientRect.width / 2  + clientRect.left;
     clientTop.value  = clientRect.height     + clientRect.top;
-});
+}, { flush: 'post' });
 
-function clickedOutside() {
+function tryCollapse() {
     if (!isLoggingOut.value)
         isExpanded.value = false;
+}
+
+function tabNext(e) {
+    const a = getNextFocusableElement(props.popoverTarget);
+    if (a != null) {
+        a.focus();
+        e.preventDefault();
+        tryCollapse();
+    }
+}
+
+function tabPrev(e) {
+    props.popoverTarget.focus();
+    e.preventDefault();
+    tryCollapse();
 }
 
 function logOut() {
@@ -105,19 +128,20 @@ function logOut() {
             var(--col-shadow-alpha))
         var(--filter-hl-1);
 
-    transition:
-        scale   80ms,
-        display 80ms allow-discrete;
-
     transform-origin: 50% calc(-3 * var(--border-thickness-s));
 
-    will-change: transform;
-
-    &[hidden]       { scale: 0; }
-    @starting-style { scale: 0; }
-
-    & > li {
+    > li {
         list-style: none;
     }
+}
+
+.popover-appear-enter-active,
+.popover-appear-leave-active {
+    transition: scale 80ms;
+}
+
+.popover-appear-enter-from,
+.popover-appear-leave-to {
+    scale: 0;
 }
 </style>

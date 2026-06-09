@@ -96,8 +96,8 @@ function logIn() {
 
     gap: 8px;
 
-    & > .account-widget-user-drawer-toggle { flex: none; }
-    & > .account-widget-username-badge     { flex: 0 1 auto; }
+    > .account-widget-user-drawer-toggle { flex: none; }
+    > .account-widget-username-badge     { flex: 0 1 auto; }
 }
 
 .user-opts-popover {

@@ -246,14 +246,14 @@ onBeforeUnmount(() => {
     }
 
     &:has(.user-info:focus-visible) {
-        & > .user-info {
+        > .user-info {
             outline: 3px solid black;
             outline-offset: -3px;
         }
     }
 
-    & > .user-info { grid-area: user-info; }
-    & > .buttons   { grid-area: buttons; }
+    > .user-info { grid-area: user-info; }
+    > .buttons   { grid-area: buttons; }
 }
 
 .user-icon {
@@ -279,7 +279,7 @@ onBeforeUnmount(() => {
 
     font-size: 0.8em;
 
-    & > .footnote-icon {
+    > .footnote-icon {
         height:         1em;
         vertical-align: middle;
     }
@@ -294,9 +294,9 @@ onBeforeUnmount(() => {
         "icon footnote" auto /
             auto 1fr;
 
-    & > .user-icon { grid-area: icon;      place-self: center left; }
-    & > .username  { grid-area: username;  place-self: end    left; }
-    & > .footnote  { grid-area: footnote;  place-self: start  left; }
+    > .user-icon { grid-area: icon;      place-self: center left; }
+    > .username  { grid-area: username;  place-self: end    left; }
+    > .footnote  { grid-area: footnote;  place-self: start  left; }
 }
 
 .buttons {
@@ -308,7 +308,7 @@ onBeforeUnmount(() => {
     gap:         7px;
     place-items: center;
 
-    & > .separator {
+    > .separator {
         grid-area: 1 / 1;
     }
 }
@@ -429,9 +429,9 @@ onBeforeUnmount(() => {
             "icon footnote" auto /
              auto 1fr;
 
-        & > .user-icon { grid-area: icon;      place-self: center start; }
-        & > .username  { grid-area: username;  place-self: end start; }
-        & > .footnote  { grid-area: footnote;  place-self: start left; }
+        > .user-icon { grid-area: icon;      place-self: center start; }
+        > .username  { grid-area: username;  place-self: end start; }
+        > .footnote  { grid-area: footnote;  place-self: start left; }
     }
 
     .username {

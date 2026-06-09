@@ -32,28 +32,28 @@ defineProps({
 
 <style scoped>
 .icon-friend-user {
-    & > .st3 {
+    > .st3 {
         transform-origin: center;
         fill:#FFFFFF;
     }
     
-    & > .stroke {
+    > .stroke {
         stroke-width: 4.3px;
     }
 }
 
 .icon-friend-user[data-variant=normal] {
-    & > .st0 { fill: var(--col-orange-4); }
-    & > .st1 { fill: var(--col-orange-8); }
-    & > .st2 { fill: var(--col-orange-0); }
+    > .st0 { fill: var(--col-orange-4); }
+    > .st1 { fill: var(--col-orange-8); }
+    > .st2 { fill: var(--col-orange-0); }
 }
 
 .icon-friend-user[data-variant=vacant] {
-    & > .st0 { fill: var(--col-lt-gray-0); }
-    & > .st1 { fill: var(--col-lt-gray-0); }
-    & > .st2 { fill: var(--col-lt-gray-0); }
+    > .st0 { fill: var(--col-lt-gray-0); }
+    > .st1 { fill: var(--col-lt-gray-0); }
+    > .st2 { fill: var(--col-lt-gray-0); }
 
-    & > .stroke {
+    > .stroke {
         stroke: var(--col-lt-gray-6);
     }
 }

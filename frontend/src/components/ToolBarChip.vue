@@ -84,9 +84,9 @@ function click() {
         var(--outline)
         drop-shadow(3px 3px rgb(0 0 0 / 0.15));
 
-    & > .icon-wrapper { z-index: 1; grid-area: 1 / 1; place-self: end    stretch; }
-    & > .border       { z-index: 0; grid-area: 1 / 1; place-self: center stretch; }
-    & > .sizes        { z-index: 2; grid-area: 1 / 1; place-self: end    center;}
+    > .icon-wrapper { z-index: 1; grid-area: 1 / 1; place-self: end    stretch; }
+    > .border       { z-index: 0; grid-area: 1 / 1; place-self: center stretch; }
+    > .sizes        { z-index: 2; grid-area: 1 / 1; place-self: end    center;}
 
     /*
         White border around base
@@ -118,7 +118,7 @@ function click() {
 
     @media (hover: hover) {
         &:not([data-is-pressed=true], [data-is-busy=true]):is(:active, :hover) {
-            & > .icon-wrapper {
+            > .icon-wrapper {
                 scale: 1.04;
             }
         }
@@ -130,11 +130,11 @@ function click() {
     &:active,
     &[data-is-pressed=true],
     &[data-is-busy=true] {
-        & > .icon-wrapper {
+        > .icon-wrapper {
             translate: 0 var(--shadow-dist-s);
         }
 
-        & > .border {
+        > .border {
             --shdw-dist-elevation: 0px;
         }
     }

@@ -91,8 +91,8 @@ provide(Keys.IsDocumentReady, fontsLoaded);
     flex-flow:      column;
     padding-bottom: calc(var(--shadow-dist-l) * 4);
 
-    & > .navigation-bar { order: 0; z-index: 0; }
-    & > .main-content   { order: 2; z-index: 1; }
+    > .navigation-bar { order: 0; z-index: 0; }
+    > .main-content   { order: 2; z-index: 1; }
 
     /* Flex spacer */
     &::before { order: 1; content: ''; flex: 0 1 20px; }
@@ -106,7 +106,7 @@ provide(Keys.IsDocumentReady, fontsLoaded);
     place-content:  stretch;
     pointer-events: none;
 
-    & > * {
+    > * {
         grid-column:    main;
         margin-left:    var(--vp-margin);
         margin-right:   var(--vp-margin);

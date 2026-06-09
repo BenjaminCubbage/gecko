@@ -326,7 +326,7 @@ function tryMoveSelection(by) {
     &.status--green { color: var(--col-green-7); }
     &.status--blue  { color: var(--col-blue-4); }
 
-    & > .status-dot {
+    > .status-dot {
         display: inline-block;
         height:  0.5em;
         width:   0.5em;
@@ -348,7 +348,7 @@ function tryMoveSelection(by) {
         }
     }
 
-    & > .status-text {
+    > .status-text {
         cursor: default;
     }
 }

@@ -15,8 +15,7 @@ import NavigationBarTabs from './NavigationBarTabs.vue';
 import { Keys }          from '@/core/di/keys.js';
 
 const selectedTab = defineModel('selectedTab');
-
-const session = inject(Keys.SessionStore)
+const session     = inject(Keys.SessionStore);
 </script>
 
 <style scoped>
@@ -32,8 +31,8 @@ const session = inject(Keys.SessionStore)
         "widget tabs ." 60px /
          1fr    auto 1fr;
 
-    & > .widget { grid-area: widget; }
-    & > .tabs   { grid-area: tabs; }
+    > .widget { grid-area: widget; }
+    > .tabs   { grid-area: tabs; }
 
     @media (width < 920px) {
         grid-template:

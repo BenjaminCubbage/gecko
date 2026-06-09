@@ -271,7 +271,7 @@ defineExpose({
     }
 
     &::after    { z-index: 1; }
-    & > .canvas { z-index: 0; }
+    > .canvas { z-index: 0; }
 
     /*
         Using border-radius with overflow: none killed canvas
@@ -291,7 +291,7 @@ defineExpose({
         border-radius: var(--radius-s);
     }
 
-    & > .canvas {
+    > .canvas {
         background:      white;
         image-rendering: pixelated;
         transform:       translateZ(0);

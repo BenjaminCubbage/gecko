@@ -325,9 +325,9 @@ function emitAction2() {
         pointer-events: none;
     }
 
-    & > .details-loading        { z-index: 2; }
-    & > .details-username-plate { z-index: 1; }
-    & > .details-border         { z-index: 0; }
+    > .details-loading        { z-index: 2; }
+    > .details-username-plate { z-index: 1; }
+    > .details-border         { z-index: 0; }
 }
 
 .details-border {
@@ -355,12 +355,12 @@ function emitAction2() {
         inset -17px -9px var(--col-lt-gray-4);
 
     align-items: center;
-    & > .border-title {
+    > .border-title {
         align-self: stretch;
     }
 
-    & > *               { z-index: 0; }
-    & > .details-loading { z-index: 1; }
+    > *               { z-index: 0; }
+    > .details-loading { z-index: 1; }
 }
 
 .details-loading {
@@ -380,14 +380,14 @@ function emitAction2() {
     color: var(--col-orange-7);
 
     &::before,
-    & > .loading-dots::before,
+    > .loading-dots::before,
     &::after {
         content: '\f510';
         animation: details-loading-spinner 800ms calc(100ms * var(--i)) steps(2, end) infinite;
     }
 
     &::before                 { --i: 0; color: var(--col-orange-4) }
-    & > .loading-dots::before { --i: 1; color: var(--col-orange-5) }
+    > .loading-dots::before { --i: 1; color: var(--col-orange-5) }
     &::after                  { --i: 2; color: var(--col-orange-6) }
 }
 

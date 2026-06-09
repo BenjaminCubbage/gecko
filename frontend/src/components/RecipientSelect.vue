@@ -135,8 +135,8 @@ function getDeviceStatusLabel(device) {
     display:       grid;
     height:        140px;
 
-    & > .carousels                      { place-self: stretch; }
-    & > .recipient-select-log-in-prompt { place-self: center; }
+    > .carousels                      { place-self: stretch; }
+    > .recipient-select-log-in-prompt { place-self: center; }
 }
 
 .carousels {
@@ -164,11 +164,11 @@ function getDeviceStatusLabel(device) {
 
     translate: -12px 13px;
 
-    & > .st0{ fill: var(--col-green-3); }
-    & > .st1{ fill: var(--col-green-0); }
-    & > .st2{ fill: var(--col-green-4); }
+    > .st0{ fill: var(--col-green-3); }
+    > .st1{ fill: var(--col-green-0); }
+    > .st2{ fill: var(--col-green-4); }
 
-    & > .st0{
+    > .st0{
         stroke-width: 6.5px;
     }
 }

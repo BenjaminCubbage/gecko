@@ -29,7 +29,7 @@ defineProps({
 <style scoped>
 .icon-arrow {
     &[data-direction=left] {
-        & > .arrow {
+        > .arrow {
             rotate: 180deg;
         }
 

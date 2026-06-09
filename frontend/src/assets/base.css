@@ -56,10 +56,7 @@ body {
     pointer-events: none;
 }
 
-*:not(
-    a,
-    button
-) {
+* {
     contain: layout;
 }
 
