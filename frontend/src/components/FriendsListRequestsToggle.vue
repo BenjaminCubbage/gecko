@@ -5,7 +5,8 @@
                 toggle-input
                 shdw shdw--inst-white shdw--otst-orange shdw--recessed"
             v-model="isChecked"
-            type="checkbox" />
+            type="checkbox"
+            @keydown.enter="isChecked = !isChecked" />
         Hide requests
     </label>
 </template>

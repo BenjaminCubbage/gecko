@@ -37,6 +37,7 @@
                 :disabled="!isValidInput || isLoading"
                 :data-is-spinning="isSpinning"
                 aria-label="Submit username"
+                tabindex="-1"
                 @blur="blur"
                 @click="submit">
             </button>

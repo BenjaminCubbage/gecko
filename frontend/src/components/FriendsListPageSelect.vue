@@ -1,13 +1,17 @@
 <template>
-    <div class="
-        friends-list-page-select
-        shdw shdw--otst-orange">
+    <div 
+        role="menu"
+        class="
+            friends-list-page-select
+            shdw shdw--otst-orange">
         <button
             class="
                 select-btn select-btn--left
                 shdw shdw--inst-orange shdw--elevated-m
                 txtr-diag txtr-diag--orange"
             :disabled="!hasPrev"
+            aria-label="Next page"
+            tabindex="-1"
             @click="pagePrev">
         </button>
 
@@ -15,7 +19,14 @@
             class="
                 select-display
                 txtr-vert txtr-vert--lt-gray
-                shdw shdw--inst-lt-gray shdw--elevated-m">
+                shdw shdw--inst-lt-gray shdw--elevated-m"
+            :aria-valuenow="selectedPage + 1"
+            :aria-valuemin="1"
+            :aria-valuemax="pageCount"
+            :aria-label="`Page ${selectedPage + 1} of ${pageCount}`"
+            tabindex="0"
+            @keydown.right="pageNext"
+            @keydown.left="pagePrev">
             {{ selectedPage + 1 }} / {{ pageCount }}
         </span>
 
@@ -25,6 +36,8 @@
                 shdw shdw--inst-orange shdw--elevated-m
                 txtr-diag txtr-diag--orange"
             :disabled="!hasNext"
+            aria-label="Previous page"
+            tabindex="-1"
             @click="pageNext">
         </button>
     </div>
@@ -137,5 +150,11 @@ function pageNext() { selectedPage.value = Math.min(selectedPage.value + 1, prop
 
     translate:
         0 calc(-1 * var(--shdw-dist-elevation));
+
+    &:focus-visible {
+        z-index:        3;
+        outline:        3px solid white;
+        outline-offset: 3px;
+    }
 }
 </style>

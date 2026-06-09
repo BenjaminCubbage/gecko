@@ -4,6 +4,20 @@
     Call all 3 functions to clear the whole screen
 */
 export class CanvasClear {
+    static clearWithoutAnimation(canvas) {
+        const ctx = canvas?.getContext('2d');
+
+        if (import.meta.env.DEV && (!canvas || !ctx)) {
+            console.error('[CanvasClear]: Canvas wasn\'t defined');
+            return;
+        }
+
+        ctx.save();
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.restore();
+    }
+
     static clear1(canvas) { this._clear(canvas, 3, 1); }
     static clear2(canvas) { this._clear(canvas, 3, 2); }
     static clear3(canvas) { this._clear(canvas, 3, 3); }
@@ -11,13 +25,8 @@ export class CanvasClear {
     static _clear(canvas, iterationCount, iteration) {
         const ctx = canvas?.getContext('2d');
 
-        if (!canvas) {
-            console.warn('canvas was null or undefined.');
-            return;
-        }
-
-        if (!ctx) {
-            console.warn('`canvas?.getContext("2d")` was null or undefined.');
+        if (import.meta.env.DEV && (!canvas || !ctx)) {
+            console.error('[CanvasClear]: Canvas wasn\'t defined');
             return;
         }
 

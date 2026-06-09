@@ -2,7 +2,8 @@
     <div
         class="
             friends-list-view
-            shdw shdw--otst-orange">
+            shdw shdw--otst-orange"
+        v-roving-container>
         <div
             class="
                 view-outer
@@ -14,8 +15,13 @@
                     shdw shdw--inst-lt-gray">
             </span>
 
+            <!-- 
+                I am keying by index on purpose, it is the
+                behavior I want.
+            -->
             <button
-                v-for="friend in friends"
+                v-for="(friend, index) in friends"
+                :key="index"
                 class="outer-item"
                 :data-state="
                     friend != null ?
@@ -23,7 +29,10 @@
                             ? 'selected'
                             : 'unselected'
                         : 'empty'"
-                @click="friend != null && (selectedFriend = friend)">
+                @click="friend != null && (selectedFriend = friend)"
+                :tabindex=    "friend != null || index === 0 ? 0 : -1"
+                v-roving-item="friend != null || index === 0"
+                :aria-label=  "friend != null ? `@${friend.user.username}` : 'Empty friend slot'">
                 <span
                     class="
                         item-gutter item-gutter--l

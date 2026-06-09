@@ -1,21 +1,34 @@
 <template>
-    <div class="friends-list-mode-tabs">
-        <button 
-            class="tab tab--list"
-            :data-is-selected="mode === 'list'"
-            @click="mode = 'list'">
-            <span class="tab-icon shdw shdw--inst-orange"></span>
-            <span class="tab-text tab-text--friends shdw shdw--inst-orange txtr-vert txtr-vert--orange">Friends</span>
-        </button>
+    <menu 
+        class="friends-list-mode-tabs"
+        v-roving-container
+        v-roving-home="mode === 'list' ? 0 : 1">
+        <li>
+            <button 
+                class="tab tab--list"
+                :data-is-selected="mode === 'list'"
+                v-roving-item
+                @click="mode = 'list'">
+                <span class="tab-icon shdw shdw--inst-orange"></span>
+                <span class="tab-text tab-text--friends shdw shdw--inst-orange txtr-vert txtr-vert--orange">
+                    Friends
+                </span>
+            </button>
+        </li>
 
-        <button
-            class="tab tab--search"
-            :data-is-selected="mode === 'search'"
-            @click="mode = 'search'">
-            <span class="tab-icon shdw shdw--inst-green"></span>
-            <span class="tab-text tab-text--search shdw shdw--inst-green txtr-vert txtr-vert--green">Search</span>
-        </button>
-    </div>
+        <li>
+            <button
+                class="tab tab--search"
+                :data-is-selected="mode === 'search'"
+                v-roving-item
+                @click="mode = 'search'">
+                <span class="tab-icon shdw shdw--inst-green"></span>
+                <span class="tab-text tab-text--search shdw shdw--inst-green txtr-vert txtr-vert--green">
+                    Search
+                </span>
+            </button>
+        </li>
+    </menu>
 </template>
 
 <script setup>
@@ -44,6 +57,10 @@ const mode = defineModel('mode', {
     gap:     18px;
 
     padding: var(--pd-tabs);
+
+    > li {
+        list-style: none;
+    }
 }
 
 .tab {
@@ -73,6 +90,11 @@ const mode = defineModel('mode', {
 
     > .tab-icon { z-index: 1; }
     > .tab-text { z-index: 0; }
+
+    &:focus-visible {
+        outline:        3px solid white;
+        outline-offset: 2px;
+    }
 
     &[data-is-selected=true] {
         translate:   0 var(--shadow-dist-xs);

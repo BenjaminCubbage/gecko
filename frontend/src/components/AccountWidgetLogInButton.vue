@@ -92,7 +92,7 @@ defineProps({
     place-content: center;
 
     -webkit-text-stroke: var(--text-stroke-s);
-    font:                2.4rem var(--font-main);
+    font:                2.6rem var(--font-main);
     letter-spacing:      0.02em;
 
     padding: 0 16px;

@@ -107,7 +107,7 @@ onMounted(() => {
     ctx.value.fillStyle             = 'white';
     ctx.value.lineCap               = 'round';
     ctx.value.imageSmoothingEnabled = false;
-    clear();
+    clear(false);
 });
 
 function clientToPixelCoords({ clientX, clientY }) {
@@ -225,9 +225,14 @@ function stopDragging() {
     queuedLines.length = 0;
 }
 
-async function clear() {
-    if (!ctx.value)
+async function clear(animate = true) {
+    if (!canvasEl.value)
         return;
+
+    if (!animate) {
+        CanvasClear.clearWithoutAnimation(canvasEl.value);
+        return;
+    }
 
     isClearing.value = true;
     CanvasClear.clear1(canvasEl.value);
