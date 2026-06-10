@@ -53,6 +53,8 @@ set(src_files
     "${src_dir}/gecko/http/ParseHeader.h"
     "${src_dir}/gecko/http/RespondWithError.cpp"
     "${src_dir}/gecko/http/RespondWithError.h"
+    "${src_dir}/gecko/http_policy/CORSPolicy.cpp"
+    "${src_dir}/gecko/http_policy/CORSPolicy.h"
     "${src_dir}/gecko/json/MergePatch.cpp"
     "${src_dir}/gecko/json/MergePatch.h"
     "${src_dir}/gecko/middleware/HasAnyMultipartFormData.cpp"

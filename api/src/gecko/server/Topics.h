@@ -30,9 +30,9 @@ namespace Gecko::API::Server
         bool Start();
 
       private:
-        Env::Env*     m_env;
-
+        Env::Env*        m_env;
         MQTT::MQTTClient m_mqttClient;
+        
         API::Topics::DevicesHeartbeatTopic m_devicesHeartbeatTopic;
         API::Topics::LatestImageTopic      m_latestImageTopic;
     };

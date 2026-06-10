@@ -11,7 +11,12 @@ export class HttpRequest {
         this.xhr.addEventListener('abort', this._onNetworkError.bind(this));
         this.xhr.addEventListener('error', this._onNetworkError.bind(this));
 
+        /*
+            TODO: We are including credentials by default which is a
+            bad idea
+        */
         this.xhr.open(method, url);
+        this.xhr.withCredentials = true;
         this.xhr.responseType = responseType ?? "text";
 
         if (body?.constructor != FormData)

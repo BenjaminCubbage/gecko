@@ -1,8 +1,9 @@
 <template>
-    <header class="navigation-bar">
-        <AccountWidget     class="widget" />
+    <header
+        class="navigation-bar"
+        :data-enable-nav="session.state.value === 'ready'">
+        <AccountWidget class="widget" />
         <NavigationBarTabs
-            v-if="session.state.value === 'ready'"
             class="tabs"
             v-model="selectedTab" />
     </header>
@@ -20,15 +21,29 @@ const session     = inject(Keys.SessionStore);
 
 <style scoped>
 .navigation-bar {
-    display: grid;
+    --_ht-nav-row: 60px;
+
+    display:     grid;
+    align-items: center;
 
     padding: 8px var(--vp-margin);
     gap:     8px;
 
     align-items: center;
+}
 
+.navigation-bar[data-enable-nav=false] {
+    grid-template-rows: 60px;
+    justify-items:      center;
+
+    > .tabs {
+        display: none;
+    }
+}
+
+.navigation-bar[data-enable-nav=true] {
     grid-template:
-        "widget tabs ." 60px /
+        "widget tabs ." var(--_ht-nav-row) /
          1fr    auto 1fr;
 
     > .widget { grid-area: widget; }

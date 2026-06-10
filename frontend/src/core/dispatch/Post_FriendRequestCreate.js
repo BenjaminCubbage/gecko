@@ -4,7 +4,7 @@ export class Post_FriendRequestCreate extends HttpRequest {
     constructor(userID, xsrfToken, otherUserID) {
         super(
             'POST',
-            `/api/users/${userID}/friend-requests`,
+            `${import.meta.env.VITE_BACKEND_ORIGIN}/api/users/${userID}/friend-requests`,
             { 'user_id': otherUserID },
             [ { name: 'X-XSRF-TOKEN', value: xsrfToken } ]
         );

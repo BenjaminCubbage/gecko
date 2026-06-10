@@ -9,6 +9,6 @@ export class Get_XSRF extends HttpRequest {
     // XSRF token should be included in all
     // non-GET ops.
     constructor() {
-        super('GET', '/auth/xsrf');
+        super('GET', `${import.meta.env.VITE_BACKEND_ORIGIN}/auth/xsrf`);
     }
 }

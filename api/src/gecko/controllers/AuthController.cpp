@@ -26,7 +26,6 @@ namespace Gecko::API::Controllers
     thread_local Json::FastWriter AuthController::s_jsonWriter{};
     thread_local httplib::Client  AuthController::s_accountsGoogleComClient{ "https://accounts.google.com" };
 
-
     void AuthController::Attach(httplib::Server& server)
     {
         server.Get("/auth/login", [this](const httplib::Request& req, httplib::Response& res) {
@@ -50,7 +49,6 @@ namespace Gecko::API::Controllers
         });
     }
 
-
     void AuthController::Handle_GET_LogIn(const httplib::Request& req, httplib::Response& res)
     {
         const std::string nonce = Rand::UUID::GenerateUUID();
@@ -59,7 +57,7 @@ namespace Gecko::API::Controllers
         (
             "https://accounts.google.com/o/oauth2/v2/auth"
             "?response_type=code"
-            "&redirect_uri=https://localhost:3000/auth/oauth-callback"
+            "&redirect_uri=https://localhost:3001/auth/oauth-callback"
             "&client_id={}"
             "&scope=openid"
             "&state={}"
@@ -85,7 +83,6 @@ namespace Gecko::API::Controllers
         res.set_redirect(httplib::encode_uri(uri));
     }
 
-
     void AuthController::Handle_POST_LogOut(const httplib::Request& req, httplib::Response& res)
     {
         int userID{};
@@ -110,7 +107,6 @@ namespace Gecko::API::Controllers
         res.set_header("Set-Cookie", expireCookie);
     }
 
-
     void AuthController::Handle_GET_OAuthCallback(const httplib::Request &req, httplib::Response &res)
     {
         std::string code;
@@ -119,7 +115,7 @@ namespace Gecko::API::Controllers
         if (!Middleware::IsSuccessfulOAuthCallback{}(req, res, &code, &state) ||
             !Middleware::HasValidOAuthXSRFNonce{}(req, res, state))
         {
-            res.set_redirect("/");
+            res.set_redirect("https://localhost:3000/");
             return;
         }
 
@@ -139,7 +135,7 @@ namespace Gecko::API::Controllers
             (
                 "/o/oauth2/token"
                 "?grant_type=authorization_code"
-                "&redirect_uri=https://localhost:3000/auth/oauth-callback"
+                "&redirect_uri=https://localhost:3001/auth/oauth-callback"
                 "&client_id={}"
                 "&client_secret={}"
                 "&code={}"
@@ -224,7 +220,7 @@ namespace Gecko::API::Controllers
             );
 
             res.set_header("Set-Cookie", authCookie);
-            res.set_redirect("/");
+            res.set_redirect("https://localhost:3000/");
             return;
         }
         catch (...)
@@ -233,7 +229,6 @@ namespace Gecko::API::Controllers
             return;
         }
     }
-
 
     void AuthController::Handle_POST_Refresh(const httplib::Request &req, httplib::Response &res)
     {

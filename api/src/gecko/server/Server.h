@@ -37,7 +37,7 @@ namespace Gecko::API::Server
         bool Start();
 
       private:
-        Env::Env      m_env;
+        Env::Env m_env;
 
         Thread::ThreadPool m_threadPool;
         Thread::Scheduler  m_scheduler;

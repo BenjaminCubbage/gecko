@@ -4,21 +4,22 @@ import mkcert from 'vite-plugin-mkcert';
 import path from "path";
 
 // https://vite.dev/config/
-export default defineConfig({
-    plugins: [ mkcert(), vue({
+export default {
+    plugins: [mkcert(), vue({
         template: {
             compilerOptions: {
                 whitespace: 'preserve'
             }
         }
-    }) ],
-    //    Development only:
-    //    Listen on port 3000. API / Auth Server is expected to be running on 3001.
+    })],
     resolve: {
         alias: {
             '@': path.resolve(import.meta.dirname, 'src')
         }
     },
+    envDir: './env',
+    // Development only:
+    // Listen on port 3000. API / Auth Server is expected to be running on 3001.
     server: {
         port: 3000,
         proxy: {
@@ -35,4 +36,4 @@ export default defineConfig({
             }
         }
     }
-});
+};
