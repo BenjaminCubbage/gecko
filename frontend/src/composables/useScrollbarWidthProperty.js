@@ -11,7 +11,7 @@ export function useScrollbarWidthProperty() {
         document.body.append(el);
         const scrollbarWidth = el.offsetWidth - el.clientWidth;
         el.remove();
-        
+
         document.documentElement.style.setProperty(
             '--scrollbar-width', `${scrollbarWidth}px`);
     }

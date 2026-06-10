@@ -27,7 +27,7 @@
     --shdw-dist-elevation: 0px;
     --shdw-dist-mult:      1;
     --shdw-dist:           var(--shadow-dist-m);
-    
+
     --shdw-col-elevation: black;
 
     --shdw-otst-1: #0000;
@@ -44,7 +44,7 @@
         calc(var(--shdw-dist) * var(--shdw-dist-mult))      calc(var(--shdw-dist) * var(--shdw-dist-mult))      var(--shdw-otst-2),
 
         0 var(--shdw-dist-elevation) var(--shdw-col-elevation),
-        
+
         var(--shdw-etc);
 }
 

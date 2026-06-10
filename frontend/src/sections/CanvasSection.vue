@@ -12,7 +12,7 @@
 </template>
 
 <script setup>
-import { 
+import {
     ref,
     inject
 } from 'vue';

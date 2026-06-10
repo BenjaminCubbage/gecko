@@ -1,4 +1,4 @@
-import { 
+import {
     createApp,
     watch
 } from 'vue';

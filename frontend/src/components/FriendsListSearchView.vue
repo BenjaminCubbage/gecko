@@ -86,7 +86,7 @@ const isInputFocused  = ref(false);
 const isFocused = computed(() =>
     isButtonFocused.value || isInputFocused.value);
 
-const isValidInput = computed(() => 
+const isValidInput = computed(() =>
     isValidUsername(searchInput.value));
 
 function trySubmit() {
@@ -106,8 +106,9 @@ function trySubmit() {
     flex-flow: column;
     gap:       6px;
 
-    > *            { align-self: stretch; }
-    > .view-arrows { align-self: center; }
+    > .view-arrows {
+        align-self: center;
+    }
 }
 
 .view-arrows {
@@ -134,13 +135,13 @@ function trySubmit() {
     border-radius: var(--radius-s);
 
     &[data-is-focused=true] {
-        > .bar-field, 
+        > .bar-field,
         > .bar-btn {
             --shdw-etc: unset;
         }
 
         box-shadow: none;
-        filter: 
+        filter:
             var(--filter-aura-l)
             drop-shadow(
                 var(--shadow-dist-m)

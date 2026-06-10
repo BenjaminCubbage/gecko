@@ -33,7 +33,7 @@ defineExpose({
         transform-origin: center;
         fill:             #FFFFFF;
     }
-    
+
     > .stroke {
         stroke-width: 4.3px;
     }

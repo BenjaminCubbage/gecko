@@ -411,6 +411,7 @@ function emitAction2() {
     line-height:   0.6;
     overflow-wrap: break-word;
     text-align:    center;
+    cursor:        text;
 }
 
 .border-status {

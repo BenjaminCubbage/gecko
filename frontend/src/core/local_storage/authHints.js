@@ -14,7 +14,7 @@ export class AuthHints {
     }
 
     static setIsPossiblyAuthenticatedHint(value) {
-        void (value 
+        void (value
             ? localStorage.setItem(keys.isPossiblyAuthenticatedHint, '1')
             : localStorage.removeItem(keys.isPossiblyAuthenticatedHint));
     }

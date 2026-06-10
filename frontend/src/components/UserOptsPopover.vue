@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-import { 
+import {
     ref,
     useAttrs,
     watch
@@ -51,14 +51,14 @@ const isExpanded = defineModel('is-expanded', {
     default: true
 });
 
-const emit = defineEmits([ 
-    'logOut' 
+const emit = defineEmits([
+    'logOut'
 ]);
 
 const attrs = useAttrs();
 
-/* 
-    Popover position (bottom-center of target) in px 
+/*
+    Popover position (bottom-center of target) in px
 */
 const clientLeft = ref(0);
 const clientTop  = ref(0);
@@ -103,7 +103,7 @@ function logOut() {
         return;
 
     isLoggingOut.value = true;
-    emit('logOut', () => 
+    emit('logOut', () =>
         isLoggingOut.value = false);
 }
 </script>

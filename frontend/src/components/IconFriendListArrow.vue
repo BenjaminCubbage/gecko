@@ -1,5 +1,5 @@
 <template>
-    <svg 
+    <svg
         class="icon-list-arrow"
         :data-direction="direction"
         :data-variant="variant"

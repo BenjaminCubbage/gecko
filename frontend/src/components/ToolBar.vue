@@ -12,7 +12,7 @@
         <li><ToolBarChipPenSize v-model="penSize"      v-roving-item /></li>
         <li><ToolBarChipEraser  v-model="isErasing"    v-roving-item /></li>
         <li><ToolBarChipClear   @click="emit('clear')" v-roving-item /></li>
-    
+
         <li v-if="!isSendDisabled">
             <ToolBarChipSend v-roving-item @click="emit('send')" />
         </li>
@@ -46,11 +46,11 @@ const isErasing = defineModel('isErasing', { type: Boolean, required: true });
     display: flex;
     gap:     18px;
     padding: 0 24px;
-    
+
     background:    var(--col-lt-gray-4);
     border:        var(--border-s);
     border-radius: var(--radius-s);
-    
+
     --shdw-etc:
         inset  3px  3px var(--col-lt-gray-0),
         inset -3px -3px var(--col-gray-4);

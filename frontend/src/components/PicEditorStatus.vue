@@ -11,7 +11,7 @@
                 {{ statusText }}
             </span>
         </transition>
-        
+
         <output
             class="util-sr-only"
             aria-atomic="true">

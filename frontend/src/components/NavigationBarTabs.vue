@@ -132,7 +132,7 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
             --_fx-hl: var(--filter-hl-0);
         }
     }
-    
+
     &::before,
     &::after {
         z-index: -1;

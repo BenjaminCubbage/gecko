@@ -16,7 +16,7 @@
                     shdw shdw--inst-lt-gray">
             </span>
 
-            <!-- 
+            <!--
                 I am keying by index on purpose, it is the
                 behavior I want.
             -->
@@ -279,7 +279,7 @@ watch(() => props.friends, () => {
     background:
         linear-gradient(
             rgb(255 255 255 / 0.4) 50%,
-            #0000                  50%) 
+            #0000                  50%)
         center / calc(100% - 2 * var(--shadow-dist-m)) 100% no-repeat;
     box-shadow:
         calc(-1 * var(--shadow-dist-m)) 0 black,

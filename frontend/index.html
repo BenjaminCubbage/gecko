@@ -31,18 +31,18 @@
             background:
                 repeating-conic-gradient(from 4.05deg,
                     var(--rays-mask) 0deg    12.2deg,
-                    transparent      12.2deg 22.5deg) 
+                    transparent      12.2deg 22.5deg)
                     center / 100%,
-                radial-gradient(circle at calc(50% + var(--dots-size)) calc(0% + var(--dots-size)),  var(--dots-col) var(--dots-size), transparent var(--dots-size)) 
+                radial-gradient(circle at calc(50% + var(--dots-size)) calc(0% + var(--dots-size)),  var(--dots-col) var(--dots-size), transparent var(--dots-size))
                     center / var(--dots-spacing-x) var(--dots-spacing-y),
-                radial-gradient(circle at calc(0% + var(--dots-size))  calc(50% + var(--dots-size)), var(--dots-col) var(--dots-size), transparent var(--dots-size)) 
+                radial-gradient(circle at calc(0% + var(--dots-size))  calc(50% + var(--dots-size)), var(--dots-col) var(--dots-size), transparent var(--dots-size))
                     center / var(--dots-spacing-x) var(--dots-spacing-y)
                 var(--dots-bg);
 
             background-blend-mode: multiply, normal, normal;
         }
     </style>
-    
+
     <script src="wasm/compression.js" defer crossorigin></script>
     <script type="module" src="/src/main.js" defer></script>
 </html>

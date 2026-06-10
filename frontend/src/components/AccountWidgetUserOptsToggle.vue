@@ -1,6 +1,6 @@
 <template>
-    <button 
-        ref="innerEl" 
+    <button
+        ref="innerEl"
         class="
             account-widget-user-drawer-toggle
             txtr-vert txtr-vert--green
@@ -39,12 +39,12 @@ defineExpose({
     align-items:     end;
     justify-content: center;
     overflow-y:      clip;
-            
-    filter: 
+
+    filter:
         var(--_fx-hl,)
         drop-shadow(
-            var(--shadow-dist-m) 
-            var(--shadow-dist-m) 
+            var(--shadow-dist-m)
+            var(--shadow-dist-m)
             var(--col-shadow-alpha));
 
     &:hover,

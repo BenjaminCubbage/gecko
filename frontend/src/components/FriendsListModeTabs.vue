@@ -1,10 +1,10 @@
 <template>
-    <menu 
+    <menu
         class="friends-list-mode-tabs"
         v-roving-container
         v-roving-home="mode === 'list' ? 0 : 1">
         <li>
-            <button 
+            <button
                 class="tab tab--list"
                 :data-is-selected="mode === 'list'"
                 v-roving-item
@@ -68,7 +68,7 @@ const mode = defineModel('mode', {
     align-items: center;
     gap:         8px;
 
-    filter: 
+    filter:
         var(--_fx-elevation,)
         drop-shadow(
             var(--shadow-dist-s)
@@ -101,7 +101,7 @@ const mode = defineModel('mode', {
     &[data-is-selected=true] {
         translate:   0 var(--shadow-dist-xs);
         --_fx-elevation: unset;
-        
+
         > .tab-icon,
         > .tab-text {
             --shdw-etc: var(--shadow-aura);
@@ -116,14 +116,14 @@ const mode = defineModel('mode', {
     height:      1ex;
     line-height: 1ex;
     user-select: none;
-    
+
     translate: 0.01em -0.035em;
     rotate:    45deg;
-    
-    text-shadow: 
+
+    text-shadow:
         calc(-1 * var(--shadow-dist-xs)) calc(-1 * var(--shadow-dist-xs)) var(--col-shdw-1),
                   var(--shadow-dist-xs)            var(--shadow-dist-xs)  var(--col-shdw-2);
-                        
+
     display:       grid;
     place-content: center;
 
@@ -135,7 +135,7 @@ const mode = defineModel('mode', {
 
     border-top-right-radius: 8px;
     corner-top-right-shape:  bevel;
-    
+
     background:
         linear-gradient(to bottom right,
             var(--col-grad-1) 50%,
@@ -150,10 +150,10 @@ const mode = defineModel('mode', {
     padding: 3px 8px;
 
     border: var(--border-s);
-    border-radius: 
-        0 
-        var(--radius-s) 
-        var(--radius-s) 
+    border-radius:
+        0
+        var(--radius-s)
+        var(--radius-s)
         0;
 
     margin-left:  -24px;

@@ -65,7 +65,7 @@ export class SessionStore {
     */
     async requestResync() {
         if (!AuthHints.getIsPossiblyAuthenticatedHint()) {
-            /* 
+            /*
                 Don't enter loading state if we haven't authenticated.
             */
             this.#state.value = 'loggedout';

@@ -223,7 +223,7 @@ function itemKeyDown(e) {
     case 'ArrowDown':
     case 'ArrowRight':
     {
-        const item = 
+        const item =
             getNextItem(e.currentTarget,
                 e.key === 'ArrowDown' ||
                 e.key === 'ArrowRight');

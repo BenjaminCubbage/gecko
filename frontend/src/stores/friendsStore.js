@@ -16,9 +16,9 @@ import { Dispatch }           from '@/core/dispatch/Dispatch.js';
 import { equalsIgnoreCase }   from '@/core/string/equalsIgnoreCase.js';
 import { MultiResourceMutex } from '@/core/async/mutex.js';
 
-import { 
-    FriendStatus, 
-    Friend 
+import {
+    FriendStatus,
+    Friend
 } from '@/models/friend.js';
 
 /*
@@ -187,7 +187,7 @@ export class FriendsStore {
             });
 
             FriendsStore.#unshiftToArr(
-                this.#friends, 
+                this.#friends,
                 Friend.fromUser(targetUser, FriendStatus.PendingOutgoing));
         } finally {
             this.#mutex.unlock(targetUser.userID);

@@ -122,9 +122,9 @@ input {
     appearance: none;
 }
 
-a, 
-button, 
-input[type=checkbox], 
+a,
+button,
+input[type=checkbox],
 label:has(> input[type=checkbox]) {
     cursor: pointer;
 

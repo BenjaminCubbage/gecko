@@ -10,7 +10,7 @@
 
     --txtr-vert-stop: 50%;
 
-    background: 
+    background:
         linear-gradient(
             var(--txtr-vert-col-1) var(--txtr-vert-stop),
             var(--txtr-vert-col-2) var(--txtr-vert-stop));

@@ -58,7 +58,7 @@ defineExpose({ animateLaunch });
     overflow: visible;
 
     transform:
-        perspective(200px) 
+        perspective(200px)
         rotateX(var(--rocket-wiggle-pitch));
 }
 

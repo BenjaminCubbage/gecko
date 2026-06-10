@@ -49,7 +49,7 @@
             <template v-if="selectedOptionLabel">
                 {{ selectedOptionLabel }}
             </template>
-            
+
             <LoadingSpinner v-else class="loading-spinner" />
         </span>
 
@@ -265,8 +265,8 @@ function tryMoveSelection(by) {
     border-radius: var(--radius-s);
     border:        var(--border-s);
 
-    translate: 
-        0 
+    translate:
+        0
         calc(var(--shadow-dist-s) - var(--shdw-dist-elevation));
 
     &.arrow--left {

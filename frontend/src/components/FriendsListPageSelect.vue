@@ -1,5 +1,5 @@
 <template>
-    <div 
+    <div
         role="menu"
         class="
             friends-list-page-select
@@ -67,7 +67,7 @@ const selectedPage = defineModel('selectedPage', {
 });
 
 watch(() => props.pageCount, newValue =>
-    selectedPage.value = Math.min(selectedPage.value, newValue - 1), 
+    selectedPage.value = Math.min(selectedPage.value, newValue - 1),
     { immediate: true });
 
 const hasPrev = computed(() => selectedPage.value > 0);
@@ -150,8 +150,8 @@ function pageNext() { selectedPage.value = Math.min(selectedPage.value + 1, prop
     border: var(--border-s);
 
     -webkit-text-stroke: var(--text-stroke-s);
-    font:                bold 2rem var(--font-main);
-    word-spacing:        0.1em;
+    font:                2.1rem var(--font-main);
+    word-spacing:        0.05em;
     user-select:         none;
 
     translate:

@@ -32,8 +32,8 @@ import { GIBToCanvas } from '@/core/canvas_gib/gibToCanvas.js';
 import { delay }       from '@/core/async/delay.js';
 
 const props = defineProps({
-    penSize: { 
-        type:    String, 
+    penSize: {
+        type:    String,
         default: 'small',
         validator(value) {
             return [
@@ -44,8 +44,8 @@ const props = defineProps({
         }
     },
 
-    isErasing: { 
-        type:    Boolean, 
+    isErasing: {
+        type:    Boolean,
         default: false
     }
 });
@@ -256,7 +256,7 @@ defineExpose({
 <style scoped>
 .canvas-frame {
     contain: inline-size;
-    
+
     display:        flex;
     flex-direction: column;
     gap:            12px;
@@ -283,8 +283,8 @@ defineExpose({
 
         position: absolute;
         inset:    var(--shadow-dist-m);
-        
-        --shdw-etc: 
+
+        --shdw-etc:
             0 0 0 7px var(--col-green-3);
 
         border:        var(--border-s);

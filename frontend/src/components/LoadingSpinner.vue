@@ -1,5 +1,5 @@
 <template>
-    <span 
+    <span
         class="loading-spinner"
         inert>
         <span class="spinner-dots"></span>
@@ -43,7 +43,7 @@ defineProps({
     &::before               { --i: 0; color: var(--_col-dots-1); }
     > .spinner-dots::before { --i: 1; color: var(--_col-dots-2); }
     &::after                { --i: 2; color: var(--_col-dots-3); }
-    
+
     &::before,
     &::after,
     > .spinner-dots::before {

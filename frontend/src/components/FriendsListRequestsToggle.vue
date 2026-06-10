@@ -34,11 +34,11 @@ const isChecked = defineModel('isChecked', {
     font-size:   1.6rem;
 
     translate: 0 var(--ofst-y-txt);
-    
+
     @media (hover: hover) {
         &:hover > .toggle-input {
-            background: var(--col-lt-gray-3);        
-        }   
+            background: var(--col-lt-gray-3);
+        }
     }
 }
 
@@ -48,7 +48,7 @@ const isChecked = defineModel('isChecked', {
 
     width:  var(--sz-checkbox);
     height: var(--sz-checkbox);
-    
+
     border:        var(--border-s);
     border-radius: var(--radius-s);
 

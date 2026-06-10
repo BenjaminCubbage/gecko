@@ -116,7 +116,7 @@ const friendsPage = computed(oldValue => {
 const selectedIndex = computed(() =>
     friendsPage.value?.indexOf(selectedFriend.value) ?? -1);
 
-const absoluteSelectedIndex = computed(() => 
+const absoluteSelectedIndex = computed(() =>
     filteredFriends.value.indexOf(selectedFriend.value) ?? -1);
 
 /*
@@ -204,13 +204,13 @@ watch(selectedTab, () => {
 });
 
 watch([selectedIndex, selectedPage], (
-    [newIndex, newPage], 
+    [newIndex, newPage],
     [oldIndex, oldPage]) => {
         /* Normalize -1 -> 0 */
         oldIndex = Math.max(oldIndex, 0);
 
-        if (newPage != oldPage) 
-            detailsSlideDirection.value = newPage < oldPage 
+        if (newPage != oldPage)
+            detailsSlideDirection.value = newPage < oldPage
                 ? 'forwards' : 'backwards';
         else if (newIndex != oldIndex)
             detailsSlideDirection.value = newIndex < oldIndex
