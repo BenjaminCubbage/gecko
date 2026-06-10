@@ -21,12 +21,12 @@ import {
     Usually the set value should be the same as the source value,
     though it doesn't technically need to be.
 */
-export function useThrottledRef(source, ms) {
+export function useThrottledRef(sourceRef, ms) {
     let timeOfLastFlush = -Infinity;
 
     let unwatch = null;
     let timeout = null;
-    let value   = source.value;
+    let value   = sourceRef.value;
 
     function cancelTimeout() {
         clearTimeout(timeout);
@@ -46,8 +46,8 @@ export function useThrottledRef(source, ms) {
             value           = newValue;
             cancelTimeout();
 
-            /* Resolve back to source value later. */
-            if (newValue != source.value)
+            /* Resolve back to sourceRef value later. */
+            if (newValue != sourceRef.value)
                 flushWithTimeout();
 
             if (valueChanged)
@@ -59,16 +59,16 @@ export function useThrottledRef(source, ms) {
             cancelTimeout();
 
             if (timeOfLastFlush + ms < now)
-                flushNow(source.value);
+                flushNow(sourceRef.value);
             else {
                 timeout = setTimeout(() => {
                     timeout = null;
-                    flushNow(source.value);
+                    flushNow(sourceRef.value);
                 }, ms - now + timeOfLastFlush);
             }
         }
 
-        unwatch = watch(source, () => {
+        unwatch = watch(sourceRef, () => {
             if (timeout == null)
                 flushWithTimeout();
         });
@@ -81,7 +81,7 @@ export function useThrottledRef(source, ms) {
 
             /*
                 [!] This flushes the value immediately. Usually newValue
-                should be === source.value.
+                should be === sourceRef.value.
             */
             set(newValue) {
                 flushNow(newValue);

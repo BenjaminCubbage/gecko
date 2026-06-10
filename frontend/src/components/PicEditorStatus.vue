@@ -1,13 +1,13 @@
 <template>
-    <div
-        class="pic-editor-status">
-        <transition name="swap-status" mode="out-in">
-            <span 
-                v-if="hasStatus"
+    <div class="pic-editor-status">
+        <transition name="swap-status" mode="out-in" appear>
+            <LoadingSpinner v-if="isLoading" />
+            <span
+                v-else-if="hasStatus"
                 :key="`${statusIcon}:${statusText}`"
                 class="status-text"
                 :data-icon="statusIcon"
-                aria-hidden="true">
+                inert>
                 {{ statusText }}
             </span>
         </transition>
@@ -26,6 +26,15 @@ import {
     onUnmounted,
     ref
 } from 'vue';
+
+import LoadingSpinner from './LoadingSpinner.vue';
+
+defineProps({
+    isLoading: {
+        type:     Boolean,
+        required: true
+    }
+});
 
 const statusType = ref(null);
 const statusText = ref(null);
@@ -69,14 +78,16 @@ defineExpose({
 </script>
 
 <style scoped>
+.pic-editor-status {
+    pointer-events: none;
+}
+
 .status-text {
     display:     flex;
     align-items: center;
 
     gap:     6px;
     padding: 3px 10px;
-
-    pointer-events: none;
 
     color: white;
     font:  2.3rem/0.8 var(--font-main);

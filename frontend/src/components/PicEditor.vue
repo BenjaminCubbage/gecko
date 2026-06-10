@@ -10,9 +10,10 @@
                 :pen-size="penSize"
                 :is-erasing="isErasing"
                 @canvas-changed="canvasChanged" />
-                
+
             <PicEditorStatus
                 ref="statusEl"
+                :isLoading="showIsLoading"
                 class="pic-editor-status" />
         </div>
 
@@ -37,6 +38,8 @@ import PicEditorCanvas from './PicEditorCanvas.vue';
 import PicEditorStatus from './PicEditorStatus.vue';
 import ToolBar         from './ToolBar.vue';
 
+import { useThrottledRef } from '@/composables/useThrottledRef.js';
+
 import { Dispatch } from '@/core/dispatch/Dispatch.js';
 import { Keys }     from '@/core/di/keys.js';
 
@@ -55,6 +58,10 @@ const statusEl = useTemplateRef('statusEl');
 const penSize   = ref('medium');
 const isErasing = ref(false);
 
+/* Show loading status as we're posting image. */
+const isLoading     = ref(false);
+const showIsLoading = useThrottledRef(isLoading, 500);
+
 let idempotencyKey = crypto.randomUUID();
 
 function send() {
@@ -62,6 +69,8 @@ function send() {
         throw new Error('Could not resolve templated ref');
 
     if (props.recipientDevice != null) {
+        isLoading.value = true;
+
         Dispatch.Post_SharedImage(
             session.activeUserID,
             session.xsrfCookie,
@@ -73,18 +82,21 @@ function send() {
                     statusType: 'success',
                     statusText: 'Sent'
                 });
+                isLoading.value = false;
             })
             .onHttpError((_, status) => {
                 statusEl.value?.pushStatus({
                     statusType: 'error',
                     statusText: `Error Sending: ${status}`
                 });
+                isLoading.value = false;
             })
             .onNetworkError(() => {
                 statusEl.value?.pushStatus({
                     statusType: 'error',
-                    statusText: `Could not connect`
+                    statusText: `Couldn\'t connect`
                 });
+                isLoading.value = false;
             });
     }
 }
