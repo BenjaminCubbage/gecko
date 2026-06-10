@@ -10,11 +10,15 @@ namespace Gecko::API::Controllers
     {
       public:
         AuthController(Services::UsersService usersService,
+                       std::string backendOrigin,
+                       std::string frontendOrigin,
                        std::string oauthClientID,
                        std::string oauthClientSecret,
                        std::string pkey,
                        std::string pubkey) :
             m_usersService(usersService),
+            m_backendOrigin(std::move(backendOrigin)),
+            m_frontendOrigin(std::move(frontendOrigin)),
             m_oauthClientID(std::move(oauthClientID)),
             m_oauthClientSecret(std::move(oauthClientSecret)),
             m_pkey(std::move(pkey)),
@@ -30,6 +34,9 @@ namespace Gecko::API::Controllers
         void Handle_GET_XSRF(const httplib::Request& req, httplib::Response& res);
 
         Services::UsersService m_usersService;
+
+        const std::string m_backendOrigin;
+        const std::string m_frontendOrigin;
 
         const std::string m_oauthClientID;
         const std::string m_oauthClientSecret;

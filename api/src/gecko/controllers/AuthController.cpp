@@ -57,11 +57,12 @@ namespace Gecko::API::Controllers
         (
             "https://accounts.google.com/o/oauth2/v2/auth"
             "?response_type=code"
-            "&redirect_uri=https://localhost:3001/auth/oauth-callback"
+            "&redirect_uri={}/auth/oauth-callback"
             "&client_id={}"
             "&scope=openid"
             "&state={}"
             ,
+            m_backendOrigin,
             m_oauthClientID,
             nonce
         );
@@ -115,7 +116,7 @@ namespace Gecko::API::Controllers
         if (!Middleware::IsSuccessfulOAuthCallback{}(req, res, &code, &state) ||
             !Middleware::HasValidOAuthXSRFNonce{}(req, res, state))
         {
-            res.set_redirect("https://localhost:3000/");
+            res.set_redirect(m_frontendOrigin);
             return;
         }
 
@@ -135,11 +136,12 @@ namespace Gecko::API::Controllers
             (
                 "/o/oauth2/token"
                 "?grant_type=authorization_code"
-                "&redirect_uri=https://localhost:3001/auth/oauth-callback"
+                "&redirect_uri={}/auth/oauth-callback"
                 "&client_id={}"
                 "&client_secret={}"
                 "&code={}"
                 ,
+                m_backendOrigin,
                 m_oauthClientID,
                 m_oauthClientSecret,
                 code
@@ -220,7 +222,7 @@ namespace Gecko::API::Controllers
             );
 
             res.set_header("Set-Cookie", authCookie);
-            res.set_redirect("https://localhost:3000/");
+            res.set_redirect(m_frontendOrigin);
             return;
         }
         catch (...)

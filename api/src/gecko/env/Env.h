@@ -1,7 +1,6 @@
 #pragma once
 #include <optional>
 #include <string>
-#include <unordered_map>
 
 namespace Gecko::API::Env
 {
@@ -10,6 +9,10 @@ namespace Gecko::API::Env
         // TLS / HTTPS configuration
         std::string geckoAPITLSCertPath;
         std::string geckoAPITLSPkeyPath;
+
+        // HTTP Origins
+        std::string geckoAPIBackendOrigin;
+        std::string geckoAPIFrontendOrigin;
 
         // JWT (auth keypair)
         std::string geckoAPIJWTPkeyPath;

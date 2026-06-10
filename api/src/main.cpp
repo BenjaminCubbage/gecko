@@ -1,3 +1,4 @@
+#include <iostream>
 #include <string>
 #include "httplib.h"
 #include "gecko/logging/ConsoleLogger.h"
@@ -32,6 +33,6 @@ int main(int argc, char* argv[])
 
     if (!env)
         return 1;
-
+    
     return !Server::Server{ std::move(*env) }.Start();
 }
