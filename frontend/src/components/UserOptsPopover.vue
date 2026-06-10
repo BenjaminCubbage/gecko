@@ -31,7 +31,7 @@ import {
 } from 'vue';
 
 import UserOptsPopoverLogOut       from './UserOptsPopoverLogOut.vue';
-import { getNextFocusableElement } from '@/core/dom/focusable.js';
+import { getNextFocusableElement } from '@/core/dom/tabOrder.js';
 
 defineOptions({
     inheritAttrs: false

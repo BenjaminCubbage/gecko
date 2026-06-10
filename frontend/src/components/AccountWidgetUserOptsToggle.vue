@@ -6,15 +6,13 @@
             txtr-vert txtr-vert--green
             shdw shdw--inst-green shdw--elevated-s"
         :data-expanded="isExpanded">
-        <IconFriendUser
-            class="icon-friend-user"
-            variant="normal" />
+        <IconUser class="icon-friend-user" />
     </button>
 </template>
 
 <script setup>
 import { useTemplateRef } from 'vue';
-import IconFriendUser     from './IconFriendUser.vue';
+import IconUser     from './IconUser.vue';
 
 const props = defineProps({
     isExpanded: {
@@ -30,8 +28,6 @@ defineExpose({
 
 <style scoped>
 .account-widget-user-drawer-toggle {
-    --hl: brightness(1);
-
     display: grid;
 
     width:  var(--user-button-wd);
@@ -40,11 +36,12 @@ defineExpose({
     border:        var(--border-s);
     border-radius: var(--radius-s);
 
+    align-items:     end;
     justify-content: center;
     overflow-y:      clip;
             
     filter: 
-        var(--hl)
+        var(--_fx-hl,)
         drop-shadow(
             var(--shadow-dist-m) 
             var(--shadow-dist-m) 
@@ -52,7 +49,7 @@ defineExpose({
 
     &:hover,
     &[data-expanded=true] {
-        --hl: var(--filter-hl-2);
+        --_fx-hl: var(--filter-hl-2);
     }
 
     &[data-expanded=true] {
@@ -63,7 +60,6 @@ defineExpose({
 }
 
 .icon-friend-user {
-    align-self: end;
     height:     45px;
     translate:  1px 4px;
 }

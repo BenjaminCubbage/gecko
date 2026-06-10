@@ -78,7 +78,7 @@ function send() {
             .onHttpError((_, status) => {
                 statusEl.value?.pushStatus({
                     statusType: 'error',
-                    statusText: `Could not send! Error: ${status}`
+                    statusText: `Error Sending: ${status}`
                 });
             })
             .onNetworkError(() => {

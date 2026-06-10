@@ -18,12 +18,10 @@
             shdw-before shdw-before--inst-lt-gray shdw-before--elevated-s">
         <AccountWidgetUserOptsToggle
             ref="toggleEl"
-            class="account-widget-user-drawer-toggle"
             :is-expanded="isExpanded"
             @click="isExpanded = !isExpanded" />
 
         <UserOptsPopover
-            class="user-opts-popover"
             v-model:is-expanded="isExpanded"
             :popoverTarget="toggleEl?.innerElement"
             @log-out="logOut" />
@@ -95,12 +93,5 @@ function logIn() {
     align-items: center;
 
     gap: 8px;
-
-    > .account-widget-user-drawer-toggle { flex: none; }
-    > .account-widget-username-badge     { flex: 0 1 auto; }
-}
-
-.user-opts-popover {
-    
 }
 </style>

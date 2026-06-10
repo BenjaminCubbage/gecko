@@ -69,14 +69,14 @@ const mode = defineModel('mode', {
     gap:         8px;
 
     filter: 
-        var(--elevation, brightness(1))
+        var(--_fx-elevation,)
         drop-shadow(
             var(--shadow-dist-s)
             var(--shadow-dist-s)
             var(--col-shadow-alpha))
-        var(--hl, brightness(1));
+        var(--_fx-hl,);
 
-    --elevation:
+    --_fx-elevation:
         drop-shadow(
             0
             var(--shadow-dist-s)
@@ -91,10 +91,16 @@ const mode = defineModel('mode', {
     > .tab-icon { z-index: 1; }
     > .tab-text { z-index: 0; }
 
+    @media (hover: hover) {
+        &:hover,
+        &[data-is-selected=true] {
+            --_fx-hl: var(--filter-hl-1);
+        }
+    }
+
     &[data-is-selected=true] {
         translate:   0 var(--shadow-dist-xs);
-        --elevation: unset;
-        --hl:        var(--filter-hl-1);
+        --_fx-elevation: unset;
         
         > .tab-icon,
         > .tab-text {
@@ -159,8 +165,8 @@ const mode = defineModel('mode', {
     letter-spacing: 0.025em;
 
     @container friends-list-mode-tabs (width > 400px) {
-        &.tab-text--friends::before { content: 'My ' }
-        &.tab-text--search::before  { content: 'Add / ' }
+        &.tab-text--friends::before { content: 'My '    / ''; }
+        &.tab-text--search::before  { content: 'Add / ' / ''; }
     }
 }
 </style>

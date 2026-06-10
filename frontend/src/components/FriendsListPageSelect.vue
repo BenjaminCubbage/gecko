@@ -121,9 +121,15 @@ function pageNext() { selectedPage.value = Math.min(selectedPage.value + 1, prop
     translate:
         0 calc(-1 * var(--shdw-dist-elevation));
 
+    @media (hover: hover) {
+        &:hover,
+        &:active {
+            filter: var(--filter-hl-1);
+        }
+    }
+
     &:active {
         --shdw-dist-elevation: 0px;
-        filter:                var(--filter-hl-1);
     }
 
     &:disabled::after {

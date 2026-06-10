@@ -103,8 +103,7 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
 }
 
 .tabs-btn {
-    --wd-nob:    24px;
-    --aura:      drop-shadow(0 0 #0000);
+    --_wd-nob: 24px;
 
     -webkit-text-stroke: var(--text-stroke-s);
     font-size:           2.8rem;
@@ -116,23 +115,31 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
 
     margin:
         0
-        calc(var(--wd-nob) - var(--shadow-dist-m));
+        calc(var(--_wd-nob) - var(--shadow-dist-m));
 
     border: var(--border-s);
 
     filter:
-        var(--aura)
+        var(--_fx-aura,)
+        var(--_fx-hl,)
         drop-shadow(3px 3px var(--col-shadow-alpha));
 
     transform: translateY(-2px);
 
+    @media (hover: hover) {
+        &:hover,
+        &[data-is-selected=true] {
+            --_fx-hl: var(--filter-hl-0);
+        }
+    }
+    
     &::before,
     &::after {
         z-index: -1;
     }
 
     &[data-is-selected=true] {
-        --aura:
+        --_fx-aura:
             drop-shadow(0           var(--shadow-aura-dist-s)  white)
             drop-shadow(0 calc(-1 * var(--shadow-aura-dist-s)) white)
             drop-shadow(          var(--shadow-aura-dist-s)  0 white)
@@ -153,7 +160,7 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
 .tabs-btn::after {
     content:  '';
     position: absolute;
-    width:    var(--wd-nob);
+    width:    var(--_wd-nob);
 
     inset:
         calc(-1 * var(--border-thickness-s))
@@ -170,12 +177,12 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
 }
 
 .tabs-btn::before {
-  left:          calc(-1 * var(--wd-nob));
+  left:          calc(-1 * var(--_wd-nob));
   border-radius: var(--radius-s) 0 0 var(--radius-s);
 }
 
 .tabs-btn::after {
-  right:         calc(-1 * var(--wd-nob));
+  right:         calc(-1 * var(--_wd-nob));
   border-radius: 0 var(--radius-s) var(--radius-s) 0;
 }
 </style>

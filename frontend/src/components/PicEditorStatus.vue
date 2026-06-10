@@ -1,12 +1,23 @@
 <template>
-    <transition name="swap-status" mode="out-in">
+    <div
+        class="pic-editor-status">
+        <transition name="swap-status" mode="out-in">
+            <span 
+                v-if="hasStatus"
+                :key="`${statusIcon}:${statusText}`"
+                class="status-text"
+                :data-icon="statusIcon"
+                aria-hidden="true">
+                {{ statusText }}
+            </span>
+        </transition>
+        
         <output
-            class="pic-editor-status"
-            v-if="statusType?.length > 0 && statusText?.length > 0"
-            :key="`${statusType}:${statusText}`">
+            class="util-sr-only"
+            aria-atomic="true">
             {{ statusText }}
         </output>
-    </transition>
+    </div>
 </template>
 
 <script setup>
@@ -16,20 +27,22 @@ import {
     ref
 } from 'vue';
 
-const isVisible = ref(false);
-
 const statusType = ref(null);
 const statusText = ref(null);
 
-const statusDur = 4000;
+const expiresMS = 5000;
 let expireTimer = null;
 
-const statusIcons = {
-    'success': '\uF514',
-    'error':   '!'
-};
+const hasStatus = computed(() =>
+    statusType.value?.length > 0 &&
+    statusText.value?.length > 0);
 
-function pushStatus({ statusType: newStatusType, statusText: newStatusText }) {
+const statusIcon = computed(() =>
+    statusType.value === 'success'
+        ? '\uF514'   // Check mark icon
+        : '\uF515'); // X icon
+
+function pushStatus({ statusType: newStatusType, statusText: newStatusText } = {}) {
     if (import.meta.env.DEV && ![
             'success',
             'error'
@@ -44,7 +57,7 @@ function pushStatus({ statusType: newStatusType, statusText: newStatusText }) {
     expireTimer = setTimeout(() => {
         statusType.value = null;
         statusText.value = null;
-    }, statusDur);
+    }, expiresMS);
 }
 
 onUnmounted(() =>
@@ -56,14 +69,14 @@ defineExpose({
 </script>
 
 <style scoped>
-.pic-editor-status {
+.status-text {
     display:     flex;
-    gap:         6px;
     align-items: center;
 
-    pointer-events: none;
+    gap:     6px;
+    padding: 3px 10px;
 
-    padding: 3px 10px 3px 10px;
+    pointer-events: none;
 
     color: white;
     font:  2.3rem/0.8 var(--font-main);
@@ -73,29 +86,19 @@ defineExpose({
     border-radius: var(--radius-s);
     background:    black;
 
-    box-shadow:
-        var(--shadow-dist-m)
-        var(--shadow-dist-m)
-        var(--col-shadow-alpha);
-
     &::before {
-        content: v-bind('statusType === "success" ? "\'\uF514\'" : "\'\uF515\'"') / '';
+        content: attr(data-icon) / '';
 
         font-size: 1.2em;
         translate: 0 -1px;
     }
 }
 
-.swap-status-enter-active { animation: swap-in  150ms; }
-.swap-status-leave-active { animation: swap-out 150ms; }
-
-@keyframes swap-in {
-    from { opacity: 0; translate: 0px 5px; }
-    to   { opacity: 1; translate: 0px 0px; }
+.swap-status-enter-active,
+.swap-status-leave-active {
+    transition: translate 150ms, opacity 150ms;
 }
 
-@keyframes swap-out {
-    from { opacity: 1; translate: 0px 0px; }
-    to   { opacity: 0; translate: 0px -5px; }
-}
+.swap-status-enter-from { opacity: 0; translate: 0  5px; }
+.swap-status-leave-to   { opacity: 0; translate: 0 -5px; }
 </style>

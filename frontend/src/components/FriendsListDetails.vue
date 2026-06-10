@@ -90,10 +90,6 @@ import {
 
 import LoadingSpinner from './LoadingSpinner.vue';
 
-import IconFriendHeart    from './IconFriendHeart.vue';
-import IconFriendChevron  from './IconFriendChevron.vue';
-import IconFriendQuestion from './IconFriendQuestion.vue';
-
 import { FriendStatus } from '@/models/friend.js';
 import { User }         from '@/models/user.js'
 import { Keys }         from '@/core/di/keys.js';
