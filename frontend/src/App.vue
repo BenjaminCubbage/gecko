@@ -64,12 +64,10 @@ const isLoading = computed(() =>
 
 const { isFontLoaded: isMainFontLoaded } = useWaitOnFont('--font-main');
 const { isFontLoaded: isScndFontLoaded } = useWaitOnFont('--font-scnd');
-const { isFontLoaded: isIconFontLoaded } = useWaitOnFont('iconfont');
 
 const fontsLoaded = computed(() => {
     return isMainFontLoaded.value
-        && isScndFontLoaded.value
-        && isIconFontLoaded.value;
+        && isScndFontLoaded.value;
 });
 
 provide(Keys.IsDocumentReady, fontsLoaded);
