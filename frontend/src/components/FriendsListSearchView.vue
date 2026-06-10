@@ -136,11 +136,17 @@ function trySubmit() {
     &[data-is-focused=true] {
         > .bar-field, 
         > .bar-btn {
-            --shdw-etc: revert-layer;
+            --shdw-etc: unset;
         }
 
         box-shadow: none;
-        filter:     var(--filter-aura-l);
+        filter: 
+            var(--filter-aura-l)
+            drop-shadow(
+                var(--shadow-dist-m)
+                var(--shadow-dist-m)
+                var(--col-shadow-alpha)
+            );
     }
 
     > .bar-field { z-index: 1; grid-area: input; }

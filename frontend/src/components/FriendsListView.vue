@@ -62,8 +62,8 @@
                 <span
                     class="
                         item-gutter item-gutter--r
-                        shdw shdw--inst-lt-gray
-                        txtr-vert txtr-vert--gray">
+                        txtr-vert txtr-vert--gray
+                        shdw shdw--inst-gray">
                     <IconListArrow
                         v-if="friend != null"
                         height="19px"
