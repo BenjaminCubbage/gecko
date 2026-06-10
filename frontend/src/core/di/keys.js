@@ -3,10 +3,5 @@ export const Keys = Object.freeze({
 
     DevicesStore:  Symbol(),
     FriendsStore:  Symbol(),
-    SessionStore:  Symbol(),
-    SnackBarStore: Symbol(),
-
-    AppTabPanelIdsRegistry: Symbol(),
-
-    IsDocumentReady: Symbol()
+    SessionStore:  Symbol()
 });

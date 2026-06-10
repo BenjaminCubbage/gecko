@@ -99,8 +99,7 @@ import {
 
 import { Keys } from '@/core/di/keys.js';
 
-const session  = inject(Keys.SessionStore);
-const snackBar = inject(Keys.SnackBarStore);
+const session = inject(Keys.SessionStore);
 
 const isEditing = ref(false);
 const inputText = ref('');
@@ -179,7 +178,6 @@ async function submit() {
 
     try {
         await session.requestChangeUsername(inputText.value);
-        snackBar.pushMessage('Updated username successfully');
     } catch (e) {
         if (e instanceof HttpError && e.body.error.reason === 'username_taken')
             errorMessage.value = 'Username is taken';

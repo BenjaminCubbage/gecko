@@ -47,8 +47,7 @@ const props = defineProps({
     }
 });
 
-const session  = inject(Keys.SessionStore);
-const snackBar = inject(Keys.SnackBarStore);
+const session = inject(Keys.SessionStore);
 
 const canvasEl = useTemplateRef('canvasEl');
 const statusEl = useTemplateRef('statusEl');

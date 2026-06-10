@@ -25,7 +25,6 @@ import {
 import { DevicesStore }  from './stores/devicesStore.js';
 import { FriendsStore }  from './stores/friendsStore.js';
 import { SessionStore }  from './stores/sessionStore.js';
-import { SnackBarStore } from './stores/snackBarStore.js';
 import { Keys }          from './core/di/keys.js';
 
 import './style.css';
@@ -34,7 +33,6 @@ import App from './App.vue';
 const session  = new SessionStore();
 const friends  = new FriendsStore();
 const devices  = new DevicesStore();
-const snackBar = new SnackBarStore();
 
 (async () => {
     await session.requestResync();
@@ -52,8 +50,7 @@ const app = createApp(App)
     .directive('auto-focus',             autoFocus)
     .provide(Keys.DevicesStore,  devices)
     .provide(Keys.SessionStore,  session)
-    .provide(Keys.FriendsStore,  friends)
-    .provide(Keys.SnackBarStore, snackBar);
+    .provide(Keys.FriendsStore,  friends);
 
 /*
     Resync when friends / session changes

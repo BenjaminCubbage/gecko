@@ -53,8 +53,6 @@ import {
 } from '@/core/errors/errors.js';
 
 const session  = inject(Keys.SessionStore);
-const snackBar = inject(Keys.SnackBarStore);
-
 const toggleEl = useTemplateRef('toggleEl');
 
 const isExpanded  = ref(false);
@@ -70,18 +68,15 @@ async function logOut(resolve) {
                 : e instanceof NetworkError
                     ? `Couldn't log out: Connection failed`
                     : `Unexpected error while logging out`;
-
-        snackBar.pushMessage(errorMessage);
+        console.error(errorMessage);
         resolve();
     }
 }
 
 function logIn() {
     isLoggingIn.value = true;
-    if (!session.requestLogIn()) {
-        snackBar.pushMessage('Already logged in');
+    if (!session.requestLogIn())
         isLoggingIn.value = false;
-    }
 }
 </script>
 

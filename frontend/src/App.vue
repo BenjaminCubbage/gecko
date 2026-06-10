@@ -21,8 +21,6 @@
                 :id="tabPanelIds.friends" />
         </main>
     </div>
-
-    <SnackBarOverlay />
 </template>
 
 <script setup>
@@ -39,7 +37,6 @@ import {
 import CanvasSection   from './sections/CanvasSection.vue';
 import FriendsSection  from './sections/FriendsSection.vue';
 import NavigationBar   from './components/NavigationBar.vue';
-import SnackBarOverlay from './components/SnackBarOverlay.vue';
 
 import { useElementIdRegistry }      from './composables/useElementIdRegistry.js';
 import { useWaitOnFont }             from './composables/useWaitOnFont.js';
