@@ -1,53 +1,59 @@
 <template>
-    <span class="spinner" v-bind="attrs">
+    <span 
+        class="loading-spinner"
+        inert>
+        <span class="spinner-dots"></span>
     </span>
 </template>
 
 <script setup>
-import { useAttrs } from 'vue';
-defineOptions({
-    inheritAttrs: false
+defineProps({
+    color: {
+        type:    String,
+        default: 'black'
+    }
 });
-const attrs = useAttrs();
 </script>
 
 <style scoped>
-.spinner {
-    contain: content;
+.loading-spinner {
+    --_col-dots-1: v-bind('color === "black" || color === "white" ? color : `var(--col-${color}-3)`');
+    --_col-dots-2: v-bind('color === "black" || color === "white" ? color : `var(--col-${color}-4)`');
+    --_col-dots-3: v-bind('color === "black" || color === "white" ? color : `var(--col-${color}-5)`');
 
-    display: inline-grid;
-    padding: var(--shadow-dist-l);
-    width:   min-content;
+    width:  var(--_sz-spinner);
+    height: var(--_sz-spinner);
 
-    font-size:   2.3rem;
-    line-height: 0;
+    display:         flex;
+    flex-flow:       column;
+    align-items:     center;
+    justify-content: center;
+
+    font: 33px/0.18 var(--font-main);
+
+    --_wd-spinner: 16px;
+    --_ht-spinner: 16px;
 
     &::before,
+    > .spinner-dots::before,
     &::after {
-        content:   '...' / '';
-        grid-area: 1 / 1;
+        animation: loading-spinner 600ms calc(100ms * var(--i)) steps(2, end) infinite;
     }
 
-    &::before {
-        opacity: 0;
-    }
-
-    &::after {
-        animation:  
-            cycle 500ms infinite steps(1, end);
-
-        text-align: left;
-        translate:  0 -0.22em;
+    &::before               { --i: 0; color: var(--_col-dots-1); }
+    > .spinner-dots::before { --i: 1; color: var(--_col-dots-2); }
+    &::after                { --i: 2; color: var(--_col-dots-3); }
+    
+    &::before,
+    &::after,
+    > .spinner-dots::before {
+        content: '\f510';
     }
 }
 
-@keyframes cycle {
-    16.6% { text-align: right; }
-    66.6% { text-align: left; }
-
-    0%           { content: '...' / ''; }
-    16.6%, 83.3% { content: '..'  / ''; }
-    33.3%, 66.6% { content: '.'   / ''; }
-    50%          { content: ''    / ''; }
+@keyframes loading-spinner {
+    0%  { content: '\f510'; }
+    33% { content: '\f511'; }
+    66% { content: '\f512'; }
 }
 </style>

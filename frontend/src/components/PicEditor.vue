@@ -5,11 +5,15 @@
             txtr-vert txtr-vert--green
             shdw shdw--inst-green shdw--elevated-l">
             <PicEditorCanvas
+                ref="canvasEl"
                 class="pic-editor-canvas"
-                ref="picEditorCanvas"
                 :pen-size="penSize"
                 :is-erasing="isErasing"
                 @canvas-changed="canvasChanged" />
+                
+            <PicEditorStatus
+                ref="statusEl"
+                class="pic-editor-status" />
         </div>
 
         <ToolBar
@@ -30,6 +34,7 @@ import {
 } from 'vue';
 
 import PicEditorCanvas from './PicEditorCanvas.vue';
+import PicEditorStatus from './PicEditorStatus.vue';
 import ToolBar         from './ToolBar.vue';
 
 import { Dispatch } from '@/core/dispatch/Dispatch.js';
@@ -45,7 +50,8 @@ const props = defineProps({
 const session  = inject(Keys.SessionStore);
 const snackBar = inject(Keys.SnackBarStore);
 
-const picEditorCanvas = useTemplateRef('picEditorCanvas');
+const canvasEl = useTemplateRef('canvasEl');
+const statusEl = useTemplateRef('statusEl');
 
 const penSize   = ref('medium');
 const isErasing = ref(false);
@@ -53,7 +59,7 @@ const isErasing = ref(false);
 let idempotencyKey = crypto.randomUUID();
 
 function send() {
-    if (!picEditorCanvas.value)
+    if (!canvasEl.value)
         throw new Error('Could not resolve templated ref');
 
     if (props.recipientDevice != null) {
@@ -62,15 +68,24 @@ function send() {
             session.xsrfCookie,
             idempotencyKey,
             props.recipientDevice.deviceID,
-            picEditorCanvas.value.readGIBBlob())
+            canvasEl.value.readGIBBlob())
             .onSuccess(() => {
-                snackBar.pushMessage('Image sent successfully');
+                statusEl.value?.pushStatus({
+                    statusType: 'success',
+                    statusText: 'Sent'
+                });
             })
             .onHttpError((_, status) => {
-                snackBar.pushMessage(`Couldn't upload image: Status ${status}`);
+                statusEl.value?.pushStatus({
+                    statusType: 'error',
+                    statusText: `Could not send! Error: ${status}`
+                });
             })
             .onNetworkError(() => {
-                snackBar.pushMessage(`Couldn't upload image: Connection failed`);
+                statusEl.value?.pushStatus({
+                    statusType: 'error',
+                    statusText: `Could not connect`
+                });
             });
     }
 }
@@ -80,7 +95,7 @@ function getLatest() {
     Dispatch.Get_LatestImage(session.activeUserID, session.xsrfCookie)
         .onSuccess(async body => {
             const arr = new Uint8Array(await body.arrayBuffer());
-            picEditorCanvas.value.writeGIBBlob(arr);
+            canvasEl.value.writeGIBBlob(arr);
         })
         .onHttpError((body, status) => {
             console.warn(`Get_LatestImage failed: ${status}`, body)
@@ -88,7 +103,7 @@ function getLatest() {
 }
 
 function clear() {
-    picEditorCanvas.value?.clear();
+    canvasEl.value?.clear();
 }
 
 function canvasChanged() {
@@ -108,11 +123,23 @@ function canvasChanged() {
 }
 
 .canvas-border {
+    display: grid;
+
     padding:        12px;
     padding-bottom: 26px;
 
     border-radius: var(--radius-s);
     border:        var(--border-s);
+
+    & > .pic-editor-canvas { z-index: 0; grid-area: 1 / 1; place-self: stretch; }
+    & > .pic-editor-status { z-index: 1; grid-area: 1 / 1; place-self: end; }
+}
+
+.pic-editor-status {
+    --_inset-status: 8px;
+
+    margin-bottom: var(--_inset-status);
+    margin-right:  var(--_inset-status);
 }
 
 .tool-bar {

@@ -368,7 +368,7 @@ async function submit() {
 
         text-shadow:
             calc(-1 * var(--shadow-dist-xs)) calc(-1 * var(--shadow-dist-xs)) var(--col-green-1),
-                        var(--shadow-dist-xs)            var(--shadow-dist-xs)  var(--col-green-5);
+                      var(--shadow-dist-xs)            var(--shadow-dist-xs)  var(--col-green-5);
     }
 }
 

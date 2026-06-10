@@ -30,10 +30,10 @@
                             ? 'selected'
                             : 'unselected'
                         : 'empty'"
-                @click="friend != null && (selectedFriend = friend)"
-                :tabindex=    "friend != null || index === 0 ? 0 : -1"
-                :aria-label=  "friend != null ? `@${friend.user.username}` : 'Empty friend slot'"
-                :aria-current="friend === selectedFriend"
+                @click=        "friend != null && (selectedFriend = friend)"
+                :tabindex=     "friend != null || index === 0 ? 0 : -1"
+                :aria-label=   "friend != null ? `@${friend.user.username}` : 'Empty friend slot'"
+                :aria-selected="friend != null && friend === selectedFriend"
                 v-roving-item>
                 <span
                     class="

@@ -1,11 +1,9 @@
 <template>
     <section class="friends-list-details">
-        <div
+        <LoadingSpinner
             v-if="isLoading"
-            class="details-loading"
-            inert>
-            <span class="loading-dots"></span>
-        </div>
+            class="details-spinner"
+            color="orange" />
 
         <transition
             name="details-border-transition"
@@ -19,7 +17,7 @@
                     details-border
                     shdw shdw--otst-orange shdw--inst-lt-gray shdw--recessed"
                 :key="detailsBorderKey">
-                <template 
+                <template
                     v-if="state === 'userresult'">
                     <h1 class="border-title border-title--username">
                         <span class="title-text">
@@ -89,6 +87,8 @@ import {
     useTemplateRef,
     watch
 } from 'vue';
+
+import LoadingSpinner from './LoadingSpinner.vue';
 
 import IconFriendHeart    from './IconFriendHeart.vue';
 import IconFriendChevron  from './IconFriendChevron.vue';
@@ -273,7 +273,7 @@ const action2Event = computed(() => {
 });
 
 watch([action2Event, action2Color, action2Label], () => {
-    /* 
+    /*
         Defer DOM updates during slide transition.
     */
     if (!isTransitionLeaving.value)
@@ -325,7 +325,7 @@ function emitAction2() {
         pointer-events: none;
     }
 
-    > .details-loading        { z-index: 2; }
+    > .details-spinner        { z-index: 2; }
     > .details-username-plate { z-index: 1; }
     > .details-border         { z-index: 0; }
 }
@@ -359,36 +359,17 @@ function emitAction2() {
         align-self: stretch;
     }
 
-    > *               { z-index: 0; }
-    > .details-loading { z-index: 1; }
+    > *                { z-index: 0; }
+    > .details-spinner { z-index: 1; }
 }
 
-.details-loading {
-    --inset: 18px;
+.details-spinner {
+    --_spinner-inset: 18px;
 
     position: absolute;
 
-    bottom: var(--inset);
-    right:  var(--inset);
-
-    display:   flex;
-    flex-flow: column;
-
-    font-size:   3.3rem;
-    line-height: 0.18;
-
-    color: var(--col-orange-7);
-
-    &::before,
-    > .loading-dots::before,
-    &::after {
-        content: '\f510';
-        animation: details-loading-spinner 800ms calc(100ms * var(--i)) steps(2, end) infinite;
-    }
-
-    &::before                 { --i: 0; color: var(--col-orange-4) }
-    > .loading-dots::before { --i: 1; color: var(--col-orange-5) }
-    &::after                  { --i: 2; color: var(--col-orange-6) }
+    bottom: var(--_spinner-inset);
+    right:  var(--_spinner-inset);
 }
 
 .border-title {

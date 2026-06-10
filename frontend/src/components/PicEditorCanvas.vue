@@ -4,7 +4,7 @@
         class="
             canvas-frame
             shdw-after shdw-after--recessed shdw-after--otst-green"
-        :data-disabled="isClearing"
+        :disabled="isClearing"
         @pointerdown="dragMouse"
         @pointermove="dragMouse"
         @touchstart="dragTouch"
@@ -255,9 +255,8 @@ defineExpose({
 
 <style scoped>
 .canvas-frame {
-    contain:   inline-size;
-    isolation: isolate;
-
+    contain: inline-size;
+    
     display:        flex;
     flex-direction: column;
     gap:            12px;
@@ -271,11 +270,7 @@ defineExpose({
         cursor: crosshair;
     }
 
-    &[data-disabled=true] {
-        pointer-events: none;
-    }
-
-    &::after    { z-index: 1; }
+    &::after  { z-index: 1; }
     > .canvas { z-index: 0; }
 
     /*

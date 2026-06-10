@@ -57,6 +57,7 @@ body {
 }
 
 [inert],
+[disabled=true],
 :disabled {
     pointer-events: none;
 }
