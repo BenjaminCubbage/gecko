@@ -18,22 +18,7 @@ export default {
         }
     },
     envDir: './env',
-    // Development only:
-    // Listen on port 3000. API / Auth Server is expected to be running on 3001.
     server: {
-        port: 3000,
-        proxy: {
-            '/api': {
-                target: 'https://localhost:3001',
-                changeOrigin: true,
-                // secure: false tolerates self-signed certificate
-                secure: false
-            },
-            '/auth': {
-                target: 'https://localhost:3001',
-                changeOrigin: true,
-                secure: false
-            }
-        }
+        port: 3000
     }
 };
