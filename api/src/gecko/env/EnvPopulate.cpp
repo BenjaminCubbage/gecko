@@ -31,6 +31,7 @@ namespace Gecko::API::Env
 
         if (!GetKeyValue(keyValues, "GECKO_API_TLS_CERT_PATH",           &env.geckoAPITLSCertPath          )) return std::nullopt;
         if (!GetKeyValue(keyValues, "GECKO_API_TLS_PKEY_PATH",           &env.geckoAPITLSPkeyPath          )) return std::nullopt;
+	if (!GetKeyValue(keyValues, "GECKO_API_DOMAIN_ROOT",             &env.geckoAPIDomainRoot           )) return std::nullopt;
         if (!GetKeyValue(keyValues, "GECKO_API_BACKEND_ORIGIN",          &env.geckoAPIBackendOrigin        )) return std::nullopt;
         if (!GetKeyValue(keyValues, "GECKO_API_FRONTEND_ORIGIN",         &env.geckoAPIFrontendOrigin       )) return std::nullopt;
         if (!GetKeyValue(keyValues, "GECKO_API_JWT_PKEY_PATH",           &env.geckoAPIJWTPkeyPath          )) return std::nullopt;

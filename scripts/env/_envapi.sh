@@ -14,9 +14,10 @@ envapi_create() {
 
     # Prompt
     if [[ $accept_defaults -eq 0 ]]; then
-        [[ "$gecko_api_backend_origin" ]]  || read -p "Origin of backend server (press Enter for default: https://localhost:3001):"                                     gecko_api_backend_origin
-        [[ "$gecko_api_frontend_origin" ]] || read -p "Origin of frontend server (press Enter for default: https://localhost:3000):"                                    gecko_api_frontend_origin
-        [[ "$gecko_api_port" ]]            || read -p "Port to listen on (press Enter for default: 3001):"                                                              gecko_api_port
+	[[ "$gecko_api_domain_root" ]]     || read -p "Domain root (press Enter for default: localhost): "                                                              gecko_api_domain_root
+        [[ "$gecko_api_backend_origin" ]]  || read -p "Origin of backend server (press Enter for default: https://localhost:3001): "                                    gecko_api_backend_origin
+        [[ "$gecko_api_frontend_origin" ]] || read -p "Origin of frontend server (press Enter for default: https://localhost:3000): "                                   gecko_api_frontend_origin
+        [[ "$gecko_api_port" ]]            || read -p "Port to listen on (press Enter for default: 3001): "                                                             gecko_api_port
         [[ "$mosquitto_port" ]]            || read -p "Mosquitto port to listen on (press Enter for default: 3002): "                                                   mosquitto_port
         [[ "$mysql_xapi_port" ]]           || read -p "MySQL XAPI port to connect to (press Enter for default: 3004): "                                                 mysql_xapi_port
         [[ "$mosquitto_cert_path" ]]       || read -p "Path to the mosquitto SSL certificate (press Enter to for default: /var/lib/gecko/mosquitto/secrets/cert.pem): " mosquitto_cert_path
@@ -25,6 +26,7 @@ envapi_create() {
     fi
 
     # Defaults
+    [[ "$gecko_api_domain_root" ]]     || gecko_api_domain_root="localhost"
     [[ "$gecko_api_backend_origin" ]]  || gecko_api_backend_origin="https://localhost:3001"
     [[ "$gecko_api_frontend_origin" ]] || gecko_api_frontend_origin="https://localhost:3000"
     [[ "$gecko_api_port" ]]            || gecko_api_port=3001
@@ -35,6 +37,7 @@ envapi_create() {
 
     # CMake Args
     cmake_args=()
+    [[ "$gecko_api_domain_root" ]]     && cmake_args+=("-DGECKO_API_DOMAIN_ROOT=$gecko_api_domain_root")
     [[ "$gecko_api_backend_origin" ]]  && cmake_args+=("-DGECKO_API_BACKEND_ORIGIN=$gecko_api_backend_origin")
     [[ "$gecko_api_frontend_origin" ]] && cmake_args+=("-DGECKO_API_FRONTEND_ORIGIN=$gecko_api_frontend_origin")
     [[ "$gecko_api_port" ]]            && cmake_args+=("-DGECKO_API_PORT=$gecko_api_port")

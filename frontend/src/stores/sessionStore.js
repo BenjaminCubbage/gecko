@@ -154,7 +154,7 @@ export class SessionStore {
             return false;
 
         AuthHints.setIsPossiblyAuthenticatedHint(true);
-        window.location.assign('/auth/login');
+        window.location.assign(`${import.meta.env.VITE_BACKEND_ORIGIN}/auth/login`);
         return true;
     }
 

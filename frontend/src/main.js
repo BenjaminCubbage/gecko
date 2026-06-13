@@ -40,8 +40,6 @@ const devices  = new DevicesStore();
     await devices.requestResync(session, friends);
 })();
 
-console.log(import.meta.env.VITE_BACKEND_ORIGIN);
-
 const app = createApp(App)
     .directive('roving-container',       rovingTabIndexContainer)
     .directive('roving-item',            rovingTabIndexItem)

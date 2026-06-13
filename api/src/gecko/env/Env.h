@@ -10,7 +10,8 @@ namespace Gecko::API::Env
         std::string geckoAPITLSCertPath;
         std::string geckoAPITLSPkeyPath;
 
-        // HTTP Origins
+        // Domains / Origins
+	std::string geckoAPIDomainRoot;
         std::string geckoAPIBackendOrigin;
         std::string geckoAPIFrontendOrigin;
 
