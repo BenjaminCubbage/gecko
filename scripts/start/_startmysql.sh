@@ -29,10 +29,10 @@ startmysql_start() {
     fi
 
     echo "[start.sh]: Using MySQL configuration at $MYSQL_CONF_PATH"
-    echo "[start.sh]: Starting MySQL as a detached process"
+    echo "[start.sh]: Starting MySQL"
 
     # I'm swallowing output here. This isn't great if starting mysqld_safe fails to start,
     # so this should probably fixed at some point. That said, it's not entirely clear how
     # to deal with this in a coherent way.
-    sudo "$MYSQLD_EXE_PATH" --defaults-file="$MYSQL_CONF_PATH" > /dev/null &
+    sudo "$MYSQLD_EXE_PATH" --defaults-file="$MYSQL_CONF_PATH" > /dev/null
 }
