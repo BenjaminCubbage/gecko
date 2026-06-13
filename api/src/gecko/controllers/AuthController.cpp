@@ -277,10 +277,12 @@ namespace Gecko::API::Controllers
             "Secure;"
             "Max-Age=" ONE_WEEK_IN_SECONDS_STR ";"
             "SameSite=Strict;"
+            "Domain={};"
             "Path=/;"
             ,
             Cookies::HostXSRFToken,
-            Rand::UUID::GenerateUUID()
+            Rand::UUID::GenerateUUID(),
+            m_domainRoot
         );
 
         res.set_header("Set-Cookie", cookie);

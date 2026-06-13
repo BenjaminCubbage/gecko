@@ -1,5 +1,5 @@
 export const CookieNames = Object.freeze({
-    XSRFToken: "__Host-xsrf_token"
+    XSRFToken: "xsrf_token"
 });
 
 export class Cookies {

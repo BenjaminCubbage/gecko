@@ -20,6 +20,7 @@ namespace Gecko::API::Server
               m_services{ services },
               m_authController{
                 m_services->Users(),
+                m_env->geckoAPIDomainRoot,
                 m_env->geckoAPIBackendOrigin,
                 m_env->geckoAPIFrontendOrigin,
                 m_env->oauthClientID,

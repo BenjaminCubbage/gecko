@@ -20,9 +20,9 @@ CREATE TABLE IF NOT EXISTS SharedImageBlobs
 
 CREATE TABLE IF NOT EXISTS Devices
 (
-    device_id INT PRIMARY KEY AUTO_INCREMENT,
-    owner_id  INT NULL,
-    `name`    INT NOT NULL,
+    device_id INT         PRIMARY KEY AUTO_INCREMENT,
+    owner_id  INT         NULL,
+    `name`    VARCHAR(32) NOT NULL,
     FOREIGN KEY (owner_id)
         REFERENCES Users(user_id)
 );

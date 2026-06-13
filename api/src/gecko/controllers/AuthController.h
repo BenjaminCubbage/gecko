@@ -10,6 +10,7 @@ namespace Gecko::API::Controllers
     {
       public:
         AuthController(Services::UsersService usersService,
+                       std::string domainRoot,
                        std::string backendOrigin,
                        std::string frontendOrigin,
                        std::string oauthClientID,
@@ -17,6 +18,7 @@ namespace Gecko::API::Controllers
                        std::string pkey,
                        std::string pubkey) :
             m_usersService(usersService),
+            m_domainRoot(std::move(domainRoot)),
             m_backendOrigin(std::move(backendOrigin)),
             m_frontendOrigin(std::move(frontendOrigin)),
             m_oauthClientID(std::move(oauthClientID)),
@@ -35,6 +37,7 @@ namespace Gecko::API::Controllers
 
         Services::UsersService m_usersService;
 
+        const std::string m_domainRoot;
         const std::string m_backendOrigin;
         const std::string m_frontendOrigin;
 

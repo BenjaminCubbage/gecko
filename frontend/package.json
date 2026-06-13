@@ -11,7 +11,8 @@
     "dev": "npm run copy-wasm && vite --host 0.0.0.0 --mode development",
     "build": "npm run copy-wasm && vite build",
     "preview": "npm run copy-wasm && vite preview --host 0.0.0.0 --port 3000",
-    "eslint": "eslint"
+    "eslint": "eslint",
+    "deploy": "npx wrangler pages deploy dist --project-name=gecko"
   },
   "dependencies": {
     "@hackernoon/pixel-icon-library": "^1.0.6",
