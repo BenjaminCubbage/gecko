@@ -19,10 +19,11 @@
                 v-model="selectedDevice"
                 class="recipient-select-carousel--devices"
                 variant="with-status"
-                aria-label="Recipient's Device Suboption"
+                :hideOptionStatus="selectedDevice == null"
                 :options="deviceOptions"
                 :get-option-label="getDeviceLabel"
-                :get-option-status-label="getDeviceStatusLabel">
+                :get-option-status-label="getDeviceStatusLabel"
+                aria-label="Recipient's Device Suboption">
                 <template #label>
                     device
                 </template>
@@ -93,12 +94,28 @@ watch(deviceOptions, () => {
 
 watch(selectedDevice, newValue => emit('selectionChanged', newValue));
 
-function getUserLabel(user)   {
-    return session?.activeUserID !== user?.userID
-        ? `@${user?.username}`
-        : `@${user?.username} [me]`;
+function getUserLabel(user) {
+    if (devices.state.value !== 'loading' &&
+        devices.state.value !== 'uninitialized' &&
+        user == null)
+        return '[No friends w/ devices]';
+
+    if (user == null)
+        return null;
+
+    return session.activeUserID !== user.userID
+        ? `@${user.username}`
+        : `@${user.username} [me]`;
 }
-function getDeviceLabel(device) { return device?.name; }
+
+function getDeviceLabel(device) {
+    if (devices.state.value !== 'loading' &&
+        devices.state.value !== 'uninitialized' &&
+        device == null)
+        return '[No devices]';
+
+    return device?.name;
+}
 
 const deviceStatusLabels = {
     'online': {
@@ -123,7 +140,11 @@ const deviceStatusLabels = {
 };
 
 function getDeviceStatusLabel(device) {
-    return deviceStatusLabels[device?.status] ?? deviceStatusLabels['loading'];
+    if (devices.state.value === 'loading')
+        return null;
+
+    return deviceStatusLabels[device?.status]
+        ?? '[No Devices]';
 }
 </script>
 

@@ -54,7 +54,7 @@
         </span>
 
         <div
-            v-if="variant === 'with-status' && selectedOptionLabel"
+            v-if="variant === 'with-status' && !hideOptionStatus"
             class="
                 status
                 shdw shdw--inst-lt-gray shdw--elevated-s"
@@ -66,6 +66,7 @@
                     {{ selectedOptionStatusLabel.text }}
                 </span>
             </template>
+
             <LoadingSpinner v-else class="loading-spinner" />
         </div>
     </div>
@@ -103,6 +104,18 @@ const props = defineProps({
     getOptionLabel: {
         type:     Function,
         required: true
+    },
+
+    /*
+        If this is false but the variant is with-status, the
+        space for the status bar is reserved but hidden.
+    */
+    hideOptionStatus: {
+        type: Boolean,
+        default: false,
+        validator(value, props) {
+            return !value || props.variant === 'with-status';
+        }
     },
 
     /*
@@ -155,9 +168,7 @@ const hasNext           = computed(() => curSelectionIndex.value + 1 < props.opt
 const hasPrev           = computed(() => curSelectionIndex.value > 0);
 
 const selectedOptionLabel = computed(() => {
-    return curSelectionIndex.value !== -1
-        ? props.getOptionLabel(selectedOption.value)
-        : null;
+    return props.getOptionLabel(selectedOption.value);
 });
 
 const selectedOptionStatusLabel = computed(() => {

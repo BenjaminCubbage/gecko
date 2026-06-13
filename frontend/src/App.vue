@@ -4,9 +4,7 @@
         ref="layoutEl"
         class="layout"
         :inert="isLoading"
-        :style="{
-            'opacity': isLoading ? '0.01' : '1'
-        }">
+        :style="{ 'opacity': isLoading ? '0.01' : '1' }">
         <NavigationBar class="navigation-bar" v-model:selected-tab="selectedTab" />
 
         <main class="main-content">
