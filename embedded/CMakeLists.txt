@@ -24,6 +24,8 @@ FetchContent_MakeAvailable(pimoroni_pico)
 
 add_executable(embedded
     "${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/DNS.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/DNS.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/FS.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/FS.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/gecko/FSCert.cpp"
@@ -43,6 +45,7 @@ add_executable(embedded
 
 target_link_libraries(embedded PRIVATE
     compression_lib
+    cmsis_core
     fatfs
     hardware_i2c
     inky_frame_7
@@ -57,7 +60,9 @@ target_link_libraries(embedded PRIVATE
 target_precompile_headers(embedded PUBLIC
     <string.h>
     <time.h>
+    [["RP2350.h"]]
     [["hardware/gpio.h"]]
+    [["hardware/sync.h"]]
     [["hardware/uart.h"]]
     [["lwip/altcp_tcp.h"]]
     [["lwip/altcp_tls.h"]]

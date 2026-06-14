@@ -32,7 +32,7 @@ namespace Gecko::Embedded
             Status status{ Status::Uninitialized };
         };
 
-        static bool Init(const std::string& ipStr,
+        static bool Init(ip_addr_t ip,
                          int port,
                          std::string_view tlsCert,
                          const std::string& username,
@@ -44,12 +44,7 @@ namespace Gecko::Embedded
                 return false;
             }
 
-            if (!ip4addr_aton(ipStr.c_str(), &s_connection.ip))
-            {
-                Log_Error("MQTTConn: Could not parse IP from string: %s\n", ipStr);
-                return false;
-            }
-
+            s_connection.ip       = ip;
             s_connection.port     = port;
             s_connection.username = username;
             s_connection.password = password;

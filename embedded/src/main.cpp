@@ -1,5 +1,6 @@
 #include "gecko/Decode.h"
 
+#include "gecko/DNS.h"
 #include "gecko/FS.h"
 #include "gecko/FSCert.h"
 #include "gecko/FSTwoPhase.h"
@@ -14,7 +15,7 @@
 #define XSTR(x) STR(x)
 #define STR(x) #x
 
-static constexpr int WakeUpFreqMinutes{ 1 };
+static constexpr int WakeUpFreqMinutes{ 5 };
 pimoroni::InkyFrame inky;
 
 inline constexpr uint16_t RGB_Red = 0b011;
@@ -47,13 +48,27 @@ int main()
     unsigned int deviceIDLen{};
     unsigned int devicePasswordLen{};
 
+    char hostname[50]{};
+    unsigned int hostnameLen{};
+
+    char wifiSSID[50]{};
+    char wifiPassword[50]{};
+
+    unsigned int wifiSSIDLen{};
+    unsigned int wifiPasswordLen{};
+
     if (!FS::Mount() ||
         !FSCert::ReadCert(&cert) ||
         !FS::ReadFile("/device_id.txt",       sizeof(deviceID),       deviceID,       &deviceIDLen) ||
         !FS::ReadFile("/device_password.txt", sizeof(devicePassword), devicePassword, &devicePasswordLen) ||
+        !FS::ReadFile("/hostname.txt",        sizeof(hostname),       hostname,       &hostnameLen) ||
+        !FS::ReadFile("/wifi_ssid.txt",       sizeof(wifiSSID),       wifiSSID,       &wifiSSIDLen) ||
+        !FS::ReadFile("/wifi_password.txt",   sizeof(wifiPassword),   wifiPassword,   &wifiPasswordLen) ||
         !Wifi::Init() ||
-        !Wifi::ConnectSync(WIFI_SSID, WIFI_PASSWORD) ||
-        !MQTTConn::Init(MQTT_IP, MQTT_PORT, cert, deviceID, devicePassword) ||
+        !Wifi::ConnectSync(wifiSSID, wifiPassword) ||
+        !DNS::Init() ||
+        !DNS::QueryHostnameSync(hostname) ||
+        !MQTTConn::Init(DNS::ResolvedIP(), 8883, cert, deviceID, devicePassword) ||
         !MQTTConn::ConnectSync() ||
         !MQTTSub::Init(deviceID) ||
         !MQTTPub::Init(deviceID))

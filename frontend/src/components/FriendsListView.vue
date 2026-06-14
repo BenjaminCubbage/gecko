@@ -16,10 +16,6 @@
                     shdw shdw--inst-lt-gray">
             </span>
 
-            <!--
-                I am keying by index on purpose, it is the
-                behavior I want.
-            -->
             <button
                 v-for="(friend, index) in friends"
                 :key="index"
@@ -35,43 +31,45 @@
                 :aria-label=   "friend != null ? `@${friend.user.username}` : 'Empty friend slot'"
                 :aria-selected="friend != null && friend === selectedFriend"
                 v-roving-item>
-                <span
-                    class="
-                        item-gutter item-gutter--l
-                        txtr-vert txtr-vert--gray
-                        shdw shdw--inst-gray">
-                    <IconListArrow
-                        v-if="friend != null"
-                        height="19px"
-                        class="item-arrow item-arrow--l"
-                        direction="right"
-                        :variant="friend === selectedFriend ? 'normal' : 'inactive'"
-                        inert />
-                </span>
-
-                <span
-                    class="
-                        item-inner
-                        shdw shdw--inst-orange
-                        txtr-vert txtr-vert--orange">
-                    <span v-if="friend != null" class="item-text">
-                        @{{ friend.user.username }}
+                <div class="outer-item-grid">
+                    <span
+                        class="
+                            item-gutter item-gutter--l
+                            txtr-vert txtr-vert--gray
+                            shdw shdw--inst-gray">
+                        <IconListArrow
+                            v-if="friend != null"
+                            height="19px"
+                            class="item-arrow item-arrow--l"
+                            direction="right"
+                            :variant="friend === selectedFriend ? 'normal' : 'inactive'"
+                            inert />
                     </span>
-                </span>
 
-                <span
-                    class="
-                        item-gutter item-gutter--r
-                        txtr-vert txtr-vert--gray
-                        shdw shdw--inst-gray">
-                    <IconListArrow
-                        v-if="friend != null"
-                        height="19px"
-                        class="item-arrow item-arrow--r"
-                        direction="left"
-                        :variant="friend === selectedFriend ? 'normal' : 'inactive'"
-                        inert />
-                </span>
+                    <span
+                        class="
+                            item-inner
+                            shdw shdw--inst-orange
+                            txtr-vert txtr-vert--orange">
+                        <span v-if="friend != null" class="item-text">
+                            @{{ friend.user.username }}
+                        </span>
+                    </span>
+
+                    <span
+                        class="
+                            item-gutter item-gutter--r
+                            txtr-vert txtr-vert--gray
+                            shdw shdw--inst-gray">
+                        <IconListArrow
+                            v-if="friend != null"
+                            height="19px"
+                            class="item-arrow item-arrow--r"
+                            direction="left"
+                            :variant="friend === selectedFriend ? 'normal' : 'inactive'"
+                            inert />
+                    </span>
+                </div>
             </button>
         </div>
     </div>
@@ -137,8 +135,8 @@ watch(() => props.friends, () => {
     background:    var(--col-gray-2);
     border-radius: var(--radius-s);
 
-    &::before       { z-index: 0; }
-    &::after        { z-index: 0; }
+    &::before     { z-index: 0; }
+    &::after      { z-index: 0; }
     > .outer-item { z-index: 1; }
 
     &::before,
@@ -172,10 +170,8 @@ watch(() => props.friends, () => {
 .outer-item {
     position: relative;
 
-    display: grid;
-    grid-template:
-        "gutter-l               inner            gutter-r" var(--ht-list-item) /
-         var(--wd-outer-gutter) minmax(0, 1fr)   var(--wd-outer-gutter);
+    display: block;
+    width:   100%;
 
     padding: 0;
     border:  0;
@@ -183,22 +179,6 @@ watch(() => props.friends, () => {
     color:      inherit;
     font:       inherit;
     background: transparent;
-
-    > .item-gutter--l { grid-area: gutter-l; }
-    > .item-inner     { grid-area: inner; }
-    > .item-gutter--r { grid-area: gutter-r; }
-
-    &:has(~ .outer-item) {
-        > .item-gutter { border-bottom: 3px solid var(--col-gray-4); }
-        > .item-inner  { border-bottom: 3px solid var(--col-gray-3); }
-    }
-
-    &:where(:not([data-state=empty]):hover) > .item-inner {
-        background:
-            linear-gradient(
-                rgb(0 0 0 / 0.01) 50%,
-                rgb(0 0 0 / 0.04) 50%);
-    }
 
     &[data-state=selected] {
         translate: 0 calc(-1 * var(--ht-elevation));
@@ -209,8 +189,33 @@ watch(() => props.friends, () => {
                 0
                 var(--shadow-dist-m)
                 var(--col-shadow-alpha));
+    }
 
-        > .item-gutter {
+    &[data-state=empty] {
+        cursor: default;
+    }
+
+    &:has(~ .outer-item) {
+        > .outer-item-grid > .item-gutter {
+            border-bottom: 3px solid var(--col-gray-4);
+        }
+
+        > .outer-item-grid > .item-inner {
+            border-bottom: 3px solid var(--col-gray-3);
+        }
+    }
+
+    &:where(:not([data-state=empty]):hover) {
+        > .outer-item-grid > .item-inner {
+            background:
+                linear-gradient(
+                    rgb(0 0 0 / 0.01) 50%,
+                    rgb(0 0 0 / 0.04) 50%);
+        }
+    }
+
+    &[data-state=selected] {
+        > .outer-item-grid > .item-gutter {
             background: revert-layer;
             box-shadow: revert-layer;
 
@@ -218,7 +223,7 @@ watch(() => props.friends, () => {
                 0 0 0 var(--border-thickness-s) black;
         }
 
-        > .item-inner {
+        > .outer-item-grid > .item-inner {
             background: revert-layer;
             box-shadow: revert-layer;
 
@@ -226,26 +231,49 @@ watch(() => props.friends, () => {
                 0 0 0 var(--ht-elevation) black;
         }
 
-        > .item-gutter,
-        > .item-inner {
+        > .outer-item-grid > .item-gutter,
+        > .outer-item-grid > .item-inner {
             border-bottom-color: black;
         }
     }
 
-    &[data-state=empty] {
-        cursor: default;
-    }
-
     &:nth-child(1 of .outer-item) {
-        > .item-gutter--l { border-radius: var(--radius-s) 0 0 0; }
-        > .item-gutter--r { border-radius: 0 var(--radius-s) 0 0; }
+        > .outer-item-grid > .item-gutter--l {
+            border-radius: var(--radius-s) 0 0 0;
+        }
+
+        > .outer-item-grid > .item-gutter--r {
+            border-radius: 0 var(--radius-s) 0 0;
+        }
     }
 
     &:nth-last-child(1 of .outer-item) {
-        > .item-gutter--l { border-radius: 0 0 0 var(--radius-s); }
-        > .item-gutter--r { border-radius: 0 0 var(--radius-s) 0; }
+        > .outer-item-grid > .item-gutter--l {
+            border-radius: 0 0 0 var(--radius-s);
+        }
+
+        > .outer-item-grid > .item-gutter--r {
+            border-radius: 0 0 var(--radius-s) 0;
+        }
     }
 }
+
+.outer-item-grid {
+    display: grid;
+
+    grid-template-areas: "gutter-l inner gutter-r";
+    grid-template-rows: var(--ht-list-item);
+    grid-template-columns:
+        var(--wd-outer-gutter)
+        minmax(0, 1fr)
+        var(--wd-outer-gutter);
+
+    height: var(--ht-list-item);
+}
+
+.outer-item-grid > .item-gutter--l { grid-area: gutter-l; }
+.outer-item-grid > .item-inner     { grid-area: inner; }
+.outer-item-grid > .item-gutter--r { grid-area: gutter-r; }
 
 .item-gutter {
     display:     grid;
