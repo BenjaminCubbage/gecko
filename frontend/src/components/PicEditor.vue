@@ -7,7 +7,8 @@
             <PicEditorCanvas
                 ref="canvasEl"
                 class="pic-editor-canvas"
-                :pen-size="penSize"
+                :brush-size="brushSize"
+                :eraser-size="eraserSize"
                 :is-erasing="isErasing"
                 @canvas-changed="canvasChanged" />
 
@@ -20,7 +21,8 @@
         <ToolBar
             class="tool-bar"
             :is-send-disabled="recipientDevice == null"
-            v-model:pen-size="penSize"
+            v-model:brush-size="brushSize"
+            v-model:eraser-size="eraserSize"
             v-model:is-erasing="isErasing"
             @send="send"
             @clear="clear" />
@@ -55,8 +57,9 @@ const session = inject(Keys.SessionStore);
 const canvasEl = useTemplateRef('canvasEl');
 const statusEl = useTemplateRef('statusEl');
 
-const penSize   = ref('medium');
-const isErasing = ref(false);
+const brushSize  = ref('medium');
+const eraserSize = ref('medium');
+const isErasing  = ref(false);
 
 /* Show loading status as we're posting image. */
 const isLoading     = ref(false);

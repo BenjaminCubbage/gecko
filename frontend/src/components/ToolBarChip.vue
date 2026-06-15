@@ -2,31 +2,29 @@
     <button
         ref="toolBarChipEl"
         class="tool-bar-chip"
-        :data-is-pressed="isPressed"
+        :data-is-selected="isSelected"
         :data-is-busy="isBusy"
         :data-pen-size="penSize"
-        @click="click">
-        <div :class="`
-            border
-            txtr-vert txtr-vert--${color}
-            shdw shdw--inst-${color} shdw--elevated-s`"></div>
+        @click="onClick">
+        <span class="chip-main">
+            <span 
+                :class="`
+                    base
+                    txtr-vert txtr-vert--${color}
+                    shdw shdw--inst-${color} shdw--elevated-s`"></span>
 
-        <div class="icon-wrapper">
-            <slot name="icon"></slot>
-        </div>
+            <span class="icon-wrapper">
+                <slot name="icon"></slot>
+            </span>
+        </span>
 
-        <div class="sizes">
-            <div class="size-dots"></div>
-        </div>
+        <span class="sizes">
+            <span class="size-dots"></span>
+        </span>
     </button>
 </template>
 
 <script setup>
-import {
-    useId,
-    useTemplateRef
-} from 'vue';
-
 const props = defineProps({
     color: {
         type:    String,
@@ -45,7 +43,7 @@ const props = defineProps({
         }
     },
 
-    isPressed: {
+    isSelected: {
         type:    Boolean,
         default: false
     },
@@ -58,7 +56,7 @@ const props = defineProps({
 
 const emit = defineEmits([ 'click' ]);
 
-function click() {
+function onClick() {
     if (!props.isBusy)
         emit('click');
 }
@@ -66,9 +64,72 @@ function click() {
 
 <style scoped>
 .tool-bar-chip {
-    --hl:      brightness(1);
-    --outline: drop-shadow(0 0 transparent);
+    position: relative;
+    display:  grid;
 
+    width:  54px;
+    height: 44px;
+
+    grid-template:
+        minmax(0, 1fr) /
+        minmax(0, 1fr);
+
+    filter:
+        var(--_fx-hl,)
+        drop-shadow(3px 3px rgb(0 0 0 / 0.15));
+        
+    /*
+        White border around base
+    */
+    &[data-is-busy=true] > .chip-main > .base {
+        --shdw-etc: 0 0 0 var(--shadow-dist-s) white;
+    }
+
+    /*
+        White outline
+    */
+    &[data-is-selected=true] > .chip-main {
+        filter: var(--filter-aura-s);
+    }
+
+    /*
+        Brighten + scale
+    */
+    @media (hover: hover) {
+        &:active,
+        &[data-is-busy=true],
+        &:hover {
+            --_fx-hl: var(--filter-hl-1);
+        }
+
+        &:not([data-is-busy=true]):is(:active, :hover) > .chip-main > .icon-wrapper {
+            scale: 1.02;
+        }
+    }
+
+    /*
+        Press down
+    */
+    &:is(&:active, &[data-is-busy=true]) > .chip-main {
+        > .icon-wrapper {
+            translate: 0 var(--shadow-dist-s);
+        }
+
+        > .base {
+            --shdw-dist-elevation: 0px;
+        }
+    }
+
+    /*
+        Sizes
+    */
+
+    &:not([data-is-selected=true]) > .sizes {
+        opacity: 0.5;
+    }
+}
+
+.chip-main {
     display:     grid;
     place-items: center;
 
@@ -79,68 +140,11 @@ function click() {
         minmax(0, 1fr) /
         minmax(0, 1fr);
 
-    filter:
-        var(--hl)
-        var(--outline)
-        drop-shadow(3px 3px rgb(0 0 0 / 0.15));
-
     > .icon-wrapper { z-index: 1; grid-area: 1 / 1; place-self: end    stretch; }
-    > .border       { z-index: 0; grid-area: 1 / 1; place-self: center stretch; }
-    > .sizes        { z-index: 2; grid-area: 1 / 1; place-self: end    center;}
-
-    /*
-        White border around base
-    */
-    &[data-is-busy=true] > .border {
-        --shdw-etc: 0 0 0 var(--shadow-dist-s) white;
-    }
-
-    /*
-        White outline
-    */
-    &[data-is-pressed=true] {
-        --outline:
-            drop-shadow(0 calc(     var(--shadow-dist-s)) white)
-            drop-shadow(0 calc(-1 * var(--shadow-dist-s)) white)
-            drop-shadow(calc(     var(--shadow-dist-s)) 0 white)
-            drop-shadow(calc(-1 * var(--shadow-dist-s)) 0 white);
-    }
-
-    /*
-        Brighten + scale
-    */
-    &:active,
-    &[data-is-pressed=true],
-    &[data-is-busy=true],
-    &:hover {
-        --hl: var(--filter-hl-1);
-    }
-
-    @media (hover: hover) {
-        &:not([data-is-pressed=true], [data-is-busy=true]):is(:active, :hover) {
-            > .icon-wrapper {
-                scale: 1.04;
-            }
-        }
-    }
-
-    /*
-        Press down
-    */
-    &:active,
-    &[data-is-pressed=true],
-    &[data-is-busy=true] {
-        > .icon-wrapper {
-            translate: 0 var(--shadow-dist-s);
-        }
-
-        > .border {
-            --shdw-dist-elevation: 0px;
-        }
-    }
+    > .base       { z-index: 0; grid-area: 1 / 1; place-self: center stretch; }
 }
 
-.border {
+.base {
     height: 30px;
 
     border:        var(--border-s);
@@ -157,7 +161,9 @@ function click() {
 }
 
 .sizes {
-    translate: 0 19px;
+    position: absolute;
+    inset:    auto 0 -20px;
+    margin:   0 auto;
 
     width:  50px;
     height: 24px;
@@ -166,7 +172,7 @@ function click() {
     align-items:     center;
     justify-content: center;
 
-    border:        var(--border-s);
+    border: var(--border-s);
     border-radius:
         0               0
         var(--radius-s) var(--radius-s);

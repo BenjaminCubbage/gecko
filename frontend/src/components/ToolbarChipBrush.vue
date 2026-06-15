@@ -1,12 +1,13 @@
 <template>
     <ToolBarChip
-        ref="toolBarChipEl"
+        ref="chipEl"
+        :pen-size="brushSize"
         :is-selected="isSelected"
-        :pen-size="eraserSize"
-        color="lt-gray"
+        color="yellow"
+        :aria-label="`${brushSize} brush`"
         @click="onClick">
         <template #icon>
-            <IconEraser height="47px" />
+            <IconBrush height="48px" />
         </template>
     </ToolBarChip>
 </template>
@@ -18,23 +19,19 @@ import {
 } from 'vue';
 
 import ToolBarChip from './ToolBarChip.vue';
-import IconEraser  from './IconEraser.vue';
+import IconBrush   from './IconBrush.vue';
 
-const isSelected = defineModel('is-selected', { 
+const isSelected = defineModel('is-selected', {
     type:     Boolean,
     required: true
 });
 
-const eraserSize = defineModel('eraser-size', {
+const brushSize = defineModel('brush-size', {
     type:     String,
     required: true
 });
 
-const toolBarChipEl = useTemplateRef('toolBarChipEl');
-
-defineExpose({
-    innerElement: computed(() => toolBarChipEl.value?.innerElement)
-});
+const chipEl = useTemplateRef('chipEl');
 
 function onClick() {
     if (!isSelected.value)
@@ -44,10 +41,10 @@ function onClick() {
 }
 
 function cycle() {
-    eraserSize.value =
-        eraserSize.value === 'small'
+    brushSize.value =
+        brushSize.value === 'small'
             ? 'medium'
-            : eraserSize.value === 'medium'
+            : brushSize.value === 'medium'
                 ? 'large'
                 : 'small';
 }

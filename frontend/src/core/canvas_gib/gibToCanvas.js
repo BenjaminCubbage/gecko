@@ -16,6 +16,7 @@ export class GIBToCanvas {
         let height = 0;
         let rgba = null;
 
+
         /* Called first */
         const cbHeader = Module.addFunction((w, h) => {
             width  = w;
@@ -24,7 +25,7 @@ export class GIBToCanvas {
             return true;
         }, "iii");
 
-        /* Called for every decoded pixel */
+        /* Called for every decoded color span */
         const cbWriter = Module.addFunction((y, xStart, xEnd, white) => {
             const start = width * y + xStart;
             const end   = start + xEnd - xStart;

@@ -32,9 +32,21 @@ import { GIBToCanvas } from '@/core/canvas_gib/gibToCanvas.js';
 import { delay }       from '@/core/async/delay.js';
 
 const props = defineProps({
-    penSize: {
-        type:    String,
-        default: 'small',
+    brushSize: {
+        type:     String,
+        required: true,
+        validator(value) {
+            return [
+                'small',
+                'medium',
+                'large'
+            ].includes(value);
+        }
+    },
+
+    eraserSize: {
+        type:     String,
+        required: true,
         validator(value) {
             return [
                 'small',
@@ -70,7 +82,7 @@ const lineWidth = computed(() => {
         'small':  3,
         'medium': 5,
         'large':  7
-    }[props.penSize] ?? 5;
+    }[props.isErasing ? props.eraserSize : props.brushSize] ?? 5;
 
     return baseWidth * (props.isErasing ? 2 : 1);
 });

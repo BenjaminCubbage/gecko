@@ -9,9 +9,9 @@
         <!-- <div inert class="knobs knobs--left  shdw-after shdw-after--inst-lt-gray shdw-after--elevated-s shdw-before shdw-before--inst-lt-gray"></div>
         <div inert class="knobs knobs--right shdw-after shdw-after--inst-lt-gray shdw-after--elevated-s shdw-before shdw-before--inst-lt-gray"></div> -->
 
-        <li><ToolBarChipPenSize v-model="penSize"      v-roving-item /></li>
-        <li><ToolBarChipEraser  v-model="isErasing"    v-roving-item /></li>
-        <li><ToolBarChipClear   @click="emit('clear')" v-roving-item /></li>
+        <li><ToolbarChipBrush  v-model:is-selected="isPainting" v-model:brush-size="brushSize"   v-roving-item /></li>
+        <li><ToolBarChipEraser v-model:is-selected="isErasing"  v-model:eraser-size="eraserSize" v-roving-item /></li>
+        <li><ToolBarChipClear  @click="emit('clear')"                                            v-roving-item /></li>
 
         <li v-if="!isSendDisabled">
             <ToolBarChipSend v-roving-item @click="emit('send')" />
@@ -20,10 +20,15 @@
 </template>
 
 <script setup>
-import ToolBarChipClear   from './ToolBarChipClear.vue';
-import ToolBarChipEraser  from './ToolBarChipEraser.vue';
-import ToolBarChipPenSize from './ToolBarChipPenSize.vue';
-import ToolBarChipSend    from './ToolBarChipSend.vue';
+import { 
+    ref,
+    watch
+} from 'vue';
+
+import ToolBarChipClear  from './ToolBarChipClear.vue';
+import ToolBarChipEraser from './ToolBarChipEraser.vue';
+import ToolbarChipBrush  from './ToolbarChipBrush.vue';
+import ToolBarChipSend   from './ToolBarChipSend.vue';
 
 defineProps({
     isSendDisabled: {
@@ -37,8 +42,13 @@ const emit = defineEmits([
     'send'
 ]);
 
-const penSize   = defineModel('penSize',   { type: String,  required: true });
-const isErasing = defineModel('isErasing', { type: Boolean, required: true });
+const brushSize  = defineModel('brushSize',  { type: String,  required: true });
+const eraserSize = defineModel('eraserSize', { type: String,  required: true })
+const isErasing  = defineModel('isErasing',  { type: Boolean, required: true });
+const isPainting = ref(true);
+
+watch(isPainting, newValue => isErasing.value  = !newValue, { immediate: true });
+watch(isErasing,  newValue => isPainting.value = !newValue, { immediate: true });
 </script>
 
 <style scoped>
