@@ -126,7 +126,8 @@ a,
 button,
 input[type=checkbox],
 label:has(> input[type=checkbox]) {
-    cursor: pointer;
+    touch-action: manipulation;
+    cursor:       pointer;
 
     & * {
         cursor: inherit;

@@ -123,7 +123,6 @@ function onClick() {
     /*
         Sizes
     */
-
     &:not([data-is-selected=true]) > .sizes {
         opacity: 0.5;
     }
