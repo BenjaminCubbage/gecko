@@ -10,8 +10,14 @@
         @touchmove="dragTouch"
         @mouseleave="stopDragging"
         @touchend="stopDragging"
+        @touchcancel="stopDragging"
         @mouseup="stopDragging">
-        <canvas ref="canvasEl" class="canvas" :width="resolutionX" :height="resolutionY"></canvas>
+        <canvas
+            ref="canvasEl"
+            class="canvas"
+            :width="resolutionX"
+            :height="resolutionY">
+        </canvas>
     </div>
 </template>
 
@@ -264,7 +270,7 @@ async function clear(animate = true) {
         await delay(50);
         CanvasClear.clear3(canvasEl.value);
         isClearing.value = false;
-    } else 
+    } else
         CanvasClear.clearWithoutAnimation(canvasEl.value);
 
     if (!isBlank.value) {
@@ -272,7 +278,7 @@ async function clear(animate = true) {
         canvasUndoRedo.pushState(canvasEl.value);
     } else
         canvasUndoRedo.forgetRedoableHistory();
-    
+
     canUndo.value = canvasUndoRedo.canUndo;
     canRedo.value = canvasUndoRedo.canRedo;
     canvasChanged();
@@ -283,9 +289,9 @@ function canvasChanged() {
         return;
 
     isBlank.value = CanvasUtils.isAllWhite(
-        ctx.value, 
-        0, 0, 
-        canvasEl.value.width, 
+        ctx.value,
+        0, 0,
+        canvasEl.value.width,
         canvasEl.value.height)
     emit('canvasChanged');
 }

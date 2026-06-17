@@ -5,7 +5,8 @@
         :data-is-selected="isSelected"
         :data-is-busy="isBusy"
         :data-pen-size="penSize"
-        @click="onClick">
+        @click="onClick"
+        v-interactive-attrs>
         <span class="chip-main">
             <span 
                 :class="`
@@ -95,22 +96,19 @@ function onClick() {
     /*
         Brighten + scale
     */
-    @media (hover: hover) {
-        &:active,
-        &[data-is-busy=true],
-        &:hover {
-            --_fx-hl: var(--filter-hl-1);
-        }
+    &[data-is-busy=true],
+    &[data-hovered] {
+        --_fx-hl: var(--filter-hl-1);
+    }
 
-        &:not([data-is-busy=true]):is(:active, :hover) > .chip-main > .icon-wrapper {
-            scale: 1.02;
-        }
+    &:not([data-is-busy=true])[data-hovered] > .chip-main > .icon-wrapper {
+        scale: 1.02;
     }
 
     /*
         Press down
     */
-    &:is(&:active, &[data-is-busy=true]) > .chip-main {
+    &:is([data-pressed], [data-is-busy=true]) > .chip-main {
         > .icon-wrapper {
             translate: 0 var(--shadow-dist-s);
         }

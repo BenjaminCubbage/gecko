@@ -22,6 +22,10 @@ import {
     autoFocus
 } from './directives/autoFocus.js';
 
+import { 
+    interactiveAttrs
+} from './directives/interactiveAttrs.js';
+
 import { DevicesStore }  from './stores/devicesStore.js';
 import { FriendsStore }  from './stores/friendsStore.js';
 import { SessionStore }  from './stores/sessionStore.js';
@@ -48,6 +52,7 @@ const app = createApp(App)
     .directive('clicked-outside-except', clickedOutsideExcept)
     .directive('auto-highlight',         autoHighlight)
     .directive('auto-focus',             autoFocus)
+    .directive('interactive-attrs',      interactiveAttrs)
     .provide(Keys.DevicesStore,  devices)
     .provide(Keys.SessionStore,  session)
     .provide(Keys.FriendsStore,  friends);
