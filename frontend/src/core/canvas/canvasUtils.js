@@ -23,4 +23,25 @@ export class CanvasUtils {
 
         ctx.putImageData(data, x, y);
     }
-};
+
+    static isAllWhite(ctx, x, y, width, height) {
+        const data = ctx.getImageData(x, y, width, height, {
+            colorSpace:  'srgb',
+            pixelFormat: 'rgba-unorm8'
+        });
+
+        /*
+            I'm unrolling this loop here, but I'm not sure it's faster.
+        */
+        for (let i = 0; i < data.data.length; i += 4) {
+            if (data.data[i + 0] != 255 ||
+                data.data[i + 1] != 255 ||
+                data.data[i + 2] != 255 ||
+                data.data[i + 3] != 255) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}

@@ -2,10 +2,8 @@ export class CanvasToGIB {
     static readBlob(canvas) {
         const ctx = canvas?.getContext('2d');
 
-        if (!ctx) {
-            console.warn('`canvas?.getContext("2d")` was null or undefined.');
-            return;
-        }
+        if (import.meta.env.DEV && ctx == null)
+            console.warn('CanvasToGIB: Could not get canvas 2d context.');
 
         const width  = canvas.width;
         const height = canvas.height;

@@ -1,6 +1,5 @@
 <template>
     <div
-        tabindex="-1"
         class="
             canvas-frame
             shdw-after shdw-after--recessed shdw-after--otst-green"
@@ -25,11 +24,12 @@ import {
     watch
 } from 'vue';
 
-import { CanvasClear } from '@/core/canvas/canvasClear.js';
-import { CanvasUtils } from '@/core/canvas/canvasUtils.js';
-import { CanvasToGIB } from '@/core/canvas_gib/canvasToGIB.js';
-import { GIBToCanvas } from '@/core/canvas_gib/gibToCanvas.js';
-import { delay }       from '@/core/async/delay.js';
+import { CanvasClear }    from '@/core/canvas/canvasClear.js';
+import { CanvasUtils }    from '@/core/canvas/canvasUtils.js';
+import { CanvasUndoRedo } from '@/core/canvas/canvasUndoRedo.js';
+import { CanvasToGIB }    from '@/core/canvas_gib/canvasToGIB.js';
+import { GIBToCanvas }    from '@/core/canvas_gib/gibToCanvas.js';
+import { delay }          from '@/core/async/delay.js';
 
 const props = defineProps({
     brushSize: {
@@ -75,7 +75,7 @@ const ctx = computed(() => canvasEl.value?.getContext('2d', {
 }));
 
 const isClearing = ref(false);
-const isBlank    = ref(true);
+const isBlank    = ref(false);
 
 const lineWidth = computed(() => {
     const baseWidth = {
@@ -99,6 +99,18 @@ const penColor = computed(() =>
 */
 let queuedLines          = [];
 let animationFrameHandle = null;
+
+/*
+    History stuff.
+
+    Don't push to canvasUndoRedo when canvasHasChanged
+    is false.
+*/
+const canvasUndoRedo = new CanvasUndoRedo();
+const canUndo = ref(false);
+const canRedo = ref(false);
+
+let canvasHasChanged = false;
 
 watch([ lineWidth, ctx ], () => {
     if (ctx.value)
@@ -143,12 +155,8 @@ function dragMouse(e) {
         for (const extra of e.getCoalescedEvents())
             dragMouse(extra);
 
-    if (e.buttons !== 1) {
-        stopDragging();
-        return;
-    }
-
-    queueLine(clientToPixelCoords(e));
+    if (e.buttons === 1)
+        queueLine(clientToPixelCoords(e));
 }
 
 function dragTouch(e) {
@@ -176,9 +184,8 @@ function queueLine(pixelCoords) {
 function drawQueuedLines() {
     animationFrameHandle = null;
 
-    if (!ctx.value || !queuedLines.length) {
+    if (!ctx.value || !queuedLines.length)
         return;
-    }
 
     /*
         The area of the screen that is redrawn
@@ -230,38 +237,92 @@ function drawQueuedLines() {
         dirtyRect.r - dirtyRect.l,
         dirtyRect.b - dirtyRect.t);
 
-    emit('canvasChanged');
+    canvasHasChanged = true;
 }
 
 function stopDragging() {
     queuedLines.length = 0;
+
+    if (canvasHasChanged) {
+        canvasHasChanged = false;
+        canvasUndoRedo.pushState(canvasEl.value);
+        canUndo.value = canvasUndoRedo.canUndo;
+        canRedo.value = canvasUndoRedo.canRedo;
+        canvasChanged();
+    }
 }
 
 async function clear(animate = true) {
     if (!canvasEl.value)
         return;
 
-    if (!animate) {
+    if (animate) {
+        isClearing.value = true;
+        CanvasClear.clear1(canvasEl.value);
+        await delay(50);
+        CanvasClear.clear2(canvasEl.value);
+        await delay(50);
+        CanvasClear.clear3(canvasEl.value);
+        isClearing.value = false;
+    } else 
         CanvasClear.clearWithoutAnimation(canvasEl.value);
-        return;
-    }
 
-    isClearing.value = true;
-    CanvasClear.clear1(canvasEl.value);
-    await delay(50);
-    CanvasClear.clear2(canvasEl.value);
-    await delay(50);
-    CanvasClear.clear3(canvasEl.value);
-    isClearing.value = false;
+    if (!isBlank.value) {
+        isBlank.value = true;
+        canvasUndoRedo.pushState(canvasEl.value);
+    } else
+        canvasUndoRedo.forgetRedoableHistory();
+    
+    canUndo.value = canvasUndoRedo.canUndo;
+    canRedo.value = canvasUndoRedo.canRedo;
+    canvasChanged();
+}
+
+function canvasChanged() {
+    if (ctx.value == null)
+        return;
+
+    isBlank.value = CanvasUtils.isAllWhite(
+        ctx.value, 
+        0, 0, 
+        canvasEl.value.width, 
+        canvasEl.value.height)
+    emit('canvasChanged');
+}
+
+function undo() {
+    if (isClearing.value || queuedLines.length !== 0 || !canUndo.value)
+        return;
+
+    canvasUndoRedo.applyUndo(canvasEl.value);
+    canUndo.value = canvasUndoRedo.canUndo;
+    canRedo.value = canvasUndoRedo.canRedo;
+    canvasChanged();
+}
+
+function redo() {
+    if (isClearing.value || queuedLines.length !== 0 || !canRedo.value)
+        return;
+
+    canvasUndoRedo.applyRedo(canvasEl.value);
+    canUndo.value = canvasUndoRedo.canUndo;
+    canRedo.value = canvasUndoRedo.canRedo;
+    canvasChanged();
 }
 
 defineExpose({
     getCTX: () => ctx.value,
     getCanvasElement: () => canvasEl.value,
+
     clear,
     readGIBBlob:  () => CanvasToGIB.readBlob(canvasEl.value),
     writeGIBBlob: blob => GIBToCanvas.writeBlob(canvasEl.value, blob),
-    isBlank
+    isBlank,
+
+    undo,
+    redo,
+    canUndo,
+    canRedo
 });
 </script>
 

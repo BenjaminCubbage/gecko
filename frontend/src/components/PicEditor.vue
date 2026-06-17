@@ -26,6 +26,12 @@
             v-model:is-erasing="isErasing"
             @send="send"
             @clear="clear" />
+
+        <PicEditorUndoRedoButtons
+            :canUndo="canvasEl?.canUndo ?? false"
+            :canRedo="canvasEl?.canRedo ?? false"
+            @undo="canvasEl?.undo"
+            @redo="canvasEl?.redo" />
     </div>
 </template>
 
@@ -36,9 +42,10 @@ import {
     useTemplateRef
 } from 'vue';
 
-import PicEditorCanvas from './PicEditorCanvas.vue';
-import PicEditorStatus from './PicEditorStatus.vue';
-import ToolBar         from './ToolBar.vue';
+import PicEditorCanvas          from './PicEditorCanvas.vue';
+import PicEditorStatus          from './PicEditorStatus.vue';
+import PicEditorUndoRedoButtons from './PicEditorUndoRedoButtons.vue';
+import ToolBar                  from './ToolBar.vue';
 
 import { useThrottledRef } from '@/composables/useThrottledRef.js';
 
@@ -127,10 +134,14 @@ function canvasChanged() {
 
 <style scoped>
 .pic-editor {
-    isolation: isolate;
+    position: relative;
 
     display:        flex;
     flex-direction: column;
+
+    /* I'm giving a wide bottom margin to account for the
+       */
+    margin-bottom: var(--ht-undo-redo);
 
     > .canvas-border { z-index: 0; align-self: stretch; }
     > .tool-bar      { z-index: 1; align-self: center; }

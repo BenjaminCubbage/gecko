@@ -140,8 +140,15 @@
         drop-shadow(          var(--shadow-aura-dist-l)  0 white)
         drop-shadow(calc(-1 * var(--shadow-aura-dist-l)) 0 white);
 
+    /* User buttons popover */
     --user-button-wd: 51px;
     --user-button-ht: 46px;
+
+    /* How much space to allocate for the undo/redo buttons on mobile */
+    --ht-undo-redo: 0px;
+    @media (width < 700px) {
+        --ht-undo-redo: 56px;
+    }
 
     @supports not (corner-shape: notch) {
         --radius-xs: 3px;
