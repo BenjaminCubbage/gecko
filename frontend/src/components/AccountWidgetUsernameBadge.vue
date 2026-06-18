@@ -2,7 +2,7 @@
     <div class="account-widget-username-badge">
         <div
             class="username"
-            :data-pressed="isInputActive">
+            :data-is-selected="isInputActive">
             <div
                 v-show="isInputActive"
                 class="
@@ -33,13 +33,14 @@
                 class="
                     submit-button
                     shdw shdw--inst-green shdw--elevated-s"
-                :data-pressed="isLoading"
+                :data-is-loading="isLoading"
                 :disabled="!isValidInput || isLoading"
                 :data-is-spinning="isSpinning"
                 aria-label="Submit username"
                 tabindex="-1"
                 @blur="blur"
-                @click="submit">
+                @click="submit"
+                v-interactive-attrs>
             </button>
 
             <button
@@ -51,7 +52,8 @@
                     txtr-vert txtr-vert--gray"
                 :aria-label="`Edit username ${session.activeUser.value.username}`"
                 :disabled="isLoading"
-                @click="edit">
+                @click="edit"
+                v-interactive-attrs>
                 <div class="username-text">
                     <template v-if="!isLoading">
                         {{ session.activeUser.value.username }}
@@ -236,13 +238,11 @@ async function submit() {
         var(--_fx-aura,)
         var(--_fx-hl,);
 
-    @media (hover: hover) {
-        &:has(> .username-button:hover) {
-            --_fx-hl: var(--filter-hl-1);
-        }
+    &:has(> .username-button[data-hovered]) {
+        --_fx-hl: var(--filter-hl-1);
     }
 
-    &[data-pressed=true] {
+    &[data-is-selected=true] {
         --_fx-hl:   var(--filter-hl-1);
         --_fx-aura: var(--filter-aura-s);
     }
@@ -338,16 +338,13 @@ async function submit() {
             0;
     }
 
-    @media (hover: hover) {
-        &:hover,
-        &:active,
-        &[data-pressed=true] {
-            filter: var(--filter-hl-0);
-        }
+    &[data-hovered],
+    &[data-is-loading=true] {
+        filter: var(--filter-hl-0);
     }
 
-    &:active,
-    &[data-pressed=true] {
+    &[data-pressed],
+    &[data-is-loading=true] {
         translate: 0 var(--shadow-dist-s);
         --shdw-dist-elevation: 0;
     }

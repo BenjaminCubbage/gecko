@@ -1,5 +1,7 @@
 <template>
-    <label class="friends-list-requests-toggle">
+    <label
+        class="friends-list-requests-toggle"
+        v-interactive-attrs>
         <input
             class="
                 toggle-input
@@ -35,10 +37,8 @@ const isChecked = defineModel('isChecked', {
 
     translate: 0 var(--ofst-y-txt);
 
-    @media (hover: hover) {
-        &:hover > .toggle-input {
-            background: var(--col-lt-gray-3);
-        }
+    &[data-hovered] > .toggle-input {
+        background: var(--col-lt-gray-3);
     }
 }
 

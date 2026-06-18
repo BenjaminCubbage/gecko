@@ -6,7 +6,8 @@
             txtr-vert txtr-vert--red
             shdw shdw--inst-dk-red shdw--elevated-s"
         :data-pressed="isPressed"
-        aria-label="Log Out">
+        aria-label="Log Out"
+        v-interactive-attrs>
         <span class="icon-boundary">
             <IconLogOut class="icon-log-out" />
         </span>
@@ -43,10 +44,8 @@ defineExpose({
         var(--_fx-aura,)
         var(--_fx-hl,);
 
-    @media (hover: hover) {
-        &:hover {
-            --_fx-hl: var(--filter-hl-1);
-        }
+    &[data-hovered] {
+        --_fx-hl: var(--filter-hl-1);
     }
 
     &[data-pressed=true] {

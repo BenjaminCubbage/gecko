@@ -16,7 +16,8 @@
                 shdw shdw--inst-green shdw--elevated-s"
             :disabled="!hasPrev"
             aria-label="Previous"
-            @click="carouselPrev">
+            @click="carouselPrev"
+            v-interactive-attrs>
             &lt;
         </button>
 
@@ -28,7 +29,8 @@
                 shdw shdw--inst-green shdw--elevated-s"
             :disabled="!hasNext"
             aria-label="Next"
-            @click="carouselNext">
+            @click="carouselNext"
+            v-interactive-attrs>
             &gt;
         </button>
 
@@ -292,12 +294,11 @@ function tryMoveSelection(by) {
         border-bottom-left-radius: 0;
     }
 
-    &:hover,
-    &:active {
+    &[data-hovered] {
         filter: var(--filter-hl-1);
     }
 
-    &:active {
+    &[data-pressed] {
         --shdw-dist-elevation: 0px;
     }
 

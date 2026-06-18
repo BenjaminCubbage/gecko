@@ -5,14 +5,16 @@
             account-widget-user-drawer-toggle
             txtr-vert txtr-vert--green
             shdw shdw--inst-green shdw--elevated-s"
-        :data-expanded="isExpanded">
+        :data-is-expanded="isExpanded"
+        :aria-expanded="isExpanded"
+        v-interactive-attrs>
         <IconUser class="icon-friend-user" />
     </button>
 </template>
 
 <script setup>
 import { useTemplateRef } from 'vue';
-import IconUser     from './IconUser.vue';
+import IconUser           from './IconUser.vue';
 
 const props = defineProps({
     isExpanded: {
@@ -47,12 +49,12 @@ defineExpose({
             var(--shadow-dist-m)
             var(--col-shadow-alpha));
 
-    &:hover,
-    &[data-expanded=true] {
+    &[data-hovered],
+    &[data-is-expanded=true] {
         --_fx-hl: var(--filter-hl-2);
     }
 
-    &[data-expanded=true] {
+    &[data-is-expanded=true] {
         --shdw-dist-elevation: 0;
         translate: 0 var(--shadow-dist-s);
         --shdw-etc: var(--shadow-aura);

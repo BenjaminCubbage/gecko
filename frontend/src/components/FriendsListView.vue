@@ -30,6 +30,7 @@
                 :tabindex=     "friend != null || index === 0 ? 0 : -1"
                 :aria-label=   "friend != null ? `@${friend.user.username}` : 'Empty friend slot'"
                 :aria-selected="friend != null && friend === selectedFriend"
+                v-interactive-attrs
                 v-roving-item>
                 <div class="outer-item-grid">
                     <span
@@ -205,7 +206,7 @@ watch(() => props.friends, () => {
         }
     }
 
-    &:where(:not([data-state=empty]):hover) {
+    &:where(:not([data-state=empty])[data-hovered]) {
         > .outer-item-grid > .item-inner {
             background:
                 linear-gradient(

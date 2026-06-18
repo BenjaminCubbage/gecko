@@ -6,7 +6,8 @@
             txtr-vert txtr-vert--lt-gray"
         :data-is-pressed="isPressed"
         aria-label="Log Out"
-        type="button">
+        type="button"
+        v-interactive-attrs>
         <span
             class="
                 white-border
@@ -61,11 +62,8 @@ defineProps({
             var(--shadow-dist-m)
             var(--col-shadow-alpha));
 
-    @media (hover: hover) {
-        &:hover,
-        &:active {
-            --_fx-hl: var(--filter-hl-1);
-        }
+    &[data-hovered] {
+        --_fx-hl: var(--filter-hl-1);
     }
 
     &[data-is-pressed=true] {

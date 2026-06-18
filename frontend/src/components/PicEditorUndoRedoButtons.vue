@@ -12,7 +12,8 @@
             @pointerdown="onPointerDown('undo')"
             @pointerup="onPointerUp"
             @pointerleave="onPointerLeave"
-            @contextmenu="$event.preventDefault()">
+            @contextmenu="$event.preventDefault()"
+            v-interactive-attrs>
         </button>
 
         <button
@@ -25,7 +26,8 @@
             @pointerdown="onPointerDown('redo')"
             @pointerup="onPointerUp"
             @pointerleave="onPointerLeave"
-            @contextmenu="$event.preventDefault()">
+            @contextmenu="$event.preventDefault()"
+            v-interactive-attrs>
         </button>
     </div>
 </template>
@@ -128,13 +130,12 @@ onUnmounted(() => {
 
     -webkit-text-stroke: var(--text-stroke-xs);
 
-    @media (hover: hover) {
-        &:is(:hover, :active):not([aria-disabled=true]) {
-            filter: var(--filter-hl-1);
-        }
+    &[data-hovered]:not([aria-disabled=true]) {
+        filter: var(--filter-hl-1);
     }
+    
 
-    &:active,
+    &[data-pressed],
     &[aria-disabled=true] {
         --shdw-dist-elevation: 0px;
         translate: 

@@ -45,17 +45,19 @@
                         <button
                             v-if="friend != null && friend.status === FriendStatus.PendingIncoming"
                             :class="`btn btn--${action1Color}`"
-                            :data-is-pressed="isAction1Pressed"
+                            :data-is-loading="isAction1Pressed"
                             @click="emitAction1"
-                            v-roving-item>
+                            v-roving-item
+                            v-interactive-attrs>
                             [{{ action1Label }}]
                         </button>
 
                         <button
                             :class="`btn btn--${action2Color}`"
-                            :data-is-pressed="isAction2Pressed"
+                            :data-is-loading="isAction2Pressed"
                             @click="emitAction2"
-                            v-roving-item>
+                            v-roving-item
+                            v-interactive-attrs>
                             [{{ action2Label }}]
                         </button>
                     </div>
@@ -442,8 +444,8 @@ function emitAction2() {
 
     transform-origin: bottom;
 
-    /* Disable all buttons if one is pressed. */
-    &:has(.btn[data-is-pressed=true]) {
+    /* Disable all buttons if one is loading. */
+    &:has(.btn[data-is-loading=true]) {
         pointer-events: none;
     }
 }
@@ -488,25 +490,22 @@ function emitAction2() {
         --col-elevation: var(--col-red-5);
     }
 
-    @media (hover: hover) {
-        &:hover,
-        &:active,
-        &[data-is-pressed=true] {
-            --hl: var(--filter-hl-1);
+    &[data-hovered],
+    &[data-is-loading=true] {
+        --hl: var(--filter-hl-1);
 
-            &::before,
-            &::after {
-                --inst: -7px;
-            }
+        &::before,
+        &::after {
+            --inst: -7px;
         }
     }
 
-    &:active,
-    &[data-is-pressed=true] {
+    &[data-pressed],
+    &[data-is-loading=true] {
         --elevation-dist: 2px;
     }
 
-    &[data-is-pressed=true] {
+    &[data-is-loading=true] {
         pointer-events: none;
     }
 

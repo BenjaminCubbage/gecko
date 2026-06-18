@@ -8,7 +8,8 @@
                 class="tab tab--list"
                 :data-is-selected="mode === 'list'"
                 v-roving-item
-                @click="mode = 'list'">
+                @click="mode = 'list'"
+                v-interactive-attrs>
                 <span class="tab-icon shdw shdw--inst-orange"></span>
                 <span class="tab-text tab-text--friends shdw shdw--inst-orange txtr-vert txtr-vert--orange">
                     Friends
@@ -21,7 +22,8 @@
                 class="tab tab--search"
                 :data-is-selected="mode === 'search'"
                 v-roving-item
-                @click="mode = 'search'">
+                @click="mode = 'search'"
+                v-interactive-attrs>
                 <span class="tab-icon shdw shdw--inst-green"></span>
                 <span class="tab-text tab-text--search shdw shdw--inst-green txtr-vert txtr-vert--green">
                     Search
@@ -91,12 +93,10 @@ const mode = defineModel('mode', {
     > .tab-icon { z-index: 1; }
     > .tab-text { z-index: 0; }
 
-    @media (hover: hover) {
-        &:hover,
-        &[data-is-selected=true] {
-            --_fx-hl: var(--filter-hl-1);
-        }
-    }
+    &[data-hovered],
+    &[data-is-selected=true] {
+        --_fx-hl: var(--filter-hl-1);
+    }    
 
     &[data-is-selected=true] {
         translate:   0 var(--shadow-dist-xs);

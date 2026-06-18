@@ -18,6 +18,7 @@
             :data-is-selected="selectedTab == 'canvas'"
             :aria-controls="tabPanelIds.canvas"
             @click="selectedTab = 'canvas'"
+            v-interactive-attrs
             v-roving-item>
             Canvas
         </button>
@@ -33,6 +34,7 @@
             :data-is-selected="selectedTab == 'friends'"
             :aria-controls="tabPanelIds.friends"
             @click="selectedTab = 'friends'"
+            v-interactive-attrs
             v-roving-item>
             Friends
         </button>
@@ -126,11 +128,9 @@ const tabPanelIds = useElementIdRegistry(Keys.AppTabPanelIdsRegistry);
 
     transform: translateY(-2px);
 
-    @media (hover: hover) {
-        &:hover,
-        &[data-is-selected=true] {
-            --_fx-hl: var(--filter-hl-0);
-        }
+    &[data-hovered],
+    &[data-is-selected=true] {
+        --_fx-hl: var(--filter-hl-0);
     }
 
     &::before,

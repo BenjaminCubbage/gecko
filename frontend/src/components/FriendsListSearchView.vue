@@ -38,7 +38,8 @@
                 type="button"
                 @focusin=" isButtonFocused = true"
                 @focusout="isButtonFocused = false"
-                @click="trySubmit">
+                @click="trySubmit"
+                v-interactive-attrs>
             </button>
         </div>
     </div>
@@ -243,15 +244,12 @@ function trySubmit() {
         animation: friends-search-loading 300ms steps(1) infinite;
     }
 
-    @media (hover: hover) {
-        &:hover,
-        &:active,
-        &[data-is-loading=true] {
-            filter: var(--filter-hl-1);
-        }
+    &[data-hovered],
+    &[data-is-loading=true] {
+        filter: var(--filter-hl-1);
     }
 
-    &:active,
+    &[data-pressed],
     &[data-is-loading=true] {
         --shdw-dist-elevation: 0px;
     }

@@ -11,7 +11,8 @@
         @mouseleave="stopDragging"
         @touchend="stopDragging"
         @touchcancel="stopDragging"
-        @mouseup="stopDragging">
+        @mouseup="stopDragging"
+        v-interactive-attrs>
         <canvas
             ref="canvasEl"
             class="canvas"
@@ -345,7 +346,7 @@ defineExpose({
     padding: var(--shadow-dist-m);
     margin:  calc(var(--shadow-dist-m) * -1);
 
-    &:active {
+    &[data-pressed] {
         cursor: crosshair;
     }
 

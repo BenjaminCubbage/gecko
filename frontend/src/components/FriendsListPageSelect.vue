@@ -12,7 +12,8 @@
             :disabled="!hasPrev"
             aria-label="Next page"
             tabindex="-1"
-            @click="pagePrev">
+            @click="pagePrev"
+            v-interactive-attrs>
         </button>
 
         <span
@@ -38,7 +39,8 @@
             :disabled="!hasNext"
             aria-label="Previous page"
             tabindex="-1"
-            @click="pageNext">
+            @click="pageNext"
+            v-interactive-attrs>
         </button>
     </div>
 </template>
@@ -121,14 +123,11 @@ function pageNext() { selectedPage.value = Math.min(selectedPage.value + 1, prop
     translate:
         0 calc(-1 * var(--shdw-dist-elevation));
 
-    @media (hover: hover) {
-        &:hover,
-        &:active {
-            filter: var(--filter-hl-1);
-        }
+    &[data-hovered] {
+        filter: var(--filter-hl-1);
     }
 
-    &:active {
+    &[data-pressed] {
         --shdw-dist-elevation: 0px;
     }
 
