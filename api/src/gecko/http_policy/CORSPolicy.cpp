@@ -10,6 +10,7 @@ namespace Gecko::API::HttpPolicy
             */
             res.set_header("Access-Control-Allow-Headers", AllowHeaders);
             res.set_header("Access-Control-Allow-Methods", AllowMethods);
+            res.set_header("Access-Control-Max-Age",       MaxAge);
             res.status = httplib::StatusCode::OK_200;
         });
 

@@ -33,6 +33,11 @@ namespace Gecko::API::HttpPolicy
             "PUT, PATCH, DELETE"
         };
 
+        static inline const std::string MaxAge
+        {
+            "7200"
+        };
+
       public:
         CORSPolicy(std::string allowList) :
             m_allowList(std::move(allowList)) {}
