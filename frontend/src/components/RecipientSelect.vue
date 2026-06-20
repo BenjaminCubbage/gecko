@@ -134,15 +134,10 @@ const deviceStatusLabels = {
         color:    'blue',
         text:     'pending',
         ariaText: 'pending connection status'
-    },
-
-    'loading': null
+    }
 };
 
 function getDeviceStatusLabel(device) {
-    if (devices.state.value === 'loading')
-        return null;
-
     return deviceStatusLabels[device?.status]
         ?? '[No Devices]';
 }

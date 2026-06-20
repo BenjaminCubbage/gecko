@@ -5,6 +5,8 @@
 #include "gecko/db/DevicesTable.h"
 #include "gecko/db/UsersTable.h"
 #include "gecko/models/Device.h"
+#include "gecko/models/DeviceStatus.h"
+#include "gecko/models/DeviceWithStatus.h"
 #include "gecko/topics/DevicesHeartbeatTopic.h"
 
 namespace Gecko::API::Services
@@ -24,13 +26,6 @@ namespace Gecko::API::Services
             DatabaseError
         };
 
-        enum class DeviceStatus
-        {
-            Online,
-            Offline,
-            Pending
-        };
-
         DevicesService(Topics::DevicesHeartbeatTopic* devicesHeartbeatTopic,
                        DB::DevicesTable* devicesTable,
                        DB::UsersTable* usersTable)
@@ -43,12 +38,19 @@ namespace Gecko::API::Services
                                int* outOwnerID);
 
         Result GetDeviceStatus(int deviceID,
-                               DeviceStatus *outStatus);
+                               Models::DeviceStatus *outStatus);
 
         Result GetUsersDevices(int ownerID,
-                               std::vector<Models::Device>* outDevices);
+                               std::vector<Models::DeviceWithStatus>* outDevices);
 
       private:
+        /*
+            Query the status of a device. If the return value is Offline
+            or Pending, the device may simply not exist. We don't check
+            that here.
+        */
+        Models::DeviceStatus GetDeviceStatusWithoutCheck(int deviceID);
+
         Topics::DevicesHeartbeatTopic* m_devicesHeartbeatTopic;
         DB::DevicesTable*              m_dbDevices;
         DB::UsersTable*                m_dbUsers;

@@ -8,7 +8,6 @@ import {
 import {
     NetworkError,
     HttpError,
-    PartialCompletionError,
     ResourceLockedError
 } from '@/core/errors/errors.js';
 
@@ -74,12 +73,6 @@ export class DevicesStore {
             await this.#requestUpsertDeviceOwners(
                 DevicesStore.#getIDs(session, friends));
             this.#state.value = 'ready';
-
-            try {
-                await this.#requestDeviceStatuses(this.#deviceOwners);
-            } catch (e) {
-                throw new PartialCompletionError(e);
-            }
         } catch (e) {
             if (!(e instanceof PartialCompletionError))
                 this.#state.value = 'error';
@@ -100,13 +93,6 @@ export class DevicesStore {
 
         try {
             await this.#requestUpsertDeviceOwners(userIDs);
-
-            try {
-                await this.#requestDeviceStatuses(
-                    userIDs.filter(id => this.#deviceOwners[id]).map(id => this.#deviceOwners[id]));
-            } catch (e) {
-                throw new PartialCompletionError(e);
-            }
         } finally {
             this.#mutex.unlockMany(userIDs);
         }
@@ -126,45 +112,12 @@ export class DevicesStore {
         }
     }
 
-    async #requestDeviceStatuses(deviceOwners) {
-        const inflight = [];
-
-        for (const device of DevicesStore.#getDevices(deviceOwners)) {
-            inflight.push({
-                device,
-                promise: this.#fetchStatus(device.deviceID)
-            });
-        }
-
-        const responses = await Promise.allSettled(inflight.map(i => i.promise));
-
-        for (let i = 0; i < inflight.length; ++i) {
-            switch (responses[i].status) {
-            case 'fulfilled':
-                inflight[i].device.applyStatusJSON(responses[i].value['status']);
-                break;
-
-            case 'rejected':
-                inflight[i].device.applyStatusError(`Couldn't fetch device status`);
-                break;
-            }
-        }
-    }
-
     async #fetchDevices(userID) {
         return await new Promise((resolve, reject) => {
             Dispatch.Get_UsersDevices(userID)
                 .onSuccess     (body           => resolve(body))
                 .onHttpError   ((body, status) => reject(new HttpError(status, body)))
                 .onNetworkError(()             => reject(new NetworkError()));
-        });
-    }
-
-    async #fetchStatus(deviceID) {
-        return await new Promise((resolve, reject) => {
-            Dispatch.Get_DevicesStatus(deviceID)
-                .onSuccess(body => resolve(body))
-                .onError(()     => reject());
         });
     }
 

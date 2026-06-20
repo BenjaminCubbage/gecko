@@ -3,7 +3,8 @@
 #include "gecko/middleware/HasPathParam.h"
 #include "gecko/middleware/PathParamEquals.h"
 #include "gecko/middleware/UserIsLoggedIn.h"
-#include "gecko/models/Device.h"
+#include "gecko/models/DeviceStatus.h"
+#include "gecko/models/DeviceWithStatus.h"
 
 namespace Gecko::API::Controllers
 {
@@ -13,53 +14,10 @@ namespace Gecko::API::Controllers
     void DevicesController::Attach(httplib::Server& server)
     {
         server.Get(
-            "/api/devices/:device_id/status",
-            [this] (const httplib::Request& req, httplib::Response& res) {
-                Handle_GET_DeviceStatus(req, res);
-            });
-
-        server.Get(
             "/api/users/:user_id/devices",
             [this] (const httplib::Request& req, httplib::Response& res) {
                 Handle_GET_UsersDevices(req, res);
             });
-    }
-
-    void DevicesController::Handle_GET_DeviceStatus(const httplib::Request& req, httplib::Response& res)
-    {
-        using Services::DevicesService;
-
-        size_t deviceID;
-        if (!Middleware::HasPathParam<size_t>{ "device_id" }(req, res, &deviceID))
-            return;
-
-        DevicesService::DeviceStatus status{};
-        switch (m_devicesService.GetDeviceStatus(deviceID, &status))
-        {
-        case DevicesService::Result::OK:
-            switch (status)
-            {
-            case DevicesService::DeviceStatus::Online:
-                res.body = R"({"status":"online"})";
-                return;
-
-            case DevicesService::DeviceStatus::Offline:
-                res.body = R"({"status":"offline"})";
-                return;
-
-            default:
-                res.body = R"({"status":"pending"})";
-                return;
-            }
-
-        case DevicesService::Result::DeviceNotFound:
-            Http::RespondWithError::DeviceNotFound(res);
-            return;
-
-        default:
-            Http::RespondWithError::CouldNotFulfill(res);
-            return;
-        }
     }
 
     void DevicesController::Handle_GET_UsersDevices(const httplib::Request& req, httplib::Response& res)
@@ -74,7 +32,7 @@ namespace Gecko::API::Controllers
             return;
         }
 
-        std::vector<Models::Device> devices{};
+        std::vector<Models::DeviceWithStatus> devices{};
 
         switch (m_devicesService.GetUsersDevices(ownerID, &devices))
         {
@@ -87,6 +45,13 @@ namespace Gecko::API::Controllers
                 {
                     response["devices"][i]["device_id"] = devices[i].deviceID;
                     response["devices"][i]["name"]      = devices[i].name;
+
+                    switch (devices[i].status)
+                    {
+                        case Models::DeviceStatus::Online:  response["devices"][i]["status"] = "online";  break;
+                        case Models::DeviceStatus::Offline: response["devices"][i]["status"] = "offline"; break;
+                        default:                            response["devices"][i]["status"] = "pending"; break;
+                    }
                 }
 
                 res.body = s_jsonWriter.write(response);

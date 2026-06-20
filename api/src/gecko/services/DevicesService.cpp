@@ -18,17 +18,17 @@ namespace Gecko::API::Services
 
     DevicesService::Result
     DevicesService::GetDeviceStatus(int deviceID,
-                                    DeviceStatus *outStatus)
+                                    Models::DeviceStatus *outStatus)
     {
-        std::string deviceIDStr = std::to_string(deviceID);
-        auto status = m_devicesHeartbeatTopic->GetDeviceStatus(deviceIDStr);
+        *outStatus = GetDeviceStatusWithoutCheck(deviceID);
 
-        if (status == Topics::DevicesHeartbeatTopic::DeviceStatus::Online)
-        {
-            *outStatus = DeviceStatus::Online;
+        if (*outStatus == Models::DeviceStatus::Online)
             return Result::OK;
-        }
 
+        /*
+            Caching device existence because devices are very rarely
+            deleted.
+        */
         bool exists{};
         if (m_existingDevicesCache.contains(deviceID))
             exists = true;
@@ -41,35 +41,59 @@ namespace Gecko::API::Services
         }
 
         EXPECT(exists, Result::DeviceNotFound);
-
-        switch (status)
-        {
-            case Topics::DevicesHeartbeatTopic::DeviceStatus::Offline:
-                *outStatus = DeviceStatus::Offline;
-                break;
-
-            case Topics::DevicesHeartbeatTopic::DeviceStatus::Pending:
-            default:
-                *outStatus = DeviceStatus::Pending;
-                break;
-        }
-
         return Result::OK;
     }
 
     DevicesService::Result
     DevicesService::GetUsersDevices(int ownerID,
-                                    std::vector<Models::Device>* outDevices)
+                                    std::vector<Models::DeviceWithStatus>* outDevices)
     {
-        EXPECT(m_dbDevices->GetDevicesByOwnerID(ownerID, outDevices) == DB::DevicesTable::Result::OK, Result::DatabaseError);
+        *outDevices = {};
 
-        if (outDevices->size() > 0)
+        /*
+            Get raw (no-status) devices first
+        */
+        std::vector<Models::Device> rawDevices;
+        EXPECT(m_dbDevices->GetDevicesByOwnerID(ownerID, &rawDevices) == DB::DevicesTable::Result::OK, Result::DatabaseError);
+
+        if (rawDevices.size() == 0) {
+            /*
+                Does the user not exist or do they have no devices?
+            */
+            bool exists{};
+            EXPECT(m_dbUsers->UserExists(ownerID, &exists) == DB::UsersTable::Result::OK, Result::DatabaseError);
+            EXPECT(exists, Result::UserNotFound);
             return Result::OK;
+        }
 
-        bool exists{};
-        EXPECT(m_dbUsers->UserExists(ownerID, &exists) == DB::UsersTable::Result::OK, Result::DatabaseError);
-        EXPECT(exists, Result::UserNotFound);
+        /*
+            Copy result with statuses included.
+        */
+        outDevices->reserve(rawDevices.size());
+        for (const auto& rawDevice : rawDevices)
+            outDevices->push_back(Models::DeviceWithStatus{
+                .deviceID = rawDevice.deviceID,
+                .name     = std::move(rawDevice.name),
+                .status   = GetDeviceStatusWithoutCheck(rawDevice.deviceID)
+            });
 
         return Result::OK;
+    }
+
+    Models::DeviceStatus DevicesService::GetDeviceStatusWithoutCheck(int deviceID)
+    {
+        std::string deviceIDStr = std::to_string(deviceID);
+        auto status = m_devicesHeartbeatTopic->GetDeviceStatus(deviceIDStr);
+
+        switch (status)
+        {
+            case Topics::DevicesHeartbeatTopic::DeviceStatus::Online:
+                return Models::DeviceStatus::Online;
+
+            case Topics::DevicesHeartbeatTopic::DeviceStatus::Offline:
+                return Models::DeviceStatus::Offline;
+        }
+
+        return Models::DeviceStatus::Pending;
     }
 }

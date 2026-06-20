@@ -3,23 +3,7 @@ export class Device {
         const device = new Device();
         device.deviceID = json['device_id'];
         device.name     = json['name'];
-
-        this.status      = null;
-        this.statusError = null;
+        device.status   = json['status'];
         return device;
-    }
-
-    applyStatusJSON(json) {
-        this.status      = json;
-        this.statusError = null;
-    }
-
-    applyStatusError(error) {
-        this.status      = null;
-        this.statusError = error;
-    }
-
-    updateStatus(deviceStatus) {
-        this.status = deviceStatus;
     }
 }

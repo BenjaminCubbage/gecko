@@ -18,20 +18,30 @@ namespace Gecko::API::Server
         Controllers(Env::Env* env, Services* services)
             : m_env{ env },
               m_services{ services },
+              m_corsPolicy{ 
+                  m_env->geckoAPIFrontendOrigin },
               m_authController{
-                m_services->Users(),
-                m_env->geckoAPIDomainRoot,
-                m_env->geckoAPIBackendOrigin,
-                m_env->geckoAPIFrontendOrigin,
-                m_env->oauthClientID,
-                m_env->oauthClientSecret,
-                m_env->jwtPrivateKey,
-                m_env->jwtPublicKey },
-              m_corsPolicy            { m_env->geckoAPIFrontendOrigin },
-              m_usersController       { m_services->Users(),        m_env->jwtPublicKey },
-              m_sharedImagesController{ m_services->SharedImages(), m_env->jwtPublicKey },
-              m_devicesController     { m_services->Devices(),      m_env->jwtPublicKey },
-              m_friendshipsController { m_services->Friendships(),  m_env->jwtPublicKey } {}
+                  m_services->Users(),
+                  m_env->geckoAPIDomainRoot,
+                  m_env->geckoAPIBackendOrigin,
+                  m_env->geckoAPIFrontendOrigin,
+                  m_env->oauthClientID,
+                  m_env->oauthClientSecret,
+                  m_env->jwtPrivateKey,
+                  m_env->jwtPublicKey },
+              m_usersController{ 
+                  m_services->Users(),        
+                  m_env->jwtPublicKey },
+              m_sharedImagesController{ 
+                  m_services->SharedImages(), 
+                  m_env->jwtPublicKey },
+              m_devicesController{
+                  m_services->Devices(),
+                  m_services->Friendships(),
+                  m_env->jwtPublicKey },
+              m_friendshipsController{ 
+                  m_services->Friendships(), 
+                  m_env->jwtPublicKey } {}
 
         Controllers           (const Controllers&) = delete;
         Controllers& operator=(const Controllers&) = delete;
