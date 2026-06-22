@@ -111,18 +111,6 @@ function send() {
     }
 }
 
-void getLatest;
-function getLatest() {
-    Dispatch.Get_LatestImage(session.activeUserID, session.xsrfCookie)
-        .onSuccess(async body => {
-            const arr = new Uint8Array(await body.arrayBuffer());
-            canvasEl.value.writeGIBBlob(arr);
-        })
-        .onHttpError((body, status) => {
-            console.warn(`Get_LatestImage failed: ${status}`, body)
-        });
-}
-
 function clear() {
     canvasEl.value?.clear();
 }

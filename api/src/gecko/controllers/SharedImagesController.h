@@ -19,9 +19,6 @@ namespace Gecko::API::Controllers
                                       httplib::Response& res,
                                       const httplib::ContentReader& contentReader);
 
-        void Handle_GET_LatestImageBlob(const httplib::Request& req,
-                                        httplib::Response& res);
-
         Services::SharedImagesService m_sharedImagesService;
         std::string m_pubkey;
     };

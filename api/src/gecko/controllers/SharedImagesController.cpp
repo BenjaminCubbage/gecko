@@ -26,11 +26,6 @@ namespace Gecko::API::Controllers
                                                             const httplib::ContentReader& contentReader) {
             Handle_POST_SharedImages(req, res, contentReader);
         });
-
-        server.Get("/api/users/:id/latest-image", [this] (const httplib::Request& req,
-                                                          httplib::Response& res) {
-            Handle_GET_LatestImageBlob(req, res);
-        });
     }
 
     void SharedImagesController::Handle_POST_SharedImages(const httplib::Request& req,
@@ -105,36 +100,6 @@ namespace Gecko::API::Controllers
 
             case SharedImagesService::Result::NotFriends:
                 Http::RespondWithError::ForbiddenNotFriends(res);
-                return;
-
-            default:
-                Http::RespondWithError::CouldNotFulfill(res);
-                return;
-        }
-    }
-
-    void SharedImagesController::Handle_GET_LatestImageBlob(const httplib::Request& req,
-                                                            httplib::Response& res)
-    {
-        using Services::SharedImagesService;
-
-        int userID{};
-        if (!Middleware::UserIsLoggedIn{ m_pubkey }(req, res, &userID) ||
-            !Middleware::PathParamEquals{ "id" }(req, res, std::to_string(userID)))
-            return;
-
-        std::vector<uint8_t> bytes;
-        switch (m_sharedImagesService.GetLatestReceivedImageBlob(userID, &bytes))
-        {
-            case SharedImagesService::Result::OK:
-                res.set_content(
-                    reinterpret_cast<char*>(bytes.data()),
-                    bytes.size(),
-                    "application/octet-stream");
-                return;
-
-            case SharedImagesService::Result::ReceiverNotFound:
-                Http::RespondWithError::UserNotFound(res);
                 return;
 
             default:
