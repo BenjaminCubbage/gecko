@@ -84,12 +84,12 @@ namespace Gecko::API::Controllers
         {
             case FriendshipsService::Result::OK:
             {
-                Json::Value response{ Json::objectValue };
+                Json::Value response;
                 response["friends"] = Json::arrayValue;
 
                 for (const auto& [ friendUser, metadata ] : friends)
                 {
-                    Json::Value item{ Json::objectValue };
+                    Json::Value item;
                     item["accepted_on"] = std::move(metadata.acceptedOn);
                     item["user"]["user_id"]     = friendUser.userID;
                     item["user"]["username"]    = friendUser.username;
@@ -129,14 +129,14 @@ namespace Gecko::API::Controllers
         {
             case FriendshipsService::Result::OK:
             {
-                Json::Value response{ Json::objectValue };
+                Json::Value response;
                 response["friend_requests"] = Json::objectValue;
                 response["friend_requests"]["outgoing"] = Json::arrayValue;
                 response["friend_requests"]["incoming"] = Json::arrayValue;
 
                 for (const auto& u : outgoing)
                 {
-                    Json::Value item{ Json::objectValue };
+                    Json::Value item;
                     item["status"] = "pending";
                     item["user"]["user_id"]  = u.userID;
                     item["user"]["username"] = u.username;
@@ -145,7 +145,7 @@ namespace Gecko::API::Controllers
 
                 for (const auto& u : incoming)
                 {
-                    Json::Value item{ Json::objectValue };
+                    Json::Value item;
                     item["status"] = "pending";
                     item["user"]["user_id"]  = u.userID;
                     item["user"]["username"] = u.username;
