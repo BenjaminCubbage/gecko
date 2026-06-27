@@ -1,3 +1,9 @@
+/*
+    Save the image data history of a canvas.
+*/
+
+const maxHistoryLen = 500;
+
 export class CanvasUndoRedo {
     #history;
     #historyCurr;
@@ -15,18 +21,31 @@ export class CanvasUndoRedo {
         return this.#historyCurr < this.#history.length - 1;
     }
 
-    forgetRedoableHistory() {
-        this.#history.length = this.#historyCurr + 1;
-    }
-
+    /*
+        Push canvas state to history. Deletes redoable history beyond
+        current point.
+    */
     pushState(canvas) {
         this.#history.length = this.#historyCurr + 1;
         this.#history.push(
             this.#ctx(canvas).getImageData(0, 0, canvas.width, canvas.height));
-        
         ++this.#historyCurr;
+
+        /*
+            Limit length to maxHistoryLen.
+
+            This assumes only one state is pushed at a time in above
+            code.
+        */
+        if (this.#history.length > maxHistoryLen) {
+            this.#history.shift();
+            --this.#historyCurr;
+        }
     }
 
+    /*
+        Undo if possible. If not possible, do nothing.
+    */
     applyUndo(canvas) {
         if (!this.canUndo)
             return;
@@ -40,12 +59,22 @@ export class CanvasUndoRedo {
         this.#ctx(canvas).putImageData(this.#history[this.#historyCurr], 0, 0);
     }
 
+    /*
+        Redo if possible. If not possible, do nothing.
+    */
     applyRedo(canvas) {
         if (!this.canRedo)
             return;
 
         ++this.#historyCurr;
         this.#ctx(canvas).putImageData(this.#history[this.#historyCurr], 0, 0);
+    }
+
+    /*
+        Forget all history beyond current point.
+    */
+    forgetRedoableHistory() {
+        this.#history.length = this.#historyCurr + 1;
     }
 
     #ctx(canvas) {
