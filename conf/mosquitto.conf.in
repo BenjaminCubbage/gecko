@@ -13,6 +13,9 @@ tls_version tlsv1.2
 certfile @MOSQUITTO_CERT_PATH@
 keyfile @MOSQUITTO_PKEY_PATH@
 
+persistence true
+persistence_location @MOSQUITTO_PERSISTENCE_DIR@
+
 max_keepalive 900
 message_size_limit 10000
 set_tcp_nodelay true
